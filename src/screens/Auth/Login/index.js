@@ -16,6 +16,7 @@ import {EYESVG, SouqnaLogo} from '../../../assets/svg';
 import PrimaryPasswordInput from '../../../components/atoms/InputFields/PrimaryPasswordInput';
 import Bold from '../../../typography/BoldText';
 import Header from '../../../components/Headers/Header';
+import api from '../../../api/apiServices';
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
@@ -44,66 +45,37 @@ const LoginScreen = () => {
     if (!isEmailValid(email)) {
       setEmailError('Please enter a valid email.');
       return;
-    } else {
-      setEmailError('');
     }
-
     if (!isPasswordValid(password)) {
       setPasswordError('Password must be at least 8 characters.');
       return;
-    } else {
-      setPasswordError('');
     }
-
     setLoading(true);
-
     try {
-      const response = await fetch(
-        'https://souqna-backend.healthflowpro.com/api/login',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            email,
-            password,
-          }),
-        },
-      );
+      const response = await api.post('/login', {email, password});
 
-      const data = await response.json();
-
-      if (data.status === true) {
-        const userData = data.user;
+      if (response.data.status) {
+        const userData = response.data.user;
         dispatch(
           setUser({
             token: userData.token,
+            refreshToken: userData.refreshToken,
             email: userData.email,
             id: userData.id,
             profileName: userData.name,
-            // Optionally, store other fields such as user id if needed.
           }),
         );
         navigation.navigate('Home');
       } else {
         Alert.alert(
           'Login failed',
-          data.message || 'Invalid email or password',
+          response.data.message || 'Invalid credentials',
         );
       }
     } catch (error) {
       Alert.alert('Login Error', 'Something went wrong. Please try again.');
     } finally {
       setLoading(false);
-    }
-  };
-
-  const showErrorMessage = () => {
-    if (Platform.OS === 'android') {
-      ToastAndroid.show('Invalid email or password', ToastAndroid.SHORT);
-    } else {
-      Alert.alert('Login Error', 'Invalid email or password');
     }
   };
 
