@@ -20,16 +20,27 @@ import Header from '../../../components/Headers/Header';
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [securePassword, setSecurePassword] = useState(true);
+  const [securePassword] = useState(true);
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
 
-  // Retrieve user credentials from Redux (set during sign-up)
-  const user = useSelector(state => state.user);
+  const isEmailValid = email => {
+    const emailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/;
+    return emailRegex.test(email);
+  };
 
-  const handleLogin = () => {
+  const isPasswordValid = password => {
+    return password.length >= 8;
+  };
+
+  const handleClearEmail = () => {
+    setEmail('');
+  };
+
+  const handleLogin = async () => {
     if (!isEmailValid(email)) {
       setEmailError('Please enter a valid email.');
       return;
@@ -44,54 +55,62 @@ const LoginScreen = () => {
       setPasswordError('');
     }
 
-    // Check if email and password match the stored user credentials
-    if (user && user.email === email && user.password === password) {
-      // Successful login: Dispatch user data to Redux and navigate to the home screen
-      dispatch(setUser(user));
-      console.log('Navigating to home screen');
-      navigation.navigate('Home');
-    } else {
-      // Show error message if credentials do not match
-      showErrorMessage();
+    setLoading(true);
+
+    try {
+      const response = await fetch(
+        'https://souqna-backend.healthflowpro.com/api/login',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email,
+            password,
+          }),
+        },
+      );
+
+      const data = await response.json();
+
+      if (data.status === true) {
+        const userData = data.user;
+        dispatch(
+          setUser({
+            token: userData.token,
+            email: userData.email,
+            id: userData.id,
+            profileName: userData.name,
+            // Optionally, store other fields such as user id if needed.
+          }),
+        );
+        navigation.navigate('Home');
+      } else {
+        Alert.alert(
+          'Login failed',
+          data.message || 'Invalid email or password',
+        );
+      }
+    } catch (error) {
+      Alert.alert('Login Error', 'Something went wrong. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
   const showErrorMessage = () => {
-    // Use ToastAndroid for Android
     if (Platform.OS === 'android') {
       ToastAndroid.show('Invalid email or password', ToastAndroid.SHORT);
     } else {
-      // For iOS or other platforms, use Alert
       Alert.alert('Login Error', 'Invalid email or password');
     }
-  };
-
-  const isEmailValid = email => {
-    const emailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/;
-    return emailRegex.test(email);
-  };
-
-  const isPasswordValid = password => {
-    return password.length >= 8;
   };
 
   const navigateToRegister = () => {
     navigation.navigate('Register');
   };
-
-  const togglePasswordVisibility = () => {
-    setSecurePassword(!securePassword);
-  };
-
-  const handleClearEmail = () => {
-    setEmail('');
-  };
-
-  const onBackPress = () => {
-    navigation.goBack();
-  };
-
-  const isFormValid = email && password; // Button activation condition
+  const isFormValid = email && password;
 
   return (
     <KeyboardAvoidingView

@@ -2,8 +2,9 @@
 import {createSlice} from '@reduxjs/toolkit';
 
 const initialState = {
-  token: null, // Token for the logged-in user
+  token: null,
   email: null,
+  id: null,
   password: null,
   profileName: null,
 };
@@ -17,9 +18,9 @@ const userSlice = createSlice({
       state.token = action.payload.token;
       state.email = action.payload.email;
       state.password = action.payload.password;
-      state.profileName = action.payload.profileName || null; // For private users
+      state.id = action.payload.id;
+      state.profileName = action.payload.profileName || null;
     },
-    // Action to reset user data (if needed)
     resetUser: state => {
       state.token = null;
       state.email = null;

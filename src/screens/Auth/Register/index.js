@@ -1,3 +1,5 @@
+/* eslint-disable no-shadow */
+/* eslint-disable no-alert */
 import React, {useEffect, useRef, useState} from 'react';
 import {
   View,
@@ -24,17 +26,17 @@ import {MyButton} from '../../../components/atoms/InputFields/MyButton';
 const Register = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [securePassword, setSecurePassword] = useState(true);
+  const [securePassword] = useState(true);
+  const [setLoading] = useState(false);
   const [selectedOption, setSelectedOption] = useState('');
   const [profilename, setProfilename] = useState('');
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [isSubscribed, setIsSubscribed] = useState(false);
   const profileNameOpacity = useRef(new Animated.Value(0)).current;
-  const dispatch = useDispatch();
   const navigation = useNavigation();
 
-  const handleRegister = () => {
+  const handleRegister = async () => {
     if (!isEmailValid(email)) {
       setEmailError('Please enter a valid email.');
       return;
@@ -49,24 +51,35 @@ const Register = () => {
       setPasswordError('');
     }
 
-    if (selectedOption === 'Private' && !profilename) {
-      alert('Please provide a profile name for your private account');
-      return;
+    setLoading(true);
+    try {
+      const response = await fetch(
+        'https://souqna-backend.healthflowpro.com/api/register',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            name: profilename || 'Seller',
+            email: email,
+            password: password,
+            role: 2,
+          }),
+        },
+      );
+      const data = await response.json();
+      if (data.success) {
+        alert('Registered successfully');
+        navigation.navigate('Login');
+      } else {
+        alert(data.message || 'Registration failed');
+      }
+    } catch (error) {
+      alert('Something went wrong. Please try again.');
+    } finally {
+      setLoading(false);
     }
-
-    // Create a dummy token or get one from your API response (for now using a dummy token)
-    const dummyToken = 'some_dummy_token';
-
-    dispatch(
-      setUser({
-        token: dummyToken,
-        email: email,
-        password: password,
-        profileName: selectedOption === 'Private' ? profilename : null,
-      }),
-    );
-
-    navigation.navigate('Login');
   };
 
   const isEmailValid = email => {
