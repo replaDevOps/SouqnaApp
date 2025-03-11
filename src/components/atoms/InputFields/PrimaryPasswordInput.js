@@ -48,6 +48,7 @@ const PrimaryPasswordInput = ({
         value={value}
         onChangeText={onChangeText}
         onBlur={onBlur}
+        autoCapitalize="none"
         secureTextEntry={isSecure}
         style={[styles.input, style]}
         placeholderTextColor={colors.grey}

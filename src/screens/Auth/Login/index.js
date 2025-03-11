@@ -56,6 +56,7 @@ const LoginScreen = () => {
 
       if (response.data.status) {
         const userData = response.data.user;
+        console.log('User Data:', userData);
         dispatch(
           setUser({
             token: userData.token,
@@ -65,6 +66,13 @@ const LoginScreen = () => {
             profileName: userData.name,
           }),
         );
+        console.log('Dispatched User Data:', {
+          token: userData.token,
+          refreshToken: userData.refreshToken,
+          email: userData.email,
+          id: userData.id,
+          profileName: userData.name,
+        });
         navigation.navigate('Home');
       } else {
         Alert.alert(
@@ -117,7 +125,8 @@ const LoginScreen = () => {
         <MyButton
           title="Login"
           onPress={handleLogin}
-          disabled={!isFormValid} // Disable button if form is not valid
+          disabled={!isFormValid}
+          loading={loading}
         />
         <Regular style={styles.registerText}>
           Don’t have an account?{' '}

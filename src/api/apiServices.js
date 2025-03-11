@@ -1,31 +1,34 @@
 import axios from 'axios';
-import store from '../redux/store';
-import {refreshAuthToken} from './authService';
+import {store} from '../redux/store';
+import {isTokenExpired} from './helper';
+import {refreshAuthToken} from './authProvider';
 
 const api = axios.create({
-  baseURL: 'https://souqna-backend.healthflowpro.com/api',
+  baseURL: 'https://souqna-backend.healthflowpro.com/api', // Replace with actual API URL
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-// Add an interceptor to refresh token if the request fails
-api.interceptors.response.use(
-  response => response,
-  async error => {
-    const originalRequest = error.config;
-    const {token, refreshToken} = store.getState().user;
+// 🔄 Intercept requests to check and refresh token if expired
+api.interceptors.request.use(
+  async config => {
+    let state = store.getState();
+    let token = state.user.token;
+    let refreshToken = state.user.refreshToken;
 
-    if (error.response.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
-      const newToken = await refreshAuthToken(refreshToken, store.dispatch);
-
-      if (newToken) {
-        api.defaults.headers['Authorization'] = `Bearer ${newToken}`;
-        originalRequest.headers['Authorization'] = `Bearer ${newToken}`;
-        return api(originalRequest);
-      }
+    if (token && isTokenExpired(token)) {
+      console.log('⚠️ Token expired. Attempting refresh...');
+      token = await refreshAuthToken(store.dispatch, refreshToken);
     }
+
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`; // Attach token to request
+    }
+
+    return config;
+  },
+  error => {
     return Promise.reject(error);
   },
 );

@@ -1,8 +1,16 @@
 import React from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  ActivityIndicator,
+} from 'react-native';
 import {colors} from '../../../util/color';
 import {mvs} from '../../../util/metrices';
-const MyButton = ({onPress, title, disabled, icon, widt, color}) => {
+
+const MyButton = ({onPress, title, disabled, icon, widt, color, loading}) => {
   return (
     <TouchableOpacity
       style={[
@@ -15,15 +23,20 @@ const MyButton = ({onPress, title, disabled, icon, widt, color}) => {
           width: widt ? widt : '100%',
         },
       ]}
-      onPress={disabled ? null : onPress}
-      disabled={disabled}>
+      onPress={disabled || loading ? null : onPress}
+      disabled={disabled || loading}>
       <View style={styles.view1}>
-        {icon && <Image source={icon} style={styles.image1} />}
-        <Text style={styles.text}>{title}</Text>
+        {icon && !loading && <Image source={icon} style={styles.image1} />}
+        {loading ? (
+          <ActivityIndicator size="small" color={colors.green} />
+        ) : (
+          <Text style={styles.text}>{title}</Text>
+        )}
       </View>
     </TouchableOpacity>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
@@ -46,4 +59,5 @@ const styles = StyleSheet.create({
     height: 30,
   },
 });
+
 export {MyButton};
