@@ -1,6 +1,14 @@
-import React from 'react';
-import {View, SafeAreaView, TouchableOpacity, Text, ScrollView} from 'react-native';
-import {useDispatch} from 'react-redux';
+import React, {useEffect, useState} from 'react';
+import {
+  View,
+  SafeAreaView,
+  TouchableOpacity,
+  Text,
+  ScrollView,
+  Alert,
+  ActivityIndicator,
+} from 'react-native';
+import {useDispatch, useSelector} from 'react-redux';
 import styles from './styles';
 import {resetUser} from '../../../redux/slices/userSlice';
 import {useNavigation} from '@react-navigation/native';
@@ -8,10 +16,16 @@ import {MyButton} from '../../../components/atoms/InputFields/MyButton';
 import {SouqnaLogo} from '../../../assets/svg';
 import Regular from '../../../typography/RegularText';
 import MainHeader from '../../../components/Headers/MainHeader';
+import api from '../../../api/apiServices';
+import {isTokenExpired} from '../../../api/helper';
+import {refreshAuthToken} from '../../../api/authProvider';
+import {logoutUser} from '../../../redux/slices/userSlice';
 
 const Profile = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
+  const user = useSelector(state => state.user); // Get user state
+  const [loading, setLoading] = useState(false);
 
   const handleLogout = () => {
     dispatch(resetUser());
@@ -20,6 +34,50 @@ const Profile = () => {
 
   const handleChangePassword = () => {
     navigation.navigate('ChangePassword'); // Navigate to ChangePassword screen
+  };
+  useEffect(() => {
+    let token = user.token;
+    console.log('Current Token: ', token);
+  });
+
+  const handlePrivacy = async () => {
+    setLoading(true);
+
+    let token = user.token;
+    const refreshToken = user.refreshToken;
+
+    // ✅ Check if token is expired
+    if (!token || isTokenExpired(token)) {
+      console.log('⚠️ Token expired. Attempting refresh...');
+      token = await refreshAuthToken(dispatch, refreshToken);
+    }
+
+    if (!token) {
+      setLoading(false);
+      Alert.alert('Session Expired', 'Please log in again.');
+      dispatch(logoutUser());
+      return;
+    }
+
+    try {
+      const response = await api.get('/viewPrivacy', {
+        headers: {Authorization: `Bearer ${token}`}, // Attach valid token
+      });
+
+      if (response.data.success) {
+        Alert.alert('Privacy Policy', response.data.data.description);
+      } else {
+        Alert.alert('Error', 'Failed to load privacy policy');
+      }
+    } catch (error) {
+      console.error('❌ Privacy fetch error:', error);
+      Alert.alert(
+        'Error',
+        'Something went wrong while fetching privacy policy',
+      );
+    }
+
+    setLoading(false);
   };
 
   return (
@@ -43,8 +101,10 @@ const Profile = () => {
             <Text style={styles.menuText}>Update Profile</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.menuItem}>
-            <Text style={styles.menuText}>Update Pic</Text>
+          <TouchableOpacity style={styles.menuItem} onPress={handlePrivacy}>
+            <Text style={styles.menuText}>
+              View Privacy {loading && <ActivityIndicator size="small" />}
+            </Text>
           </TouchableOpacity>
         </View>
 

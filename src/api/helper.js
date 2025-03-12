@@ -1,10 +1,14 @@
+import {jwtDecode} from 'jwt-decode';
+
 export const isTokenExpired = token => {
-  if (!token) return true; // No token means expired
+  if (!token) {
+    return true;
+  }
   try {
-    const payload = JSON.parse(atob(token.split('.')[1])); // Decode JWT payload
-    return payload.exp * 1000 < Date.now(); // Compare expiry time
+    const decoded = jwtDecode(token);
+    return decoded.exp * 1000 < Date.now();
   } catch (error) {
-    console.error('⚠️ Error checking token expiry:', error);
-    return true; // Assume expired if decoding fails
+    console.error('Error decoding token:', error);
+    return true;
   }
 };
