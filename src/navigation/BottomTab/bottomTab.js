@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {useSelector} from 'react-redux';
@@ -27,6 +27,9 @@ const Stack = createStackNavigator();
 const MyTabs = () => {
   const {token} = useSelector(state => state.user); // Token will indicate if the user is logged in
   const [isModalVisible, setIsModalVisible] = useState(false);
+  useEffect(() => {
+    console.log('TOKEN: ', token);
+  }, [token]); // This will log the token every time it changes.
 
   const handleLoginSuccess = () => {
     setIsModalVisible(false);

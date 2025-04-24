@@ -1,16 +1,15 @@
 import axios from 'axios';
 
 const API = axios.create({
-  baseURL: 'https://souqna-backend.healthflowpro.com/',
+  baseURL: 'https://backend.souqna.net/api/',
   timeout: 10000, // Optional: Set timeout
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-
 API.interceptors.request.use(
-  async (config) => {
+  async config => {
     // Example: Get token from AsyncStorage if needed
     // const token = await AsyncStorage.getItem('token');
     // if (token) {
@@ -18,7 +17,7 @@ API.interceptors.request.use(
     // }
     return config;
   },
-  (error) => Promise.reject(error)
+  error => Promise.reject(error),
 );
 
 export default API;

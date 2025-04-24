@@ -1,3 +1,5 @@
+/* eslint-disable no-shadow */
+/* eslint-disable no-alert */
 import React, {useEffect, useRef, useState} from 'react';
 import {
   View,
@@ -11,7 +13,6 @@ import {useDispatch} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
 import Regular from '../../../typography/RegularText';
 import styles from './styles';
-import {setUser} from '../../../redux/slices/userSlice';
 import {EYESVG, SouqnaLogo} from '../../../assets/svg';
 import Bold from '../../../typography/BoldText';
 import Header from '../../../components/Headers/Header';
@@ -20,6 +21,7 @@ import RadioGroup from '../../../components/atoms/InputFields/RadioGroup';
 import PrimaryPasswordInput from '../../../components/atoms/InputFields/PrimaryPasswordInput';
 import CustomSwitch from '../../../components/atoms/InputFields/CustomSwitch';
 import {MyButton} from '../../../components/atoms/InputFields/MyButton';
+import API from '../../../api/apiServices';
 
 const Register = () => {
   const [email, setEmail] = useState('');
@@ -34,7 +36,7 @@ const Register = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
 
-  const handleRegister = () => {
+  const handleRegister = async () => {
     if (!isEmailValid(email)) {
       setEmailError('Please enter a valid email.');
       return;
@@ -54,19 +56,33 @@ const Register = () => {
       return;
     }
 
-    // Create a dummy token or get one from your API response (for now using a dummy token)
-    const dummyToken = 'some_dummy_token';
+    const payload = {
+      name: selectedOption === 'Private' ? profilename : 'Commercial User',
+      email,
+      password,
+      role: selectedOption === 'Private' ? 2 : 3, // 2=Private, 3=Commercial
+    };
 
-    dispatch(
-      setUser({
-        token: dummyToken,
-        email: email,
-        password: password,
-        profileName: selectedOption === 'Private' ? profilename : null,
-      }),
-    );
+    try {
+      const response = await API.post('register', payload);
+      const data = response.data;
 
-    navigation.navigate('Login');
+      if (data.success) {
+        alert(data.message || 'Registration successful! Please login.');
+        navigation.navigate('Login');
+      } else {
+        alert(data.message || 'Registration failed. Please try again.');
+      }
+    } catch (error) {
+      console.error(
+        'Registration Error:',
+        error?.response?.data || error.message,
+      );
+      alert(
+        error?.response?.data?.message ||
+          'An error occurred during registration. Please try again.',
+      );
+    }
   };
 
   const isEmailValid = email => {
