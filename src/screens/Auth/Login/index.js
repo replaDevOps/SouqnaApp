@@ -16,6 +16,7 @@ import {EYESVG, SouqnaLogo} from '../../../assets/svg';
 import PrimaryPasswordInput from '../../../components/atoms/InputFields/PrimaryPasswordInput';
 import Bold from '../../../typography/BoldText';
 import Header from '../../../components/Headers/Header';
+import {loginUser} from '../../../api/authServices';
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
@@ -26,10 +27,7 @@ const LoginScreen = () => {
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
 
-  // Retrieve user credentials from Redux (set during sign-up)
-  const user = useSelector(state => state.user);
-
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!isEmailValid(email)) {
       setEmailError('Please enter a valid email.');
       return;
@@ -44,24 +42,36 @@ const LoginScreen = () => {
       setPasswordError('');
     }
 
-    // Check if email and password match the stored user credentials
-    if (user && user.email === email && user.password === password) {
-      // Successful login: Dispatch user data to Redux and navigate to the home screen
-      dispatch(setUser(user));
-      console.log('Navigating to home screen');
-      navigation.navigate('Home');
-    } else {
-      // Show error message if credentials do not match
+    try {
+      const res = await loginUser(email, password);
+
+      if (res.success) {
+        dispatch(
+          setUser({
+            token: res.user.token,
+            refreshToken: res.user.refreshToken,
+            tokenExpire: res.user.tokenExpire,
+            id: res.user.id,
+            name: res.user.name,
+            email: res.user.email,
+          }),
+        );
+
+        console.log('Login successful:', res.user);
+        navigation.navigate('Verification');
+      } else {
+        showErrorMessage();
+      }
+    } catch (error) {
+      console.log('Login error:', error);
       showErrorMessage();
     }
   };
 
   const showErrorMessage = () => {
-    // Use ToastAndroid for Android
     if (Platform.OS === 'android') {
       ToastAndroid.show('Invalid email or password', ToastAndroid.SHORT);
     } else {
-      // For iOS or other platforms, use Alert
       Alert.alert('Login Error', 'Invalid email or password');
     }
   };

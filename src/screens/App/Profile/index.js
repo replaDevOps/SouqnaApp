@@ -2,7 +2,7 @@ import React from 'react';
 import {View, SafeAreaView, TouchableOpacity, Text, ScrollView} from 'react-native';
 import {useDispatch} from 'react-redux';
 import styles from './styles';
-import {resetUser} from '../../../redux/slices/userSlice';
+import {logoutUser, resetUser} from '../../../redux/slices/userSlice';
 import {useNavigation} from '@react-navigation/native';
 import {MyButton} from '../../../components/atoms/InputFields/MyButton';
 import {SouqnaLogo} from '../../../assets/svg';
@@ -14,7 +14,7 @@ const Profile = () => {
   const navigation = useNavigation();
 
   const handleLogout = () => {
-    dispatch(resetUser());
+    dispatch(logoutUser());
     navigation.replace('Login');
   };
 
