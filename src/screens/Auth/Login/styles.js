@@ -20,10 +20,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 20,
   },
-  modalButtonContainer: {
-    alignItems: 'center',
-    width: '100%',
-  },
+
   modalButton: {
     backgroundColor: colors.green,
     paddingVertical: 10,
@@ -35,18 +32,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
   },
-  modalCloseButton: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
-    zIndex: 1,
-    padding: 10,
-  },
-  modalCloseText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: colors.black, // or any color that fits your design
-  },
+
   buttonContainer: {
     marginTop: mvs(30),
   },

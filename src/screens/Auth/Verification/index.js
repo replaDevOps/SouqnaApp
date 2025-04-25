@@ -10,6 +10,7 @@ import {
   ToastAndroid,
   Image,
   Button,
+  Modal,
 } from 'react-native';
 import {launchImageLibrary} from 'react-native-image-picker';
 import {useNavigation} from '@react-navigation/native';
@@ -40,6 +41,8 @@ const VerificationScreen = () => {
   const [idFrontSide, setIdFrontSide] = useState(null);
   const [idBackSide, setIdBackSide] = useState(null);
   const [selfie, setSelfie] = useState(null);
+
+  const [modalVisible, setModalVisible] = useState(false);
 
   const handleInputChange = (key, value) => {
     setFormData({...formData, [key]: value});
@@ -121,6 +124,11 @@ const VerificationScreen = () => {
       if (response.status === 200 && response.data.success) {
         Alert.alert('Success', 'Verification completed!');
         navigation.navigate('Home');
+      } else if (
+        !response.data.success &&
+        response.data.message === 'Your document is still Pending'
+      ) {
+        setModalVisible(true); // Open modal if the document is still pending
       } else {
         ToastAndroid.show(
           response?.data?.message || 'Verification failed.',
@@ -222,6 +230,25 @@ const VerificationScreen = () => {
           />
         )}
       </View>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContainer}>
+            <Text style={styles.modalText}>
+              Your document is still Pending.
+            </Text>
+            <TouchableOpacity
+              style={styles.modalButton}
+              onPress={() => setModalVisible(false)}>
+              <Regular style={styles.modalButtonText}>Close</Regular>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </ScrollView>
   );
 };

@@ -68,7 +68,7 @@ const LoginScreen = () => {
         );
 
         console.log('Login successful:', res.user);
-        setModalVisible(true);
+        navigation.replace('Home');
       } else {
         showErrorMessage();
       }
@@ -79,16 +79,7 @@ const LoginScreen = () => {
       setLoading(false);
     }
   };
-  const handleVerifyProfile = () => {
-    // Logic to navigate or handle profile verification
-    navigation.replace('Verification');
-    setModalVisible(false);
-  };
 
-  const handleSkipVerification = () => {
-    navigation.replace('Home');
-    setModalVisible(false);
-  };
   const showErrorMessage = () => {
     if (Platform.OS === 'android') {
       ToastAndroid.show('Invalid email or password', ToastAndroid.SHORT);
@@ -152,9 +143,6 @@ const LoginScreen = () => {
           error={passwordError}
         />
       </View>
-      {/* <Regular>{email}</Regular>
-      <Regular>{password}</Regular> */}
-
       <View style={styles.buttonContainer}>
         <MyButton
           title={
@@ -174,35 +162,6 @@ const LoginScreen = () => {
           </Regular>
         </Regular>
       </View>
-
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}>
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContainer}>
-            {/* X Button on top-right */}
-            <TouchableOpacity
-              style={styles.modalCloseButton}
-              onPress={handleSkipVerification}>
-              <Regular style={styles.modalCloseText}>X</Regular>
-            </TouchableOpacity>
-
-            <VerifySVG style={{marginBottom: 10}} />
-            <Regular style={styles.modalText}>
-              Would you like to verify your profile now?
-            </Regular>
-            <View style={styles.modalButtonContainer}>
-              <TouchableOpacity
-                style={styles.modalButton}
-                onPress={handleVerifyProfile}>
-                <Regular style={styles.modalButtonText}>Verify</Regular>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
     </KeyboardAvoidingView>
   );
 };

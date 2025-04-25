@@ -46,3 +46,4 @@ export {default as CourseSVG} from './courseSVG';
 export {default as AssistanceSVG} from './assistanceSVG';
 export {default as ForwardSVG} from './forwardSVG';
 export {default as VerifySVG} from './verifySVG';
+export {default as uploadSVG} from './uploadSVG';
