@@ -46,6 +46,7 @@ const PrimaryPasswordInput = ({
         editable={editable}
         placeholder={placeholder}
         value={value}
+        autoCapitalize="none"
         onChangeText={onChangeText}
         onBlur={onBlur}
         secureTextEntry={isSecure}

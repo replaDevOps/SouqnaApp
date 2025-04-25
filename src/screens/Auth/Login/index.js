@@ -5,6 +5,9 @@ import {
   ToastAndroid,
   Platform,
   Alert,
+  ActivityIndicator,
+  TouchableOpacity,
+  Modal,
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
@@ -12,11 +15,12 @@ import Regular from '../../../typography/RegularText';
 import styles from './styles';
 import {MyButton} from '../../../components/atoms/InputFields/MyButton';
 import {setUser} from '../../../redux/slices/userSlice';
-import {EYESVG, SouqnaLogo} from '../../../assets/svg';
+import {EYESVG, SouqnaLogo, VerifySVG} from '../../../assets/svg';
 import PrimaryPasswordInput from '../../../components/atoms/InputFields/PrimaryPasswordInput';
 import Bold from '../../../typography/BoldText';
 import Header from '../../../components/Headers/Header';
 import {loginUser} from '../../../api/authServices';
+import {colors} from '../../../util/color';
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
@@ -26,6 +30,11 @@ const LoginScreen = () => {
   const navigation = useNavigation();
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false); // State for modal visibility
+
+  // const email = 'jmubashir272@gmail.com';
+  // const password = 'admin123@'; // Static password for testing
 
   const handleLogin = async () => {
     if (!isEmailValid(email)) {
@@ -43,6 +52,7 @@ const LoginScreen = () => {
     }
 
     try {
+      setLoading(true);
       const res = await loginUser(email, password);
 
       if (res.success) {
@@ -58,16 +68,27 @@ const LoginScreen = () => {
         );
 
         console.log('Login successful:', res.user);
-        navigation.navigate('Verification');
+        setModalVisible(true);
       } else {
         showErrorMessage();
       }
     } catch (error) {
       console.log('Login error:', error);
       showErrorMessage();
+    } finally {
+      setLoading(false);
     }
   };
+  const handleVerifyProfile = () => {
+    // Logic to navigate or handle profile verification
+    navigation.replace('Verification');
+    setModalVisible(false);
+  };
 
+  const handleSkipVerification = () => {
+    navigation.replace('Home');
+    setModalVisible(false);
+  };
   const showErrorMessage = () => {
     if (Platform.OS === 'android') {
       ToastAndroid.show('Invalid email or password', ToastAndroid.SHORT);
@@ -131,12 +152,20 @@ const LoginScreen = () => {
           error={passwordError}
         />
       </View>
+      {/* <Regular>{email}</Regular>
+      <Regular>{password}</Regular> */}
 
       <View style={styles.buttonContainer}>
         <MyButton
-          title="Login"
+          title={
+            loading ? (
+              <ActivityIndicator size="large" color={colors.green} />
+            ) : (
+              'Login'
+            )
+          }
           onPress={handleLogin}
-          disabled={!isFormValid} // Disable button if form is not valid
+          disabled={loading || !isFormValid}
         />
         <Regular style={styles.registerText}>
           Don’t have an account?{' '}
@@ -145,6 +174,35 @@ const LoginScreen = () => {
           </Regular>
         </Regular>
       </View>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContainer}>
+            {/* X Button on top-right */}
+            <TouchableOpacity
+              style={styles.modalCloseButton}
+              onPress={handleSkipVerification}>
+              <Regular style={styles.modalCloseText}>X</Regular>
+            </TouchableOpacity>
+
+            <VerifySVG style={{marginBottom: 10}} />
+            <Regular style={styles.modalText}>
+              Would you like to verify your profile now?
+            </Regular>
+            <View style={styles.modalButtonContainer}>
+              <TouchableOpacity
+                style={styles.modalButton}
+                onPress={handleVerifyProfile}>
+                <Regular style={styles.modalButtonText}>Verify</Regular>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </KeyboardAvoidingView>
   );
 };

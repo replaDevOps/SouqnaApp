@@ -3,7 +3,7 @@ import {colors} from '../../../util/color';
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     padding: 20,
     backgroundColor: colors.white,
   },
@@ -39,6 +39,46 @@ const styles = StyleSheet.create({
   errorText: {
     color: 'white',
     fontSize: 16,
+  },
+  uploadButton: {
+    backgroundColor: '#eee',
+    padding: 10,
+    marginVertical: 5,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  previewContainer: {
+    position: 'relative',
+  },
+  previewImage: {
+    width: 100,
+    height: 100,
+    marginVertical: 10,
+    borderRadius: 10,
+  },
+  removeButton: {
+    position: 'relative',
+    top: 5,
+    right: 5,
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 0, 0, 0.6)',
+    padding: 5,
+    borderRadius: 15,
+  },
+  removeText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 14,
+  },
+  label: {
+    fontWeight: 'bold',
+  },
+  uploadText: {
+    color: '#333',
+  },
+  imagePickerContainer: {
+    marginVertical: 10,
+    alignItems: 'center',
   },
 });
 export default styles;

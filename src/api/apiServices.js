@@ -3,9 +3,9 @@ import axios from 'axios';
 const API = axios.create({
   baseURL: 'https://backend.souqna.net/api/',
   timeout: 10000, // Optional: Set timeout
-  headers: {
-    'Content-Type': 'application/json',
-  },
+  // headers: {
+  //   'Content-Type': 'application/json',
+  // },
 });
 
 API.interceptors.request.use(

@@ -8,40 +8,68 @@ import {
   ScrollView,
   ActivityIndicator,
   ToastAndroid,
+  Image,
+  Button,
 } from 'react-native';
+import {launchImageLibrary} from 'react-native-image-picker';
 import {useNavigation} from '@react-navigation/native';
-import axios from 'axios';
+import {useSelector} from 'react-redux';
 import styles from './styles';
 import Regular from '../../../typography/RegularText';
 import {MyButton} from '../../../components/atoms/InputFields/MyButton';
 import API from '../../../api/apiServices';
-import {useSelector} from 'react-redux';
+import MainHeader from '../../../components/Headers/MainHeader';
 
 const VerificationScreen = () => {
   const navigation = useNavigation();
-  const {token} = useSelector(state => state.user); // Get token from Redux
-  const [loading, setLoading] = useState(false); // Add loading state
+  const {token} = useSelector(state => state.user);
+  console.log(token);
+  const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
-    fullName: 'Mubashir Mughal',
+    fullName: 'mubashir mughal',
     dob: '2001-10-14',
-    gender: 'Male',
-    country: 'Pakistan',
-    address: 'Lalazar',
-    idNumber: '37722-8828282-2',
-    issueDate: '2019-11-05',
-    expDate: '2029-11-05',
+    gender: 'male',
+    country: 'pakistan',
+    address: 'pakistan',
+    idNumber: '15604-0376998-3',
+    issueDate: '2025-03-21',
+    expDate: '2035-03-21',
   });
 
+  const [idFrontSide, setIdFrontSide] = useState(null);
+  const [idBackSide, setIdBackSide] = useState(null);
+  const [selfie, setSelfie] = useState(null);
+
   const handleInputChange = (key, value) => {
-    setFormData({
-      ...formData,
-      [key]: value,
-    });
+    setFormData({...formData, [key]: value});
+  };
+
+  const pickImage = async setter => {
+    launchImageLibrary(
+      {
+        mediaType: 'photo',
+        quality: 0.8,
+      },
+      response => {
+        if (response.didCancel) return;
+        if (response.errorCode) {
+          Alert.alert('Error', 'Image Picker Error: ' + response.errorMessage);
+        } else if (response.assets?.length > 0) {
+          const asset = response.assets[0];
+          setter({
+            uri: asset.uri,
+            type: asset.type,
+            name: asset.fileName,
+          });
+        }
+      },
+    );
   };
 
   const handleSubmit = async () => {
-    console.log('Submit button pressed');
+    console.log('Submit button pressed ✅');
+
     const {
       fullName,
       dob,
@@ -61,118 +89,139 @@ const VerificationScreen = () => {
       !address ||
       !idNumber ||
       !issueDate ||
-      !expDate
+      !expDate ||
+      !idFrontSide ||
+      !idBackSide
     ) {
-      Alert.alert('Error', 'Please fill all the fields');
+      ToastAndroid.show(
+        'Please fill all fields and upload all images.',
+        ToastAndroid.SHORT,
+      );
       return;
     }
 
-    const idFrontSide = null; // Replace with actual image data if available
-    const idBackSide = null;
-    const selfie = null;
-
     const data = new FormData();
-    data.append('fullName', fullName);
-    data.append('dob', dob);
-    data.append('gender', gender);
-    data.append('country', country);
-    data.append('address', address);
-    data.append('idNumber', idNumber);
-    data.append('issueDate', issueDate);
-    data.append('expDate', expDate);
+    Object.entries(formData).forEach(([key, value]) => {
+      data.append(key, value);
+    });
 
-    if (idFrontSide) {
-      data.append('idFrontSide', {
-        uri: idFrontSide.uri,
-        type: idFrontSide.type,
-        name: idFrontSide.fileName || '../../../assets/img/driver1.png',
-      });
-    }
-
-    if (idBackSide) {
-      data.append('idBackSide', {
-        uri: idBackSide.uri,
-        type: idBackSide.type,
-        name: idBackSide.fileName || '../../../assets/img/driver1.png',
-      });
-    }
-
-    if (selfie) {
-      data.append('selfie', {
-        uri: selfie.uri,
-        type: selfie.type,
-        name: selfie.fileName || '../../../assets/img/driver1.png',
-      });
-    }
+    data.append('idFrontSide', idFrontSide);
+    data.append('idBackSide', idBackSide);
+    data.append('selfie', selfie);
 
     try {
-      setLoading(true); // Start loading when the request is made
-      console.log('Sending FormData:', data);
-
+      setLoading(true);
       const response = await API.post('verification', data, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data',
         },
       });
-
-      console.log('Response:', response.data);
-
-      if (response.status === 200 && response.data.status !== false) {
+      console.log('API Response:', response.data);
+      if (response.status === 200 && response.data.success) {
         Alert.alert('Success', 'Verification completed!');
         navigation.navigate('Home');
-      } else if (response.status === 401) {
-        ToastAndroid.show('Message', ToastAndroid.SHORT);
       } else {
-        Alert.alert('Error', response?.data?.message || 'Verification failed.');
+        ToastAndroid.show(
+          response?.data?.message || 'Verification failed.',
+          ToastAndroid.SHORT,
+        );
       }
     } catch (error) {
-      console.error('Verification Error:', error);
-
       const message =
         error.response?.data?.message ||
         error.message ||
-        'An error occurred while verifying. Please try again.';
-
-      Alert.alert('Error', message);
+        'An error occurred during verification.';
+      ToastAndroid.show(message, ToastAndroid.LONG);
     } finally {
-      setLoading(false); // Stop loading after the request is completed
+      setLoading(false);
     }
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <View style={styles.headerContainer}>
-        <Regular style={styles.headerText}>Verification</Regular>
-      </View>
+    <ScrollView>
+      <MainHeader title={'Verification'} />
+      <View style={styles.container}>
+        {/* <View style={styles.headerContainer}>
 
-      {[
-        {key: 'fullName', placeholder: 'Full Name'},
-        {key: 'dob', placeholder: 'Date of Birth'},
-        {key: 'gender', placeholder: 'Gender'},
-        {key: 'country', placeholder: 'Country'},
-        {key: 'address', placeholder: 'Address'},
-        {key: 'idNumber', placeholder: 'ID Number'},
-        {key: 'issueDate', placeholder: 'Issue Date'},
-        {key: 'expDate', placeholder: 'Expiry Date'},
-      ].map(({key, placeholder}) => (
-        <View key={key} style={styles.inputContainer}>
-          <TextInput
-            style={styles.input}
-            placeholder={placeholder}
-            value={formData[key]}
-            onChangeText={text => handleInputChange(key, text)}
+      </View> */}
+
+        {[
+          {key: 'fullName', label: 'Full Name', placeholder: 'Enter Full Name'},
+          {
+            key: 'dob',
+            label: 'Date of Birth',
+            placeholder: 'Enter Date of Birth (YYYY-MM-DD)',
+          },
+          {key: 'gender', label: 'Gender', placeholder: 'Enter Gender'},
+          {key: 'country', label: 'Country', placeholder: 'Enter Country'},
+          {key: 'address', label: 'Address', placeholder: 'Enter Address'},
+          {key: 'idNumber', label: 'ID Number', placeholder: 'Enter ID Number'},
+          {
+            key: 'issueDate',
+            label: 'Issue Date',
+            placeholder: 'Enter Issue Date (YYYY-MM-DD)',
+          },
+          {
+            key: 'expDate',
+            label: 'Expiry Date',
+            placeholder: 'Enter Expiry Date (YYYY-MM-DD)',
+          },
+        ].map(({key, label, placeholder}) => (
+          <View key={key} style={styles.inputContainer}>
+            <Text style={styles.label}>{label}</Text>
+            <TextInput
+              style={styles.input}
+              placeholder={placeholder}
+              value={formData[key]}
+              onChangeText={text => handleInputChange(key, text)}
+            />
+          </View>
+        ))}
+
+        {[
+          {label: 'Front of ID', state: idFrontSide, setter: setIdFrontSide},
+          {label: 'Back of ID', state: idBackSide, setter: setIdBackSide},
+          {label: 'Selfie', state: selfie, setter: setSelfie},
+        ].map(({label, state, setter}) => (
+          <View key={label} style={styles.imagePickerContainer}>
+            <Text style={styles.label}>{label}</Text>
+            <TouchableOpacity
+              onPress={() => pickImage(setter)}
+              style={styles.uploadButton}>
+              <Text style={styles.uploadText}>Upload {label}</Text>
+            </TouchableOpacity>
+
+            {state && (
+              <View style={styles.previewContainer}>
+                <Image source={{uri: state.uri}} style={styles.previewImage} />
+                <TouchableOpacity
+                  onPress={() => setter(null)} // Removes the image when pressed
+                  style={styles.removeButton}>
+                  <Text style={styles.removeText}>Remove</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+          </View>
+        ))}
+
+        <TouchableOpacity
+          onPress={() => {
+            console.log('Button clicked 🔥');
+            handleSubmit();
+          }}
+          disabled={loading}>
+          <MyButton title="Submit" onPress={handleSubmit} disabled={loading} />
+        </TouchableOpacity>
+
+        {loading && (
+          <ActivityIndicator
+            size="large"
+            color="#0000ff"
+            style={styles.loader}
           />
-        </View>
-      ))}
-
-      <TouchableOpacity onPress={handleSubmit} disabled={loading}>
-        <MyButton title={loading ? 'Submitting...' : 'Submit'} />
-      </TouchableOpacity>
-
-      {loading && (
-        <ActivityIndicator size="large" color="#0000ff" style={styles.loader} />
-      )}
+        )}
+      </View>
     </ScrollView>
   );
 };
