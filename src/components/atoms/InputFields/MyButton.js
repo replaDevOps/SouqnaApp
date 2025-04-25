@@ -11,11 +11,12 @@ const MyButton = ({onPress, title, disabled, icon, widt, color}) => {
           backgroundColor: disabled
             ? colors.lightpastelgreen
             : color || colors.lightgreen,
+          opacity: disabled ? 0.6 : 1, // <- new line
           height: 55,
           width: widt ? widt : '100%',
         },
       ]}
-      onPress={disabled ? null : onPress}
+      onPress={onPress}
       disabled={disabled}>
       <View style={styles.view1}>
         {icon && <Image source={icon} style={styles.image1} />}
