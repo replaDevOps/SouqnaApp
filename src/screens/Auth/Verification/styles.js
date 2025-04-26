@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
   uploadLabelContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 5, // If using RN 0.71+, otherwise use marginRight
+    gap: 5,
   },
 
   uploadIcon: {

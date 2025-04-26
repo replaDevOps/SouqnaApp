@@ -11,7 +11,7 @@ const AdvertiseAll = () => {
   const navigation = useNavigation();
 
   const handleSubcategoryPress = subcategory => {
-    console.log(`Advertise ${subcategory} clicked`);
+    console.log(`Advertise ${subcategory.name} clicked`);
   };
 
   const handleBack = () => {
@@ -20,7 +20,7 @@ const AdvertiseAll = () => {
   const renderSubCategoryItem = ({item}) => (
     <TouchableOpacity onPress={() => handleSubcategoryPress(item)}>
       <View style={styles.subCategoryItem}>
-        <Regular style={styles.subCategoryText}>{item}</Regular>
+        <Regular style={styles.subCategoryText}>{item.name}</Regular>
       </View>
     </TouchableOpacity>
   );
@@ -34,7 +34,7 @@ const AdvertiseAll = () => {
       <View style={styles.content}>
         <FlatList
           data={subcategories}
-          keyExtractor={(item, index) => index.toString()}
+          keyExtractor={item => item.id}
           renderItem={renderSubCategoryItem}
         />
       </View>

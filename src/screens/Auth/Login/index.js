@@ -29,7 +29,6 @@ const LoginScreen = () => {
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false); // State for modal visibility
 
   // const email = 'jmubashir272@gmail.com';
   // const password = 'admin123@'; // Static password for testing
