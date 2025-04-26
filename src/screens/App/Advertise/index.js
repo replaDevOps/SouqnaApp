@@ -1,5 +1,5 @@
-import React from 'react';
-import {FlatList, TouchableOpacity, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {FlatList, Image, TouchableOpacity, View} from 'react-native';
 import styles from './style';
 import MainHeader from '../../../components/Headers/MainHeader';
 import Regular from '../../../typography/RegularText';
@@ -7,29 +7,77 @@ import dummyData from '../../../util/dummyData';
 import {useNavigation} from '@react-navigation/native';
 import {Row} from '../../../components/atoms/row';
 import {ForwardSVG} from '../../../assets/svg';
+import axios from 'axios';
+import {useSelector} from 'react-redux';
+import LocationSvg from '../../../assets/svg/location-svg';
 
+const SERVER_URL = 'https://backend.souqna.net';
 const AdvertiseScreen = () => {
-  const {categories, categoryIcons} = dummyData;
+  // const {categories, categoryIcons} = dummyData;
+  const [categories, setCategories] = useState([]);
+  const {token} = useSelector(state => state.user);
   const navigation = useNavigation();
 
-  const handleCategoryPress = (category, subcategories) => {
-    // If category has subcategories, navigate to subcategory screen
-    if (subcategories) {
-      navigation.navigate('AdvertiseAll', {category, subcategories});
-    } else {
-      // Otherwise, just log or handle it in another way
-      console.log(`Category ${category} clicked`);
+  const fetchCategories = async () => {
+    try {
+      const res = await axios.get(`${SERVER_URL}/api/viewCategories`, {
+        headers: {
+          Authorization: {token},
+        },
+      });
+
+      if (res.data.success) {
+        setCategories(res.data.data);
+      }
+    } catch (error) {
+      console.error('Error fetching categories:', error.message);
+    }
+  };
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  const handleCategoryPress = async (categoryName, categoryId) => {
+    try {
+      const res = await axios.get(
+        `${SERVER_URL}/api/getSubCategory/${categoryId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      if (res.data.success) {
+        const subcategories = res.data.data;
+        navigation.navigate('AdvertiseAll', {
+          category: categoryName,
+          subcategories,
+        });
+      } else {
+        console.warn('No subcategories found');
+      }
+    } catch (error) {
+      console.error('Error fetching subcategories:', error.message);
     }
   };
 
   const renderCategoryItem = ({item}) => {
-    const Icon = categoryIcons[item.name] || LocationSvg;
+    // const Icon = categoryIcons[item.name] || LocationSvg;
+    const imageURL = item.image ? `${SERVER_URL}${item.image}` : null;
     return (
-      <TouchableOpacity
-        onPress={() => handleCategoryPress(item.name, item.subcategories)}>
+      <TouchableOpacity onPress={() => handleCategoryPress(item.name, item.id)}>
         <View style={styles.categoryItem}>
           <View style={styles.IconContainer}>
-            <Icon width={24} height={24} />
+            {imageURL ? (
+              <Image
+                source={{uri: imageURL}}
+                style={{width: 24, height: 24, borderRadius: 4}}
+              />
+            ) : (
+              <LocationSvg width={24} height={24} />
+            )}
           </View>
           <Row style={styles.rowContainer}>
             <Regular style={styles.categoryText}>{item.name}</Regular>

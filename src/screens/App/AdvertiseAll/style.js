@@ -17,10 +17,16 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     marginVertical: mvs(10),
   },
+  // subCategoryItem: {
+  //   padding: mvs(10),
+  //   borderBottomWidth: 1,
+  //   borderBottomColor: colors.grey,
+  // },
   subCategoryItem: {
-    padding: mvs(10),
-    borderBottomWidth: 1,
-    borderBottomColor: colors.grey,
+    padding: 12,
+    marginVertical: 6,
+    borderRadius: 8,
+    backgroundColor: '#f2f2f2',
   },
   subCategoryText: {fontSize: mvs(14)},
 });

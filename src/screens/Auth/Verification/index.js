@@ -21,7 +21,6 @@ import {MyButton} from '../../../components/atoms/InputFields/MyButton';
 import API from '../../../api/apiServices';
 import MainHeader from '../../../components/Headers/MainHeader';
 import {UploadSVG} from '../../../assets/svg';
-import {height} from '../../../util/metrices';
 
 const VerificationScreen = () => {
   const navigation = useNavigation();

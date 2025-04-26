@@ -14,6 +14,7 @@ import {
   removeFavorite,
 } from '../../../redux/slices/favoritesSlice';
 import VerificationModal from '../../../components/Modals/VerificationModal';
+import {fetchCategories} from '../../../api/apiServices';
 
 const {categories, products, recommendedProducts} = dummyData;
 
@@ -28,15 +29,34 @@ const SearchScreen = () => {
     recommendedProducts.slice(0, 6),
   );
   const [isEndOfResults, setIsEndOfResults] = useState(false);
-  const {token} = useSelector(state => state.user);
+  const {token, userData} = useSelector(state => state.user);
   const dispatch = useDispatch();
-
+  const [apiCategories, setApiCategories] = useState([]);
+  const [categoriesLoading, setCategoriesLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
-    // Show the modal when the HomeScreen loads
-    setModalVisible(true);
-  }, []);
+    const loadCategories = async () => {
+      setCategoriesLoading(true);
+      const response = await fetchCategories(token);
+      if (response?.success) {
+        setApiCategories(response.data);
+      }
+      setCategoriesLoading(false);
+    };
+
+    // if (token) {
+    loadCategories();
+    // }
+  }, [token]);
+
+  useEffect(() => {
+    if (userData?.status === 0 || userData?.status === 3) {
+      setModalVisible(true);
+    } else {
+      setModalVisible(false);
+    }
+  }, [userData?.status]);
 
   useEffect(() => {
     if (!isModalVisible) {
@@ -142,7 +162,10 @@ const SearchScreen = () => {
           renderItem={({item}) => {
             switch (item.key) {
               case 'categories':
-                return <CategorySection categories={categories} />;
+                return categoriesLoading ? null : (
+                  <CategorySection categories={apiCategories} />
+                );
+
               case 'gallery':
                 return <GalleryContainer products={products} />;
               case 'recommended':

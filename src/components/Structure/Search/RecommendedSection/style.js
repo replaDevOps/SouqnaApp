@@ -5,6 +5,7 @@ import {colors} from '../../../../util/color';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    // backgroundColor: colors.white,
   },
   content: {
     alignItems: 'center',
@@ -17,12 +18,15 @@ const styles = StyleSheet.create({
     marginTop: mvs(10),
     paddingHorizontal: mvs(10),
     paddingVertical: mvs(10),
-    backgroundColor: colors.white,
+    // backgroundColor: colors.white,
   },
   recommendedItem: {
     flex: 1, // Allow each item to take equal space
     marginBottom: mvs(10),
     padding: mvs(8),
+    marginHorizontal: 5,
+    backgroundColor: colors.white,
+    borderRadius: 10,
   },
   recommendedImage: {
     width: '100%',
