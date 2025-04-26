@@ -1,6 +1,6 @@
-import {StyleSheet} from 'react-native';
-import {mvs} from '../../../../util/metrices';
-import {colors} from '../../../../util/color';
+import { StyleSheet } from 'react-native';
+import { mvs } from '../../../../util/metrices';
+import { colors } from '../../../../util/color';
 
 const styles = StyleSheet.create({
   container: {
@@ -8,9 +8,9 @@ const styles = StyleSheet.create({
     // backgroundColor: colors.white,
   },
   content: {
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    flex: 1,
   },
 
   // Recommended Section Styles
@@ -22,48 +22,61 @@ const styles = StyleSheet.create({
   },
   recommendedItem: {
     flex: 1, // Allow each item to take equal space
-    marginBottom: mvs(10),
-    padding: mvs(8),
-    marginHorizontal: 5,
+    marginHorizontal: mvs(8),
+    marginBottom: mvs(13),
     backgroundColor: colors.white,
-    borderRadius: 10,
+    borderRadius: mvs(10),
+    // padding: mvs(4),
   },
   recommendedImage: {
     width: '100%',
-    height: mvs(120),
-    borderRadius: mvs(8),
+    height: mvs(130),
     resizeMode: 'cover',
-    marginBottom: mvs(8),
+    borderTopLeftRadius: mvs(10),
+    borderTopRightRadius: mvs(10),
+    // marginBottom: mvs(8),
+  },
+  recommendedLocationContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical:mvs(4)
   },
   recommendedTextContainer: {
-    paddingHorizontal: mvs(5),
+    flexDirection: 'column',
+    elevation: 3,
+    paddingVertical: mvs(6),
+    paddingHorizontal: mvs(6),
   },
   recommendedLocation: {
-    fontSize: mvs(10),
+    fontSize: mvs(12),
     color: colors.grey,
-    marginBottom: mvs(2),
+    marginLeft: mvs(2),
+    flexWrap: 'wrap',
   },
   recommendedTitle: {
-    fontSize: mvs(12),
-    color: colors.black,
-    marginBottom: mvs(2),
-  },
-  recommendedPrice: {
-    fontSize: mvs(10),
-    color: colors.green,
+    fontSize: mvs(15),
     fontWeight: 'bold',
   },
+  recommendedPrice: {
+    fontSize: mvs(15),
+    fontWeight: '400',
+    color: colors.green,
+    paddingTop: mvs(4),
+  },
+
   // Heart Icon Styles
   heartIconContainer: {
     position: 'absolute',
-    top: 14,
-    right: 14,
+    top: 7,
+    right: 7,
     backgroundColor: 'rgba(255, 255, 255, 0.5)',
     borderRadius: mvs(20),
     padding: mvs(5),
   },
+
   endOfResultsText: {
     textAlign: 'center',
   },
 });
+
 export default styles;

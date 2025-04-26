@@ -51,3 +51,4 @@ export {default as TruckSvg} from './trucksvg';
 export {default as RemoveSvg} from './removeSvg';
 export {default as DateSvg} from './dateSvg';
 export {default as DatRenewSvgeSvg} from './renewSvg';
+export {default as MarkerSVG} from './MarkerSVG';
