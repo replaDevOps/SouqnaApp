@@ -53,6 +53,7 @@ const AdvertiseScreen = () => {
         const subcategories = res.data.data;
         navigation.navigate('AdvertiseAll', {
           category: categoryName,
+          categoryId: categoryId,
           subcategories,
         });
       } else {

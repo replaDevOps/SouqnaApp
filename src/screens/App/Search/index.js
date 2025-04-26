@@ -15,6 +15,7 @@ import {
 } from '../../../redux/slices/favoritesSlice';
 import VerificationModal from '../../../components/Modals/VerificationModal';
 import {fetchCategories} from '../../../api/apiServices';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const {categories, products, recommendedProducts} = dummyData;
 
@@ -94,7 +95,7 @@ const SearchScreen = () => {
 
       setLoading(false);
     }, 1500);
-  }, [loading, allRecommendedProducts, recommendedProducts, isEndOfResults]);
+  }, [loading, allRecommendedProducts, isEndOfResults]);
 
   const handleHeartPress = id => {
     setLikedItems(prevState => ({
@@ -126,7 +127,7 @@ const SearchScreen = () => {
 
   const onClose = () => {
     setIsModalVisible(false);
-    setSelectedProduct(null); // Reset selected product
+    setSelectedProduct(null);
   };
 
   const onFocusSearch = () => {

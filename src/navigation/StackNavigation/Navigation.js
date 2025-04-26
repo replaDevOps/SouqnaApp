@@ -18,6 +18,7 @@ import ChangePassword from '../../screens/App/ChangePassword';
 import AdvertiseAll from '../../screens/App/AdvertiseAll';
 import Notification from '../../screens/App/Notification';
 import VerificationPage from '../../screens/Auth/Verification';
+import CreateProduct from '../../screens/App/Product/CreateProduct';
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {
@@ -46,6 +47,7 @@ const AppNavigator = () => {
         <Stack.Screen name="ChangePassword" component={ChangePassword} />
         <Stack.Screen name="Notification" component={Notification} />
         <Stack.Screen name="Verification" component={VerificationPage} />
+        <Stack.Screen name="CreateProduct" component={CreateProduct} />
       </Stack.Navigator>
     </View>
   );

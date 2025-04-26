@@ -7,11 +7,16 @@ import CategoryHeader from '../../../components/Headers/CategoryHeader';
 
 const AdvertiseAll = () => {
   const route = useRoute();
-  const {category, subcategories} = route.params;
+  const {category, subcategories, categoryId} = route.params;
   const navigation = useNavigation();
 
   const handleSubcategoryPress = subcategory => {
     console.log(`Advertise ${subcategory.name} clicked`);
+    navigation.navigate('CreateProduct', {
+      categoryId: categoryId,
+      id: subcategory.id,
+      name: subcategory.name,
+    });
   };
 
   const handleBack = () => {
