@@ -6,16 +6,14 @@ import {
   Platform,
   Alert,
   ActivityIndicator,
-  TouchableOpacity,
-  Modal,
 } from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
 import Regular from '../../../typography/RegularText';
 import styles from './styles';
 import {MyButton} from '../../../components/atoms/InputFields/MyButton';
 import {setUser} from '../../../redux/slices/userSlice';
-import {EYESVG, SouqnaLogo, VerifySVG} from '../../../assets/svg';
+import {EYESVG, SouqnaLogo} from '../../../assets/svg';
 import PrimaryPasswordInput from '../../../components/atoms/InputFields/PrimaryPasswordInput';
 import Bold from '../../../typography/BoldText';
 import Header from '../../../components/Headers/Header';
@@ -56,18 +54,26 @@ const LoginScreen = () => {
       const res = await loginUser(email, password);
 
       if (res.success) {
+        const user = res.user;
+
         dispatch(
           setUser({
-            token: res.user.token,
-            refreshToken: res.user.refreshToken,
-            tokenExpire: res.user.tokenExpire,
-            id: res.user.id,
-            name: res.user.name,
-            email: res.user.email,
+            token: user.token,
+            refreshToken: user.refreshToken,
+            tokenExpire: user.tokenExpire,
+            id: user.id,
+            name: user.name,
+            email: user.email,
           }),
         );
 
-        console.log('Login successful:', res.user);
+        console.log('Login successful:', user);
+
+        // 🔽 Example: Fetch categories, products, or user details
+        // await fetchCategories();
+        // await fetchProducts();
+        // await syncUserDataToRealm(user.token); // pass token if needed
+
         navigation.replace('Home');
       } else {
         showErrorMessage();

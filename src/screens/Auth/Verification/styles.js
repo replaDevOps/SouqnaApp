@@ -98,70 +98,86 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
   },
-  // previewContainer: {
-  //   position: 'relative',
-  // },
-  // previewImage: {
-  //   width: 100,
-  //   height: 100,
-  //   marginVertical: 10,
-  //   borderRadius: 10,
-  // },
-  // removeButton: {
-  //   position: 'relative',
-  //   top: 5,
-  //   right: 5,
-  //   alignItems: 'center',
-  //   backgroundColor: 'rgba(255, 0, 0, 0.6)',
-  //   padding: 5,
-  //   borderRadius: 15,
-  // },
-  // removeText: {
-  //   color: 'white',
-  //   fontWeight: 'bold',
-  //   fontSize: 14,
-  // },
   label: {
     fontWeight: 'bold',
   },
-  // uploadText: {
-  //   color: '#333',
-  // },
   imagePickerContainer: {
     marginVertical: 10,
     flexDirection: 'row', // Align items horizontally (side by side)
     justifyContent: 'space-between', // Ensure space between the boxes
     alignItems: 'center',
   },
+  // uploadBox: {
+  //   flex: 0.48, // Allow the boxes to take up equal space
+  //   margin: 10,
+  //   padding: 10,
+  //   borderWidth: 1,
+  //   borderColor: '#ccc',
+  //   borderRadius: 10,
+  //   alignItems: 'center',
+  //   justifyContent: 'center',
+  // },
+
+  uploadRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 20,
+  },
+  selfieContainer: {
+    marginVertical: 20,
+    alignItems: 'center',
+  },
   uploadBox: {
-    flex: 0.48, // Allow the boxes to take up equal space
-    margin: 10,
-    padding: 10,
+    width: '48%',
+    height: 150,
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: '#f9f9f9',
+    overflow: 'hidden',
+    position: 'relative',
   },
 
-  // Style for the label inside the upload box
-  uploadLabel: {
-    fontSize: 16,
-    marginBottom: 10,
-    textAlign: 'center',
-  },
-  // Style for the button inside the upload box
-  uploadButton: {
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    backgroundColor: colors.green,
-    borderRadius: 5,
+  imagePickerTouch: {
+    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
   },
-  uploadText: {
-    color: 'white',
-    fontSize: 14,
+  uploadLabelContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5, // If using RN 0.71+, otherwise use marginRight
   },
+
+  uploadIcon: {
+    marginRight: 5,
+  },
+  uploadLabel: {
+    textAlign: 'center',
+    color: '#888',
+  },
+
+  imagePreview: {
+    width: '100%',
+    height: '100%',
+  },
+
+  removeIcon: {
+    position: 'absolute',
+    top: 5,
+    right: 5,
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    borderRadius: 12,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    zIndex: 1,
+  },
+
+  removeIconText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+
   // Container for each image preview
   previewContainer: {
     marginTop: 10,
