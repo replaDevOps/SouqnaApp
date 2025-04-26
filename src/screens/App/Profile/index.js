@@ -1,17 +1,20 @@
 import React from 'react';
-import {View, SafeAreaView, TouchableOpacity, Text, ScrollView} from 'react-native';
-import {useDispatch} from 'react-redux';
+import { View, SafeAreaView, TouchableOpacity, Text, ScrollView } from 'react-native';
+import { useDispatch } from 'react-redux';
 import styles from './styles';
-import {logoutUser, resetUser} from '../../../redux/slices/userSlice';
-import {useNavigation} from '@react-navigation/native';
-import {MyButton} from '../../../components/atoms/InputFields/MyButton';
-import {SouqnaLogo} from '../../../assets/svg';
+import { logoutUser, resetUser } from '../../../redux/slices/userSlice';
+import { useNavigation } from '@react-navigation/native';
+import { MyButton } from '../../../components/atoms/InputFields/MyButton';
+import { SouqnaLogo } from '../../../assets/svg';
 import Regular from '../../../typography/RegularText';
-import MainHeader from '../../../components/Headers/MainHeader';
+import MainHeader from '../../../components/Headers/MainHeader';// Import the new component
+import VerificationStatus from '../../../components/Structure/VerificationStatus';
 
 const Profile = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
+  
+  const verificationStatus = 0;
 
   const handleLogout = () => {
     dispatch(logoutUser());
@@ -19,19 +22,21 @@ const Profile = () => {
   };
 
   const handleChangePassword = () => {
-    navigation.navigate('ChangePassword'); // Navigate to ChangePassword screen
+    navigation.navigate('ChangePassword');
   };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <MainHeader
-        title="My Account"
-        // No showCloseIcon prop passed, so it will be hidden by default
-      />
+      <MainHeader title="My Account" />
+      
       <View style={styles.logoContainer}>
         <SouqnaLogo width={50} height={50} />
         <Regular style={styles.regularText1}>Souqna</Regular>
       </View>
+
+      {/* VerificationStatus component */}
+      <VerificationStatus status={verificationStatus} />
+
       <View style={styles.content}>
         <Regular style={styles.regularText}>Profile</Regular>
         <View style={styles.menuContainer}>
