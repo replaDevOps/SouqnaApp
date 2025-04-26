@@ -5,6 +5,9 @@ import {
   ToastAndroid,
   Platform,
   Alert,
+  ActivityIndicator,
+  TouchableOpacity,
+  Modal,
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
@@ -12,11 +15,12 @@ import Regular from '../../../typography/RegularText';
 import styles from './styles';
 import {MyButton} from '../../../components/atoms/InputFields/MyButton';
 import {setUser} from '../../../redux/slices/userSlice';
-import {EYESVG, SouqnaLogo} from '../../../assets/svg';
+import {EYESVG, SouqnaLogo, VerifySVG} from '../../../assets/svg';
 import PrimaryPasswordInput from '../../../components/atoms/InputFields/PrimaryPasswordInput';
 import Bold from '../../../typography/BoldText';
 import Header from '../../../components/Headers/Header';
 import {loginUser} from '../../../api/authServices';
+import {colors} from '../../../util/color';
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
@@ -26,6 +30,11 @@ const LoginScreen = () => {
   const navigation = useNavigation();
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false); // State for modal visibility
+
+  // const email = 'jmubashir272@gmail.com';
+  // const password = 'admin123@'; // Static password for testing
 
   const handleLogin = async () => {
     if (!isEmailValid(email)) {
@@ -43,6 +52,7 @@ const LoginScreen = () => {
     }
 
     try {
+      setLoading(true);
       const res = await loginUser(email, password);
 
       if (res.success) {
@@ -58,13 +68,15 @@ const LoginScreen = () => {
         );
 
         console.log('Login successful:', res.user);
-        navigation.navigate('Verification');
+        navigation.replace('Home');
       } else {
         showErrorMessage();
       }
     } catch (error) {
       console.log('Login error:', error);
       showErrorMessage();
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -131,12 +143,17 @@ const LoginScreen = () => {
           error={passwordError}
         />
       </View>
-
       <View style={styles.buttonContainer}>
         <MyButton
-          title="Login"
+          title={
+            loading ? (
+              <ActivityIndicator size="large" color={colors.green} />
+            ) : (
+              'Login'
+            )
+          }
           onPress={handleLogin}
-          disabled={!isFormValid} // Disable button if form is not valid
+          disabled={loading || !isFormValid}
         />
         <Regular style={styles.registerText}>
           Don’t have an account?{' '}

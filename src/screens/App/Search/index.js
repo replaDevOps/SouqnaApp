@@ -13,6 +13,7 @@ import {
   addFavorite,
   removeFavorite,
 } from '../../../redux/slices/favoritesSlice';
+import VerificationModal from '../../../components/Modals/VerificationModal';
 
 const {categories, products, recommendedProducts} = dummyData;
 
@@ -30,12 +31,29 @@ const SearchScreen = () => {
   const {token} = useSelector(state => state.user);
   const dispatch = useDispatch();
 
+  const [modalVisible, setModalVisible] = useState(false);
+
+  useEffect(() => {
+    // Show the modal when the HomeScreen loads
+    setModalVisible(true);
+  }, []);
+
   useEffect(() => {
     if (!isModalVisible) {
-      // Reset the liked items when closing the modal and returning to search
       setLikedItems({});
     }
   }, [isModalVisible]);
+
+  const handleVerifyProfile = () => {
+    // Logic to handle profile verification
+    setModalVisible(false);
+    // Navigate to the Verification screen
+    navigation.replace('Verification');
+  };
+
+  const handleSkipVerification = () => {
+    setModalVisible(false);
+  };
 
   // Simulate an API call to fetch more data
   const loadMoreRecommendedProducts = useCallback(async () => {
@@ -147,6 +165,12 @@ const SearchScreen = () => {
       )}
 
       {isModalVisible && <AddModal onClose={onClose} />}
+      <VerificationModal
+        visible={modalVisible}
+        onVerify={handleVerifyProfile}
+        onSkip={handleSkipVerification}
+        onClose={() => setModalVisible(false)}
+      />
     </View>
   );
 };
