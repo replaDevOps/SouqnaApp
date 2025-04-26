@@ -30,8 +30,9 @@ const VerificationStatus = () => {
           dispatch(setVerificationStatus(status));
         }
         if (response.data.success) {
-          const apiStatus = response.data.data.status;
+          const apiStatus = response.data.data.status || response.data.data;
           setStatus(apiStatus);
+          console.log('api Status: ', apiStatus);
         }
       } catch (error) {
         console.error('Verification API error:', error);
@@ -92,7 +93,7 @@ const VerificationStatus = () => {
     return (
       <View style={styles.unverifiedContainer}>
         <View style={styles.redDot} />
-        <Text style={styles.unverifiedText}>Pending</Text>
+        <Text style={styles.unverifiedText}>Unverified</Text>
       </View>
     );
   }
@@ -101,7 +102,7 @@ const VerificationStatus = () => {
   return (
     <View style={styles.progressContainer}>
       <View style={styles.labelsContainer}>
-        <Text style={styles.labelVerified}>Pending</Text>
+        <Text style={styles.labelVerified}>Unverified</Text>
         <Text style={styles.labelInProgress}>In Progress</Text>
         <Text style={styles.labelVerified}>Verified</Text>
       </View>

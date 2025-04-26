@@ -1,19 +1,25 @@
 import React from 'react';
-import { View, SafeAreaView, TouchableOpacity, Text, ScrollView } from 'react-native';
-import { useDispatch } from 'react-redux';
+import {
+  View,
+  SafeAreaView,
+  TouchableOpacity,
+  Text,
+  ScrollView,
+} from 'react-native';
+import {useDispatch} from 'react-redux';
 import styles from './styles';
-import { logoutUser, resetUser } from '../../../redux/slices/userSlice';
-import { useNavigation } from '@react-navigation/native';
-import { MyButton } from '../../../components/atoms/InputFields/MyButton';
-import { SouqnaLogo } from '../../../assets/svg';
+import {logoutUser, resetUser} from '../../../redux/slices/userSlice';
+import {useNavigation} from '@react-navigation/native';
+import {MyButton} from '../../../components/atoms/InputFields/MyButton';
+import {SouqnaLogo} from '../../../assets/svg';
 import Regular from '../../../typography/RegularText';
-import MainHeader from '../../../components/Headers/MainHeader';// Import the new component
+import MainHeader from '../../../components/Headers/MainHeader'; // Import the new component
 import VerificationStatus from '../../../components/Structure/VerificationStatus';
 
 const Profile = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  
+
   const verificationStatus = 0;
 
   const handleLogout = () => {
@@ -28,7 +34,7 @@ const Profile = () => {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <MainHeader title="My Account" />
-      
+
       <View style={styles.logoContainer}>
         <SouqnaLogo width={50} height={50} />
         <Regular style={styles.regularText1}>Souqna</Regular>
@@ -44,7 +50,11 @@ const Profile = () => {
             <Regular style={styles.menuText}>My Account</Regular>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.menuItem}>
+          <TouchableOpacity
+            style={styles.menuItem}
+            onPress={() => {
+              navigation.navigate('Verification');
+            }}>
             <Text style={styles.menuText}>Update Profile</Text>
           </TouchableOpacity>
 

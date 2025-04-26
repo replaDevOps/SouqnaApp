@@ -7,13 +7,14 @@ import {
   Image,
   ActivityIndicator,
   Text,
+  StatusBar,
 } from 'react-native';
 import styles from './style';
 import Regular from '../../../../typography/RegularText';
 import {HeartSvg, MarkerSVG} from '../../../../assets/svg';
 import Bold from '../../../../typography/BoldText';
-import { mvs } from '../../../../util/metrices';
-import { colors } from '../../../../util/color';
+import {mvs} from '../../../../util/metrices';
+import {colors} from '../../../../util/color';
 // import Icon from 'react-native-vector-icons/FontAwesome5'
 
 const RecommendedSection = ({
@@ -31,13 +32,12 @@ const RecommendedSection = ({
       onPress={() => navigateToProductDetails(item)}>
       <Image source={item.imageUrl} style={styles.recommendedImage} />
       <View style={styles.recommendedTextContainer}>
-      <Regular style={styles.recommendedTitle}>{item.title}</Regular>
-          <Regular style={styles.recommendedPrice}>${item.price} - USD</Regular>
-          <View style={styles.recommendedLocationContainer}>
-          <MarkerSVG width={13} height={20} fill={colors.grey}/>
+        <Regular style={styles.recommendedTitle}>{item.title}</Regular>
+        <Regular style={styles.recommendedPrice}>${item.price} - USD</Regular>
+        <View style={styles.recommendedLocationContainer}>
+          <MarkerSVG width={13} height={20} fill={colors.grey} />
           <Regular style={styles.recommendedLocation}>{item.location}</Regular>
-          </View>
-       
+        </View>
       </View>
       <TouchableOpacity
         onPress={() => handleHeartClick(item.id, item)}
