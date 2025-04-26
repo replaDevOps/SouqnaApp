@@ -4,6 +4,7 @@ const API = axios.create({
   baseURL: 'https://backend.souqna.net/api/',
   timeout: 10000,
 });
+export const BASE_URL = 'https://backend.souqna.net/';
 
 export const fetchCategories = async token => {
   try {
@@ -15,6 +16,20 @@ export const fetchCategories = async token => {
     return response.data;
   } catch (error) {
     console.error('Error fetching categories:', error);
+    return null;
+  }
+};
+
+export const fetchProducts = async token => {
+  try {
+    const response = await API.get('viewProducts', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching products:', error);
     return null;
   }
 };
