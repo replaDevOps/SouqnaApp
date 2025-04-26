@@ -20,6 +20,8 @@ import Regular from '../../../typography/RegularText';
 import {MyButton} from '../../../components/atoms/InputFields/MyButton';
 import API from '../../../api/apiServices';
 import MainHeader from '../../../components/Headers/MainHeader';
+import {UploadSVG} from '../../../assets/svg';
+import {height} from '../../../util/metrices';
 
 const VerificationScreen = () => {
   const navigation = useNavigation();
@@ -187,31 +189,72 @@ const VerificationScreen = () => {
           </View>
         ))}
 
-        {[
-          {label: 'Front of ID', state: idFrontSide, setter: setIdFrontSide},
-          {label: 'Back of ID', state: idBackSide, setter: setIdBackSide},
-          {label: 'Selfie', state: selfie, setter: setSelfie},
-        ].map(({label, state, setter}) => (
-          <View key={label} style={styles.imagePickerContainer}>
-            <Text style={styles.label}>{label}</Text>
+        <View style={styles.uploadRow}>
+          {[
+            {label: 'Front of ID', state: idFrontSide, setter: setIdFrontSide},
+            {label: 'Back of ID', state: idBackSide, setter: setIdBackSide},
+          ].map(({label, state, setter}) => (
+            <View key={label} style={styles.uploadBox}>
+              <TouchableOpacity
+                style={styles.imagePickerTouch}
+                onPress={() => pickImage(setter)}>
+                {state ? (
+                  <Image
+                    source={{uri: state.uri}}
+                    style={styles.imagePreview}
+                    resizeMode="cover"
+                  />
+                ) : (
+                  <View style={styles.uploadLabelContainer}>
+                    <UploadSVG
+                      width={16}
+                      height={16}
+                      style={styles.uploadIcon}
+                    />
+                    <Text style={styles.uploadLabel}>Upload {label}</Text>
+                  </View>
+                )}
+              </TouchableOpacity>
+
+              {state && (
+                <TouchableOpacity
+                  onPress={() => setter(null)}
+                  style={styles.removeIcon}>
+                  <Text style={styles.removeIconText}>✕</Text>
+                </TouchableOpacity>
+              )}
+            </View>
+          ))}
+        </View>
+
+        <View style={styles.selfieContainer}>
+          <View style={styles.uploadBox}>
             <TouchableOpacity
-              onPress={() => pickImage(setter)}
-              style={styles.uploadButton}>
-              <Text style={styles.uploadText}>Upload {label}</Text>
+              style={styles.imagePickerTouch}
+              onPress={() => pickImage(setSelfie)}>
+              {selfie ? (
+                <Image
+                  source={{uri: selfie.uri}}
+                  style={styles.imagePreview}
+                  resizeMode="cover"
+                />
+              ) : (
+                <View style={styles.uploadLabelContainer}>
+                  <UploadSVG width={16} height={16} style={styles.uploadIcon} />
+                  <Text style={styles.uploadLabel}>Upload Selfie</Text>
+                </View>
+              )}
             </TouchableOpacity>
 
-            {state && (
-              <View style={styles.previewContainer}>
-                <Image source={{uri: state.uri}} style={styles.previewImage} />
-                <TouchableOpacity
-                  onPress={() => setter(null)} // Removes the image when pressed
-                  style={styles.removeButton}>
-                  <Text style={styles.removeText}>Remove</Text>
-                </TouchableOpacity>
-              </View>
+            {selfie && (
+              <TouchableOpacity
+                onPress={() => setSelfie(null)}
+                style={styles.removeIcon}>
+                <Text style={styles.removeIconText}>✕</Text>
+              </TouchableOpacity>
             )}
           </View>
-        ))}
+        </View>
 
         <TouchableOpacity
           onPress={() => {
