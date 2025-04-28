@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {FlatList, View} from 'react-native';
+import {FlatList,  StatusBar,  View} from 'react-native';
 import SearchHeader from '../../../components/Headers/SearchHeader';
 import dummyData from '../../../util/dummyData';
 import styles from './style';
@@ -15,6 +15,7 @@ import {
 } from '../../../redux/slices/favoritesSlice';
 import VerificationModal from '../../../components/Modals/VerificationModal';
 import {fetchCategories, fetchProducts} from '../../../api/apiServices';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const {categories, products, recommendedProducts} = dummyData;
 
@@ -162,7 +163,8 @@ const SearchScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="dark-content" translucent backgroundColor="#fff" />
       <SearchHeader
         onFocusSearch={onFocusSearch}
         isSearchMode={isSearchMode}
@@ -210,7 +212,7 @@ const SearchScreen = () => {
         onSkip={handleSkipVerification}
         onClose={() => setModalVisible(false)}
       />
-    </View>
+    </SafeAreaView>
   );
 };
 

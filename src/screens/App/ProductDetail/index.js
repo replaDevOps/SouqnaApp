@@ -16,6 +16,7 @@ import {
   addFavorite,
   removeFavorite,
 } from '../../../redux/slices/favoritesSlice';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const {width, height} = Dimensions.get('window');
 
@@ -77,7 +78,7 @@ const ProductDetail = () => {
     }
   };
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <ProductHeader
         title={item.title}
         filled={likedItems[item.id]}
@@ -129,7 +130,7 @@ const ProductDetail = () => {
         onBuyPress={handleBuyPress}
       />
       {isModalVisible && <AddModal onClose={onClose} />}
-    </View>
+    </SafeAreaView>
   );
 };
 

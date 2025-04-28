@@ -11,16 +11,21 @@ import {
   Image,
   Button,
   Modal,
+  StatusBar,
 } from 'react-native';
 import {launchImageLibrary} from 'react-native-image-picker';
 import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
+import DatePicker from 'react-native-date-picker';
 import styles from './styles';
 import Regular from '../../../typography/RegularText';
 import {MyButton} from '../../../components/atoms/InputFields/MyButton';
 import API from '../../../api/apiServices';
 import MainHeader from '../../../components/Headers/MainHeader';
-import {UploadSVG} from '../../../assets/svg';
+import {UploadSVG, CalendarSVG, CalendersSVG} from '../../../assets/svg';
+import { colors } from '../../../util/color';
+import { mvs } from '../../../util/metrices';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const VerificationScreen = () => {
   const navigation = useNavigation();
@@ -44,9 +49,43 @@ const VerificationScreen = () => {
   const [selfie, setSelfie] = useState(null);
 
   const [modalVisible, setModalVisible] = useState(false);
+  
+  // States for date pickers
+  const [openDob, setOpenDob] = useState(false);
+  const [openIssueDate, setOpenIssueDate] = useState(false);
+  const [openExpDate, setOpenExpDate] = useState(false);
 
   const handleInputChange = (key, value) => {
     setFormData({...formData, [key]: value});
+  };
+
+  // Format date to YYYY-MM-DD
+  const formatDate = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  // Handle date selection for DOB
+  const handleDobChange = (date) => {
+    setOpenDob(false);
+    const formattedDate = formatDate(date);
+    setFormData({...formData, dob: formattedDate});
+  };
+
+  // Handle date selection for Issue Date
+  const handleIssueDateChange = (date) => {
+    setOpenIssueDate(false);
+    const formattedDate = formatDate(date);
+    setFormData({...formData, issueDate: formattedDate});
+  };
+
+  // Handle date selection for Expiry Date
+  const handleExpDateChange = (date) => {
+    setOpenExpDate(false);
+    const formattedDate = formatDate(date);
+    setFormData({...formData, expDate: formattedDate});
   };
 
   const pickImage = async setter => {
@@ -147,46 +186,132 @@ const VerificationScreen = () => {
     }
   };
 
+  // Convert string dates to Date objects for pickers
+  const parseDateString = (dateString) => {
+    if (!dateString) return new Date();
+    const [year, month, day] = dateString.split('-').map(Number);
+    return new Date(year, month - 1, day);
+  };
+
+  // Calculate maximum date for DOB (today)
+  const maxDobDate = new Date();
+  
+  // Calculate minimum date for Issue Date (can be in the past)
+  const minIssueDate = new Date();
+  minIssueDate.setFullYear(minIssueDate.getFullYear() - 20); // Allow up to 20 years in the past for issue date
+  
+  // Calculate minimum date for Expiry Date (today)
+  const minExpDate = new Date();
+
+  const renderDateInput = (key, label, placeholder, openState, setOpenState, onConfirm, maxDate, minDate) => (
+    <View key={key} style={styles.inputContainer}>
+      <Text style={styles.label}>{label}</Text>
+      <TouchableOpacity 
+        style={styles.dateInput}
+        onPress={() => setOpenState(true)}
+      >
+        <Text style={formData[key] ? styles.dateText : styles.datePlaceholder}>
+          {formData[key] || placeholder}
+        </Text>
+        <View style={styles.calendarIcon}>
+          <CalendersSVG height={22} width={22} fill={colors.gray}/>
+        </View>
+      </TouchableOpacity>
+      <DatePicker
+        modal
+        open={openState}
+        date={parseDateString(formData[key])}
+        mode="date"
+        theme='light'
+        dividerColor={colors.lightgreen}
+        maximumDate={maxDate}
+        minimumDate={minDate}
+        onConfirm={onConfirm}
+        onCancel={() => setOpenState(false)}
+      />
+    </View>
+  );
+
   return (
+    <SafeAreaView>
+
     <ScrollView>
+      <StatusBar barStyle="light-content" translucent backgroundColor="#fff" />
+      
       <MainHeader title={'Verification'} />
       <View style={styles.container}>
-        {/* <View style={styles.headerContainer}>
+        {/* Full Name input (first field) */}
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>Full Name</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Enter Full Name"
+            value={formData.fullName}
+            onChangeText={text => handleInputChange('fullName', text)}
+          />
+        </View>
 
-      </View> */}
+        {/* Date of Birth input (second field) */}
+        {renderDateInput(
+          'dob',
+          'Date of Birth',
+          'Enter Date of Birth (YYYY-MM-DD)',
+          openDob,
+          setOpenDob,
+          handleDobChange,
+          maxDobDate, // Maximum date is today (users can't be born in the future)
+          null // No minimum date for DOB
+        )}
 
-        {[
-          {key: 'fullName', label: 'Full Name', placeholder: 'Enter Full Name'},
-          {
-            key: 'dob',
-            label: 'Date of Birth',
-            placeholder: 'Enter Date of Birth (YYYY-MM-DD)',
-          },
-          {key: 'gender', label: 'Gender', placeholder: 'Enter Gender'},
-          {key: 'country', label: 'Country', placeholder: 'Enter Country'},
-          {key: 'address', label: 'Address', placeholder: 'Enter Address'},
-          {key: 'idNumber', label: 'ID Number', placeholder: 'Enter ID Number'},
-          {
-            key: 'issueDate',
-            label: 'Issue Date',
-            placeholder: 'Enter Issue Date (YYYY-MM-DD)',
-          },
-          {
-            key: 'expDate',
-            label: 'Expiry Date',
-            placeholder: 'Enter Expiry Date (YYYY-MM-DD)',
-          },
-        ].map(({key, label, placeholder}) => (
-          <View key={key} style={styles.inputContainer}>
-            <Text style={styles.label}>{label}</Text>
-            <TextInput
-              style={styles.input}
-              placeholder={placeholder}
-              value={formData[key]}
-              onChangeText={text => handleInputChange(key, text)}
-            />
-          </View>
-        ))}
+        {/* Remaining text inputs in the specified order */}
+        {['gender', 'country', 'address', 'idNumber'].map(key => {
+          const labelMap = {
+            gender: 'Gender',
+            country: 'Country',
+            address: 'Address',
+            idNumber: 'ID Number',
+          };
+          const placeholderMap = {
+            gender: 'Enter Gender',
+            country: 'Enter Country',
+            address: 'Enter Address',
+            idNumber: 'Enter ID Number',
+          };
+          return (
+            <View key={key} style={styles.inputContainer}>
+              <Text style={styles.label}>{labelMap[key]}</Text>
+              <TextInput
+                style={styles.input}
+                placeholder={placeholderMap[key]}
+                value={formData[key]}
+                onChangeText={text => handleInputChange(key, text)}
+              />
+            </View>
+          );
+        })}
+
+        {/* Remaining date inputs */}
+        {renderDateInput(
+          'issueDate',
+          'Issue Date',
+          'Enter Issue Date (YYYY-MM-DD)',
+          openIssueDate,
+          setOpenIssueDate,
+          handleIssueDateChange,
+          null, // No maximum date for issue date
+          minIssueDate // Minimum date is 20 years ago
+        )}
+
+        {renderDateInput(
+          'expDate',
+          'Expiry Date',
+          'Enter Expiry Date (YYYY-MM-DD)',
+          openExpDate,
+          setOpenExpDate,
+          handleExpDateChange,
+          null, // No maximum date for expiry date
+          minExpDate // Minimum date is today (can't expire in the past)
+        )}
 
         <View style={styles.uploadRow}>
           {[
@@ -292,7 +417,11 @@ const VerificationScreen = () => {
         </View>
       </Modal>
     </ScrollView>
+     </SafeAreaView>
+    
   );
 };
+
+
 
 export default VerificationScreen;

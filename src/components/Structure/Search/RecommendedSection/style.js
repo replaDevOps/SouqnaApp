@@ -18,6 +18,7 @@ const styles = StyleSheet.create({
     marginTop: mvs(10),
     paddingHorizontal: mvs(10),
     paddingVertical: mvs(10),
+    overflow:'visible'
     // backgroundColor: colors.white,
   },
   recommendedItem: {
