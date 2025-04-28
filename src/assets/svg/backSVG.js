@@ -2,8 +2,8 @@ import * as React from 'react';
 import Svg, {Path} from 'react-native-svg';
 const BackSVG = props => (
   <Svg
-    width="800px"
-    height="800px"
+    width="24px"
+    height="24px"
     viewBox="0 0 1024 1024"
     className="icon"
     xmlns="http://www.w3.org/2000/svg"

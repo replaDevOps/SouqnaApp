@@ -98,7 +98,6 @@ const VerificationStatus = () => {
     );
   }
 
-  // status === 1 (In Progress)
   return (
     <View style={styles.progressContainer}>
       <View style={styles.labelsContainer}>

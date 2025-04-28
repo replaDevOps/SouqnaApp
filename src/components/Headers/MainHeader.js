@@ -1,23 +1,37 @@
 import React, {useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
-import {CloseSvg} from '../../assets/svg'; // Assuming CloseSvg is an SVG component
+import {BackSVG, CloseSvg} from '../../assets/svg'; // Assuming CloseSvg is an SVG component
 import {colors} from '../../util/color';
 import {mvs} from '../../util/metrices';
+import {useNavigation} from '@react-navigation/native';
 
-const MainHeader = ({title, showCloseIcon = false, onClose}) => {
-  const [isCloseVisible, setIsCloseVisible] = useState(showCloseIcon);
+const MainHeader = ({
+  title,
+  showCloseIcon = false,
+  showBackIcon = false,
+  onClose,
+}) => {
+  const navigation = useNavigation();
 
   const handleClose = () => {
     if (onClose) {
       onClose();
     }
-    setIsCloseVisible(false);
+  };
+
+  const handleBack = () => {
+    navigation.goBack();
   };
 
   return (
     <View style={styles.header}>
+      {showBackIcon && (
+        <TouchableOpacity onPress={handleBack} style={styles.closeButton}>
+          <BackSVG />
+        </TouchableOpacity>
+      )}
       <Text style={styles.title}>{title}</Text>
-      {isCloseVisible && (
+      {showCloseIcon && (
         <TouchableOpacity onPress={handleClose} style={styles.closeButton}>
           <CloseSvg color={colors.green} />
         </TouchableOpacity>
