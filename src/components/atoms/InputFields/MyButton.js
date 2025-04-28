@@ -2,7 +2,7 @@ import React from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import {colors} from '../../../util/color';
 import {mvs} from '../../../util/metrices';
-const MyButton = ({onPress, title, disabled, icon, widt, color}) => {
+const MyButton = ({onPress, title, disabled, icon, widt, color, children}) => {
   return (
     <TouchableOpacity
       style={[
@@ -11,7 +11,7 @@ const MyButton = ({onPress, title, disabled, icon, widt, color}) => {
           backgroundColor: disabled
             ? colors.lightpastelgreen
             : color || colors.lightgreen,
-          opacity: disabled ? 0.6 : 1, // <- new line
+          opacity: disabled ? 0.6 : 1,
           height: 55,
           width: widt ? widt : '100%',
         },
@@ -20,11 +20,13 @@ const MyButton = ({onPress, title, disabled, icon, widt, color}) => {
       disabled={disabled}>
       <View style={styles.view1}>
         {icon && <Image source={icon} style={styles.image1} />}
-        <Text style={styles.text}>{title}</Text>
+        {/* Conditionally render children (like ActivityIndicator) */}
+        {children || <Text style={styles.text}>{title}</Text>}
       </View>
     </TouchableOpacity>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',

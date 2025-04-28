@@ -14,8 +14,11 @@ import {useRoute} from '@react-navigation/native';
 import axios from 'axios';
 import {useSelector} from 'react-redux';
 import {launchImageLibrary} from 'react-native-image-picker';
-import {Snackbar} from 'react-native-paper'; // 👈 Import Snackbar
+import {Snackbar} from 'react-native-paper';
 import {styles} from './styles';
+import MainHeader from '../../../../components/Headers/MainHeader';
+import {MyButton} from '../../../../components/atoms/InputFields/MyButton';
+import {colors} from '../../../../util/color';
 
 const CreateProduct = () => {
   const route = useRoute();
@@ -39,7 +42,7 @@ const CreateProduct = () => {
   const handleChooseImages = async () => {
     const options = {
       mediaType: 'photo',
-      selectionLimit: 0, // 0 = allow multiple
+      selectionLimit: 0,
     };
 
     launchImageLibrary(options, response => {
@@ -61,6 +64,12 @@ const CreateProduct = () => {
     setFormData(prev => ({
       ...prev,
       [field]: value,
+    }));
+  };
+  const handleRemoveImage = indexToRemove => {
+    setFormData(prev => ({
+      ...prev,
+      images: prev.images.filter((_, index) => index !== indexToRemove),
     }));
   };
 
@@ -122,7 +131,31 @@ const CreateProduct = () => {
         '❌ Error creating product:',
         error.response?.data || error.message,
       );
-      setSnackbarMessage('Something went wrong. Try again!');
+      let errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        'Something went wrong. Try again!';
+
+      // Check if 403 error (profile not verified)
+      if (error.response?.status === 403) {
+        errorMessage = 'Your profile is not verified yet.';
+      }
+      // Check if it's an image size error
+      else if (
+        typeof errorMessage === 'string' &&
+        errorMessage.includes('images.')
+      ) {
+        errorMessage = errorMessage.replace(/images\.(\d+)/g, (match, p1) => {
+          const imageIndex = parseInt(p1, 10) + 1;
+          return `Image ${imageIndex}`;
+        });
+
+        errorMessage = errorMessage.replace(
+          'greater than 2048 kilobytes',
+          'must be less than 2MB',
+        );
+      }
+      setSnackbarMessage(error.message || 'Something went wrong. Try again!');
       setSnackbarVisible(true);
     } finally {
       setLoading(false);
@@ -130,76 +163,96 @@ const CreateProduct = () => {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Create Product for {name}</Text>
+    <View style={{flex: 1}}>
+      <MainHeader title={`Create Product for ${name}`} showBackIcon={true} />
+      <ScrollView contentContainerStyle={styles.container}>
+        {/* Name */}
+        <Text style={styles.label}>Product Name</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Enter product name"
+          value={formData.name}
+          onChangeText={text => handleInputChange('name', text)}
+        />
 
-      <TextInput
-        style={styles.input}
-        placeholder="Product Name"
-        value={formData.name}
-        onChangeText={text => handleInputChange('name', text)}
-      />
+        <Text style={styles.label}>Description</Text>
+        <TextInput
+          style={[styles.input, {height: 100}]}
+          placeholder="Enter product description"
+          value={formData.description}
+          multiline
+          onChangeText={text => handleInputChange('description', text)}
+        />
 
-      <TextInput
-        style={[styles.input, {height: 100}]}
-        placeholder="Description"
-        value={formData.description}
-        multiline
-        onChangeText={text => handleInputChange('description', text)}
-      />
+        {/* Price */}
+        <Text style={styles.label}>Price</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Enter price"
+          keyboardType="numeric"
+          value={formData.price}
+          onChangeText={text => handleInputChange('price', text)}
+        />
 
-      <TextInput
-        style={styles.input}
-        placeholder="Price"
-        keyboardType="numeric"
-        value={formData.price}
-        onChangeText={text => handleInputChange('price', text)}
-      />
+        {/* Stock */}
+        <Text style={styles.label}>Stock</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Enter available stock"
+          keyboardType="numeric"
+          value={formData.stock}
+          onChangeText={text => handleInputChange('stock', text)}
+        />
 
-      <TextInput
-        style={styles.input}
-        placeholder="Stock"
-        keyboardType="numeric"
-        value={formData.stock}
-        onChangeText={text => handleInputChange('stock', text)}
-      />
+        {/* Discount */}
+        <Text style={styles.label}>Discount (%)</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Enter discount percentage"
+          keyboardType="numeric"
+          value={formData.discount}
+          onChangeText={text => handleInputChange('discount', text)}
+        />
 
-      <TextInput
-        style={styles.input}
-        placeholder="Discount (%)"
-        keyboardType="numeric"
-        value={formData.discount}
-        onChangeText={text => handleInputChange('discount', text)}
-      />
+        {/* Special Offer */}
+        <Text style={styles.label}>Special Offer (Optional)</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Enter special offer"
+          value={formData.specialOffer}
+          onChangeText={text => handleInputChange('specialOffer', text)}
+        />
 
-      <TextInput
-        style={styles.input}
-        placeholder="Special Offer (Optional)"
-        value={formData.specialOffer}
-        onChangeText={text => handleInputChange('specialOffer', text)}
-      />
+        {/* Choose Images Button */}
+        <MyButton title="Choose Images" onPress={handleChooseImages} />
 
-      <Button title="Choose Images" onPress={handleChooseImages} />
+        <View style={styles.imagePreviewContainer}>
+          {formData.images.map((img, index) => (
+            <View key={index} style={styles.imageWrapper}>
+              <Image source={{uri: img.uri}} style={styles.imagePreview} />
+              <TouchableOpacity
+                style={styles.removeIcon}
+                onPress={() => handleRemoveImage(index)}>
+                <Text style={styles.removeIconText}>✕</Text>
+              </TouchableOpacity>
+            </View>
+          ))}
+        </View>
 
-      <View style={styles.imagePreviewContainer}>
-        {formData.images.map((img, index) => (
-          <Image
-            key={index}
-            source={{uri: img.uri}}
-            style={styles.imagePreview}
-          />
-        ))}
-      </View>
-      <TouchableOpacity
-        style={styles.submitButton}
-        onPress={submitProduct}
-        disabled={loading}>
-        {loading ? (
-          <ActivityIndicator color="#fff" />
-        ) : (
-          <Text style={styles.submitButtonText}>Submit Product</Text>
-        )}
-      </TouchableOpacity>
+        {/* Submit Button */}
+        <MyButton
+          title={'Submit Product'}
+          style={styles.submitButton}
+          onPress={submitProduct}
+          disabled={loading}>
+          {loading ? (
+            <ActivityIndicator color={colors.green} />
+          ) : (
+            <Text style={styles.submitButtonText}>Submit Product</Text>
+          )}
+        </MyButton>
+      </ScrollView>
+      {/* Snackbar */}
       <Snackbar
         visible={snackbarVisible}
         onDismiss={() => setSnackbarVisible(false)}
@@ -207,7 +260,7 @@ const CreateProduct = () => {
         style={styles.snackbar}>
         {snackbarMessage}
       </Snackbar>
-    </ScrollView>
+    </View>
   );
 };
 
