@@ -3,6 +3,28 @@ import {colors} from '../../../util/color';
 import {mvs} from '../../../util/metrices';
 
 const styles = StyleSheet.create({
+  productContainer: {
+    padding: 10,
+    marginBottom: 20,
+    borderBottomWidth: 1,
+    borderColor: '#ddd',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  productImage: {
+    width: 100,
+    height: 100,
+    marginRight: 10,
+  },
+  productName: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    flex: 1,
+  },
+  productPrice: {
+    fontSize: 16,
+    color: 'green',
+  },
   container: {
     flex: 1,
     // paddingBottom: mvs(40),

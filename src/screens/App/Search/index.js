@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {FlatList,  StatusBar,  View} from 'react-native';
+import {FlatList, StatusBar, View} from 'react-native';
 import SearchHeader from '../../../components/Headers/SearchHeader';
 import dummyData from '../../../util/dummyData';
 import styles from './style';
@@ -14,10 +14,10 @@ import {
   removeFavorite,
 } from '../../../redux/slices/favoritesSlice';
 import VerificationModal from '../../../components/Modals/VerificationModal';
-import {fetchCategories, fetchProducts} from '../../../api/apiServices';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import {fetchCategories} from '../../../api/apiServices';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
-const {categories, products, recommendedProducts} = dummyData;
+const {recommendedProducts} = dummyData;
 
 const SearchScreen = () => {
   const [likedItems, setLikedItems] = useState({});
@@ -29,8 +29,8 @@ const SearchScreen = () => {
   const [allRecommendedProducts, setAllRecommendedProducts] = useState(
     recommendedProducts.slice(0, 6),
   );
-  const [apiProducts, setApiProducts] = useState([]);
-  const [productsLoading, setProductsLoading] = useState(true);
+  // const [apiProducts, setApiProducts] = useState([]);
+  // const [productsLoading, setProductsLoading] = useState(true);
   const [isEndOfResults, setIsEndOfResults] = useState(false);
   const {token, userData} = useSelector(state => state.user);
   const dispatch = useDispatch();
@@ -50,21 +50,6 @@ const SearchScreen = () => {
 
     // if (token) {
     loadCategories();
-    // }
-  }, [token]);
-
-  useEffect(() => {
-    const loadProducts = async () => {
-      setProductsLoading(true);
-      const response = await fetchProducts(token);
-      if (response?.success) {
-        setApiProducts(response.data);
-      }
-      setProductsLoading(false);
-    };
-
-    // if (token) {
-    loadProducts();
     // }
   }, [token]);
 
@@ -185,7 +170,7 @@ const SearchScreen = () => {
                 );
 
               case 'gallery':
-                return <GalleryContainer products={apiProducts} />;
+                return <GalleryContainer />;
               case 'recommended':
                 return (
                   <RecommendedSection
