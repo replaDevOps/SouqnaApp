@@ -47,11 +47,11 @@ const ProductHeader = ({
           justifyContent:'center',
           alignItems:'center',
           borderRadius:mvs(23),
-          width:mvs(46),
-          height:mvs(46)
+          width:mvs(40),
+          height:mvs(40)
         }}
         onPress={() => navigation.goBack()}>
-          <BackSVG width={24} fill={'white'} height={24} />
+          <BackSVG width={30} fill={'white'} height={30} />
         </TouchableOpacity>
 
         {headerTitleVisible && title && (
@@ -60,7 +60,7 @@ const ProductHeader = ({
 
         {/* Icons Container: Heart and Open icons */}
         <View style={styles.iconsContainer}>
-          <TouchableOpacity onPress={onHeartPressHandler}>
+          <TouchableOpacity  onPress={onHeartPressHandler}>
             <HeartSVG width={24} height={24} />
           </TouchableOpacity>
           <TouchableOpacity
@@ -79,7 +79,7 @@ export default ProductHeader;
 const styles = StyleSheet.create({
   headerWrapper: {
     width: '100%',
-    position: 'absolute',
+    position: 'relative',
     top: 0,
     left: 0,
     right: 0,

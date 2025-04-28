@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, Image, Dimensions, ScrollView} from 'react-native';
+import {View, Image, Dimensions, ScrollView, Text} from 'react-native';
 import {useRoute} from '@react-navigation/native';
 import Bold from '../../../typography/BoldText';
 import Regular from '../../../typography/RegularText';
@@ -17,6 +17,10 @@ import {
   removeFavorite,
 } from '../../../redux/slices/favoritesSlice';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { colors } from '../../../util/color';
+import { mvs } from '../../../util/metrices';
+import LocationSvg from '../../../assets/svg/location-svg';
+import { MarkerSVG } from '../../../assets/svg';
 
 const {width, height} = Dimensions.get('window');
 
@@ -89,19 +93,23 @@ const ProductDetail = () => {
         productLink={item.productLink}
       />
       <ScrollView
+      showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
         onScroll={onScroll}
         scrollEventThrottle={16}>
         <View style={styles.imageContainer}>
           <Image
             source={item.imageUrl}
-            style={[styles.productImage, {width: width, height: height * 0.25}]}
+            style={[styles.productImage, {width: width, height: height * 0.35}]}
           />
         </View>
         <View style={styles.itemContainer}>
-          <Bold style={styles.productTitle}>{item.title}</Bold>
-          <Regular style={styles.productPrice}>${item.price}</Regular>
+         <Bold style={styles.productPrice}><Regular style={{fontWeight:'400',fontSize:mvs(22)}}>$ </Regular>{item.price}</Bold>
+         <Bold style={styles.productTitle}>{item.title}</Bold>
+         <View style={styles.locationContainer}>
+        <MarkerSVG width={mvs(20)} height={mvs(20)} fill={colors.grey}/>
           <Regular style={styles.productLocation}>{item.location}</Regular>
+         </View>
         </View>
         <ProductMenu
           color={item.color}
@@ -109,7 +117,8 @@ const ProductDetail = () => {
           material={item.material}
         />
         <View style={styles.descriptionContainer}>
-          <Regular>{item.description}</Regular>
+          <Bold style={{fontSize:mvs(22)}}>Description</Bold>
+          <Regular style={styles.description}>{item.description}</Regular>
         </View>
         <ProviderInfo provider={item.provider} />
 

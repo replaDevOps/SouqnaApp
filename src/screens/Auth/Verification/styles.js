@@ -87,6 +87,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingHorizontal: 10,
     fontSize: 16,
+    justifyContent:'center',
+    // alignItems:'center'
   },
   errorContainer: {
     backgroundColor: 'red',
