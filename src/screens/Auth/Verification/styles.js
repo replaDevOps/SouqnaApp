@@ -1,5 +1,6 @@
 import {StyleSheet} from 'react-native';
 import {colors} from '../../../util/color';
+import { mvs } from '../../../util/metrices';
 
 const styles = StyleSheet.create({
   modalOverlay: {
@@ -100,6 +101,9 @@ const styles = StyleSheet.create({
   },
   label: {
     fontWeight: 'bold',
+    marginBottom: mvs(8),
+    fontSize: mvs(16),
+    paddingLeft: mvs(3)
   },
   imagePickerContainer: {
     marginVertical: 10,
@@ -198,6 +202,27 @@ const styles = StyleSheet.create({
   removeText: {
     color: 'white',
     fontSize: 12,
+  },
+  dateInput: {
+    height: 50,
+    marginTop: 5,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderColor: colors.grey,
+    borderWidth: 1,
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    fontSize: 16,
+  },
+  dateText: {
+    color: '#000',
+  },
+  datePlaceholder: {
+    color: '#999',
+  },
+  calendarIcon: {
+    padding: 5,
   },
 });
 export default styles;

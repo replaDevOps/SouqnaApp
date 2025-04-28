@@ -40,8 +40,18 @@ const ProductHeader = ({
           styles.headerContainer,
           headerTitleVisible && styles.headerTitleVisible,
         ]}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <BackSVG width={24} height={24} />
+        <TouchableOpacity 
+        style={{
+          backgroundColor:colors.lightgreen,
+          padding:mvs(4),
+          justifyContent:'center',
+          alignItems:'center',
+          borderRadius:mvs(23),
+          width:mvs(46),
+          height:mvs(46)
+        }}
+        onPress={() => navigation.goBack()}>
+          <BackSVG width={24} fill={'white'} height={24} />
         </TouchableOpacity>
 
         {headerTitleVisible && title && (
