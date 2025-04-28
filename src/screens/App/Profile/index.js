@@ -1,26 +1,59 @@
-import React from 'react';
-import {
-  View,
-  SafeAreaView,
-  TouchableOpacity,
-  Text,
-  ScrollView,
-} from 'react-native';
-import {useDispatch} from 'react-redux';
+import React, {useCallback, useState} from 'react';
+import {View, TouchableOpacity, Text, ScrollView} from 'react-native';
+import {useDispatch, useSelector} from 'react-redux';
 import styles from './styles';
-import {logoutUser, resetUser} from '../../../redux/slices/userSlice';
-import {useNavigation} from '@react-navigation/native';
+import {
+  logoutUser,
+  setVerificationStatus,
+} from '../../../redux/slices/userSlice';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {MyButton} from '../../../components/atoms/InputFields/MyButton';
 import {SouqnaLogo} from '../../../assets/svg';
 import Regular from '../../../typography/RegularText';
 import MainHeader from '../../../components/Headers/MainHeader'; // Import the new component
 import VerificationStatus from '../../../components/Structure/VerificationStatus';
+import axios from 'axios';
 
 const Profile = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
+  const {token, verificationStatus} = useSelector(state => state.user);
 
-  const verificationStatus = 0;
+  const [refreshing, setRefreshing] = useState(false);
+
+  const fetchVerificationStatus = async () => {
+    try {
+      const response = await axios.get(
+        'https://backend.souqna.net/api/viewVerification',
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      if (response.data.success) {
+        const apiStatus = response.data.data.status || response.data.data;
+        dispatch(setVerificationStatus(apiStatus));
+        console.log('Fetched verification status: ', apiStatus);
+      }
+    } catch (error) {
+      console.error('Verification API error:', error);
+    }
+  };
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await fetchVerificationStatus();
+    setRefreshing(false);
+    console.log('Profile Refreshed');
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      onRefresh();
+    }, []),
+  );
 
   const handleLogout = () => {
     dispatch(logoutUser());
@@ -41,7 +74,7 @@ const Profile = () => {
       </View>
 
       {/* VerificationStatus component */}
-      <VerificationStatus status={verificationStatus} />
+      <VerificationStatus />
 
       <View style={styles.content}>
         <Regular style={styles.regularText}>Profile</Regular>

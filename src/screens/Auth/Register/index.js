@@ -51,16 +51,16 @@ const Register = () => {
       setPasswordError('');
     }
 
-    if (selectedOption === 'Private' && !profilename) {
-      alert('Please provide a profile name for your private account');
+    if (selectedOption === 'Seller' && !profilename) {
+      alert('Please provide a profile name for your Seller account');
       return;
     }
 
     const payload = {
-      name: selectedOption === 'Private' ? profilename : 'Commercial User',
+      name: selectedOption === 'Seller' ? profilename : 'Buyer',
       email,
       password,
-      role: selectedOption === 'Private' ? 2 : 3, // 2=Private, 3=Commercial
+      role: selectedOption === 'Seller' ? 2 : 3, // 2=Seller, 3=Buyer
     };
 
     try {
@@ -99,7 +99,7 @@ const Register = () => {
   };
 
   useEffect(() => {
-    if (selectedOption === 'Private') {
+    if (selectedOption === 'Seller') {
       Animated.timing(profileNameOpacity, {
         toValue: 1,
         duration: 700,
@@ -131,14 +131,14 @@ const Register = () => {
 
       <RadioGroup
         options={[
-          {value: 'Private', label: 'Private'},
-          {value: 'Commercial', label: 'Commercial'},
+          {value: 'Seller', label: 'Seller'},
+          {value: 'Buyer', label: 'Buyer'},
         ]}
         selectedOption={selectedOption}
         onSelect={setSelectedOption}
       />
 
-      {selectedOption === 'Private' && (
+      {selectedOption === 'Seller' && (
         <Animated.View style={{opacity: profileNameOpacity}}>
           <PrimaryPasswordInput
             value={profilename}
