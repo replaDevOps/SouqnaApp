@@ -12,6 +12,7 @@ import {
   Button,
   Modal,
   StatusBar,
+  StyleSheet,
 } from 'react-native';
 import {launchImageLibrary} from 'react-native-image-picker';
 import {useNavigation} from '@react-navigation/native';
@@ -27,6 +28,24 @@ import { colors } from '../../../util/color';
 import { mvs } from '../../../util/metrices';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+// Radio Button Component
+const RadioButton = ({selected, onPress, label}) => {
+  return (
+    <TouchableOpacity 
+      style={styles.radioOption} 
+      onPress={onPress}
+      activeOpacity={0.7}
+    >
+      <View style={styles.radioContainer}>
+        <View style={styles.radioOuter}>
+          {selected && <View style={styles.radioInner} />}
+        </View>
+        <Text style={styles.radioLabel}>{label}</Text>
+      </View>
+    </TouchableOpacity>
+  );
+};
+
 const VerificationScreen = () => {
   const navigation = useNavigation();
   const {token} = useSelector(state => state.user);
@@ -34,14 +53,14 @@ const VerificationScreen = () => {
   const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
-    fullName: 'mubashir mughal',
-    dob: '2001-10-14',
-    gender: 'male',
-    country: 'pakistan',
-    address: 'pakistan',
-    idNumber: '15604-0376998-3',
-    issueDate: '2025-03-21',
-    expDate: '2035-03-21',
+    fullName: '',
+    dob: '',
+    gender: 'male', // Default gender value
+    country: '',
+    address: '',
+    idNumber: '',
+    issueDate: '',
+    expDate: '',
   });
 
   const [idFrontSide, setIdFrontSide] = useState(null);
@@ -86,6 +105,11 @@ const VerificationScreen = () => {
     setOpenExpDate(false);
     const formattedDate = formatDate(date);
     setFormData({...formData, expDate: formattedDate});
+  };
+
+  // Handle gender selection
+  const handleGenderSelect = (gender) => {
+    setFormData({...formData, gender});
   };
 
   const pickImage = async setter => {
@@ -234,191 +258,207 @@ const VerificationScreen = () => {
 
   return (
     <SafeAreaView>
+      <ScrollView>
+        <MainHeader title={'Verification'} />
+        <View style={styles.container}>
+          {/* Full Name input (first field) */}
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Full Name</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter Full Name"
+              value={formData.fullName}
+              onChangeText={text => handleInputChange('fullName', text)}
+            />
+          </View>
 
-    <ScrollView>
-      <StatusBar barStyle="light-content" translucent backgroundColor="#fff" />
-      
-      <MainHeader title={'Verification'} />
-      <View style={styles.container}>
-        {/* Full Name input (first field) */}
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>Full Name</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Enter Full Name"
-            value={formData.fullName}
-            onChangeText={text => handleInputChange('fullName', text)}
-          />
-        </View>
+          {/* Date of Birth input (second field) */}
+          {renderDateInput(
+            'dob',
+            'Date of Birth',
+            'Enter Date of Birth (YYYY-MM-DD)',
+            openDob,
+            setOpenDob,
+            handleDobChange,
+            maxDobDate, // Maximum date is today (users can't be born in the future)
+            null // No minimum date for DOB
+          )}
 
-        {/* Date of Birth input (second field) */}
-        {renderDateInput(
-          'dob',
-          'Date of Birth',
-          'Enter Date of Birth (YYYY-MM-DD)',
-          openDob,
-          setOpenDob,
-          handleDobChange,
-          maxDobDate, // Maximum date is today (users can't be born in the future)
-          null // No minimum date for DOB
-        )}
-
-        {/* Remaining text inputs in the specified order */}
-        {['gender', 'country', 'address', 'idNumber'].map(key => {
-          const labelMap = {
-            gender: 'Gender',
-            country: 'Country',
-            address: 'Address',
-            idNumber: 'ID Number',
-          };
-          const placeholderMap = {
-            gender: 'Enter Gender',
-            country: 'Enter Country',
-            address: 'Enter Address',
-            idNumber: 'Enter ID Number',
-          };
-          return (
-            <View key={key} style={styles.inputContainer}>
-              <Text style={styles.label}>{labelMap[key]}</Text>
-              <TextInput
-                style={styles.input}
-                placeholder={placeholderMap[key]}
-                value={formData[key]}
-                onChangeText={text => handleInputChange(key, text)}
+          {/* Gender Radio Buttons */}
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Gender</Text>
+            <View style={styles.radioGroup}>
+              <RadioButton 
+                selected={formData.gender === 'male'} 
+                onPress={() => handleGenderSelect('male')} 
+                label="Male" 
+              />
+              <RadioButton 
+                selected={formData.gender === 'female'} 
+                onPress={() => handleGenderSelect('female')} 
+                label="Female" 
+              />
+              <RadioButton 
+                selected={formData.gender === 'other'} 
+                onPress={() => handleGenderSelect('other')} 
+                label="Other" 
               />
             </View>
-          );
-        })}
+          </View>
 
-        {/* Remaining date inputs */}
-        {renderDateInput(
-          'issueDate',
-          'Issue Date',
-          'Enter Issue Date (YYYY-MM-DD)',
-          openIssueDate,
-          setOpenIssueDate,
-          handleIssueDateChange,
-          null, // No maximum date for issue date
-          minIssueDate // Minimum date is 20 years ago
-        )}
+          {/* Remaining text inputs */}
+          {['country', 'address', 'idNumber'].map(key => {
+            const labelMap = {
+              country: 'Country',
+              address: 'Address',
+              idNumber: 'ID Number',
+            };
+            const placeholderMap = {
+              country: 'Enter Country',
+              address: 'Enter Address',
+              idNumber: 'Enter ID Number',
+            };
+            return (
+              <View key={key} style={styles.inputContainer}>
+                <Text style={styles.label}>{labelMap[key]}</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder={placeholderMap[key]}
+                  value={formData[key]}
+                  onChangeText={text => handleInputChange(key, text)}
+                />
+              </View>
+            );
+          })}
 
-        {renderDateInput(
-          'expDate',
-          'Expiry Date',
-          'Enter Expiry Date (YYYY-MM-DD)',
-          openExpDate,
-          setOpenExpDate,
-          handleExpDateChange,
-          null, // No maximum date for expiry date
-          minExpDate // Minimum date is today (can't expire in the past)
-        )}
+          {/* Remaining date inputs */}
+          {renderDateInput(
+            'issueDate',
+            'Issue Date',
+            'Enter Issue Date (YYYY-MM-DD)',
+            openIssueDate,
+            setOpenIssueDate,
+            handleIssueDateChange,
+            null, // No maximum date for issue date
+            minIssueDate // Minimum date is 20 years ago
+          )}
 
-        <View style={styles.uploadRow}>
-          {[
-            {label: 'Front of ID', state: idFrontSide, setter: setIdFrontSide},
-            {label: 'Back of ID', state: idBackSide, setter: setIdBackSide},
-          ].map(({label, state, setter}) => (
-            <View key={label} style={styles.uploadBox}>
+          {renderDateInput(
+            'expDate',
+            'Expiry Date',
+            'Enter Expiry Date (YYYY-MM-DD)',
+            openExpDate,
+            setOpenExpDate,
+            handleExpDateChange,
+            null, // No maximum date for expiry date
+            minExpDate // Minimum date is today (can't expire in the past)
+          )}
+
+          <View style={styles.uploadRow}>
+            {[
+              {label: 'Front of ID', state: idFrontSide, setter: setIdFrontSide},
+              {label: 'Back of ID', state: idBackSide, setter: setIdBackSide},
+            ].map(({label, state, setter}) => (
+              <View key={label} style={styles.uploadBox}>
+                <TouchableOpacity
+                  style={styles.imagePickerTouch}
+                  onPress={() => pickImage(setter)}>
+                  {state ? (
+                    <Image
+                      source={{uri: state.uri}}
+                      style={styles.imagePreview}
+                      resizeMode="cover"
+                    />
+                  ) : (
+                    <View style={styles.uploadLabelContainer}>
+                      <UploadSVG
+                        width={16}
+                        height={16}
+                        style={styles.uploadIcon}
+                      />
+                      <Text style={styles.uploadLabel}>Upload {label}</Text>
+                    </View>
+                  )}
+                </TouchableOpacity>
+
+                {state && (
+                  <TouchableOpacity
+                    onPress={() => setter(null)}
+                    style={styles.removeIcon}>
+                    <Text style={styles.removeIconText}>✕</Text>
+                  </TouchableOpacity>
+                )}
+              </View>
+            ))}
+          </View>
+
+          <View style={styles.selfieContainer}>
+            <View style={styles.uploadBox}>
               <TouchableOpacity
                 style={styles.imagePickerTouch}
-                onPress={() => pickImage(setter)}>
-                {state ? (
+                onPress={() => pickImage(setSelfie)}>
+                {selfie ? (
                   <Image
-                    source={{uri: state.uri}}
+                    source={{uri: selfie.uri}}
                     style={styles.imagePreview}
                     resizeMode="cover"
                   />
                 ) : (
                   <View style={styles.uploadLabelContainer}>
-                    <UploadSVG
-                      width={16}
-                      height={16}
-                      style={styles.uploadIcon}
-                    />
-                    <Text style={styles.uploadLabel}>Upload {label}</Text>
+                    <UploadSVG width={16} height={16} style={styles.uploadIcon} />
+                    <Text style={styles.uploadLabel}>Upload Selfie</Text>
                   </View>
                 )}
               </TouchableOpacity>
 
-              {state && (
+              {selfie && (
                 <TouchableOpacity
-                  onPress={() => setter(null)}
+                  onPress={() => setSelfie(null)}
                   style={styles.removeIcon}>
                   <Text style={styles.removeIconText}>✕</Text>
                 </TouchableOpacity>
               )}
             </View>
-          ))}
+          </View>
+
+          <TouchableOpacity
+            onPress={() => {
+              console.log('Button clicked 🔥');
+              handleSubmit();
+            }}
+            disabled={loading}>
+            <MyButton title="Submit" onPress={handleSubmit} disabled={loading} />
+          </TouchableOpacity>
+
+          {loading && (
+            <ActivityIndicator
+              size="large"
+              color="#0000ff"
+              style={styles.loader}
+            />
+          )}
         </View>
 
-        <View style={styles.selfieContainer}>
-          <View style={styles.uploadBox}>
-            <TouchableOpacity
-              style={styles.imagePickerTouch}
-              onPress={() => pickImage(setSelfie)}>
-              {selfie ? (
-                <Image
-                  source={{uri: selfie.uri}}
-                  style={styles.imagePreview}
-                  resizeMode="cover"
-                />
-              ) : (
-                <View style={styles.uploadLabelContainer}>
-                  <UploadSVG width={16} height={16} style={styles.uploadIcon} />
-                  <Text style={styles.uploadLabel}>Upload Selfie</Text>
-                </View>
-              )}
-            </TouchableOpacity>
-
-            {selfie && (
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => setModalVisible(false)}>
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContainer}>
+              <Text style={styles.modalText}>
+                Your document is still Pending.
+              </Text>
               <TouchableOpacity
-                onPress={() => setSelfie(null)}
-                style={styles.removeIcon}>
-                <Text style={styles.removeIconText}>✕</Text>
+                style={styles.modalButton}
+                onPress={() => setModalVisible(false)}>
+                <Regular style={styles.modalButtonText}>Close</Regular>
               </TouchableOpacity>
-            )}
+            </View>
           </View>
-        </View>
-
-        <TouchableOpacity
-          onPress={() => {
-            console.log('Button clicked 🔥');
-            handleSubmit();
-          }}
-          disabled={loading}>
-          <MyButton title="Submit" onPress={handleSubmit} disabled={loading} />
-        </TouchableOpacity>
-
-        {loading && (
-          <ActivityIndicator
-            size="large"
-            color="#0000ff"
-            style={styles.loader}
-          />
-        )}
-      </View>
-
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}>
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContainer}>
-            <Text style={styles.modalText}>
-              Your document is still Pending.
-            </Text>
-            <TouchableOpacity
-              style={styles.modalButton}
-              onPress={() => setModalVisible(false)}>
-              <Regular style={styles.modalButtonText}>Close</Regular>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
-    </ScrollView>
-     </SafeAreaView>
-    
+        </Modal>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
