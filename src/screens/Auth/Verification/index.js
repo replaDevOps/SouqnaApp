@@ -28,6 +28,24 @@ import { colors } from '../../../util/color';
 import { mvs } from '../../../util/metrices';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+// Radio Button Component
+const RadioButton = ({selected, onPress, label}) => {
+  return (
+    <TouchableOpacity 
+      style={styles.radioOption} 
+      onPress={onPress}
+      activeOpacity={0.7}
+    >
+      <View style={styles.radioContainer}>
+        <View style={styles.radioOuter}>
+          {selected && <View style={styles.radioInner} />}
+        </View>
+        <Text style={styles.radioLabel}>{label}</Text>
+      </View>
+    </TouchableOpacity>
+  );
+};
+
 const VerificationScreen = () => {
   const navigation = useNavigation();
   const {token} = useSelector(state => state.user);
@@ -37,7 +55,7 @@ const VerificationScreen = () => {
   const [formData, setFormData] = useState({
     fullName: '',
     dob: '',
-    gender: '',
+    gender: 'male', // Default gender value
     country: '',
     address: '',
     idNumber: '',
@@ -55,9 +73,6 @@ const VerificationScreen = () => {
   const [openDob, setOpenDob] = useState(false);
   const [openIssueDate, setOpenIssueDate] = useState(false);
   const [openExpDate, setOpenExpDate] = useState(false);
-  
-  // State for gender dropdown
-  const [showGenderDropdown, setShowGenderDropdown] = useState(false);
 
   const handleInputChange = (key, value) => {
     setFormData({...formData, [key]: value});
@@ -95,7 +110,6 @@ const VerificationScreen = () => {
   // Handle gender selection
   const handleGenderSelect = (gender) => {
     setFormData({...formData, gender});
-    setShowGenderDropdown(false); // Close dropdown after selection
   };
 
   const pickImage = async setter => {
@@ -242,9 +256,6 @@ const VerificationScreen = () => {
     </View>
   );
 
-  // Gender options
-  const genderOptions = ['Male', 'Female', 'Other'];
-
   return (
     <SafeAreaView>
       <ScrollView>
@@ -273,39 +284,26 @@ const VerificationScreen = () => {
             null // No minimum date for DOB
           )}
 
-          {/* Gender Dropdown Field */}
+          {/* Gender Radio Buttons */}
           <View style={styles.inputContainer}>
             <Text style={styles.label}>Gender</Text>
-            <TouchableOpacity
-              style={styles.input}
-              onPress={() => setShowGenderDropdown(!showGenderDropdown)}
-            >
-              <Text style={[{fontSize:16},formData.gender ? {color: '#000'} : {color: '#999',}]}>
-                {formData.gender || "Select Gender"}
-              </Text>
-            </TouchableOpacity>
-            
-            {/* Gender Dropdown */}
-            {showGenderDropdown && (
-              <View style={styles.dropdownContainer}>
-                {genderOptions.map((option) => (
-                  <TouchableOpacity
-                    key={option}
-                    style={styles.optionContainer}
-                    onPress={() => handleGenderSelect(option)}
-                  >
-                    <View style={styles.radioContainer}>
-                      <View style={styles.radioOuter}>
-                        {formData.gender === option && (
-                          <View style={styles.radioInner} />
-                        )}
-                      </View>
-                      <Text style={styles.optionText}>{option}</Text>
-                    </View>
-                  </TouchableOpacity>
-                ))}
-              </View>
-            )}
+            <View style={styles.radioGroup}>
+              <RadioButton 
+                selected={formData.gender === 'male'} 
+                onPress={() => handleGenderSelect('male')} 
+                label="Male" 
+              />
+              <RadioButton 
+                selected={formData.gender === 'female'} 
+                onPress={() => handleGenderSelect('female')} 
+                label="Female" 
+              />
+              <RadioButton 
+                selected={formData.gender === 'other'} 
+                onPress={() => handleGenderSelect('other')} 
+                label="Other" 
+              />
+            </View>
           </View>
 
           {/* Remaining text inputs */}
