@@ -35,8 +35,8 @@ export const styles = StyleSheet.create({
   },
 
   imageWrapper: {
-    width: '48%', // Two items per row (100% / 2) minus some margin
-    aspectRatio: 1, // Makes it square (width and height same ratio)
+    width: '48%',
+    aspectRatio: 1,
     margin: '1%',
     position: 'relative',
   },

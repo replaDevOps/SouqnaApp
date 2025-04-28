@@ -4,6 +4,7 @@ import axios from 'axios';
 import {colors} from '../../util/color';
 import {useDispatch, useSelector} from 'react-redux'; // If you're storing token in Redux
 import {setVerificationStatus} from '../../redux/slices/userSlice';
+import {useIsFocused} from '@react-navigation/native';
 
 const VerificationStatus = () => {
   const [showModal, setShowModal] = useState(false);
@@ -13,6 +14,7 @@ const VerificationStatus = () => {
   // Get token from Redux or props
   const {token} = useSelector(state => state.user);
   const dispatch = useDispatch();
+  const isFocused = useIsFocused();
 
   useEffect(() => {
     const fetchVerificationStatus = async () => {
@@ -26,23 +28,45 @@ const VerificationStatus = () => {
           },
         );
 
-        if (response.data.success) {
-          dispatch(setVerificationStatus(status));
-        }
+        // Success case
         if (response.data.success) {
           const apiStatus = response.data.data.status || response.data.data;
           setStatus(apiStatus);
+          dispatch(setVerificationStatus(apiStatus));
           console.log('api Status: ', apiStatus);
+        }
+        // If status === false and message === 'Unauthenticated'
+        else if (
+          response.data.status === false &&
+          response.data.message === 'Unauthenticated'
+        ) {
+          setStatus(0);
+          dispatch(setVerificationStatus(0));
+          console.log('Unauthenticated: setting Unverified status');
         }
       } catch (error) {
         console.error('Verification API error:', error);
+
+        if (
+          error.response &&
+          error.response.status === 401 &&
+          error.response.data.message === 'Unauthenticated'
+        ) {
+          setStatus(0);
+          dispatch(setVerificationStatus(0));
+          console.log(
+            'Unauthenticated (catch block): setting Unverified status',
+          );
+        }
       } finally {
         setLoading(false);
       }
     };
 
-    fetchVerificationStatus();
-  }, [token, dispatch, status]);
+    if (isFocused) {
+      fetchVerificationStatus();
+    }
+  }, [token, dispatch, isFocused]);
 
   const isStepCompleted = stepNumber => {
     return status >= stepNumber;
@@ -70,7 +94,9 @@ const VerificationStatus = () => {
   if (loading) {
     return <ActivityIndicator size="small" color={colors.green} />;
   }
-
+  if (status === null) {
+    return <ActivityIndicator size="small" color={colors.green} />;
+  }
   if (status === 2) {
     return (
       <View style={styles.verifiedContainer}>

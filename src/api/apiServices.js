@@ -5,6 +5,7 @@ const API = axios.create({
   timeout: 10000,
 });
 export const BASE_URL = 'https://backend.souqna.net/';
+export const BASE_URL_Product = 'https://backend.souqna.net';
 
 export const fetchCategories = async token => {
   try {
@@ -22,7 +23,7 @@ export const fetchCategories = async token => {
 
 export const fetchProducts = async token => {
   try {
-    const response = await API.get('viewProducts', {
+    const response = await API.get('showAllProducts', {
       headers: {
         Authorization: `Bearer ${token}`,
       },

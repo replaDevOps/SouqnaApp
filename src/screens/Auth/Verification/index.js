@@ -24,18 +24,17 @@ import {MyButton} from '../../../components/atoms/InputFields/MyButton';
 import API from '../../../api/apiServices';
 import MainHeader from '../../../components/Headers/MainHeader';
 import {UploadSVG, CalendarSVG, CalendersSVG} from '../../../assets/svg';
-import { colors } from '../../../util/color';
-import { mvs } from '../../../util/metrices';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import {colors} from '../../../util/color';
+import {mvs} from '../../../util/metrices';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 // Radio Button Component
 const RadioButton = ({selected, onPress, label}) => {
   return (
-    <TouchableOpacity 
-      style={styles.radioOption} 
+    <TouchableOpacity
+      style={styles.radioOption}
       onPress={onPress}
-      activeOpacity={0.7}
-    >
+      activeOpacity={0.7}>
       <View style={styles.radioContainer}>
         <View style={styles.radioOuter}>
           {selected && <View style={styles.radioInner} />}
@@ -68,7 +67,7 @@ const VerificationScreen = () => {
   const [selfie, setSelfie] = useState(null);
 
   const [modalVisible, setModalVisible] = useState(false);
-  
+
   // States for date pickers
   const [openDob, setOpenDob] = useState(false);
   const [openIssueDate, setOpenIssueDate] = useState(false);
@@ -79,7 +78,7 @@ const VerificationScreen = () => {
   };
 
   // Format date to YYYY-MM-DD
-  const formatDate = (date) => {
+  const formatDate = date => {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
@@ -87,28 +86,28 @@ const VerificationScreen = () => {
   };
 
   // Handle date selection for DOB
-  const handleDobChange = (date) => {
+  const handleDobChange = date => {
     setOpenDob(false);
     const formattedDate = formatDate(date);
     setFormData({...formData, dob: formattedDate});
   };
 
   // Handle date selection for Issue Date
-  const handleIssueDateChange = (date) => {
+  const handleIssueDateChange = date => {
     setOpenIssueDate(false);
     const formattedDate = formatDate(date);
     setFormData({...formData, issueDate: formattedDate});
   };
 
   // Handle date selection for Expiry Date
-  const handleExpDateChange = (date) => {
+  const handleExpDateChange = date => {
     setOpenExpDate(false);
     const formattedDate = formatDate(date);
     setFormData({...formData, expDate: formattedDate});
   };
 
   // Handle gender selection
-  const handleGenderSelect = (gender) => {
+  const handleGenderSelect = gender => {
     setFormData({...formData, gender});
   };
 
@@ -175,7 +174,7 @@ const VerificationScreen = () => {
     data.append('idFrontSide', idFrontSide);
     data.append('idBackSide', idBackSide);
     data.append('selfie', selfie);
-
+    console.log('Data being sent to API:', data);
     try {
       setLoading(true);
       const response = await API.post('verification', data, {
@@ -211,7 +210,7 @@ const VerificationScreen = () => {
   };
 
   // Convert string dates to Date objects for pickers
-  const parseDateString = (dateString) => {
+  const parseDateString = dateString => {
     if (!dateString) return new Date();
     const [year, month, day] = dateString.split('-').map(Number);
     return new Date(year, month - 1, day);
@@ -219,26 +218,34 @@ const VerificationScreen = () => {
 
   // Calculate maximum date for DOB (today)
   const maxDobDate = new Date();
-  
+
   // Calculate minimum date for Issue Date (can be in the past)
   const minIssueDate = new Date();
   minIssueDate.setFullYear(minIssueDate.getFullYear() - 20); // Allow up to 20 years in the past for issue date
-  
+
   // Calculate minimum date for Expiry Date (today)
   const minExpDate = new Date();
 
-  const renderDateInput = (key, label, placeholder, openState, setOpenState, onConfirm, maxDate, minDate) => (
+  const renderDateInput = (
+    key,
+    label,
+    placeholder,
+    openState,
+    setOpenState,
+    onConfirm,
+    maxDate,
+    minDate,
+  ) => (
     <View key={key} style={styles.inputContainer}>
       <Text style={styles.label}>{label}</Text>
-      <TouchableOpacity 
+      <TouchableOpacity
         style={styles.dateInput}
-        onPress={() => setOpenState(true)}
-      >
+        onPress={() => setOpenState(true)}>
         <Text style={formData[key] ? styles.dateText : styles.datePlaceholder}>
           {formData[key] || placeholder}
         </Text>
         <View style={styles.calendarIcon}>
-          <CalendersSVG height={22} width={22} fill={colors.gray}/>
+          <CalendersSVG height={22} width={22} fill={colors.gray} />
         </View>
       </TouchableOpacity>
       <DatePicker
@@ -246,7 +253,7 @@ const VerificationScreen = () => {
         open={openState}
         date={parseDateString(formData[key])}
         mode="date"
-        theme='light'
+        theme="light"
         dividerColor={colors.lightgreen}
         maximumDate={maxDate}
         minimumDate={minDate}
@@ -281,27 +288,27 @@ const VerificationScreen = () => {
             setOpenDob,
             handleDobChange,
             maxDobDate, // Maximum date is today (users can't be born in the future)
-            null // No minimum date for DOB
+            null, // No minimum date for DOB
           )}
 
           {/* Gender Radio Buttons */}
           <View style={styles.inputContainer}>
             <Text style={styles.label}>Gender</Text>
             <View style={styles.radioGroup}>
-              <RadioButton 
-                selected={formData.gender === 'male'} 
-                onPress={() => handleGenderSelect('male')} 
-                label="Male" 
+              <RadioButton
+                selected={formData.gender === 'male'}
+                onPress={() => handleGenderSelect('male')}
+                label="Male"
               />
-              <RadioButton 
-                selected={formData.gender === 'female'} 
-                onPress={() => handleGenderSelect('female')} 
-                label="Female" 
+              <RadioButton
+                selected={formData.gender === 'female'}
+                onPress={() => handleGenderSelect('female')}
+                label="Female"
               />
-              <RadioButton 
-                selected={formData.gender === 'other'} 
-                onPress={() => handleGenderSelect('other')} 
-                label="Other" 
+              <RadioButton
+                selected={formData.gender === 'other'}
+                onPress={() => handleGenderSelect('other')}
+                label="Other"
               />
             </View>
           </View>
@@ -340,7 +347,7 @@ const VerificationScreen = () => {
             setOpenIssueDate,
             handleIssueDateChange,
             null, // No maximum date for issue date
-            minIssueDate // Minimum date is 20 years ago
+            minIssueDate, // Minimum date is 20 years ago
           )}
 
           {renderDateInput(
@@ -351,12 +358,16 @@ const VerificationScreen = () => {
             setOpenExpDate,
             handleExpDateChange,
             null, // No maximum date for expiry date
-            minExpDate // Minimum date is today (can't expire in the past)
+            minExpDate, // Minimum date is today (can't expire in the past)
           )}
 
           <View style={styles.uploadRow}>
             {[
-              {label: 'Front of ID', state: idFrontSide, setter: setIdFrontSide},
+              {
+                label: 'Front of ID',
+                state: idFrontSide,
+                setter: setIdFrontSide,
+              },
               {label: 'Back of ID', state: idBackSide, setter: setIdBackSide},
             ].map(({label, state, setter}) => (
               <View key={label} style={styles.uploadBox}>
@@ -405,7 +416,11 @@ const VerificationScreen = () => {
                   />
                 ) : (
                   <View style={styles.uploadLabelContainer}>
-                    <UploadSVG width={16} height={16} style={styles.uploadIcon} />
+                    <UploadSVG
+                      width={16}
+                      height={16}
+                      style={styles.uploadIcon}
+                    />
                     <Text style={styles.uploadLabel}>Upload Selfie</Text>
                   </View>
                 )}
@@ -421,14 +436,7 @@ const VerificationScreen = () => {
             </View>
           </View>
 
-          <TouchableOpacity
-            onPress={() => {
-              console.log('Button clicked 🔥');
-              handleSubmit();
-            }}
-            disabled={loading}>
-            <MyButton title="Submit" onPress={handleSubmit} disabled={loading} />
-          </TouchableOpacity>
+          <MyButton title="Submit" onPress={handleSubmit} disabled={loading} />
 
           {loading && (
             <ActivityIndicator
@@ -461,7 +469,5 @@ const VerificationScreen = () => {
     </SafeAreaView>
   );
 };
-
-
 
 export default VerificationScreen;
