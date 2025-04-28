@@ -1,5 +1,5 @@
 // RecommendedProducts.js
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   FlatList,
   View,
@@ -7,14 +7,14 @@ import {
   Image,
   ActivityIndicator,
   Text,
-  StatusBar,
 } from 'react-native';
 import styles from './style';
 import Regular from '../../../../typography/RegularText';
 import {HeartSvg, MarkerSVG} from '../../../../assets/svg';
 import Bold from '../../../../typography/BoldText';
-import {mvs} from '../../../../util/metrices';
 import {colors} from '../../../../util/color';
+import {useSelector} from 'react-redux';
+import {fetchProducts} from '../../../../api/apiServices';
 // import Icon from 'react-native-vector-icons/FontAwesome5'
 
 const RecommendedSection = ({
@@ -26,18 +26,45 @@ const RecommendedSection = ({
   handleHeartClick,
   navigateToProductDetails,
 }) => {
+  const [apiProducts, setApiProducts] = useState([]);
+  const [productsLoading, setProductsLoading] = useState(true);
+  const {token} = useSelector(state => state.user);
+
+  useEffect(() => {
+    const loadProducts = async () => {
+      setProductsLoading(true);
+
+      const filters = {
+        productName: '',
+        fromDate: '',
+        toDate: '',
+        status: '',
+      };
+
+      const response = await fetchProducts(token, filters);
+      console.log('API Response:', response);
+      if (response?.success && Array.isArray(response.data)) {
+        setApiProducts(response.data);
+      } else {
+        console.error('Invalid products data', response);
+      }
+      setProductsLoading(false);
+    };
+
+    loadProducts();
+  }, [token]);
+
   const renderRecommendedItem = ({item}) => (
     <TouchableOpacity
       style={styles.recommendedItem}
       onPress={() => navigateToProductDetails(item)}>
-      <Image source={item.imageUrl} style={styles.recommendedImage} />
+      <Image
+        source={{uri: `https://backend.souqna.net${item.images[0]?.path}`}}
+        style={styles.recommendedImage}
+      />
       <View style={styles.recommendedTextContainer}>
-        <Regular style={styles.recommendedTitle}>{item.title}</Regular>
+        <Regular style={styles.recommendedTitle}>{item.name}</Regular>
         <Regular style={styles.recommendedPrice}>${item.price} - USD</Regular>
-        <View style={styles.recommendedLocationContainer}>
-          <MarkerSVG width={13} height={20} fill={colors.grey} />
-          <Regular style={styles.recommendedLocation}>{item.location}</Regular>
-        </View>
       </View>
       <TouchableOpacity
         onPress={() => handleHeartClick(item.id, item)}
@@ -51,7 +78,7 @@ const RecommendedSection = ({
     <View style={styles.recommendedContainer}>
       <Bold>Recommended For You</Bold>
       <FlatList
-        data={products}
+        data={apiProducts}
         numColumns={2}
         keyExtractor={(item, index) => index.toString()}
         renderItem={renderRecommendedItem}
@@ -63,6 +90,13 @@ const RecommendedSection = ({
           ) : isEndOfResults ? (
             <Regular style={styles.endOfResultsText}>End of Results</Regular>
           ) : null
+        }
+        ListEmptyComponent={
+          productsLoading ? (
+            <Text>Loading...</Text>
+          ) : (
+            <Text>No products found</Text>
+          )
         }
       />
     </View>

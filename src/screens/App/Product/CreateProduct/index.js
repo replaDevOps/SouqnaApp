@@ -8,6 +8,7 @@ import {
   Image,
   TouchableOpacity,
   ActivityIndicator,
+  StatusBar,
 } from 'react-native';
 import React, {useState} from 'react';
 import {useRoute} from '@react-navigation/native';
@@ -19,6 +20,7 @@ import {styles} from './styles';
 import MainHeader from '../../../../components/Headers/MainHeader';
 import {MyButton} from '../../../../components/atoms/InputFields/MyButton';
 import {colors} from '../../../../util/color';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const CreateProduct = () => {
   const route = useRoute();
@@ -163,7 +165,8 @@ const CreateProduct = () => {
   };
 
   return (
-    <View style={{flex: 1}}>
+    <SafeAreaView style={{flex: 1}}>
+      <StatusBar barStyle="dark-content" />
       <MainHeader title={`Create Product for ${name}`} showBackIcon={true} />
       <ScrollView contentContainerStyle={styles.container}>
         {/* Name */}
@@ -260,7 +263,7 @@ const CreateProduct = () => {
         style={styles.snackbar}>
         {snackbarMessage}
       </Snackbar>
-    </View>
+    </SafeAreaView>
   );
 };
 

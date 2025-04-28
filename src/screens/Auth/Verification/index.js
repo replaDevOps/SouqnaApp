@@ -186,7 +186,7 @@ const VerificationScreen = () => {
       console.log('API Response:', response.data);
       if (response.status === 200 && response.data.success) {
         Alert.alert('Success', 'Verification completed!');
-        navigation.navigate('Home');
+        navigation.navigate('Profile');
       } else if (
         !response.data.success &&
         response.data.message === 'Your document is still Pending'
@@ -266,7 +266,7 @@ const VerificationScreen = () => {
   return (
     <SafeAreaView>
       <ScrollView>
-        <MainHeader title={'Verification'} />
+        <MainHeader title={'Verification'} showBackIcon={true} />
         <View style={styles.container}>
           {/* Full Name input (first field) */}
           <View style={styles.inputContainer}>

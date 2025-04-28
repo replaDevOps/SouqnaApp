@@ -21,16 +21,25 @@ export const fetchCategories = async token => {
   }
 };
 
-export const fetchProducts = async token => {
+export const fetchProducts = async (token, filters) => {
   try {
-    const response = await API.get('showAllProducts', {
+    const response = await API.post('showAllProducts', filters, {
       headers: {
         Authorization: `Bearer ${token}`,
+        pageNo: 1,
+        recordsPerPage: 20,
       },
     });
-    return response.data;
+    if (response.status === 200) {
+      return response.data;
+    }
+    console.error('Error: Received non-200 status code', response.status);
+    return null;
   } catch (error) {
-    console.error('Error fetching products:', error);
+    console.error(
+      'Error fetching products:',
+      error.response?.data || error.message,
+    );
     return null;
   }
 };

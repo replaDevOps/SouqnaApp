@@ -1,5 +1,12 @@
 import React, {useCallback, useState} from 'react';
-import {View, TouchableOpacity, Text, ScrollView} from 'react-native';
+import {
+  View,
+  TouchableOpacity,
+  Text,
+  ScrollView,
+  StatusBar,
+  RefreshControl,
+} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import styles from './styles';
 import {
@@ -13,12 +20,12 @@ import Regular from '../../../typography/RegularText';
 import MainHeader from '../../../components/Headers/MainHeader'; // Import the new component
 import VerificationStatus from '../../../components/Structure/VerificationStatus';
 import axios from 'axios';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const Profile = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const {token, verificationStatus} = useSelector(state => state.user);
-
   const [refreshing, setRefreshing] = useState(false);
 
   const fetchVerificationStatus = async () => {
@@ -44,14 +51,14 @@ const Profile = () => {
 
   const onRefresh = async () => {
     setRefreshing(true);
-    await fetchVerificationStatus();
+    fetchVerificationStatus();
     setRefreshing(false);
     console.log('Profile Refreshed');
   };
 
   useFocusEffect(
     useCallback(() => {
-      onRefresh();
+      fetchVerificationStatus();
     }, []),
   );
 
@@ -65,60 +72,65 @@ const Profile = () => {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="dark-content" />
       <MainHeader title="My Account" />
-
-      <View style={styles.logoContainer}>
-        <SouqnaLogo width={50} height={50} />
-        <Regular style={styles.regularText1}>Souqna</Regular>
-      </View>
-
-      {/* VerificationStatus component */}
-      <VerificationStatus />
-
-      <View style={styles.content}>
-        <Regular style={styles.regularText}>Profile</Regular>
-        <View style={styles.menuContainer}>
-          <TouchableOpacity style={styles.menuItem}>
-            <Regular style={styles.menuText}>My Account</Regular>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.menuItem}
-            onPress={() => {
-              navigation.navigate('Verification');
-            }}>
-            <Text style={styles.menuText}>Update Profile</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.menuItem}>
-            <Text style={styles.menuText}>Update Pic</Text>
-          </TouchableOpacity>
+      <ScrollView
+        contentContainerStyle={styles.container}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }>
+        <View style={styles.logoContainer}>
+          <SouqnaLogo width={50} height={50} />
+          <Regular style={styles.regularText1}>Souqna</Regular>
         </View>
 
-        <Regular style={styles.regularText}>Favourites</Regular>
-        <View style={styles.menuContainer}>
-          <TouchableOpacity style={styles.menuItem}>
-            <Regular style={styles.menuText}>Favourite Ads</Regular>
-          </TouchableOpacity>
+        <VerificationStatus />
 
-          <TouchableOpacity style={styles.menuItem}>
-            <Text style={styles.menuText}>Favourite Searches</Text>
-          </TouchableOpacity>
+        <View style={styles.content}>
+          <Regular style={styles.regularText}>Profile</Regular>
+          <View style={styles.menuContainer}>
+            <TouchableOpacity style={styles.menuItem}>
+              <Regular style={styles.menuText}>My Account</Regular>
+            </TouchableOpacity>
 
-          <TouchableOpacity style={styles.menuItem}>
-            <Text style={styles.menuText}>Favourite Sellers</Text>
-          </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.menuItem}
+              onPress={() => {
+                navigation.navigate('Verification');
+              }}>
+              <Text style={styles.menuText}>Update Profile</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.menuItem}>
+              <Text style={styles.menuText}>Update Pic</Text>
+            </TouchableOpacity>
+          </View>
+
+          <Regular style={styles.regularText}>Favourites</Regular>
+          <View style={styles.menuContainer}>
+            <TouchableOpacity style={styles.menuItem}>
+              <Regular style={styles.menuText}>Favourite Ads</Regular>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.menuItem}>
+              <Text style={styles.menuText}>Favourite Searches</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.menuItem}>
+              <Text style={styles.menuText}>Favourite Sellers</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
 
-      <View style={styles.footer}>
-        <MyButton title="Change Password" onPress={handleChangePassword} />
-      </View>
-      <View style={styles.footer}>
-        <MyButton title="Logout" onPress={handleLogout} />
-      </View>
-    </ScrollView>
+        <View style={styles.footer}>
+          <MyButton title="Change Password" onPress={handleChangePassword} />
+        </View>
+        <View style={styles.footer}>
+          <MyButton title="Logout" onPress={handleLogout} />
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
