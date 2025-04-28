@@ -69,7 +69,7 @@ const Register = () => {
 
       if (data.success) {
         alert(data.message || 'Registration successful! Please login.');
-        navigation.navigate('Login');
+        navigation.replace('Login');
       } else {
         alert(data.message || 'Registration failed. Please try again.');
       }

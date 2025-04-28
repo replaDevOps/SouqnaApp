@@ -1,9 +1,10 @@
 import React from 'react';
-import {View, FlatList, TouchableOpacity} from 'react-native';
+import {View, FlatList, TouchableOpacity, StatusBar} from 'react-native';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import Regular from '../../../typography/RegularText';
 import styles from './style';
 import CategoryHeader from '../../../components/Headers/CategoryHeader';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const AdvertiseAll = () => {
   const route = useRoute();
@@ -31,7 +32,8 @@ const AdvertiseAll = () => {
   );
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="dark-content" />
       <CategoryHeader title={category} onBack={handleBack} />
       <View style={styles.headerContainer}>
         <Regular style={styles.header}>All in {category}</Regular>
@@ -43,7 +45,7 @@ const AdvertiseAll = () => {
           renderItem={renderSubCategoryItem}
         />
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 

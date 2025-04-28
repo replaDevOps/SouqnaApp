@@ -1,10 +1,10 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {FlatList, StatusBar, View} from 'react-native';
+import {FlatList, RefreshControl, StatusBar, View} from 'react-native';
 import SearchHeader from '../../../components/Headers/SearchHeader';
 import dummyData from '../../../util/dummyData';
 import styles from './style';
 import AddModal from '../../../components/Modals/AddModal';
-import {useNavigation} from '@react-navigation/native';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
 import CategorySection from '../../../components/Structure/Search/CategorySection/CategorySection';
 import RecommendedSection from '../../../components/Structure/Search/RecommendedSection/RecommendedSection';
@@ -14,15 +14,17 @@ import {
   removeFavorite,
 } from '../../../redux/slices/favoritesSlice';
 import VerificationModal from '../../../components/Modals/VerificationModal';
-import {fetchCategories} from '../../../api/apiServices';
+import {fetchCategories, fetchProducts} from '../../../api/apiServices';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import axios from 'axios';
+import {setVerificationStatus} from '../../../redux/slices/userSlice';
 
 const {recommendedProducts} = dummyData;
 
 const SearchScreen = () => {
   const [likedItems, setLikedItems] = useState({});
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [setSelectedProduct] = useState(null);
   const navigation = useNavigation();
   const [isSearchMode, setIsSearchMode] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -32,11 +34,51 @@ const SearchScreen = () => {
   // const [apiProducts, setApiProducts] = useState([]);
   // const [productsLoading, setProductsLoading] = useState(true);
   const [isEndOfResults, setIsEndOfResults] = useState(false);
-  const {token, userData} = useSelector(state => state.user);
+  const {token, verificationStatus} = useSelector(state => state.user);
   const dispatch = useDispatch();
   const [apiCategories, setApiCategories] = useState([]);
   const [categoriesLoading, setCategoriesLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
+  const [refreshing, setRefreshing] = useState(false); // New state for pull-to-refresh
+  const isFocused = useIsFocused();
+
+  useEffect(() => {
+    const fetchVerificationStatus = async () => {
+      try {
+        const response = await axios.get(
+          'https://backend.souqna.net/api/viewVerification',
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+
+        // Only get the verification status from the API response
+        const apiStatus = response.data?.data?.status || 0; // Defaults to 0 if status is not available
+        dispatch(setVerificationStatus(apiStatus)); // Store status in Redux
+
+        console.log('API verification status: ', apiStatus);
+      } catch (error) {
+        console.error('Verification API error:', error);
+
+        if (
+          error.response &&
+          error.response.status === 401 &&
+          error.response.data.message === 'Unauthenticated'
+        ) {
+          dispatch(setVerificationStatus(0)); // Update Redux store
+          console.log('Unauthenticated: setting Unverified status');
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (isFocused) {
+      fetchVerificationStatus();
+    }
+  }, [token, dispatch, isFocused]);
 
   useEffect(() => {
     const loadCategories = async () => {
@@ -53,13 +95,14 @@ const SearchScreen = () => {
     // }
   }, [token]);
 
+  // Manage the modal visibility based on verificationStatus from Redux
   useEffect(() => {
-    if (userData?.status === 0 || userData?.status === 3) {
+    if (verificationStatus !== 1 && verificationStatus !== 2) {
       setModalVisible(true);
     } else {
       setModalVisible(false);
     }
-  }, [userData?.status]);
+  }, [verificationStatus]);
 
   useEffect(() => {
     if (!isModalVisible) {
@@ -147,6 +190,25 @@ const SearchScreen = () => {
     navigation.navigate('ProductDetail', {item});
   };
 
+  const onRefresh = async () => {
+    setRefreshing(true);
+    try {
+      // Fetch categories again
+      setCategoriesLoading(true);
+      const categoriesResponse = await fetchCategories(token);
+      if (categoriesResponse?.success) {
+        setApiCategories(categoriesResponse.data);
+      }
+      setCategoriesLoading(false);
+
+      setLoading(false);
+    } catch (error) {
+      console.error('Error refreshing data:', error);
+    } finally {
+      setRefreshing(false);
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" translucent backgroundColor="#fff" />
@@ -187,6 +249,9 @@ const SearchScreen = () => {
                 return null;
             }
           }}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
         />
       )}
 

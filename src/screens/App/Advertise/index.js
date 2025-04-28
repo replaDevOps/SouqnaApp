@@ -1,15 +1,15 @@
 import React, {useEffect, useState} from 'react';
-import {FlatList, Image, TouchableOpacity, View} from 'react-native';
+import {FlatList, Image, StatusBar, TouchableOpacity, View} from 'react-native';
 import styles from './style';
 import MainHeader from '../../../components/Headers/MainHeader';
 import Regular from '../../../typography/RegularText';
-import dummyData from '../../../util/dummyData';
 import {useNavigation} from '@react-navigation/native';
 import {Row} from '../../../components/atoms/row';
 import {ForwardSVG} from '../../../assets/svg';
 import axios from 'axios';
 import {useSelector} from 'react-redux';
 import LocationSvg from '../../../assets/svg/location-svg';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const SERVER_URL = 'https://backend.souqna.net';
 const AdvertiseScreen = () => {
@@ -93,7 +93,8 @@ const AdvertiseScreen = () => {
     category => category.name !== 'Other Categories',
   );
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="dark-content" />
       <MainHeader title="Post Ad" />
       <View style={styles.content}>
         <Regular style={styles.regularText}>Category Selection</Regular>
@@ -104,7 +105,7 @@ const AdvertiseScreen = () => {
         renderItem={renderCategoryItem}
         contentContainerStyle={styles.categoryList}
       />
-    </View>
+    </SafeAreaView>
   );
 };
 
