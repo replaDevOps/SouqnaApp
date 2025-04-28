@@ -11,7 +11,7 @@ const styles = StyleSheet.create({
     paddingBottom: mvs(60), // Adjust this value to prevent overlap with the footer
   },
   imageContainer: {
-    marginBottom: mvs(10),
+    marginBottom: mvs(2),
   },
   productImage: {
     resizeMode: 'cover',
@@ -19,28 +19,37 @@ const styles = StyleSheet.create({
   itemContainer: {
     padding: mvs(10),
     backgroundColor: colors.white,
-    marginBottom: mvs(10),
+    marginBottom: mvs(7),
   },
   productTitle: {
     fontSize: mvs(22),
   },
+  locationContainer:{
+flexDirection:'row',
+marginVertical:mvs(8)
+  },
   productPrice: {
-    fontSize: mvs(20),
+    fontSize: mvs(25),
     color: colors.green,
-    marginVertical: 5,
+    marginBottom:mvs(4)
   },
   productLocation: {
     fontSize: mvs(16),
     color: colors.grey,
+    marginLeft:mvs(7)
   },
-
   descriptionContainer: {
     justifyContent: 'center',
     padding: mvs(10),
     backgroundColor: colors.white,
-    marginTop: mvs(10),
+    marginTop: mvs(7),
   },
-
+description:{
+  color:colors.grey,fontSize:mvs(15),
+  lineHeight:mvs(23),
+  paddingHorizontal:mvs(5),
+  paddingVertical:mvs(4)
+},
   providerContainer: {
     // justifyContent: 'center',
     padding: mvs(10),

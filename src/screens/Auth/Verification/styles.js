@@ -87,6 +87,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingHorizontal: 10,
     fontSize: 16,
+    justifyContent:'center',
+    // alignItems:'center'
   },
   errorContainer: {
     backgroundColor: 'red',
@@ -223,6 +225,44 @@ const styles = StyleSheet.create({
   },
   calendarIcon: {
     padding: 5,
+  },
+  radioGroup: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: mvs(0),
+    backgroundColor: colors.white,
+    borderRadius: mvs(5),
+    height: mvs(50),
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: colors.gray ,
+  },
+  radioOption: {
+    marginHorizontal: mvs(5),
+  },
+  radioContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  radioOuter: {
+    height: mvs(20),
+    width: mvs(20),
+    borderRadius: mvs(10),
+    borderWidth: 2,
+    borderColor: colors.primary || '#007bff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  radioInner: {
+    height: mvs(10),
+    width: mvs(10),
+    borderRadius: mvs(5),
+    backgroundColor: colors.primary || '#007bff',
+  },
+  radioLabel: {
+    fontSize: mvs(16),
+    marginLeft: mvs(8),
+    color: colors.black,
   },
 });
 export default styles;

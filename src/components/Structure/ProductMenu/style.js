@@ -5,7 +5,7 @@ import {colors} from '../../../util/color';
 const styles = StyleSheet.create({
   menuContainer: {
     justifyContent: 'center',
-    paddingHorizontal: mvs(10),
+    paddingHorizontal: mvs(8),
     backgroundColor: colors.white,
   },
   menuItem: {
@@ -19,12 +19,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   menuText: {
-    fontSize: mvs(14),
+    fontSize: mvs(15),
     marginLeft: mvs(10),
     color: colors.grey,
   },
   leftText: {
-    fontSize: mvs(14),
+    fontSize: mvs(16),
+    fontWeight:'700',
     marginLeft: mvs(10),
     color: colors.black,
   },
