@@ -12,7 +12,7 @@ import {
   FlatList,
 } from 'react-native';
 import React, {useState} from 'react';
-import {useRoute} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import axios from 'axios';
 import {useSelector} from 'react-redux';
 import {launchImageLibrary} from 'react-native-image-picker';
@@ -23,18 +23,13 @@ import {MyButton} from '../../../../components/atoms/InputFields/MyButton';
 import {colors} from '../../../../util/color';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {mvs} from '../../../../util/metrices';
-import {
-  CloseSvg,
-  HOMESVG,
-  OpenSVG,
-  SearchSVG,
-  UploadSVG,
-} from '../../../../assets/svg';
+import {SearchSVG, UploadSVG} from '../../../../assets/svg';
 
 const CreateProduct = () => {
   const route = useRoute();
-  const {id: subCategoryId, categoryId, name} = route.params;
+  const {id: subCategoryId, categoryId, name, category} = route.params;
   const {token} = useSelector(state => state.user);
+  const navigation = useNavigation();
 
   const [formData, setFormData] = useState({
     name: '',
@@ -55,11 +50,6 @@ const CreateProduct = () => {
   const [selectedCondition, setSelectedCondition] = useState('');
   const conditionValue =
     selectedCondition === 'New' ? 1 : selectedCondition === 'Used' ? 2 : null;
-  if (conditionValue === null) {
-    setSnackbarMessage('Please select the condition.');
-    setSnackbarVisible(true);
-    return;
-  }
 
   const handleConditionSelect = condition => {
     setSelectedCondition(condition);
@@ -203,6 +193,13 @@ const CreateProduct = () => {
     }
   };
 
+  const handleChange = () => {
+    navigation.reset({
+      index: 0,
+      routes: [{name: 'MyTabs', params: {screen: 'Advertise'}}],
+    });
+  };
+
   return (
     <SafeAreaView style={{flex: 1}}>
       <StatusBar barStyle="dark-content" />
@@ -224,11 +221,11 @@ const CreateProduct = () => {
                 style={styles.categoryImage}
               />
               <View style={{marginLeft: mvs(10)}}>
-                <Text style={styles.categoryTitle}>Mobiles</Text>
+                <Text style={styles.categoryTitle}>{category}</Text>
                 <Text style={styles.categorySubtitle}>{name}</Text>
               </View>
             </View>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={handleChange}>
               <Text style={styles.changeText}>Change</Text>
             </TouchableOpacity>
           </View>
@@ -242,7 +239,7 @@ const CreateProduct = () => {
               </TouchableOpacity>
             ) : (
               // After image is added
-              <View  >
+              <View>
                 {/* <TouchableOpacity onPress={handleChooseImages} style={styles.iconRow}>
                 <UploadSVG width={22} height={22} style={styles.uploadIcon} />
                 <Text>Upload Image</Text>
@@ -255,7 +252,7 @@ const CreateProduct = () => {
                       showsHorizontalScrollIndicator={false}
                       data={[{isUploadIcon: true}, ...formData.images]}
                       keyExtractor={(item, index) => index.toString()}
-                      contentInset={{ right: 25 }}
+                      contentInset={{right: 25}}
                       contentContainerStyle={styles.flatListContainer}
                       // style
                       renderItem={({item, index}) =>

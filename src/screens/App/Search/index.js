@@ -37,6 +37,7 @@ const SearchScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [refreshing, setRefreshing] = useState(false); // New state for pull-to-refresh
   const isFocused = useIsFocused();
+  const [hasFetchedVerification, setHasFetchedVerification] = useState(false);
 
   useEffect(() => {
     const fetchVerificationStatus = async () => {
@@ -67,11 +68,12 @@ const SearchScreen = () => {
           console.log('Unauthenticated: setting Unverified status');
         }
       } finally {
+        setHasFetchedVerification(true);
         setLoading(false);
       }
     };
 
-    if (isFocused) {
+    if (token && isFocused) {
       fetchVerificationStatus();
     }
   }, [token, dispatch, isFocused]);
@@ -93,12 +95,17 @@ const SearchScreen = () => {
 
   // Manage the modal visibility based on verificationStatus from Redux
   useEffect(() => {
-    if (verificationStatus !== 1 && verificationStatus !== 2) {
+    if (
+      hasFetchedVerification &&
+      verificationStatus !== 1 &&
+      verificationStatus !== 2 &&
+      token
+    ) {
       setModalVisible(true);
     } else {
       setModalVisible(false);
     }
-  }, [verificationStatus]);
+  }, [verificationStatus, token, hasFetchedVerification]);
 
   useEffect(() => {
     if (!isModalVisible) {
