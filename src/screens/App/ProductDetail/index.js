@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, Image, Dimensions, ScrollView, Text} from 'react-native';
 import {useRoute} from '@react-navigation/native';
 import Bold from '../../../typography/BoldText';
@@ -8,30 +8,64 @@ import {Row} from '../../../components/atoms/row';
 import ProductHeader from '../../../components/Headers/ProductHeader';
 import ProductFooter from '../../../components/Footer/ProductFooter';
 import AddModal from '../../../components/Modals/AddModal';
-import ShareActions from '../../../components/Structure/ShareAction/ShareAction';
 import ProviderInfo from '../../../components/Structure/ProviderInfo/ProviderInfo';
-import ProductMenu from '../../../components/Structure/ProductMenu/ProductMenu';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {
   addFavorite,
   removeFavorite,
 } from '../../../redux/slices/favoritesSlice';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { colors } from '../../../util/color';
-import { mvs } from '../../../util/metrices';
-import LocationSvg from '../../../assets/svg/location-svg';
-import { MarkerSVG } from '../../../assets/svg';
+
+import {SafeAreaView} from 'react-native-safe-area-context';
+import {mvs} from '../../../util/metrices';
+
+import axios from 'axios';
+import ProductMenu from '../../../components/Structure/ProductMenu/ProductMenu';
+import {colors} from '../../../util/color';
+import {MarkerSVG} from '../../../assets/svg';
+import ShareActions from '../../../components/Structure/ShareAction/ShareAction';
+import ProductImages from './ProductImages';
 
 const {width, height} = Dimensions.get('window');
 
 const ProductDetail = () => {
-  const route = useRoute();
-  const {item} = route.params;
   const [likedItems, setLikedItems] = useState({});
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState(null);
   const [headerTitleVisible, setHeaderTitleVisible] = useState(false); // Track header title visibility
   const dispatch = useDispatch();
+  const {token} = useSelector(state => state.user);
+  const route = useRoute();
+  const {productId} = route.params;
+  console.log('Received PRODUCTID: ', productId);
+
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProductDetails = async () => {
+      try {
+        const response = await axios.get(
+          `https://backend.souqna.net/api/getProduct/${productId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+        if (response.status === 200 && response.data.success) {
+          setProduct(response.data.data);
+        } else {
+          console.error('Failed to fetch product details');
+        }
+      } catch (error) {
+        console.error('Error fetching product:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProductDetails();
+  }, [productId]);
+  console.log(product);
 
   const handleHeartPress = id => {
     setLikedItems(prevState => ({
@@ -76,69 +110,93 @@ const ProductDetail = () => {
   const onScroll = event => {
     const contentOffsetY = event.nativeEvent.contentOffset.y;
     if (contentOffsetY > height * 0.25) {
-      setHeaderTitleVisible(true); // Show title after scrolling past the image
+      setHeaderTitleVisible(true);
     } else {
-      setHeaderTitleVisible(false); // Hide title when scrolled back up
+      setHeaderTitleVisible(false);
     }
   };
   return (
     <SafeAreaView style={styles.container}>
-      <ProductHeader
-        title={item.title}
-        filled={likedItems[item.id]}
-        onHeartPress={handleHeartClick}
-        id={item.id}
-        product={item}
-        headerTitleVisible={headerTitleVisible}
-        productLink={item.productLink}
-      />
-      <ScrollView
-      showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}
-        onScroll={onScroll}
-        scrollEventThrottle={16}>
-        <View style={styles.imageContainer}>
-          <Image
-            source={item.imageUrl}
-            style={[styles.productImage, {width: width, height: height * 0.35}]}
+      {loading || !product ? (
+        <Text>Loading...</Text>
+      ) : (
+        <>
+          <ProductHeader
+            title={product.name}
+            filled={likedItems[product.id]}
+            onHeartPress={handleHeartClick}
+            id={product.id}
+            product={product}
+            headerTitleVisible={headerTitleVisible}
+            productLink={product.productLink}
           />
-        </View>
-        <View style={styles.itemContainer}>
-         <Bold style={styles.productPrice}><Regular style={{fontWeight:'400',fontSize:mvs(22)}}>$ </Regular>{item.price}</Bold>
-         <Bold style={styles.productTitle}>{item.title}</Bold>
-         <View style={styles.locationContainer}>
-        <MarkerSVG width={mvs(20)} height={mvs(20)} fill={colors.grey}/>
-          <Regular style={styles.productLocation}>{item.location}</Regular>
-         </View>
-        </View>
-        <ProductMenu
-          color={item.color}
-          condition={item.condition}
-          material={item.material}
-        />
-        <View style={styles.descriptionContainer}>
-          <Bold style={{fontSize:mvs(22)}}>Description</Bold>
-          <Regular style={styles.description}>{item.description}</Regular>
-        </View>
-        <ProviderInfo provider={item.provider} />
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.scrollContent}
+            onScroll={onScroll}
+            scrollEventThrottle={16}>
+            <ProductImages images={product?.images || []} />
 
-        <View style={styles.providerContainer}>
-          <Row>
-            <Regular>Show-ID</Regular>
-            <Regular>{item.id}</Regular>
-          </Row>
-        </View>
+            <View style={styles.itemContainer}>
+              <Bold style={styles.productPrice}>
+                <Regular
+                  // eslint-disable-next-line react-native/no-inline-styles
+                  style={{
+                    fontWeight: '400',
+                    fontSize: mvs(24),
+                    color: colors.lightgreen,
+                  }}>
+                  ${' '}
+                </Regular>
+                {product.price}
+              </Bold>
+              <Bold style={styles.productTitle}>{product.name}</Bold>
+              {
+                <View style={styles.locationContainer}>
+                  <MarkerSVG
+                    width={mvs(20)}
+                    height={mvs(20)}
+                    fill={colors.grey}
+                  />
+                  <Regular style={styles.productLocation}>
+                    <Text>Pakistan</Text>
+                    {/* {product.location} */}
+                  </Regular>
+                </View>
+              }
+            </View>
+            <ProductMenu
+              color={product.stock}
+              condition={product.description}
+              material={product.user?.name}
+            />
+            <View style={styles.descriptionContainer}>
+              <Bold style={{fontSize: mvs(22)}}>Description</Bold>
+              <Regular style={styles.description}>
+                {product.description}
+              </Regular>
+            </View>
+            <ProviderInfo provider={product} />
 
-        <ShareActions
-          productTitle={item.title}
-          productLink={item.productLink}
-        />
-      </ScrollView>
-      <ProductFooter
-        onChatPress={handleChatPress}
-        onBuyPress={handleBuyPress}
-      />
-      {isModalVisible && <AddModal onClose={onClose} />}
+            <View style={styles.providerContainer}>
+              <Row>
+                <Regular>Show-ID</Regular>
+                <Regular>{product.id}</Regular>
+              </Row>
+            </View>
+
+            <ShareActions
+              productTitle={product.name}
+              productLink={product.productLink}
+            />
+          </ScrollView>
+          <ProductFooter
+            onChatPress={handleChatPress}
+            onBuyPress={handleBuyPress}
+          />
+          {isModalVisible && <AddModal onClose={onClose} />}
+        </>
+      )}
     </SafeAreaView>
   );
 };

@@ -7,15 +7,15 @@ const ProductMenu = ({color, condition, material}) => {
   return (
     <View style={styles.menuContainer}>
       <Row style={styles.topItem}>
-        <Regular style={styles.leftText}>Color</Regular>
+        <Regular style={styles.leftText}>Stock</Regular>
         <Regular style={styles.menuText}>{color}</Regular>
       </Row>
       <Row style={styles.menuItem}>
-        <Regular style={styles.leftText}>Condition</Regular>
+        <Regular style={styles.leftText}>Description</Regular>
         <Regular style={styles.menuText}>{condition}</Regular>
       </Row>
       <Row style={styles.menuItem}>
-        <Regular style={styles.leftText}>Material</Regular>
+        <Regular style={styles.leftText}>User</Regular>
         <Regular style={styles.menuText}>{material}</Regular>
       </Row>
     </View>

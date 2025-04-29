@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {View, FlatList, TouchableOpacity, Image} from 'react-native';
+import {View, FlatList, TouchableOpacity, Image, StatusBar} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux'; // Import dispatch
 import MainHeader from '../../../components/Headers/MainHeader';
 import Bold from '../../../typography/BoldText';
@@ -11,6 +11,7 @@ import {
   addFavorite,
   removeFavorite,
 } from '../../../redux/slices/favoritesSlice';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const FavouriteScreen = () => {
   const navigation = useNavigation();
@@ -64,7 +65,8 @@ const FavouriteScreen = () => {
   );
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="dark-content" />
       <MainHeader title={'Favourites'} />
       <View style={styles.recommendedContainer}>
         <FlatList
@@ -74,7 +76,7 @@ const FavouriteScreen = () => {
           renderItem={renderFavoriteItem}
         />
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 

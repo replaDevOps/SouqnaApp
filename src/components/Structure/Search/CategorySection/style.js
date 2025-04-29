@@ -6,6 +6,7 @@ const styles = StyleSheet.create({
   categoryContainer: {
     marginTop: mvs(10),
     paddingTop: mvs(10),
+    marginBottom: mvs(10),
     flexDirection: 'row',
     backgroundColor: colors.white,
     justifyContent: 'space-evenly',
