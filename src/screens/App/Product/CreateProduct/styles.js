@@ -1,6 +1,6 @@
 import {StyleSheet} from 'react-native';
 import {colors} from '../../../../util/color';
-import { mvs } from '../../../../util/metrices';
+import {mvs} from '../../../../util/metrices';
 
 export const styles = StyleSheet.create({
   container: {
@@ -34,20 +34,20 @@ export const styles = StyleSheet.create({
   categoryImage: {
     width: mvs(60),
     height: mvs(60),
-    borderRadius: mvs(30)
+    borderRadius: mvs(30),
   },
   categoryTitle: {
     fontSize: mvs(18),
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   categorySubtitle: {
     fontSize: mvs(14),
-    paddingTop: mvs(4)
+    paddingTop: mvs(4),
   },
   changeText: {
     fontSize: mvs(18),
     fontWeight: 'bold',
-    color: colors.blue
+    color: colors.blue,
   },
   // Condition button styles
   conditionButton: {
@@ -58,8 +58,8 @@ export const styles = StyleSheet.create({
     padding: mvs(10),
   },
   selectedCondition: {
-    backgroundColor: colors.blue,
-    borderColor: colors.blue,
+    backgroundColor: colors.lightgreen,
+    borderColor: colors.black,
   },
   conditionText: {
     fontSize: mvs(18),
@@ -102,7 +102,7 @@ export const styles = StyleSheet.create({
     width: '100%',
   },
   submitButtonText: {
-    color: colors.white,
+    color: colors.black,
     fontWeight: 'bold',
     fontSize: mvs(16),
   },
@@ -112,10 +112,12 @@ export const styles = StyleSheet.create({
     marginTop: mvs(15),
   },
   imageWrapper: {
+    marginHorizontal: mvs(10), // space between images
+
     width: mvs(120),
     height: mvs(120),
     aspectRatio: 1,
-    margin: '1%',
+    // margin: '1%',
     position: 'relative',
   },
   imagePreview: {
@@ -151,21 +153,25 @@ export const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#e0e0e0',
     borderRadius: mvs(5),
-    paddingHorizontal: 20,
+    // paddingHorizontal: 20,
     paddingVertical: mvs(30),
     alignItems: 'center',
     marginTop: mvs(15),
   },
   iconRow: {
-    paddingHorizontal:mvs(30),
-    paddingVertical:mvs(38),
-    height:mvs(122),
-    borderWidth:1,
-    borderRadius:mvs(7),
-    borderColor:colors.grey,
+    paddingHorizontal: mvs(30),
+    paddingVertical: mvs(38),
+    height: mvs(122),
+    borderWidth: 1,
+    borderRadius: mvs(7),
+    borderColor: colors.grey,
     flexDirection: 'column',
-    alignItems:'center',
+    alignItems: 'center',
     marginBottom: 16,
+  },
+  flatListContainer: {
+    paddingLeft: mvs(20),
+    paddingRight: mvs(15),
   },
   uploadIcon: {
     marginHorizontal: 10,
