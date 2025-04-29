@@ -3,9 +3,14 @@ import {mvs} from '../../../util/metrices';
 import {colors} from '../../../util/color';
 
 const styles = StyleSheet.create({
+  container:{
+   backgroundColor:'#fff',
+   flex:1,
+  },
   header: {
-    fontSize: mvs(14),
-    marginLeft: mvs(10),
+    fontSize: mvs(25),
+    fontWeight:'bold',
+    marginLeft: mvs(7),
   },
   headerContainer: {
     padding: mvs(10),
@@ -13,9 +18,10 @@ const styles = StyleSheet.create({
     marginVertical: mvs(20),
   },
   content: {
-    padding: mvs(10),
+    // padding: mvs(10),
     backgroundColor: colors.white,
-    marginVertical: mvs(10),
+   paddingHorizontal:mvs(10),
+    // marginVertical: mvs(10),
   },
   // subCategoryItem: {
   //   padding: mvs(10),
@@ -23,11 +29,24 @@ const styles = StyleSheet.create({
   //   borderBottomColor: colors.grey,
   // },
   subCategoryItem: {
-    padding: 12,
-    marginVertical: 6,
+    paddingBottom: 10,
+    // marginVertical: 6,
+    // backgroundColor: '#f2f2f2',
+    alignItems:'center',
+    flexDirection:'row',
     borderRadius: 8,
-    backgroundColor: '#f2f2f2',
+    borderBottomWidth:1,
+    borderBottomColor:colors.grey,
+    justifyContent:'space-between'   
   },
-  subCategoryText: {fontSize: mvs(14)},
+  subCategoryText: {
+    fontSize: mvs(18),
+    paddingLeft:mvs(10)
+
+  },
+  titleContainer:{
+    flexDirection:'row',alignItems:'center',
+        paddingLeft:mvs(10)
+  }
 });
 export default styles;
