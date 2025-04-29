@@ -244,12 +244,7 @@ const CreateProduct = () => {
               </TouchableOpacity>
             ) : (
               // After image is added
-              <View  >
-                {/* <TouchableOpacity onPress={handleChooseImages} style={styles.iconRow}>
-                <UploadSVG width={22} height={22} style={styles.uploadIcon} />
-                <Text>Upload Image</Text>
-              </TouchableOpacity> */}
-
+              <View>
                 {formData.images.length > 0 && (
                   <View style={styles.imagePreviewContainer}>
                     <FlatList
@@ -259,8 +254,7 @@ const CreateProduct = () => {
                       keyExtractor={(item, index) => index.toString()}
                       contentInset={{ right: 25 }}
                       contentContainerStyle={styles.flatListContainer}
-                      // style
-                      renderItem={({item, index}) =>
+                      renderItem={({ item, index }) =>
                         item.isUploadIcon ? (
                           <TouchableOpacity
                             onPress={handleChooseImages}
@@ -292,7 +286,10 @@ const CreateProduct = () => {
                 )}
               </View>
             )}
-            <View>{/* Display Selected Images */}</View>
+            <View>
+              {/* Display Selected Images */}
+
+            </View>
 
             <Text style={styles.noteText}>
               For the cover picture we recommend using the landscape mode.
