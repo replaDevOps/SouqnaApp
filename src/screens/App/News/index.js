@@ -1,10 +1,11 @@
 import React from 'react';
-import {View, FlatList, Image} from 'react-native';
+import {View, FlatList, Image, StatusBar} from 'react-native';
 import dummyData from '../../../util/dummyData';
 import Bold from '../../../typography/BoldText';
 import Regular from '../../../typography/RegularText';
 import styles from './styles';
 import MainHeader from '../../../components/Headers/MainHeader';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const {newsData} = dummyData;
 
@@ -20,7 +21,8 @@ const NewsScreen = () => {
   );
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="dark-content" />
       <MainHeader title={'News'} />
       <FlatList
         data={newsData}
@@ -28,7 +30,7 @@ const NewsScreen = () => {
         renderItem={renderNewsItem}
         contentContainerStyle={styles.newsList}
       />
-    </View>
+    </SafeAreaView>
   );
 };
 

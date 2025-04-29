@@ -31,8 +31,7 @@ const SearchScreen = () => {
   const [allRecommendedProducts, setAllRecommendedProducts] = useState(
     recommendedProducts.slice(0, 6),
   );
-  // const [apiProducts, setApiProducts] = useState([]);
-  // const [productsLoading, setProductsLoading] = useState(true);
+
   const [isEndOfResults, setIsEndOfResults] = useState(false);
   const {token, verificationStatus} = useSelector(state => state.user);
   const dispatch = useDispatch();
@@ -186,8 +185,9 @@ const SearchScreen = () => {
     navigation.navigate('SearchResultsScreen');
   };
 
-  const navigateToProductDetails = item => {
-    navigation.navigate('ProductDetail', {item});
+  const navigateToProductDetails = productId => {
+    navigation.navigate('ProductDetail', {productId});
+    console.log('Product ID: ', productId);
   };
 
   const onRefresh = async () => {

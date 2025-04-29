@@ -57,7 +57,7 @@ const RecommendedSection = ({
   const renderRecommendedItem = ({item}) => (
     <TouchableOpacity
       style={styles.recommendedItem}
-      onPress={() => navigateToProductDetails(item)}>
+      onPress={() => navigateToProductDetails(item.id)}>
       <Image
         source={{uri: `https://backend.souqna.net${item.images[0]?.path}`}}
         style={styles.recommendedImage}
