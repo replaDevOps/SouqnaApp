@@ -116,8 +116,8 @@ export const styles = StyleSheet.create({
 
     width: mvs(120),
     height: mvs(120),
-    aspectRatio: 1,
-    // margin: '1%',
+    // aspectRatio: 1,
+    marginHorizontal: mvs(6),
     position: 'relative',
   },
   imagePreview: {
@@ -149,6 +149,10 @@ export const styles = StyleSheet.create({
     width: '80%',
     borderRadius: 8,
   },
+  flatListContainer: {
+    // alignItems: 'center',
+    marginHorizontal:20,
+  },
   uploadBox: {
     borderWidth: 1,
     borderColor: '#e0e0e0',
@@ -159,12 +163,12 @@ export const styles = StyleSheet.create({
     marginTop: mvs(15),
   },
   iconRow: {
-    paddingHorizontal: mvs(30),
-    paddingVertical: mvs(38),
-    height: mvs(122),
-    borderWidth: 1,
-    borderRadius: mvs(7),
-    borderColor: colors.grey,
+    paddingHorizontal:mvs(30),
+    paddingVertical:mvs(38),
+    height:mvs(122),
+    borderWidth:1,
+    borderRadius:mvs(7),
+    borderColor:colors.grey,
     flexDirection: 'column',
     alignItems: 'center',
     marginBottom: 16,
