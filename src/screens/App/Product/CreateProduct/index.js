@@ -206,7 +206,7 @@ const CreateProduct = () => {
   return (
     <SafeAreaView style={{flex: 1}}>
       <StatusBar barStyle="dark-content" />
-      <MainHeader title={`Create Product for ${name}`} showBackIcon={true} />
+      <MainHeader title={`Post Your Product`} showBackIcon={true} />
 
       <ScrollView
         style={{
@@ -244,7 +244,12 @@ const CreateProduct = () => {
               </TouchableOpacity>
             ) : (
               // After image is added
-              <View>
+              <View  >
+                {/* <TouchableOpacity onPress={handleChooseImages} style={styles.iconRow}>
+                <UploadSVG width={22} height={22} style={styles.uploadIcon} />
+                <Text>Upload Image</Text>
+              </TouchableOpacity> */}
+
                 {formData.images.length > 0 && (
                   <View style={styles.imagePreviewContainer}>
                     <FlatList
@@ -252,7 +257,9 @@ const CreateProduct = () => {
                       showsHorizontalScrollIndicator={false}
                       data={[{isUploadIcon: true}, ...formData.images]}
                       keyExtractor={(item, index) => index.toString()}
+                      contentInset={{ right: 25 }}
                       contentContainerStyle={styles.flatListContainer}
+                      // style
                       renderItem={({item, index}) =>
                         item.isUploadIcon ? (
                           <TouchableOpacity
