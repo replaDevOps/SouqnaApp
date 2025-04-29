@@ -1,6 +1,6 @@
-import { StyleSheet } from 'react-native';
-import { mvs } from '../../../../util/metrices';
-import { colors } from '../../../../util/color';
+import {StyleSheet} from 'react-native';
+import {mvs} from '../../../../util/metrices';
+import {colors} from '../../../../util/color';
 
 const styles = StyleSheet.create({
   container: {
@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
     marginTop: mvs(10),
     paddingHorizontal: mvs(10),
     paddingVertical: mvs(10),
-    overflow:'visible'
+    overflow: 'visible',
     // backgroundColor: colors.white,
   },
   recommendedItem: {
@@ -27,6 +27,7 @@ const styles = StyleSheet.create({
     marginBottom: mvs(13),
     backgroundColor: colors.white,
     borderRadius: mvs(10),
+    width: '48%',
     // padding: mvs(4),
   },
   recommendedImage: {
@@ -40,7 +41,7 @@ const styles = StyleSheet.create({
   recommendedLocationContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginVertical:mvs(4)
+    marginVertical: mvs(4),
   },
   recommendedTextContainer: {
     flexDirection: 'column',

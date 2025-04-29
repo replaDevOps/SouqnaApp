@@ -36,6 +36,7 @@ const SearchScreen = () => {
   const {token, verificationStatus} = useSelector(state => state.user);
   const dispatch = useDispatch();
   const [apiCategories, setApiCategories] = useState([]);
+  const [ApiProducts, setApiProducts] = useState([]);
   const [categoriesLoading, setCategoriesLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [refreshing, setRefreshing] = useState(false); // New state for pull-to-refresh
@@ -201,7 +202,20 @@ const SearchScreen = () => {
       }
       setCategoriesLoading(false);
 
+      // Fetch recommended products again
+      setLoading(true);
+      const recommendedResponse = await fetchProducts(token); // Refresh recommended products
+      if (recommendedResponse?.success) {
+        setAllRecommendedProducts(recommendedResponse.data.slice(0, 6)); // Update recommended products
+        setIsEndOfResults(false);
+      }
       setLoading(false);
+
+      // Fetch gallery products again
+      const galleryResponse = await fetchProducts(token); // Refresh gallery products
+      if (galleryResponse?.success) {
+        setApiProducts(galleryResponse.data); // Update gallery data
+      }
     } catch (error) {
       console.error('Error refreshing data:', error);
     } finally {

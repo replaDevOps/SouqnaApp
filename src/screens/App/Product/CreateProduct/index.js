@@ -11,24 +11,30 @@ import {
   StatusBar,
   FlatList,
 } from 'react-native';
-import React, { useState } from 'react';
-import { useRoute } from '@react-navigation/native';
+import React, {useState} from 'react';
+import {useRoute} from '@react-navigation/native';
 import axios from 'axios';
-import { useSelector } from 'react-redux';
-import { launchImageLibrary } from 'react-native-image-picker';
-import { Snackbar } from 'react-native-paper';
-import { styles } from './styles';
+import {useSelector} from 'react-redux';
+import {launchImageLibrary} from 'react-native-image-picker';
+import {Snackbar} from 'react-native-paper';
+import {styles} from './styles';
 import MainHeader from '../../../../components/Headers/MainHeader';
-import { MyButton } from '../../../../components/atoms/InputFields/MyButton';
-import { colors } from '../../../../util/color';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { mvs } from '../../../../util/metrices';
-import { CloseSvg, HOMESVG, OpenSVG, SearchSVG, UploadSVG } from '../../../../assets/svg';
+import {MyButton} from '../../../../components/atoms/InputFields/MyButton';
+import {colors} from '../../../../util/color';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import {mvs} from '../../../../util/metrices';
+import {
+  CloseSvg,
+  HOMESVG,
+  OpenSVG,
+  SearchSVG,
+  UploadSVG,
+} from '../../../../assets/svg';
 
 const CreateProduct = () => {
   const route = useRoute();
-  const { id: subCategoryId, categoryId, name } = route.params;
-  const { token } = useSelector(state => state.user);
+  const {id: subCategoryId, categoryId, name} = route.params;
+  const {token} = useSelector(state => state.user);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -38,14 +44,24 @@ const CreateProduct = () => {
     discount: '',
     specialOffer: '',
     images: [],
+    location: 'Murree Road, Pakistan',
+    lat: '33.6938',
+    long: '73.0652',
   });
 
   const [loading, setLoading] = useState(false);
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [selectedCondition, setSelectedCondition] = useState('');
+  const conditionValue =
+    selectedCondition === 'New' ? 1 : selectedCondition === 'Used' ? 2 : null;
+  if (conditionValue === null) {
+    setSnackbarMessage('Please select the condition.');
+    setSnackbarVisible(true);
+    return;
+  }
 
-  const handleConditionSelect = (condition) => {
+  const handleConditionSelect = condition => {
     setSelectedCondition(condition);
     handleInputChange('condition', condition);
   };
@@ -93,6 +109,12 @@ const CreateProduct = () => {
     data.append('subCategoryID', subCategoryId);
 
     formData.images.forEach((image, index) => {
+      if (image.fileSize > 2 * 1024 * 1024) {
+        setSnackbarMessage('Each image must be under 2MB.');
+        setSnackbarVisible(true);
+        return;
+      }
+
       data.append('images[]', {
         uri: image.uri,
         name: image.fileName || `photo_${index}.jpg`,
@@ -103,6 +125,10 @@ const CreateProduct = () => {
     data.append('stock', formData.stock);
     data.append('discount', formData.discount);
     data.append('specialOffer', formData.specialOffer);
+    data.append('location', formData.location);
+    data.append('lat', formData.lat);
+    data.append('long', formData.long);
+    data.append('condition', conditionValue);
 
     try {
       setLoading(true);
@@ -129,6 +155,10 @@ const CreateProduct = () => {
           discount: '',
           specialOffer: '',
           images: [],
+          location: '',
+          lat: '',
+          long: '',
+          condition: '',
         });
       } else {
         setSnackbarMessage(
@@ -174,25 +204,27 @@ const CreateProduct = () => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{flex: 1}}>
       <StatusBar barStyle="dark-content" />
       <MainHeader title={`Create Product for ${name}`} showBackIcon={true} />
 
       <ScrollView
-        style={{ paddingHorizontal: mvs(15), paddingTop: mvs(25), backgroundColor: colors.white }}
-        contentContainerStyle={{ paddingBottom: mvs(60) }}>
+        style={{
+          paddingHorizontal: mvs(15),
+          paddingTop: mvs(25),
+          backgroundColor: colors.white,
+        }}
+        contentContainerStyle={{paddingBottom: mvs(60)}}>
         {/* Category Section */}
         <View style={styles.sectionContainer}>
-          <Text style={styles.sectionTitle}>
-            Category
-          </Text>
+          <Text style={styles.sectionTitle}>Category</Text>
           <View style={styles.categoryBox}>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <Image
                 source={require('../../../../assets/img/phone.png')}
                 style={styles.categoryImage}
               />
-              <View style={{ marginLeft: mvs(10) }}>
+              <View style={{marginLeft: mvs(10)}}>
                 <Text style={styles.categoryTitle}>Mobiles</Text>
                 <Text style={styles.categorySubtitle}>{name}</Text>
               </View>
@@ -205,36 +237,40 @@ const CreateProduct = () => {
           {/* Image Upload Section */}
           <View style={styles.uploadBox}>
             {formData.images.length === 0 ? (
-              <TouchableOpacity style={styles.addButton} onPress={handleChooseImages}>
+              <TouchableOpacity
+                style={styles.addButton}
+                onPress={handleChooseImages}>
                 <Text style={styles.addButtonText}>Add images</Text>
               </TouchableOpacity>
-
-
             ) : (
               // After image is added
-              <View  >
-                {/* <TouchableOpacity onPress={handleChooseImages} style={styles.iconRow}>
-                <UploadSVG width={22} height={22} style={styles.uploadIcon} />
-                <Text>Upload Image</Text>
-              </TouchableOpacity> */}
-
+              <View>
                 {formData.images.length > 0 && (
                   <View style={styles.imagePreviewContainer}>
                     <FlatList
                       horizontal
-                      showsHorizontalScrollIndicator={true}
-                      data={[{ isUploadIcon: true }, ...formData.images]}
+                      showsHorizontalScrollIndicator={false}
+                      data={[{isUploadIcon: true}, ...formData.images]}
                       keyExtractor={(item, index) => index.toString()}
                       contentContainerStyle={styles.flatListContainer}
-                      renderItem={({ item, index }) =>
+                      renderItem={({item, index}) =>
                         item.isUploadIcon ? (
-                          <TouchableOpacity onPress={handleChooseImages} style={styles.iconRow}>
-                            <UploadSVG width={22} height={22} style={styles.uploadIcon} />
+                          <TouchableOpacity
+                            onPress={handleChooseImages}
+                            style={styles.iconRow}>
+                            <UploadSVG
+                              width={22}
+                              height={22}
+                              style={styles.uploadIcon}
+                            />
                             <Text style={styles.uploadText}>Upload Image</Text>
                           </TouchableOpacity>
                         ) : (
                           <View style={styles.imageWrapper}>
-                            <Image source={{ uri: item.uri }} style={styles.imagePreview} />
+                            <Image
+                              source={{uri: item.uri}}
+                              style={styles.imagePreview}
+                            />
                             <TouchableOpacity
                               style={styles.removeIcon}
                               onPress={() => handleRemoveImage(index - 1)} // subtract 1 due to upload icon
@@ -249,44 +285,37 @@ const CreateProduct = () => {
                 )}
               </View>
             )}
-            <View>
-              {/* Display Selected Images */}
-
-            </View>
+            <View>{/* Display Selected Images */}</View>
 
             <Text style={styles.noteText}>
               For the cover picture we recommend using the landscape mode.
             </Text>
           </View>
-
-
         </View>
 
         {/* Condition Section */}
         <View style={styles.sectionContainer}>
           <Text style={styles.sectionTitle}>
             Condition
-            <Text style={{ color: colors.red }}>*</Text>
+            <Text style={{color: colors.red}}>*</Text>
           </Text>
 
-          <View style={{ flexDirection: 'row' }}>
+          <View style={{flexDirection: 'row'}}>
             <TouchableOpacity
               style={[
                 styles.conditionButton,
-                selectedCondition === 'New' && styles.selectedCondition
+                selectedCondition === 'New' && styles.selectedCondition,
               ]}
-              onPress={() => handleConditionSelect('New')}
-            >
+              onPress={() => handleConditionSelect('New')}>
               <Text style={styles.conditionText}>New</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
               style={[
                 styles.conditionButton,
-                selectedCondition === 'Used' && styles.selectedCondition
+                selectedCondition === 'Used' && styles.selectedCondition,
               ]}
-              onPress={() => handleConditionSelect('Used')}
-            >
+              onPress={() => handleConditionSelect('Used')}>
               <Text style={styles.conditionText}>Used</Text>
             </TouchableOpacity>
           </View>
@@ -296,7 +325,7 @@ const CreateProduct = () => {
         <View style={styles.sectionContainer}>
           <Text style={styles.sectionTitle}>
             Name
-            <Text style={{ color: colors.red }}>*</Text>
+            <Text style={{color: colors.red}}>*</Text>
           </Text>
           <TextInput
             style={styles.input}
@@ -311,10 +340,10 @@ const CreateProduct = () => {
         <View style={styles.sectionContainer}>
           <Text style={styles.sectionTitle}>
             Description
-            <Text style={{ color: colors.red }}>*</Text>
+            <Text style={{color: colors.red}}>*</Text>
           </Text>
           <TextInput
-            style={[styles.input, { height: mvs(100) }]}
+            style={[styles.input, {height: mvs(100)}]}
             placeholder="Enter product description......"
             placeholderTextColor={colors.grey}
             value={formData.description}
@@ -327,7 +356,7 @@ const CreateProduct = () => {
         <View style={styles.sectionContainer}>
           <Text style={styles.sectionTitle}>
             Location
-            <Text style={{ color: colors.red }}>*</Text>
+            <Text style={{color: colors.red}}>*</Text>
           </Text>
           <View style={styles.locationContainer}>
             <SearchSVG width={25} height={25} />
@@ -345,7 +374,7 @@ const CreateProduct = () => {
         <View style={styles.sectionContainer}>
           <Text style={styles.sectionTitle}>
             Price
-            <Text style={{ color: colors.red }}>*</Text>
+            <Text style={{color: colors.red}}>*</Text>
           </Text>
           <TextInput
             style={styles.input}
@@ -361,7 +390,7 @@ const CreateProduct = () => {
         <View style={styles.sectionContainer}>
           <Text style={styles.sectionTitle}>
             Discount
-            <Text style={{ color: colors.red }}>*</Text>
+            {/* <Text style={{color: colors.red}}>*</Text> */}
           </Text>
           <TextInput
             style={styles.input}
@@ -377,7 +406,7 @@ const CreateProduct = () => {
         <View style={styles.sectionContainer}>
           <Text style={styles.sectionTitle}>
             Special Offer
-            <Text style={{ color: colors.red }}>*</Text>
+            {/* <Text style={{color: colors.red}}>*</Text> */}
           </Text>
           <TextInput
             style={styles.input}
@@ -392,7 +421,7 @@ const CreateProduct = () => {
         <View style={styles.sectionContainer}>
           <Text style={styles.sectionTitle}>
             Available Stock
-            <Text style={{ color: colors.red }}>*</Text>
+            <Text style={{color: colors.red}}>*</Text>
           </Text>
           <TextInput
             style={styles.input}
@@ -409,10 +438,9 @@ const CreateProduct = () => {
           title={loading ? 'Submitting...' : 'Submit Product'}
           style={styles.submitButton}
           onPress={submitProduct}
-          disabled={loading}
-        >
+          disabled={loading}>
           {loading ? (
-            <ActivityIndicator color={colors.white} />
+            <ActivityIndicator color={colors.green} />
           ) : (
             <Text style={styles.submitButtonText}>Submit Product</Text>
           )}
