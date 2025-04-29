@@ -24,19 +24,19 @@ const styles = StyleSheet.create({
   productTitle: {
     fontSize: mvs(22),
   },
-  locationContainer:{
-flexDirection:'row',
-marginVertical:mvs(8)
+  locationContainer: {
+    flexDirection: 'row',
+    marginVertical: mvs(8),
   },
   productPrice: {
     fontSize: mvs(25),
-    color: colors.green,
-    marginBottom:mvs(4)
+    color: colors.lightgreen,
+    marginBottom: mvs(4),
   },
   productLocation: {
     fontSize: mvs(16),
     color: colors.grey,
-    marginLeft:mvs(7)
+    marginLeft: mvs(7),
   },
   descriptionContainer: {
     justifyContent: 'center',
@@ -44,12 +44,13 @@ marginVertical:mvs(8)
     backgroundColor: colors.white,
     marginTop: mvs(7),
   },
-description:{
-  color:colors.grey,fontSize:mvs(15),
-  lineHeight:mvs(23),
-  paddingHorizontal:mvs(5),
-  paddingVertical:mvs(4)
-},
+  description: {
+    color: colors.grey,
+    fontSize: mvs(15),
+    lineHeight: mvs(23),
+    paddingHorizontal: mvs(5),
+    paddingVertical: mvs(4),
+  },
   providerContainer: {
     // justifyContent: 'center',
     padding: mvs(10),

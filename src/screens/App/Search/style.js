@@ -44,10 +44,11 @@ const styles = StyleSheet.create({
 
   // Gallery Section Styles
   galleryContainer: {
-    marginTop: mvs(10),
     paddingHorizontal: mvs(10),
     paddingVertical: mvs(10),
     backgroundColor: colors.white,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   content: {
     backgroundColor: colors.white,
@@ -61,17 +62,23 @@ const styles = StyleSheet.create({
     marginBottom: mvs(10),
   },
   productImage: {
-    borderRadius: mvs(8),
-    width: mvs(100),
-    height: mvs(100),
-    resizeMode: 'contain',
+    borderRadius: mvs(18),
+    width: mvs(120),
+    height: mvs(90),
+    resizeMode: 'cover',
     marginRight: 'auto',
   },
   productTitle: {
-    fontSize: mvs(12),
+    fontSize: mvs(13),
+    textAlign: 'center',
     color: colors.black,
     marginRight: 'auto',
     marginBottom: mvs(4),
+  },
+  galleryLabel: {
+    fontSize: mvs(16),
+    paddingLeft: mvs(12),
+    marginTop: mvs(16),
   },
   productPrice: {
     fontSize: mvs(10),
