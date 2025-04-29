@@ -215,13 +215,12 @@ const CreateProduct = () => {
           backgroundColor: colors.white,
         }}
         contentContainerStyle={{paddingBottom: mvs(60)}}>
-        {/* Category Section */}
         <View style={styles.sectionContainer}>
           <Text style={styles.sectionTitle}>Category</Text>
           <View style={styles.categoryBox}>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <Image
-                source={require('../../../../assets/img/phone.png')}
+                source={require('../../../../assets/img/driver1.png')}
                 style={styles.categoryImage}
               />
               <View style={{marginLeft: mvs(10)}}>
@@ -234,7 +233,6 @@ const CreateProduct = () => {
             </TouchableOpacity>
           </View>
 
-          {/* Image Upload Section */}
           <View style={styles.uploadBox}>
             {formData.images.length === 0 ? (
               <TouchableOpacity
