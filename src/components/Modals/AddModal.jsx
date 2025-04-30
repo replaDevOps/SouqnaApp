@@ -8,6 +8,7 @@ import {
   Image,
   FlatList,
   Linking,
+  Dimensions,
 } from 'react-native';
 import {CloseSvg, SouqnaLogo} from '../../assets/svg';
 import {colors} from '../../util/color';
@@ -22,9 +23,10 @@ const AddModal = ({visible, onClose, title, message}) => {
   const {paginationImages} = dummyData;
   const [showHelp, setShowHelp] = useState(false);
   const navigation = useNavigation();
+  const {width: SCREEN_WIDTH} = Dimensions.get('window');
 
   const renderItem = ({item}) => (
-    <View style={styles.imageContainer}>
+    <View style={[styles.imageContainer, {width: SCREEN_WIDTH}]}>
       <Image source={item.imageUrl} style={styles.image} />
       <Regular style={styles.infoText}>{item.description}</Regular>
     </View>
@@ -91,6 +93,13 @@ const AddModal = ({visible, onClose, title, message}) => {
               pagingEnabled
               keyExtractor={item => item.id}
               showsHorizontalScrollIndicator={false}
+              snapToInterval={SCREEN_WIDTH} // <-- Important!
+              decelerationRate="fast"
+              getItemLayout={(data, index) => ({
+                length: SCREEN_WIDTH,
+                offset: SCREEN_WIDTH * index,
+                index,
+              })}
               onViewableItemsChanged={onViewableItemsChanged.current}
               viewabilityConfig={viewabilityConfig}
             />
@@ -197,6 +206,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   imageContainer: {
+    width: '100%',
     alignItems: 'center',
     marginBottom: mvs(40),
   },

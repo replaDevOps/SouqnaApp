@@ -19,6 +19,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: mvs(10),
     paddingVertical: mvs(10),
     overflow: 'visible',
+    elevation: 2,
     // backgroundColor: colors.white,
   },
   recommendedItem: {
@@ -28,8 +29,12 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     borderRadius: mvs(10),
     width: '48%',
-    // padding: mvs(4),
+    elevation: 2,
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
   },
+
   recommendedImage: {
     width: '100%',
     height: mvs(130),
