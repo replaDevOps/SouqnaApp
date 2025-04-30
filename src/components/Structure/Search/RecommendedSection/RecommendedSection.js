@@ -10,10 +10,12 @@ import {
 } from 'react-native';
 import styles from './style';
 import Regular from '../../../../typography/RegularText';
-import {HeartSvg} from '../../../../assets/svg';
+import {HeartSvg, MarkerSVG} from '../../../../assets/svg';
 import Bold from '../../../../typography/BoldText';
+import {colors} from '../../../../util/color';
 import {useSelector} from 'react-redux';
 import {fetchProducts} from '../../../../api/apiServices';
+// import Icon from 'react-native-vector-icons/FontAwesome5'
 
 const RecommendedSection = ({
   products,
@@ -90,7 +92,11 @@ const RecommendedSection = ({
           ) : null
         }
         ListEmptyComponent={
-          productsLoading ? <Text>Loading...</Text> : <Text></Text>
+          productsLoading ? (
+            <Text>Loading...</Text>
+          ) : (
+            <Text>No products found</Text>
+          )
         }
       />
     </View>
