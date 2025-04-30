@@ -7,10 +7,10 @@ import {
   Alert,
   ActivityIndicator,
 } from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
 import Regular from '../../../typography/RegularText';
-import styles from './styles';
+import styles from '../Login/styles';
 import {MyButton} from '../../../components/atoms/InputFields/MyButton';
 import {setUser} from '../../../redux/slices/userSlice';
 import {EYESVG, SouqnaLogo} from '../../../assets/svg';
@@ -19,9 +19,8 @@ import Bold from '../../../typography/BoldText';
 import Header from '../../../components/Headers/Header';
 import {loginUser} from '../../../api/authServices';
 import {colors} from '../../../util/color';
-import {Snackbar} from 'react-native-paper';
 
-const LoginScreen = () => {
+const BuyerLogin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [securePassword, setSecurePassword] = useState(true);
@@ -30,8 +29,6 @@ const LoginScreen = () => {
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [snackbarVisible, setSnackbarVisible] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
 
   // const email = 'jmubashir272@gmail.com';
   // const password = 'admin123@'; // Static password for testing
@@ -57,7 +54,7 @@ const LoginScreen = () => {
 
       if (res.success) {
         const user = res.user;
-        console.log('User : ', user);
+
         dispatch(
           setUser({
             token: user.token,
@@ -66,17 +63,15 @@ const LoginScreen = () => {
             id: user.id,
             name: user.name,
             email: user.email,
-            role: user.role,
           }),
         );
-        if (user.role === 3) {
-          setSnackbarMessage('Buyer logged in successfully');
-          setSnackbarVisible(true);
-        } else if (user.role === 2) {
-          setSnackbarMessage('Seller logged in successfully');
-          setSnackbarVisible(true);
-        }
+
         console.log('Login successful:', user);
+
+        // 🔽 Example: Fetch categories, products, or user details
+        // await fetchCategories();
+        // await fetchProducts();
+        // await syncUserDataToRealm(user.token); // pass token if needed
 
         navigation.replace('Home');
       } else {
@@ -133,6 +128,7 @@ const LoginScreen = () => {
       <View style={styles.HeaderContainer}>
         <SouqnaLogo width={50} height={50} />
         <Bold style={styles.title}>Souqna</Bold>
+        <Regular style={styles.title}>Buyer</Regular>
       </View>
 
       <PrimaryPasswordInput
@@ -172,15 +168,8 @@ const LoginScreen = () => {
           </Regular>
         </Regular>
       </View>
-      <Snackbar
-        visible={snackbarVisible}
-        onDismiss={() => setSnackbarVisible(false)}
-        duration={Snackbar.DURATION_SHORT}
-        style={{backgroundColor: colors.green}}>
-        {snackbarMessage}
-      </Snackbar>
     </KeyboardAvoidingView>
   );
 };
 
-export default LoginScreen;
+export default BuyerLogin;

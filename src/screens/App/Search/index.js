@@ -29,7 +29,7 @@ const SearchScreen = () => {
   const [allRecommendedProducts, setAllRecommendedProducts] = useState([]);
 
   const [isEndOfResults, setIsEndOfResults] = useState(false);
-  const {token, verificationStatus} = useSelector(state => state.user);
+  const {token, verificationStatus, role} = useSelector(state => state.user);
   const dispatch = useDispatch();
   const [apiCategories, setApiCategories] = useState([]);
   const [ApiProducts, setApiProducts] = useState([]);
@@ -40,6 +40,7 @@ const SearchScreen = () => {
   const [hasFetchedVerification, setHasFetchedVerification] = useState(false);
 
   useEffect(() => {
+    if (role === 3) return;
     const fetchVerificationStatus = async () => {
       try {
         const response = await axios.get(
@@ -76,9 +77,28 @@ const SearchScreen = () => {
     if (token && isFocused) {
       fetchVerificationStatus();
     }
-  }, [token, dispatch, isFocused]);
+  }, [token, dispatch, isFocused, role]);
 
   useEffect(() => {
+    const loadProducts = async () => {
+      setLoading(true);
+
+      const response = await fetchProducts(token, {}, role);
+      if (response?.success) {
+        const products = response.data;
+        setAllRecommendedProducts(products.slice(0, 6));
+        setApiProducts(products);
+        setIsEndOfResults(false);
+      }
+
+      setLoading(false);
+    };
+
+    loadProducts();
+  }, [token, role]);
+
+  useEffect(() => {
+    // if (role === 3) return;
     const loadCategories = async () => {
       setCategoriesLoading(true);
       const response = await fetchCategories(token);
@@ -95,6 +115,7 @@ const SearchScreen = () => {
 
   // Manage the modal visibility based on verificationStatus from Redux
   useEffect(() => {
+    if (role === 3) return;
     if (
       hasFetchedVerification &&
       verificationStatus !== 1 &&
@@ -105,13 +126,14 @@ const SearchScreen = () => {
     } else {
       setModalVisible(false);
     }
-  }, [verificationStatus, token, hasFetchedVerification]);
+  }, [verificationStatus, token, hasFetchedVerification, role]);
 
   useEffect(() => {
+    if (role === 3) return;
     if (!isModalVisible) {
       setLikedItems({});
     }
-  }, [isModalVisible]);
+  }, [isModalVisible, role]);
 
   const handleVerifyProfile = () => {
     // Logic to handle profile verification
@@ -197,25 +219,19 @@ const SearchScreen = () => {
   const onRefresh = async () => {
     setRefreshing(true);
     try {
-      // Fetch categories again
       setCategoriesLoading(true);
       const categoriesResponse = await fetchCategories(token);
       if (categoriesResponse?.success) {
         setApiCategories(categoriesResponse.data);
       }
       setCategoriesLoading(false);
-      setLoading(true);
-      const recommendedResponse = await fetchProducts(token);
-      if (recommendedResponse?.success) {
-        setAllRecommendedProducts(recommendedResponse.data.slice(0, 6));
-        setIsEndOfResults(false);
-      }
-      setLoading(false);
 
-      // Fetch gallery products again
-      const galleryResponse = await fetchProducts(token);
-      if (galleryResponse?.success) {
-        setApiProducts(galleryResponse.data);
+      const productsResponse = await fetchProducts(token, {}, role);
+      if (productsResponse?.success) {
+        const products = productsResponse.data;
+        setAllRecommendedProducts(products.slice(0, 6));
+        setApiProducts(products);
+        setIsEndOfResults(false);
       }
     } catch (error) {
       console.error('Error refreshing data:', error);

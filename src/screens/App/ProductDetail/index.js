@@ -32,29 +32,45 @@ const ProductDetail = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [headerTitleVisible, setHeaderTitleVisible] = useState(false); // Track header title visibility
   const dispatch = useDispatch();
-  const {token} = useSelector(state => state.user);
+  const {token, role} = useSelector(state => state.user);
   const route = useRoute();
   const {productId} = route.params;
+
   console.log('Received PRODUCTID: ', productId);
 
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!productId) return;
+
     const fetchProductDetails = async () => {
       try {
-        const response = await axios.get(
-          `https://backend.souqna.net/api/getProduct/${productId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
+        let response;
+
+        if (role === 2 && token) {
+          // Authenticated request
+          console.log('Using authenticated API');
+          response = await axios.get(
+            `https://backend.souqna.net/api/getProduct/${productId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
             },
-          },
-        );
-        if (response.status === 200 && response.data.success) {
+          );
+        } else {
+          // Public API fallback
+          console.log('Using Public API');
+          response = await axios.get(
+            `https://backend.souqna.net/api/productDetails/${productId}`,
+          );
+        }
+
+        if (response.status === 200 && response.data.success !== false) {
           setProduct(response.data.data);
         } else {
-          console.error('Failed to fetch product details');
+          console.error('Failed to fetch product details.');
         }
       } catch (error) {
         console.error('Error fetching product:', error);
@@ -64,7 +80,8 @@ const ProductDetail = () => {
     };
 
     fetchProductDetails();
-  }, [productId]);
+  }, [productId, token, role]);
+
   console.log(product);
 
   const handleHeartPress = id => {
