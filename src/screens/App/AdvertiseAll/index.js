@@ -28,8 +28,7 @@ const AdvertiseAll = () => {
   const renderSubCategoryItem = ({item}) => (
     
     <TouchableOpacity  style={styles.subCategoryItem} onPress={() => handleSubcategoryPress(item)}>
-      <View style={{flexDirection:'row',alignItems:'center',
-    paddingLeft:mvs(10)}} >
+      <View style={styles.titleContainer} >
       <Image source={require('../../../assets/img/phone.png')} style={{width:45,height:45,borderRadius:5}}/>
         <Regular style={styles.subCategoryText}>{item.name}</Regular>
     </View>
