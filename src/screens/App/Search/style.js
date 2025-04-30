@@ -5,6 +5,7 @@ import {mvs} from '../../../util/metrices';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    // elevation: 3,
     // paddingBottom: mvs(40),
   },
   categoryContainer: {

@@ -76,7 +76,7 @@ const RecommendedSection = ({
 
   return (
     <View style={styles.recommendedContainer}>
-      <Bold>Recommended For You</Bold>
+      <Bold style={{marginBottom: 10}}>Recommended For You</Bold>
       <FlatList
         data={apiProducts}
         numColumns={2}
