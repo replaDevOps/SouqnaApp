@@ -19,7 +19,6 @@ import AdvertiseAll from '../../screens/App/AdvertiseAll';
 import Notification from '../../screens/App/Notification';
 import VerificationPage from '../../screens/Auth/Verification';
 import CreateProduct from '../../screens/App/Product/CreateProduct';
-import BuyerLogin from '../../screens/Auth/BuyerLogin';
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {
@@ -29,7 +28,6 @@ const AppNavigator = () => {
         initialRouteName="Splash"
         screenOptions={{headerShown: false}}>
         <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen name="BuyerLogin" component={BuyerLogin} />
         <Stack.Screen name="Register" component={Register} />
         <Stack.Screen name="Splash" component={SplashScreen} />
         <Stack.Screen name="Home" component={MyTabs} />
