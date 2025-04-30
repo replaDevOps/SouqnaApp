@@ -11,24 +11,25 @@ import {
   StatusBar,
   FlatList,
 } from 'react-native';
-import React, {useState} from 'react';
-import {useNavigation, useRoute} from '@react-navigation/native';
+import React, { useState } from 'react';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import axios from 'axios';
-import {useSelector} from 'react-redux';
-import {launchImageLibrary} from 'react-native-image-picker';
-import {Snackbar} from 'react-native-paper';
-import {styles} from './styles';
+import { useSelector } from 'react-redux';
+import { launchImageLibrary } from 'react-native-image-picker';
+import { Snackbar } from 'react-native-paper';
+import { styles } from './styles';
 import MainHeader from '../../../../components/Headers/MainHeader';
-import {MyButton} from '../../../../components/atoms/InputFields/MyButton';
-import {colors} from '../../../../util/color';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {mvs} from '../../../../util/metrices';
-import {SearchSVG, UploadSVG} from '../../../../assets/svg';
+import { MyButton } from '../../../../components/atoms/InputFields/MyButton';
+import { colors } from '../../../../util/color';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { mvs } from '../../../../util/metrices';
+import { SearchSVG, UploadSVG } from '../../../../assets/svg';
+import GooglePlacesSuggestion from '../../../../components/GooglePlacesSuggestion';
 
 const CreateProduct = () => {
   const route = useRoute();
-  const {id: subCategoryId, categoryId, name, category} = route.params;
-  const {token} = useSelector(state => state.user);
+  const { id: subCategoryId, categoryId, name, category } = route.params;
+  const { token } = useSelector(state => state.user);
   const navigation = useNavigation();
 
   const [formData, setFormData] = useState({
@@ -39,9 +40,9 @@ const CreateProduct = () => {
     discount: '',
     specialOffer: '',
     images: [],
-    location: 'Murree Road, Pakistan',
-    lat: '33.6938',
-    long: '73.0652',
+    location: '',
+    lat: '',
+    long: '',
   });
 
   const [loading, setLoading] = useState(false);
@@ -89,6 +90,16 @@ const CreateProduct = () => {
       images: prev.images.filter((_, index) => index !== indexToRemove),
     }));
   };
+
+// Handle place selection from Google Places component
+const handlePlaceSelected = (placeData) => {
+  setFormData(prev => ({
+    ...prev,
+    location: placeData.location,
+    lat: placeData.lat,
+    long: placeData.long,
+  }));
+};
 
   const submitProduct = async () => {
     const data = new FormData();
@@ -196,12 +207,12 @@ const CreateProduct = () => {
   const handleChange = () => {
     navigation.reset({
       index: 0,
-      routes: [{name: 'MyTabs', params: {screen: 'Advertise'}}],
+      routes: [{ name: 'MyTabs', params: { screen: 'Advertise' } }],
     });
   };
 
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <SafeAreaView style={{ flex: 1 }}>
       <StatusBar barStyle="dark-content" />
       <MainHeader title={`Post Your Product`} showBackIcon={true} />
 
@@ -211,16 +222,16 @@ const CreateProduct = () => {
           paddingTop: mvs(25),
           backgroundColor: colors.white,
         }}
-        contentContainerStyle={{paddingBottom: mvs(60)}}>
+        contentContainerStyle={{ paddingBottom: mvs(60) }}>
         <View style={styles.sectionContainer}>
           <Text style={styles.sectionTitle}>Category</Text>
           <View style={styles.categoryBox}>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <Image
                 source={require('../../../../assets/img/driver1.png')}
                 style={styles.categoryImage}
               />
-              <View style={{marginLeft: mvs(10)}}>
+              <View style={{ marginLeft: mvs(10) }}>
                 <Text style={styles.categoryTitle}>{category}</Text>
                 <Text style={styles.categorySubtitle}>{name}</Text>
               </View>
@@ -250,12 +261,12 @@ const CreateProduct = () => {
                     <FlatList
                       horizontal
                       showsHorizontalScrollIndicator={false}
-                      data={[{isUploadIcon: true}, ...formData.images]}
+                      data={[{ isUploadIcon: true }, ...formData.images]}
                       keyExtractor={(item, index) => index.toString()}
-                      contentInset={{right: 25}}
+                      contentInset={{ right: 25 }}
                       contentContainerStyle={styles.flatListContainer}
                       // style
-                      renderItem={({item, index}) =>
+                      renderItem={({ item, index }) =>
                         item.isUploadIcon ? (
                           <TouchableOpacity
                             onPress={handleChooseImages}
@@ -270,7 +281,7 @@ const CreateProduct = () => {
                         ) : (
                           <View style={styles.imageWrapper}>
                             <Image
-                              source={{uri: item.uri}}
+                              source={{ uri: item.uri }}
                               style={styles.imagePreview}
                             />
                             <TouchableOpacity
@@ -295,30 +306,42 @@ const CreateProduct = () => {
           </View>
         </View>
 
-        {/* Condition Section */}
+        {/* Condition Section - Updated to Radio Buttons */}
         <View style={styles.sectionContainer}>
           <Text style={styles.sectionTitle}>
             Condition
-            <Text style={{color: colors.red}}>*</Text>
+            <Text style={{ color: colors.red }}>*</Text>
           </Text>
 
-          <View style={{flexDirection: 'row'}}>
+          <View style={styles.radioContainer}>
             <TouchableOpacity
-              style={[
-                styles.conditionButton,
-                selectedCondition === 'New' && styles.selectedCondition,
-              ]}
+              style={styles.radioOption}
               onPress={() => handleConditionSelect('New')}>
-              <Text style={styles.conditionText}>New</Text>
+              <View style={styles.radioWrapper}>
+                <View
+                  style={[
+                    styles.radioOuter,
+                    selectedCondition === 'New' && styles.radioOuterSelected,
+                  ]}>
+                  {selectedCondition === 'New' && <View style={styles.radioInner} />}
+                </View>
+              </View>
+              <Text style={styles.radioText}>New</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={[
-                styles.conditionButton,
-                selectedCondition === 'Used' && styles.selectedCondition,
-              ]}
+              style={styles.radioOption}
               onPress={() => handleConditionSelect('Used')}>
-              <Text style={styles.conditionText}>Used</Text>
+              <View style={styles.radioWrapper}>
+                <View
+                  style={[
+                    styles.radioOuter,
+                    selectedCondition === 'Used' && styles.radioOuterSelected,
+                  ]}>
+                  {selectedCondition === 'Used' && <View style={styles.radioInner} />}
+                </View>
+              </View>
+              <Text style={styles.radioText}>Used</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -327,7 +350,7 @@ const CreateProduct = () => {
         <View style={styles.sectionContainer}>
           <Text style={styles.sectionTitle}>
             Name
-            <Text style={{color: colors.red}}>*</Text>
+            <Text style={{ color: colors.red }}>*</Text>
           </Text>
           <TextInput
             style={styles.input}
@@ -342,10 +365,10 @@ const CreateProduct = () => {
         <View style={styles.sectionContainer}>
           <Text style={styles.sectionTitle}>
             Description
-            <Text style={{color: colors.red}}>*</Text>
+            <Text style={{ color: colors.red }}>*</Text>
           </Text>
           <TextInput
-            style={[styles.input, {height: mvs(100)}]}
+            style={[styles.input, { height: mvs(100) }]}
             placeholder="Enter product description......"
             placeholderTextColor={colors.grey}
             value={formData.description}
@@ -358,17 +381,13 @@ const CreateProduct = () => {
         <View style={styles.sectionContainer}>
           <Text style={styles.sectionTitle}>
             Location
-            <Text style={{color: colors.red}}>*</Text>
+            <Text style={{ color: colors.red }}>*</Text>
           </Text>
           <View style={styles.locationContainer}>
-            <SearchSVG width={25} height={25} />
-            <TextInput
-              style={styles.locationText}
-              placeholder="Enter Location....."
-              placeholderTextColor={colors.grey}
-              value={formData.location}
-              onChangeText={text => handleInputChange('location', text)}
-            />
+            <GooglePlacesSuggestion
+            initialValue={formData.location}
+            onPlaceSelected={handlePlaceSelected}
+          />
           </View>
         </View>
 
@@ -376,7 +395,7 @@ const CreateProduct = () => {
         <View style={styles.sectionContainer}>
           <Text style={styles.sectionTitle}>
             Price
-            <Text style={{color: colors.red}}>*</Text>
+            <Text style={{ color: colors.red }}>*</Text>
           </Text>
           <TextInput
             style={styles.input}
@@ -423,7 +442,7 @@ const CreateProduct = () => {
         <View style={styles.sectionContainer}>
           <Text style={styles.sectionTitle}>
             Available Stock
-            <Text style={{color: colors.red}}>*</Text>
+            <Text style={{ color: colors.red }}>*</Text>
           </Text>
           <TextInput
             style={styles.input}

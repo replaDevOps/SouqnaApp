@@ -2,7 +2,6 @@
 import React, {useState} from 'react';
 import {View, Image, Dimensions, ScrollView} from 'react-native';
 import {BlurView} from '@react-native-community/blur'; // Optional if you want true blur (iOS only)
-import {colors} from '../../../util/color';
 
 const {width, height} = Dimensions.get('window');
 
@@ -37,6 +36,7 @@ const ProductImages = ({images}) => {
         ))}
       </ScrollView>
 
+      {/* Floating Dot Indicator */}
       <View
         style={{
           position: 'absolute',
@@ -51,7 +51,7 @@ const ProductImages = ({images}) => {
             paddingHorizontal: 12,
             paddingVertical: 6,
             borderRadius: 20,
-            // backgroundColor: 'rgba(255, 255, 255, 0.5)', // semi-transparent white
+            backgroundColor: 'rgba(255, 255, 255, 0.5)', // semi-transparent white
             // backdropFilter: 'blur(8px)', // Not supported on RN yet; use BlurView if needed
           }}>
           {images.map((_, index) => (
@@ -61,8 +61,7 @@ const ProductImages = ({images}) => {
                 width: 8,
                 height: 8,
                 borderRadius: 4,
-                backgroundColor:
-                  index === activeIndex ? colors.grey : colors.gray,
+                backgroundColor: index === activeIndex ? '#000' : '#888',
                 marginHorizontal: 5,
               }}
             />

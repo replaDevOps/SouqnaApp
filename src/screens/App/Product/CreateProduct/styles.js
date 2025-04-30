@@ -72,8 +72,8 @@ export const styles = StyleSheet.create({
     borderRadius: 5,
     flexDirection: 'row',
     borderColor: '#cccccc',
-    paddingHorizontal: 13,
-    paddingVertical: 12,
+    // paddingHorizontal: 13,
+    // paddingVertical: 12,
     alignItems: 'center',
   },
   locationText: {
@@ -205,5 +205,44 @@ export const styles = StyleSheet.create({
     fontSize: 12,
     color: 'gray',
     textAlign: 'center',
+  },
+  radioContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: mvs(10),
+  },
+  radioOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginRight: mvs(30),
+  },
+  radioWrapper: {
+    height: mvs(20),
+    width: mvs(20),
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  radioOuter: {
+    height: mvs(20),
+    width: mvs(20),
+    borderRadius: mvs(10),
+    borderWidth: 2,
+    borderColor: colors.grey,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  radioOuterSelected: {
+    borderColor: colors.lightgreen,
+  },
+  radioInner: {
+    height: mvs(10),
+    width: mvs(10),
+    borderRadius: mvs(5),
+    backgroundColor: colors.green,
+  },
+  radioText: {
+    marginLeft: mvs(8),
+    fontSize: mvs(18),
+    color: colors.black,
   },
 });

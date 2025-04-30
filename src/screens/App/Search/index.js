@@ -19,6 +19,8 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import axios from 'axios';
 import {setVerificationStatus} from '../../../redux/slices/userSlice';
 
+const {recommendedProducts} = dummyData;
+
 const SearchScreen = () => {
   const [likedItems, setLikedItems] = useState({});
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -26,7 +28,9 @@ const SearchScreen = () => {
   const navigation = useNavigation();
   const [isSearchMode, setIsSearchMode] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [allRecommendedProducts, setAllRecommendedProducts] = useState([]);
+  const [allRecommendedProducts, setAllRecommendedProducts] = useState(
+    recommendedProducts.slice(0, 6),
+  );
 
   const [isEndOfResults, setIsEndOfResults] = useState(false);
   const {token, verificationStatus} = useSelector(state => state.user);
@@ -37,7 +41,6 @@ const SearchScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [refreshing, setRefreshing] = useState(false); // New state for pull-to-refresh
   const isFocused = useIsFocused();
-  const [hasFetchedVerification, setHasFetchedVerification] = useState(false);
 
   useEffect(() => {
     const fetchVerificationStatus = async () => {
@@ -68,12 +71,11 @@ const SearchScreen = () => {
           console.log('Unauthenticated: setting Unverified status');
         }
       } finally {
-        setHasFetchedVerification(true);
         setLoading(false);
       }
     };
 
-    if (token && isFocused) {
+    if (isFocused) {
       fetchVerificationStatus();
     }
   }, [token, dispatch, isFocused]);
@@ -95,17 +97,12 @@ const SearchScreen = () => {
 
   // Manage the modal visibility based on verificationStatus from Redux
   useEffect(() => {
-    if (
-      hasFetchedVerification &&
-      verificationStatus !== 1 &&
-      verificationStatus !== 2 &&
-      token
-    ) {
+    if (verificationStatus !== 1 && verificationStatus !== 2) {
       setModalVisible(true);
     } else {
       setModalVisible(false);
     }
-  }, [verificationStatus, token, hasFetchedVerification]);
+  }, [verificationStatus]);
 
   useEffect(() => {
     if (!isModalVisible) {
@@ -130,7 +127,7 @@ const SearchScreen = () => {
     setLoading(true);
 
     setTimeout(() => {
-      const nextProducts = allRecommendedProducts.slice(
+      const nextProducts = recommendedProducts.slice(
         allRecommendedProducts.length,
         allRecommendedProducts.length + 6,
       );
@@ -204,18 +201,20 @@ const SearchScreen = () => {
         setApiCategories(categoriesResponse.data);
       }
       setCategoriesLoading(false);
+
+      // Fetch recommended products again
       setLoading(true);
-      const recommendedResponse = await fetchProducts(token);
+      const recommendedResponse = await fetchProducts(token); // Refresh recommended products
       if (recommendedResponse?.success) {
-        setAllRecommendedProducts(recommendedResponse.data.slice(0, 6));
+        setAllRecommendedProducts(recommendedResponse.data.slice(0, 6)); // Update recommended products
         setIsEndOfResults(false);
       }
       setLoading(false);
 
       // Fetch gallery products again
-      const galleryResponse = await fetchProducts(token);
+      const galleryResponse = await fetchProducts(token); // Refresh gallery products
       if (galleryResponse?.success) {
-        setApiProducts(galleryResponse.data);
+        setApiProducts(galleryResponse.data); // Update gallery data
       }
     } catch (error) {
       console.error('Error refreshing data:', error);
