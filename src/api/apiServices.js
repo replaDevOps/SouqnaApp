@@ -11,7 +11,7 @@ export const fetchCategories = async token => {
   try {
     const response = await API.get('viewCategories', {
       headers: {
-        Authorization: `Bearer ${token}`,
+        ...(token && {Authorization: `Bearer ${token}`}),
       },
     });
     return response.data;
@@ -21,28 +21,58 @@ export const fetchCategories = async token => {
   }
 };
 
-export const fetchProducts = async (token, filters) => {
+export const fetchProducts = async (token, filters = {}, role) => {
+  const isLoggedIn = !!token;
+
   try {
-    const response = await API.post('showAllProducts', filters, {
+    const endpoint =
+      isLoggedIn && role === 2 ? 'showAllProducts' : 'showProducts';
+
+    const response = await API.post(endpoint, filters, {
       headers: {
-        Authorization: `Bearer ${token}`,
+        ...(isLoggedIn && {Authorization: `Bearer ${token}`}),
         pageNo: 1,
         recordsPerPage: 20,
       },
     });
+
     if (response.status === 200) {
       return response.data;
     }
-    console.error('Error: Received non-200 status code', response.status);
+
+    console.error(`Error: Received non-200 status code ${response.status}`);
     return null;
   } catch (error) {
     console.error(
-      'Error fetching products:',
+      `Error fetching ${token ? 'authenticated' : 'unauthenticated'} products:`,
       error.response?.data || error.message,
     );
     return null;
   }
 };
+
+// export const fetchProducts = async (token, filters) => {
+//   try {
+//     const response = await API.post('showAllProducts', filters, {
+//       headers: {
+//         Authorization: `Bearer ${token}`,
+//         pageNo: 1,
+//         recordsPerPage: 20,
+//       },
+//     });
+//     if (response.status === 200) {
+//       return response.data;
+//     }
+//     console.error('Error: Received non-200 status code', response.status);
+//     return null;
+//   } catch (error) {
+//     console.error(
+//       'Error fetching products:',
+//       error.response?.data || error.message,
+//     );
+//     return null;
+//   }
+// };
 
 API.interceptors.request.use(
   async config => {

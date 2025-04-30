@@ -19,8 +19,6 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import axios from 'axios';
 import {setVerificationStatus} from '../../../redux/slices/userSlice';
 
-const {recommendedProducts} = dummyData;
-
 const SearchScreen = () => {
   const [likedItems, setLikedItems] = useState({});
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -28,12 +26,10 @@ const SearchScreen = () => {
   const navigation = useNavigation();
   const [isSearchMode, setIsSearchMode] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [allRecommendedProducts, setAllRecommendedProducts] = useState(
-    recommendedProducts.slice(0, 6),
-  );
+  const [allRecommendedProducts, setAllRecommendedProducts] = useState([]);
 
   const [isEndOfResults, setIsEndOfResults] = useState(false);
-  const {token, verificationStatus} = useSelector(state => state.user);
+  const {token, verificationStatus, role} = useSelector(state => state.user);
   const dispatch = useDispatch();
   const [apiCategories, setApiCategories] = useState([]);
   const [ApiProducts, setApiProducts] = useState([]);
@@ -41,8 +37,10 @@ const SearchScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [refreshing, setRefreshing] = useState(false); // New state for pull-to-refresh
   const isFocused = useIsFocused();
+  const [hasFetchedVerification, setHasFetchedVerification] = useState(false);
 
   useEffect(() => {
+    if (role === 3) return;
     const fetchVerificationStatus = async () => {
       try {
         const response = await axios.get(
@@ -71,16 +69,36 @@ const SearchScreen = () => {
           console.log('Unauthenticated: setting Unverified status');
         }
       } finally {
+        setHasFetchedVerification(true);
         setLoading(false);
       }
     };
 
-    if (isFocused) {
+    if (token && isFocused) {
       fetchVerificationStatus();
     }
-  }, [token, dispatch, isFocused]);
+  }, [token, dispatch, isFocused, role]);
 
   useEffect(() => {
+    const loadProducts = async () => {
+      setLoading(true);
+
+      const response = await fetchProducts(token, {}, role);
+      if (response?.success) {
+        const products = response.data;
+        setAllRecommendedProducts(products.slice(0, 6));
+        setApiProducts(products);
+        setIsEndOfResults(false);
+      }
+
+      setLoading(false);
+    };
+
+    loadProducts();
+  }, [token, role]);
+
+  useEffect(() => {
+    // if (role === 3) return;
     const loadCategories = async () => {
       setCategoriesLoading(true);
       const response = await fetchCategories(token);
@@ -97,18 +115,25 @@ const SearchScreen = () => {
 
   // Manage the modal visibility based on verificationStatus from Redux
   useEffect(() => {
-    if (verificationStatus !== 1 && verificationStatus !== 2) {
+    if (role === 3) return;
+    if (
+      hasFetchedVerification &&
+      verificationStatus !== 1 &&
+      verificationStatus !== 2 &&
+      token
+    ) {
       setModalVisible(true);
     } else {
       setModalVisible(false);
     }
-  }, [verificationStatus]);
+  }, [verificationStatus, token, hasFetchedVerification, role]);
 
   useEffect(() => {
+    if (role === 3) return;
     if (!isModalVisible) {
       setLikedItems({});
     }
-  }, [isModalVisible]);
+  }, [isModalVisible, role]);
 
   const handleVerifyProfile = () => {
     // Logic to handle profile verification
@@ -127,7 +152,7 @@ const SearchScreen = () => {
     setLoading(true);
 
     setTimeout(() => {
-      const nextProducts = recommendedProducts.slice(
+      const nextProducts = allRecommendedProducts.slice(
         allRecommendedProducts.length,
         allRecommendedProducts.length + 6,
       );
@@ -194,7 +219,6 @@ const SearchScreen = () => {
   const onRefresh = async () => {
     setRefreshing(true);
     try {
-      // Fetch categories again
       setCategoriesLoading(true);
       const categoriesResponse = await fetchCategories(token);
       if (categoriesResponse?.success) {
@@ -202,19 +226,12 @@ const SearchScreen = () => {
       }
       setCategoriesLoading(false);
 
-      // Fetch recommended products again
-      setLoading(true);
-      const recommendedResponse = await fetchProducts(token); // Refresh recommended products
-      if (recommendedResponse?.success) {
-        setAllRecommendedProducts(recommendedResponse.data.slice(0, 6)); // Update recommended products
+      const productsResponse = await fetchProducts(token, {}, role);
+      if (productsResponse?.success) {
+        const products = productsResponse.data;
+        setAllRecommendedProducts(products.slice(0, 6));
+        setApiProducts(products);
         setIsEndOfResults(false);
-      }
-      setLoading(false);
-
-      // Fetch gallery products again
-      const galleryResponse = await fetchProducts(token); // Refresh gallery products
-      if (galleryResponse?.success) {
-        setApiProducts(galleryResponse.data); // Update gallery data
       }
     } catch (error) {
       console.error('Error refreshing data:', error);

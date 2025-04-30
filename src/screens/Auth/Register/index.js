@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
   Platform,
 } from 'react-native';
-import {useDispatch} from 'react-redux';
+// import {useDispatch} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
 import Regular from '../../../typography/RegularText';
 import styles from './styles';
@@ -22,6 +22,7 @@ import PrimaryPasswordInput from '../../../components/atoms/InputFields/PrimaryP
 import CustomSwitch from '../../../components/atoms/InputFields/CustomSwitch';
 import {MyButton} from '../../../components/atoms/InputFields/MyButton';
 import API from '../../../api/apiServices';
+// import {setRole} from '../../../redux/slices/userSlice';
 
 const Register = () => {
   const [email, setEmail] = useState('');
@@ -33,7 +34,7 @@ const Register = () => {
   const [passwordError, setPasswordError] = useState('');
   const [isSubscribed, setIsSubscribed] = useState(false);
   const profileNameOpacity = useRef(new Animated.Value(0)).current;
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const navigation = useNavigation();
 
   const handleRegister = async () => {
@@ -69,6 +70,8 @@ const Register = () => {
 
       if (data.success) {
         alert(data.message || 'Registration successful! Please login.');
+        // dispatch(setRole(payload.role));
+        // console.log('Registered as role:', payload.role);
         navigation.replace('Login');
       } else {
         alert(data.message || 'Registration failed. Please try again.');

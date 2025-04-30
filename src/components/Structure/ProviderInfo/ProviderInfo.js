@@ -13,12 +13,14 @@ const ProviderInfo = ({provider}) => {
       ? 'Seller'
       : provider?.user?.role === '3'
       ? 'Buyer'
-      : 'Unknown';
+      : 'Seller';
   return (
     <View style={styles.providerContainer}>
       <Bold style={styles.providerTitle}>Provider</Bold>
       <Line />
-      <Bold style={styles.providerName}>{provider.user?.name}</Bold>
+      <Bold style={styles.providerName}>
+        {provider.user?.name || provider.seller?.name}
+      </Bold>
       <Regular style={styles.display}>{roleText}</Regular>
 
       <View style={styles.attributes}>
@@ -37,7 +39,7 @@ const ProviderInfo = ({provider}) => {
           <Regular>
             <ProfileSVG width={15} height={15} />
             {'  '}
-            {provider.user?.email}
+            {provider.user?.email || provider.seller?.email}
           </Regular>
         </Row>
       </View>

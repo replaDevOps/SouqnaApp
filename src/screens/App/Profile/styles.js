@@ -4,8 +4,8 @@ import {colors} from '../../../util/color';
 
 const styles = StyleSheet.create({
   container: {
-    flexGrow: 1,
-    paddingBottom: 20,
+    // flexGrow: 1,
+    paddingBottom: 40,
   },
   logoContainer: {
     marginVertical: mvs(20),
@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   content: {
-    marginBottom: mvs(20)
+    marginBottom: mvs(20),
   },
   footer: {
     padding: mvs(16),
@@ -68,49 +68,49 @@ const styles = StyleSheet.create({
   },
   // New styles added from inline styles
   verificationCapsule: {
-    backgroundColor: colors.lightpastelgreen, 
-    alignItems: 'center', 
-    paddingHorizontal: 12, 
-    paddingVertical: 4, 
-    borderRadius: 15, 
-    flexDirection: 'row', 
+    backgroundColor: colors.lightpastelgreen,
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: 15,
+    flexDirection: 'row',
     justifyContent: 'center',
     alignSelf: 'center',
-    marginBottom: 20
+    marginBottom: 20,
   },
   unverifiedCapsule: {
     backgroundColor: '#FFE5E5',
-    alignItems: 'center', 
-    paddingHorizontal: 12, 
-    paddingVertical: 4, 
-    borderRadius: 15, 
-    flexDirection: 'row', 
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: 15,
+    flexDirection: 'row',
     justifyContent: 'center',
     alignSelf: 'center',
-    marginBottom: 20
+    marginBottom: 20,
   },
   statusDot: {
-    height: 8, 
-    width: 8, 
-    marginRight: 5, 
-    borderRadius: 4
+    height: 8,
+    width: 8,
+    marginRight: 5,
+    borderRadius: 4,
   },
   verificationLabelContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 5,
-    paddingHorizontal: 10
+    paddingHorizontal: 10,
   },
   verificationLabel: {
-    fontSize: 13, 
-    textAlign: 'center', 
-    flex: 1
+    fontSize: 13,
+    textAlign: 'center',
+    flex: 1,
   },
   verificationTracker: {
-    flexDirection: 'row', 
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 10
+    paddingHorizontal: 10,
   },
   stepCircle: {
     borderRadius: 20,
@@ -119,17 +119,17 @@ const styles = StyleSheet.create({
     height: 40,
     justifyContent: 'center',
     alignItems: 'center',
-    marginHorizontal: 0
+    marginHorizontal: 0,
   },
   stepCircleInProgress: {
     backgroundColor: '#FFF3E0',
     borderColor: '#FF9800',
   },
   stepNumber: {
-    fontSize: 20
+    fontSize: 20,
   },
   connectingLine: {
-    width: '23%', 
+    width: '23%',
     height: 4,
     borderRadius: 2,
   },

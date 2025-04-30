@@ -9,6 +9,7 @@ const initialState = {
   name: '',
   email: '',
   verificationStatus: null,
+  role: '',
 };
 
 const userSlice = createSlice({
@@ -26,13 +27,18 @@ const userSlice = createSlice({
       id: null,
       name: '',
       email: '',
+      role: '',
     }),
     setVerificationStatus: (state, action) => {
       state.verificationStatus = action.payload;
     },
+    setRole: (state, action) => {
+      state.role = action.payload;
+    },
   },
 });
 
-export const {setUser, logoutUser, setVerificationStatus} = userSlice.actions;
+export const {setUser, logoutUser, setVerificationStatus, setRole} =
+  userSlice.actions;
 
 export default userSlice.reducer;
