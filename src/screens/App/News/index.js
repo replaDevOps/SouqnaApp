@@ -5,40 +5,25 @@ import {
   TouchableOpacity,
   ScrollView,
   Image,
-  StyleSheet,
   StatusBar,
 } from 'react-native';
 import React from 'react';
-// import { updateQuantity, removeItem, clearCart } from '../redux/cartSlice';
 import {colors} from '../../../util/color';
 import MainHeader from '../../../components/Headers/MainHeader';
-import {mvs} from '../../../util/metrices';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import styles from './styles';
-// import { useDispatch, useSelector } from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
+import {useNavigation} from '@react-navigation/native';
+import {
+  clearCart,
+  removeItem,
+  updateQuantity,
+} from '../../../redux/slices/cartSlice';
 
 export default function NewsScreen() {
-  // const dispatch = useDispatch();
-  // const cartItems = useSelector(state => state.cart.items);
-
-  const cartItems = [
-    {
-      id: 1,
-      name: 'Chicken Burger',
-      price: 500,
-      quantity: 2,
-      restaurant: 'Zinger House',
-      image: require('../../../assets/img/phone.png'),
-    },
-    {
-      id: 2,
-      name: 'Pizza Slice',
-      price: 300,
-      quantity: 1,
-      restaurant: 'Italiano',
-      image: require('../../../assets/img/watch.png'),
-    },
-  ];
+  const dispatch = useDispatch();
+  const cartItems = useSelector(state => state.cart.items);
+  const navigation = useNavigation();
 
   const subTotal = cartItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
@@ -49,16 +34,34 @@ export default function NewsScreen() {
   const total = subTotal + deliveryCharge - discount;
 
   const handleQuantityChange = (id, change) => {
-    // dispatch(updateQuantity({ id, change }));
+    dispatch(updateQuantity({id, change}));
   };
 
   const handleRemoveItem = id => {
-    // dispatch(removeItem(id));
+    dispatch(removeItem({id}));
   };
 
   const handlePlaceOrder = () => {
-    // dispatch(clearCart());
-    // navigation.navigate('OrderCompleted');
+    dispatch(clearCart());
+    navigation.navigate('OrderCompleted');
+  };
+
+  // Helper function to extract image URI safely
+  const getImageSource = imageData => {
+    if (!imageData) return {uri: 'fallback_image_url_here'};
+
+    // Handle case when image is already a string
+    if (typeof imageData === 'string') {
+      return {uri: imageData};
+    }
+
+    // Handle case when image is an object with uri property
+    if (typeof imageData === 'object' && imageData.uri) {
+      return {uri: imageData.uri};
+    }
+
+    // Default fallback
+    return {uri: 'fallback_image_url_here'};
   };
 
   return (
@@ -71,41 +74,53 @@ export default function NewsScreen() {
         showsVerticalScrollIndicator={false}>
         <Text style={styles.title}>Order details</Text>
 
-        <View style={styles.cartList}>
-          {cartItems.map(item => (
-            <View key={item.id} style={styles.cartItem}>
-              <Image source={item.image} style={styles.itemImage} />
-              <View style={styles.itemContent}>
-                <View style={styles.itemHeader}>
-                  <View style={{justifyContent: 'center'}}>
-                    <Text style={styles.itemName}>{item.name}</Text>
-                    {/* <Text style={styles.itemRestaurant}>{item.restaurant}</Text> */}
-                    <Text style={styles.itemPrice}>
-                      Rs {item.price * item.quantity}
-                    </Text>
-                  </View>
-                  <View style={{justifyContent: 'center'}}>
-                    <View style={styles.quantityContainer}>
-                      <TouchableOpacity
-                        style={styles.quantityButton}
-                        onPress={() => handleQuantityChange(item.id, -1)}>
-                        <Text>➖</Text>
-                        {/* <RemoveSvg width={22} height={22} fill={colors.white} /> */}
-                      </TouchableOpacity>
-                      <Text style={styles.quantityText}>{item.quantity}</Text>
-                      <TouchableOpacity
-                        style={styles.quantityButton}
-                        onPress={() => handleQuantityChange(item.id, 1)}>
-                        <Text>➕</Text>
-                        {/* <PlusSvg width={22} height={22} fill={colors.white} /> */}
-                      </TouchableOpacity>
+        {cartItems.length === 0 ? (
+          <View style={styles.emptyCartContainer}>
+            <Text style={styles.emptyCartText}>Your cart is empty</Text>
+          </View>
+        ) : (
+          <View style={styles.cartList}>
+            {cartItems.map(item => (
+              <View key={item.id} style={styles.cartItem}>
+                <Image
+                  source={getImageSource(item.image)}
+                  style={styles.itemImage}
+                />
+                <View style={styles.itemContent}>
+                  <View style={styles.itemHeader}>
+                    <View style={{justifyContent: 'center'}}>
+                      <Text style={styles.itemName}>{item.name}</Text>
+                      <Text style={styles.itemPrice}>
+                        Rs {item.price * item.quantity}
+                      </Text>
+                    </View>
+                    <View style={{justifyContent: 'center'}}>
+                      <View style={styles.quantityContainer}>
+                        <TouchableOpacity
+                          style={styles.quantityButton}
+                          onPress={() => handleQuantityChange(item.id, -1)}
+                          disabled={item.quantity <= 1}>
+                          <Text>➖</Text>
+                        </TouchableOpacity>
+                        <Text style={styles.quantityText}>{item.quantity}</Text>
+                        <TouchableOpacity
+                          style={styles.quantityButton}
+                          onPress={() => handleQuantityChange(item.id, 1)}>
+                          <Text>➕</Text>
+                        </TouchableOpacity>
+                      </View>
                     </View>
                   </View>
+                  <TouchableOpacity
+                    style={styles.removeButton}
+                    onPress={() => handleRemoveItem(item.id)}>
+                    <Text style={styles.removeButtonText}>Remove</Text>
+                  </TouchableOpacity>
                 </View>
               </View>
-            </View>
-          ))}
-        </View>
+            ))}
+          </View>
+        )}
 
         <View style={{marginVertical: 100}} />
       </ScrollView>
