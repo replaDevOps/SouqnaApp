@@ -4,6 +4,7 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {useSelector} from 'react-redux';
 import {
   AdvertiseSVG,
+  CartSVG,
   HeartSVG,
   HOMESVG,
   NewsSVG,
@@ -15,7 +16,7 @@ import {mvs} from '../../util/metrices';
 import Profile from '../../screens/App/Profile';
 import SearchScreen from '../../screens/App/Search';
 import FavouriteScreen from '../../screens/App/Favourite';
-import NewsScreen from '../../screens/App/News';
+import CartScreen from '../../screens/App/News';
 import AdvertiseScreen from '../../screens/App/Advertise';
 import Bold from '../../typography/BoldText';
 import AddModal from '../../components/Modals/AddModal';
@@ -71,9 +72,9 @@ const MyTabs = () => {
                 IconComponent = AdvertiseSVG;
                 label = 'Advertise';
                 break;
-              case 'News':
-                IconComponent = NewsSVG;
-                label = 'News';
+              case 'CartScreen':
+                IconComponent = CartSVG;
+                label = 'Cart';
                 break;
               case 'Profile':
                 IconComponent = ProfileSVG;
@@ -114,8 +115,8 @@ const MyTabs = () => {
           })}
         />
         <Tab.Screen
-          name="News"
-          component={NewsScreen}
+          name="CartScreen"
+          component={CartScreen}
           listeners={({navigation, route}) => ({
             tabPress: e => handleTabPress(e, route, navigation),
           })}
