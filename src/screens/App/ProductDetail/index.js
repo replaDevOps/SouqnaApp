@@ -24,6 +24,7 @@ import {colors} from '../../../util/color';
 import {MarkerSVG} from '../../../assets/svg';
 import ShareActions from '../../../components/Structure/ShareAction/ShareAction';
 import ProductImages from './ProductImages';
+import { addItem } from '../../../redux/slices/cartSlice';
 
 const {width, height} = Dimensions.get('window');
 
@@ -121,8 +122,26 @@ const ProductDetail = () => {
   };
 
   const handleBuyPress = () => {
-    console.log('Buy Directly pressed');
-  };
+  if (!product) return;
+
+  dispatch(
+    addItem({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image: `https://backend.souqna.net${product.images?.[0]?.path}`, // ✅ correct
+      quantity: 1,
+    })
+  );
+
+  console.log('Added to cart:', {
+    id: product.id,
+    name: product.name,
+    price: product.price,
+    image: `https://backend.souqna.net${product.images?.[0]?.path}`, // ✅ correct
+  });
+};
+
 
   const onScroll = event => {
     const contentOffsetY = event.nativeEvent.contentOffset.y;
