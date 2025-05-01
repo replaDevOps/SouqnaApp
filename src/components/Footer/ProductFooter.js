@@ -1,16 +1,26 @@
 import React from 'react';
-import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  ActivityIndicator,
+} from 'react-native';
 import {mvs} from '../../util/metrices';
 import {colors} from '../../util/color';
 import {CartSVG, ChatSVG} from '../../assets/svg';
 
-const ProductFooter = ({onBuyPress}) => {
+const ProductFooter = ({onBuyPress, loading}) => {
   return (
     <View style={styles.footerContainer}>
       <View style={styles.buttonRow}>
         <TouchableOpacity style={[styles.buyButton]} onPress={onBuyPress}>
           <CartSVG width={24} height={24} />
-          <Text style={styles.buttonText}>Buy Directly</Text>
+          {loading ? (
+            <ActivityIndicator size="small" color={colors.white} />
+          ) : (
+            <Text style={styles.buttonText}>Buy Directly</Text>
+          )}
         </TouchableOpacity>
       </View>
     </View>

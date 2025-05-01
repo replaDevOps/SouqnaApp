@@ -25,6 +25,7 @@ import ShareActions from '../../../components/Structure/ShareAction/ShareAction'
 import ProductImages from './ProductImages';
 import {addItem} from '../../../redux/slices/cartSlice';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
+import {addToCart as addToCartAPI} from '../../../api/apiServices';
 
 const {height} = Dimensions.get('window');
 
@@ -37,10 +38,9 @@ const ProductDetail = () => {
   const route = useRoute();
   const {productId} = route.params;
   const navigation = useNavigation();
-  console.log('Received PRODUCTID: ', productId);
-
+  const [addingToCart, setAddingToCart] = useState(false);
   const [showAddedSnackbar, setShowAddedSnackbar] = useState(false);
-  const [showViewCartSnackbar, setShowViewCartSnackbar] = useState(false);
+  // const [showViewCartSnackbar, setShowViewCartSnackbar] = useState(false);
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -119,14 +119,13 @@ const ProductDetail = () => {
     setIsModalVisible(false);
     setLikedItems(false);
   };
-  const handleChatPress = () => {
-    console.log('Chat pressed');
-  };
 
-  const handleBuyPress = () => {
+  const handleBuyPress = async () => {
     if (!product) return;
 
-    console.log('Triggering haptic feedback...'); // ✅ Log added
+    setAddingToCart(true);
+
+    console.log('Triggering haptic feedback...');
     ReactNativeHapticFeedback.trigger('impactLight', {
       enableVibrateFallback: true,
       ignoreAndroidSystemSettings: false,
@@ -137,17 +136,20 @@ const ProductDetail = () => {
         id: product.id,
         name: product.name,
         price: product.price,
-        image: `https://backend.souqna.net${product.images?.[0]?.path}`, // ✅ correct
+        image: `https://backend.souqna.net${product.images?.[0]?.path}`,
         quantity: 1,
       }),
     );
 
-    console.log('Added to cart:', {
-      id: product.id,
-      name: product.name,
-      price: product.price,
-      image: `https://backend.souqna.net${product.images?.[0]?.path}`, // ✅ correct
-    });
+    const result = await addToCartAPI(product.id, 1);
+
+    if (result?.success) {
+      console.log('Product added to backend cart successfully:', result);
+      setShowAddedSnackbar(true);
+    } else {
+      console.warn('Failed to add to backend cart:', result);
+    }
+    setAddingToCart(false);
 
     setShowAddedSnackbar(true);
   };
@@ -235,10 +237,7 @@ const ProductDetail = () => {
               productLink={product.productLink}
             />
           </ScrollView>
-          <ProductFooter
-            onChatPress={handleChatPress}
-            onBuyPress={handleBuyPress}
-          />
+          <ProductFooter loading={addingToCart} onBuyPress={handleBuyPress} />
           {isModalVisible && <AddModal onClose={onClose} />}
         </>
       )}
