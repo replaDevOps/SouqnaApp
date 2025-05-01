@@ -1,5 +1,5 @@
 // CategoryList.js
-import React from 'react';
+import React, {memo} from 'react';
 import {FlatList, Image, TouchableOpacity, View} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import Bold from '../../../../typography/BoldText';
@@ -60,4 +60,12 @@ const CategorySection = ({categories}) => {
   );
 };
 
-export default CategorySection;
+// Memoize with custom comparison to prevent re-renders
+export default memo(CategorySection, (prevProps, nextProps) => {
+  return (
+    JSON.stringify(prevProps.categories) ===
+    JSON.stringify(nextProps.categories)
+  );
+});
+
+// export default CategorySection;

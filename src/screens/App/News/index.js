@@ -1,29 +1,44 @@
-import { View, Text, ImageBackground, TouchableOpacity, ScrollView, Image, StatusBar } from 'react-native';
+import {
+  View,
+  Text,
+  ImageBackground,
+  TouchableOpacity,
+  ScrollView,
+  Image,
+  StatusBar,
+} from 'react-native';
 import React from 'react';
-import { colors } from '../../../util/color';
+import {colors} from '../../../util/color';
 import MainHeader from '../../../components/Headers/MainHeader';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import styles from './styles';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigation } from '@react-navigation/native';
-import { clearCart, removeItem, updateQuantity } from '../../../redux/slices/cartSlice';
+import {useDispatch, useSelector} from 'react-redux';
+import {useNavigation} from '@react-navigation/native';
+import {
+  clearCart,
+  removeItem,
+  updateQuantity,
+} from '../../../redux/slices/cartSlice';
 
 export default function NewsScreen() {
   const dispatch = useDispatch();
   const cartItems = useSelector(state => state.cart.items);
   const navigation = useNavigation();
 
-  const subTotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const subTotal = cartItems.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0,
+  );
   const deliveryCharge = 50;
   const discount = 0;
   const total = subTotal + deliveryCharge - discount;
 
   const handleQuantityChange = (id, change) => {
-    dispatch(updateQuantity({ id, change }));
+    dispatch(updateQuantity({id, change}));
   };
 
-  const handleRemoveItem = (id) => {
-    dispatch(removeItem({ id }));
+  const handleRemoveItem = id => {
+    dispatch(removeItem({id}));
   };
 
   const handlePlaceOrder = () => {
@@ -32,21 +47,21 @@ export default function NewsScreen() {
   };
 
   // Helper function to extract image URI safely
-  const getImageSource = (imageData) => {
-    if (!imageData) return { uri: 'fallback_image_url_here' };
-    
+  const getImageSource = imageData => {
+    if (!imageData) return {uri: 'fallback_image_url_here'};
+
     // Handle case when image is already a string
     if (typeof imageData === 'string') {
-      return { uri: imageData };
+      return {uri: imageData};
     }
-    
+
     // Handle case when image is an object with uri property
     if (typeof imageData === 'object' && imageData.uri) {
-      return { uri: imageData.uri };
+      return {uri: imageData.uri};
     }
-    
+
     // Default fallback
-    return { uri: 'fallback_image_url_here' };
+    return {uri: 'fallback_image_url_here'};
   };
 
   return (
@@ -54,7 +69,9 @@ export default function NewsScreen() {
       <StatusBar barStyle="dark-content" />
       <MainHeader title={'Cart'} />
 
-      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}>
         <Text style={styles.title}>Order details</Text>
 
         {cartItems.length === 0 ? (
@@ -65,39 +82,36 @@ export default function NewsScreen() {
           <View style={styles.cartList}>
             {cartItems.map(item => (
               <View key={item.id} style={styles.cartItem}>
-                <Image 
-                  source={getImageSource(item.image)} 
+                <Image
+                  source={getImageSource(item.image)}
                   style={styles.itemImage}
                 />
                 <View style={styles.itemContent}>
                   <View style={styles.itemHeader}>
-                    <View style={{justifyContent:'center'}}>
+                    <View style={{justifyContent: 'center'}}>
                       <Text style={styles.itemName}>{item.name}</Text>
-                      <Text style={styles.itemPrice}>$ {item.price }</Text>
+                      <Text style={styles.itemPrice}>$ {item.price}</Text>
                     </View>
-                    <View style={{justifyContent:'center'}} >
+                    <View style={{justifyContent: 'center'}}>
                       <View style={styles.quantityContainer}>
                         <TouchableOpacity
                           style={styles.quantityButton}
                           onPress={() => handleQuantityChange(item.id, -1)}
-                          disabled={item.quantity <= 1}
-                        >
+                          disabled={item.quantity <= 1}>
                           <Text>➖</Text>
                         </TouchableOpacity>
                         <Text style={styles.quantityText}>{item.quantity}</Text>
                         <TouchableOpacity
                           style={styles.quantityButton}
-                          onPress={() => handleQuantityChange(item.id, 1)}
-                        >
+                          onPress={() => handleQuantityChange(item.id, 1)}>
                           <Text>➕</Text>
                         </TouchableOpacity>
                       </View>
                     </View>
                   </View>
-                  <TouchableOpacity 
+                  <TouchableOpacity
                     style={styles.removeButton}
-                    onPress={() => handleRemoveItem(item.id)}
-                  >
+                    onPress={() => handleRemoveItem(item.id)}>
                     <Text style={styles.removeButtonText}>Remove</Text>
                   </TouchableOpacity>
                 </View>
@@ -106,12 +120,14 @@ export default function NewsScreen() {
           </View>
         )}
 
-        <View style={{ marginVertical: 100 }} />
+        <View style={{marginVertical: 100}} />
       </ScrollView>
 
       {cartItems.length > 0 && (
         <View style={styles.summaryContainer}>
-          <ImageBackground source={require('../../../assets/img/Pattern.png')} style={styles.summaryBackground}>
+          <ImageBackground
+            source={require('../../../assets/img/Pattern.png')}
+            style={styles.summaryBackground}>
             <View style={styles.summaryContent}>
               <View style={styles.summaryRow}>
                 <Text style={styles.summaryLabel}>Sub-Total</Text>
@@ -130,7 +146,9 @@ export default function NewsScreen() {
                 <Text style={styles.totalLabel}>$ {total}</Text>
               </View>
 
-              <TouchableOpacity onPress={handlePlaceOrder} style={styles.placeOrderButton}>
+              <TouchableOpacity
+                onPress={handlePlaceOrder}
+                style={styles.placeOrderButton}>
                 <Text style={styles.placeOrderText}>Place My Order</Text>
               </TouchableOpacity>
             </View>
