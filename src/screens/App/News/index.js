@@ -90,9 +90,7 @@ export default function NewsScreen() {
                   <View style={styles.itemHeader}>
                     <View style={{justifyContent: 'center'}}>
                       <Text style={styles.itemName}>{item.name}</Text>
-                      <Text style={styles.itemPrice}>
-                        Rs {item.price * item.quantity}
-                      </Text>
+                      <Text style={styles.itemPrice}>$ {item.price}</Text>
                     </View>
                     <View style={{justifyContent: 'center'}}>
                       <View style={styles.quantityContainer}>
@@ -133,19 +131,19 @@ export default function NewsScreen() {
             <View style={styles.summaryContent}>
               <View style={styles.summaryRow}>
                 <Text style={styles.summaryLabel}>Sub-Total</Text>
-                <Text style={styles.summaryLabel}>Rs {subTotal}</Text>
+                <Text style={styles.summaryLabel}>$ {subTotal}</Text>
               </View>
               <View style={styles.summaryRow}>
                 <Text style={styles.summaryLabel}>Delivery Charge</Text>
-                <Text style={styles.summaryLabel}>Rs {deliveryCharge}</Text>
+                <Text style={styles.summaryLabel}>$ {deliveryCharge}</Text>
               </View>
               <View style={styles.summaryRow}>
                 <Text style={styles.summaryLabel}>Discount</Text>
-                <Text style={styles.summaryLabel}>Rs {discount}</Text>
+                <Text style={styles.summaryLabel}>$ {discount}</Text>
               </View>
               <View style={styles.totalRow}>
                 <Text style={styles.totalLabel}>Total</Text>
-                <Text style={styles.totalLabel}>Rs {total}</Text>
+                <Text style={styles.totalLabel}>$ {total}</Text>
               </View>
 
               <TouchableOpacity
