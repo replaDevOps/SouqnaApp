@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import {View, Dimensions, ScrollView, Text} from 'react-native';
-import {useNavigation, useRoute} from '@react-navigation/native';
+import {View, Image, Dimensions, ScrollView, Text} from 'react-native';
+import {useRoute} from '@react-navigation/native';
 import Bold from '../../../typography/BoldText';
 import Regular from '../../../typography/RegularText';
 import styles from './style';
@@ -14,19 +14,19 @@ import {
   addFavorite,
   removeFavorite,
 } from '../../../redux/slices/favoritesSlice';
+
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {mvs} from '../../../util/metrices';
-import {Snackbar} from 'react-native-paper';
+
 import axios from 'axios';
 import ProductMenu from '../../../components/Structure/ProductMenu/ProductMenu';
 import {colors} from '../../../util/color';
 import {MarkerSVG} from '../../../assets/svg';
 import ShareActions from '../../../components/Structure/ShareAction/ShareAction';
 import ProductImages from './ProductImages';
-import {addItem} from '../../../redux/slices/cartSlice';
-import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
+import { addItem } from '../../../redux/slices/cartSlice';
 
-const {height} = Dimensions.get('window');
+const {width, height} = Dimensions.get('window');
 
 const ProductDetail = () => {
   const [likedItems, setLikedItems] = useState({});
@@ -36,11 +36,9 @@ const ProductDetail = () => {
   const {token, role} = useSelector(state => state.user);
   const route = useRoute();
   const {productId} = route.params;
-  const navigation = useNavigation();
+
   console.log('Received PRODUCTID: ', productId);
 
-  const [showAddedSnackbar, setShowAddedSnackbar] = useState(false);
-  const [showViewCartSnackbar, setShowViewCartSnackbar] = useState(false);
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -124,33 +122,26 @@ const ProductDetail = () => {
   };
 
   const handleBuyPress = () => {
-    if (!product) return;
+  if (!product) return;
 
-    console.log('Triggering haptic feedback...'); // ✅ Log added
-    ReactNativeHapticFeedback.trigger('impactLight', {
-      enableVibrateFallback: true,
-      ignoreAndroidSystemSettings: false,
-    });
-
-    dispatch(
-      addItem({
-        id: product.id,
-        name: product.name,
-        price: product.price,
-        image: `https://backend.souqna.net${product.images?.[0]?.path}`, // ✅ correct
-        quantity: 1,
-      }),
-    );
-
-    console.log('Added to cart:', {
+  dispatch(
+    addItem({
       id: product.id,
       name: product.name,
       price: product.price,
       image: `https://backend.souqna.net${product.images?.[0]?.path}`, // ✅ correct
-    });
+      quantity: 1,
+    })
+  );
 
-    setShowAddedSnackbar(true);
-  };
+  console.log('Added to cart:', {
+    id: product.id,
+    name: product.name,
+    price: product.price,
+    image: `https://backend.souqna.net${product.images?.[0]?.path}`, // ✅ correct
+  });
+};
+
 
   const onScroll = event => {
     const contentOffsetY = event.nativeEvent.contentOffset.y;
@@ -236,29 +227,12 @@ const ProductDetail = () => {
             />
           </ScrollView>
           <ProductFooter
-            onChatPress={handleChatPress}
+            // onChatPress={handleChatPress}
             onBuyPress={handleBuyPress}
           />
           {isModalVisible && <AddModal onClose={onClose} />}
         </>
       )}
-      <View style={{position: 'absolute', bottom: mvs(70), left: 0, right: 0}}>
-        <Snackbar
-          visible={showAddedSnackbar}
-          onDismiss={() => {
-            setShowAddedSnackbar(false);
-          }}
-          duration={2000}
-          action={{
-            label: 'View Cart',
-            onPress: () => {
-              setShowAddedSnackbar(false);
-              navigation.navigate('Home', {screen: 'CartScreen'});
-            },
-          }}>
-          Product added to cart successfully
-        </Snackbar>
-      </View>
     </SafeAreaView>
   );
 };
