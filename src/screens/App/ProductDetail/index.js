@@ -24,6 +24,7 @@ import {MarkerSVG} from '../../../assets/svg';
 import ShareActions from '../../../components/Structure/ShareAction/ShareAction';
 import ProductImages from './ProductImages';
 import {addItem} from '../../../redux/slices/cartSlice';
+import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 
 const {height} = Dimensions.get('window');
 
@@ -125,6 +126,12 @@ const ProductDetail = () => {
   const handleBuyPress = () => {
     if (!product) return;
 
+    console.log('Triggering haptic feedback...'); // ✅ Log added
+    ReactNativeHapticFeedback.trigger('impactLight', {
+      enableVibrateFallback: true,
+      ignoreAndroidSystemSettings: false,
+    });
+
     dispatch(
       addItem({
         id: product.id,
@@ -141,6 +148,7 @@ const ProductDetail = () => {
       price: product.price,
       image: `https://backend.souqna.net${product.images?.[0]?.path}`, // ✅ correct
     });
+
     setShowAddedSnackbar(true);
   };
 
