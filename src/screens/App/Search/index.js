@@ -1,5 +1,11 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {FlatList, RefreshControl, StatusBar, View} from 'react-native';
+import {
+  FlatList,
+  RefreshControl,
+  ScrollView,
+  StatusBar,
+  View,
+} from 'react-native';
 import SearchHeader from '../../../components/Headers/SearchHeader';
 import dummyData from '../../../util/dummyData';
 import styles from './style';
@@ -252,38 +258,22 @@ const SearchScreen = () => {
       />
 
       {isSearchMode ? null : (
-        <FlatList
-          data={[{key: 'categories'}, {key: 'gallery'}, {key: 'recommended'}]}
-          keyExtractor={item => item.key}
-          renderItem={({item}) => {
-            switch (item.key) {
-              case 'categories':
-                return categoriesLoading ? null : (
-                  <CategorySection categories={apiCategories} />
-                );
-
-              case 'gallery':
-                return <GalleryContainer />;
-              case 'recommended':
-                return (
-                  <RecommendedSection
-                    products={allRecommendedProducts}
-                    loadMoreProducts={loadMoreRecommendedProducts}
-                    loading={loading}
-                    isEndOfResults={isEndOfResults}
-                    likedItems={likedItems}
-                    handleHeartClick={handleHeartClick}
-                    navigateToProductDetails={navigateToProductDetails}
-                  />
-                );
-              default:
-                return null;
-            }
-          }}
+        <ScrollView
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
-        />
+          }>
+          {!categoriesLoading && <CategorySection categories={apiCategories} />}
+          <GalleryContainer />
+          <RecommendedSection
+            products={allRecommendedProducts}
+            loadMoreProducts={loadMoreRecommendedProducts}
+            loading={loading}
+            isEndOfResults={isEndOfResults}
+            likedItems={likedItems}
+            handleHeartClick={handleHeartClick}
+            navigateToProductDetails={navigateToProductDetails}
+          />
+        </ScrollView>
       )}
 
       {isModalVisible && <AddModal onClose={onClose} />}

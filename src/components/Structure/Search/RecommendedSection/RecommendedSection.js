@@ -1,5 +1,5 @@
 // RecommendedProducts.js
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   FlatList,
   View,
@@ -30,48 +30,51 @@ const RecommendedSection = ({
   const [productsLoading, setProductsLoading] = useState(true);
   const {token} = useSelector(state => state.user);
 
-  useEffect(() => {
-    const loadProducts = async () => {
-      setProductsLoading(true);
+  const loadProducts = useCallback(async () => {
+    setProductsLoading(true);
 
-      const filters = {
-        productName: '',
-        fromDate: '',
-        toDate: '',
-        status: '',
-      };
-
-      const response = await fetchProducts(token, filters);
-      console.log('API Response:', response);
-      if (response?.success && Array.isArray(response.data)) {
-        setApiProducts(response.data);
-      } else {
-        console.error('Invalid products data', response);
-      }
-      setProductsLoading(false);
+    const filters = {
+      productName: '',
+      fromDate: '',
+      toDate: '',
+      status: '',
     };
 
-    loadProducts();
+    const response = await fetchProducts(token, filters);
+    console.log('API Response:', response);
+    if (response?.success && Array.isArray(response.data)) {
+      setApiProducts(response.data);
+    } else {
+      console.error('Invalid products data', response);
+    }
+    setProductsLoading(false);
   }, [token]);
 
-  const renderRecommendedItem = ({item}) => (
-    <TouchableOpacity
-      style={styles.recommendedItem}
-      onPress={() => navigateToProductDetails(item.id)}>
-      <Image
-        source={{uri: `https://backend.souqna.net${item.images[0]?.path}`}}
-        style={styles.recommendedImage}
-      />
-      <View style={styles.recommendedTextContainer}>
-        <Regular style={styles.recommendedTitle}>{item.name}</Regular>
-        <Regular style={styles.recommendedPrice}>${item.price} - USD</Regular>
-      </View>
+  useEffect(() => {
+    loadProducts();
+  }, [loadProducts]);
+
+  const renderRecommendedItem = useCallback(
+    ({item}) => (
       <TouchableOpacity
-        onPress={() => handleHeartClick(item.id, item)}
-        style={styles.heartIconContainer}>
-        <HeartSvg filled={likedItems[item.id]} />
+        style={styles.recommendedItem}
+        onPress={() => navigateToProductDetails(item.id)}>
+        <Image
+          source={{uri: `https://backend.souqna.net${item.images?.[0]?.path}`}}
+          style={styles.recommendedImage}
+        />
+        <View style={styles.recommendedTextContainer}>
+          <Regular style={styles.recommendedTitle}>{item.name}</Regular>
+          <Regular style={styles.recommendedPrice}>${item.price} - USD</Regular>
+        </View>
+        <TouchableOpacity
+          onPress={() => handleHeartClick(item.id, item)}
+          style={styles.heartIconContainer}>
+          <HeartSvg filled={likedItems[item.id]} />
+        </TouchableOpacity>
       </TouchableOpacity>
-    </TouchableOpacity>
+    ),
+    [handleHeartClick, likedItems, navigateToProductDetails],
   );
 
   return (

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {memo, useCallback, useEffect, useState} from 'react';
 import {
   FlatList,
   Text,
@@ -44,23 +44,26 @@ const GalleryContainer = ({onRefresh, refreshing, onProductSelect}) => {
     loadProducts();
   }, [token]);
 
-  const renderProduct = ({item}) => {
-    const productImage = item.images?.[0]?.path
-      ? `https://backend.souqna.net${item.images[0].path}`
-      : null;
+  const renderProduct = useCallback(
+    ({item}) => {
+      const productImage = item.images?.[0]?.path
+        ? `https://backend.souqna.net${item.images[0].path}`
+        : null;
 
-    return (
-      <TouchableOpacity
-        style={styles.galleryContainer}
-        onPress={() => onProductSelect(item.id)}>
-        <Image source={{uri: productImage}} style={styles.productImage} />
-        <View style={{marginTop: mvs(6)}}>
-          <Text style={styles.productTitle}>{item.name || 'Fall'}</Text>
-        </View>
-        {/* <Bold style={styles.productPrice}>${item.price || 0}</Bold> */}
-      </TouchableOpacity>
-    );
-  };
+      return (
+        <TouchableOpacity
+          style={styles.galleryContainer}
+          onPress={() => onProductSelect(item.id)}>
+          <Image source={{uri: productImage}} style={styles.productImage} />
+          <View style={{marginTop: mvs(6)}}>
+            <Text style={styles.productTitle}>{item.name || 'Fall'}</Text>
+          </View>
+          {/* <Bold style={styles.productPrice}>${item.price || 0}</Bold> */}
+        </TouchableOpacity>
+      );
+    },
+    [onProductSelect],
+  );
 
   return (
     <View style={styles.container}>
@@ -87,4 +90,4 @@ const GalleryContainer = ({onRefresh, refreshing, onProductSelect}) => {
   );
 };
 
-export default GalleryContainer;
+export default memo(GalleryContainer);
