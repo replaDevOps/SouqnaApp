@@ -121,6 +121,16 @@ const styles = StyleSheet.create({
     color: '#e5e5e5',
     fontSize: mvs(15),
   },
+
+  removeButtonText:{
+    fontWeight:'800',
+    color:colors.red1
+  },
+  removeButton:{
+    flexDirection:'row',
+    justifyContent:'flex-end',
+    paddingRight:mvs(4)
+  },
   totalRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',

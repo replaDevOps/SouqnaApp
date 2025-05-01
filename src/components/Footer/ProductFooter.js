@@ -4,15 +4,10 @@ import {mvs} from '../../util/metrices';
 import {colors} from '../../util/color';
 import {CartSVG, ChatSVG} from '../../assets/svg';
 
-const ProductFooter = ({onChatPress, onBuyPress}) => {
+const ProductFooter = ({onBuyPress}) => {
   return (
     <View style={styles.footerContainer}>
       <View style={styles.buttonRow}>
-        <TouchableOpacity style={styles.button} onPress={onChatPress}>
-          <ChatSVG />
-          <Text style={styles.buttonText}>Chat</Text>
-        </TouchableOpacity>
-
         <TouchableOpacity style={[styles.buyButton]} onPress={onBuyPress}>
           <CartSVG width={24} height={24} />
           <Text style={styles.buttonText}>Buy Directly</Text>
@@ -27,19 +22,15 @@ export default ProductFooter;
 const styles = StyleSheet.create({
   footerContainer: {
     position: 'absolute',
-    bottom: 0,
+    bottom: 5,
     left: 0,
     right: 0,
     zIndex: 10,
-    backgroundColor: '#fff',
     paddingBottom: mvs(10),
     paddingTop: mvs(10),
-    borderTopWidth: 1,
-    borderTopColor: '#ddd',
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    // paddingHorizontal: mvs(15),
   },
   buttonRow: {
     flexDirection: 'row',
@@ -61,7 +52,7 @@ const styles = StyleSheet.create({
   },
   buyButton: {
     flex: 1,
-    paddingVertical: mvs(8),
+    paddingVertical: mvs(12),
     marginHorizontal: mvs(5),
     borderRadius: mvs(25),
     alignItems: 'center',
