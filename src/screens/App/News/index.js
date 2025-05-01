@@ -8,7 +8,6 @@ import {
   StatusBar,
 } from 'react-native';
 import React from 'react';
-import {colors} from '../../../util/color';
 import MainHeader from '../../../components/Headers/MainHeader';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import styles from './styles';
@@ -20,7 +19,7 @@ import {
   updateQuantity,
 } from '../../../redux/slices/cartSlice';
 
-export default function NewsScreen() {
+export default function CartScreen() {
   const dispatch = useDispatch();
   const cartItems = useSelector(state => state.cart.items);
   const navigation = useNavigation();

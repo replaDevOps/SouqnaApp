@@ -6,8 +6,8 @@ const CartSVG = props => (
     id="Uploaded to svgrepo.com"
     xmlns="http://www.w3.org/2000/svg"
     xmlnsXlink="http://www.w3.org/1999/xlink"
-    width="800px"
-    height="800px"
+    width={18}
+    height={18}
     viewBox="0 0 32 32"
     xmlSpace="preserve"
     {...props}>
