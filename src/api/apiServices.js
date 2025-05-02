@@ -51,28 +51,22 @@ export const fetchProducts = async (token, filters = {}, role) => {
   }
 };
 
-// export const fetchProducts = async (token, filters) => {
-//   try {
-//     const response = await API.post('showAllProducts', filters, {
-//       headers: {
-//         Authorization: `Bearer ${token}`,
-//         pageNo: 1,
-//         recordsPerPage: 20,
-//       },
-//     });
-//     if (response.status === 200) {
-//       return response.data;
-//     }
-//     console.error('Error: Received non-200 status code', response.status);
-//     return null;
-//   } catch (error) {
-//     console.error(
-//       'Error fetching products:',
-//       error.response?.data || error.message,
-//     );
-//     return null;
-//   }
-// };
+export const addToCart = async (productId, qty = 1) => {
+  try {
+    const response = await API.post('addToCart', {
+      productID: productId,
+      qty: qty,
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error(
+      'Error adding to cart:',
+      error?.response?.data || error.message,
+    );
+    return null;
+  }
+};
 
 API.interceptors.request.use(
   async config => {
