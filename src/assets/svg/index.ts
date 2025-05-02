@@ -49,3 +49,6 @@ export {default as VerifySVG} from './verifySVG';
 export {default as UploadSVG} from './uploadSVG';
 export {default as MarkerSVG} from './MarkerSVG';
 export {default as CalendersSVG} from './CalendersSVG';
+export {default as PowerOffSVG} from './powerOff';
+export {default as OnOffSVG} from './OnSVG';
+export {default as OffSVG} from './offSVG';

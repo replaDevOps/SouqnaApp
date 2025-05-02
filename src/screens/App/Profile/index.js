@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   View,
   TouchableOpacity,
@@ -7,25 +7,28 @@ import {
   StatusBar,
   RefreshControl,
 } from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import styles from './styles';
 import {
   logoutUser,
   setVerificationStatus,
 } from '../../../redux/slices/userSlice';
-import {useFocusEffect, useNavigation} from '@react-navigation/native';
-import {MyButton} from '../../../components/atoms/InputFields/MyButton';
-import {SouqnaLogo} from '../../../assets/svg';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { MyButton } from '../../../components/atoms/InputFields/MyButton';
+import { ForwardSVG, ProfileSVG, SouqnaLogo } from '../../../assets/svg';
 import Regular from '../../../typography/RegularText';
 import MainHeader from '../../../components/Headers/MainHeader'; // Import the new component
 import VerificationStatus from '../../../components/Structure/VerificationStatus';
 import axios from 'axios';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import ProfileHeader from '../../../components/Headers/ProfileHeader';
+import { colors } from '../../../util/color';
+import { mvs } from '../../../util/metrices';
 
 const Profile = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const {token, verificationStatus} = useSelector(state => state.user);
+  const { token, verificationStatus } = useSelector(state => state.user);
   const [refreshing, setRefreshing] = useState(false);
 
   const fetchVerificationStatus = async () => {
@@ -65,6 +68,7 @@ const Profile = () => {
   const handleLogout = () => {
     dispatch(logoutUser());
     navigation.replace('Login');
+    console.log('Login');
   };
 
   const handleChangePassword = () => {
@@ -72,65 +76,113 @@ const Profile = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <ScrollView
+      contentContainerStyle={styles.Scrollcontainer}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }>
       <StatusBar barStyle="dark-content" />
-      <MainHeader title="My Account" />
-      <ScrollView
-        contentContainerStyle={styles.container}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }>
-        <View style={styles.logoContainer}>
-          <SouqnaLogo width={50} height={50} />
-          <Regular style={styles.regularText1}>Souqna</Regular>
-        </View>
+      <ProfileHeader OnPressLogout={handleLogout} />
+      <View
+        style={styles.container}
+      >
+
 
         <VerificationStatus />
 
         <View style={styles.content}>
-          <Regular style={styles.regularText}>Profile</Regular>
+          <Regular style={styles.regularText}>General</Regular>
           <View style={styles.menuContainer}>
-            <TouchableOpacity style={styles.menuItem}>
-              <Regular style={styles.menuText}>My Account</Regular>
+
+            <TouchableOpacity style={styles.menuItemContainer}>
+              <View style={styles.leftRow}>
+                <View style={styles.iconWrapper}>
+                  <ProfileSVG width={22} height={22} fill={colors.green} />
+                </View>
+                <Regular style={styles.menuText}>My Account</Regular>
+              </View>
+              <ForwardSVG width={30} height={30} fill={colors.green} />
             </TouchableOpacity>
 
-            <TouchableOpacity
-              style={styles.menuItem}
+
+            <TouchableOpacity style={styles.menuItemContainer}
               onPress={() => {
                 navigation.navigate('Verification');
               }}>
-              <Text style={styles.menuText}>Update Profile</Text>
+              <View style={styles.leftRow}>
+                <View style={styles.iconWrapper}>
+                  <ProfileSVG width={22} height={22} fill={colors.green} />
+                </View>
+                <Regular style={styles.menuText}>
+                  <Regular style={styles.menuText}>
+                    {verificationStatus === 'verified' ? 'Update Profile' : 'Get Verified'}
+                  </Regular>
+                </Regular>
+              </View>
+              <ForwardSVG width={30} height={30} fill={colors.green} />
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.menuItem}>
-              <Text style={styles.menuText}>Update Pic</Text>
+
+            <TouchableOpacity style={styles.menuItemContainer} onPress={handleChangePassword}>
+              <View style={styles.leftRow}>
+                <View style={styles.iconWrapper}>
+                  <ProfileSVG width={22} height={22} fill={colors.green} />
+                </View>
+                <Regular style={styles.menuText}>ChangePassword</Regular>
+              </View>
+              <ForwardSVG width={30} height={30} fill={colors.green} />
             </TouchableOpacity>
+
+
+            <TouchableOpacity style={styles.menuItemContainer}>
+              <View style={styles.leftRow}>
+                <View style={styles.iconWrapper}>
+                  <ProfileSVG width={22} height={22} fill={colors.green} />
+                </View>
+                <Regular style={styles.menuText}>My Account</Regular>
+              </View>
+              <ForwardSVG width={30} height={30} fill={colors.green} />
+            </TouchableOpacity>
+
+
           </View>
 
           <Regular style={styles.regularText}>Favourites</Regular>
           <View style={styles.menuContainer}>
-            <TouchableOpacity style={styles.menuItem}>
-              <Regular style={styles.menuText}>Favourite Ads</Regular>
+            <TouchableOpacity style={styles.menuItemContainer}>
+              <View style={styles.leftRow}>
+                <View style={styles.iconWrapper}>
+                  <ProfileSVG width={22} height={22} fill={colors.green} />
+                </View>
+                <Regular style={styles.menuText}>My Account</Regular>
+              </View>
+              <ForwardSVG width={30} height={30} fill={colors.green} />
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.menuItem}>
-              <Text style={styles.menuText}>Favourite Searches</Text>
+            <TouchableOpacity style={styles.menuItemContainer}>
+              <View style={styles.leftRow}>
+                <View style={styles.iconWrapper}>
+                  <ProfileSVG width={22} height={22} fill={colors.green} />
+                </View>
+                <Regular style={styles.menuText}>My Account</Regular>
+              </View>
+              <ForwardSVG width={30} height={30} fill={colors.green} />
             </TouchableOpacity>
-
-            <TouchableOpacity style={styles.menuItem}>
-              <Text style={styles.menuText}>Favourite Sellers</Text>
+            <TouchableOpacity style={styles.menuItemContainer}>
+              <View style={styles.leftRow}>
+                <View style={styles.iconWrapper}>
+                  <ProfileSVG width={22} height={22} fill={colors.green} />
+                </View>
+                <Regular style={styles.menuText}>My Account</Regular>
+              </View>
+              <ForwardSVG width={30} height={30} fill={colors.green} />
             </TouchableOpacity>
           </View>
         </View>
 
-        <View style={styles.footer}>
-          <MyButton title="Change Password" onPress={handleChangePassword} />
-        </View>
-        <View style={styles.footer}>
-          <MyButton title="Logout" onPress={handleLogout} />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+
+      </View>
+    </ScrollView>
   );
 };
 

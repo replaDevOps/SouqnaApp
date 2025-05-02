@@ -53,3 +53,6 @@ export {default as DateSvg} from './dateSvg';
 export {default as DatRenewSvgeSvg} from './renewSvg';
 export {default as MarkerSVG} from './MarkerSVG';
 export {default as CalendersSVG} from './CalendersSVG';
+export {default as PowerOffSVG} from './powerOff';
+export {default as OnSVG} from './OnSVG';
+export {default as OffSVG} from './offSVG';
