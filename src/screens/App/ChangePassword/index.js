@@ -4,6 +4,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {setUser} from '../../../redux/slices/userSlice';
 import {useNavigation} from '@react-navigation/native';
 import styles from './style';
+import { useTranslation } from 'react-i18next';
 
 const ChangePassword = () => {
   const dispatch = useDispatch();
@@ -11,15 +12,16 @@ const ChangePassword = () => {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const navigation = useNavigation();
+  const {t} = useTranslation();
 
   const handleChangePassword = () => {
     if (newPassword === confirmPassword) {
       // Update password in Redux
       dispatch(setUser({...user, password: newPassword}));
-      alert('Password updated successfully!');
+      alert(t('success'), t('passwordUpdated'));
       navigation.goBack();
     } else {
-      alert('Passwords do not match');
+      alert(t('error'), t('passwordMismatch'));
     }
   };
 
@@ -28,20 +30,20 @@ const ChangePassword = () => {
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
-          placeholder="Enter new password"
+          placeholder={t('enterNewPassword')}
           secureTextEntry
           value={newPassword}
           onChangeText={setNewPassword}
         />
         <TextInput
           style={styles.input}
-          placeholder="Confirm new password"
+          placeholder={t('confirmNewPassword')}
           secureTextEntry
           value={confirmPassword}
           onChangeText={setConfirmPassword}
         />
       </View>
-      <Button title="Change Password" onPress={handleChangePassword} />
+      <Button title={t('changePassword')} onPress={handleChangePassword} />
     </SafeAreaView>
   );
 };

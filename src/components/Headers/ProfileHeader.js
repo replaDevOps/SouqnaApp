@@ -4,6 +4,7 @@ import { colors } from '../../util/color';
 import { mvs } from '../../util/metrices';
 import { OffSVG, PowerOffSVG, SouqnaLogo } from '../../assets/svg';
 import OnSVG from '../../assets/svg/OnSVG';
+import { t } from 'i18next';
 
 const { height } = Dimensions.get('window');
 const headerHeight = height * 0.20;
@@ -25,11 +26,11 @@ export default function ProfileHeader({ OnPressLogout }) {
         <View style={styles.logoWrapper}>
           <SouqnaLogo width={mvs(50)} height={mvs(50)} />
         </View>
-        <Text style={styles.appTitle}>Souqna App</Text>
+        <Text style={styles.appTitle}>{t('Souqna App')}</Text>
       </View>
 
       <View style={styles.sellerContainer}>
-        <Text style={styles.sellerText}>Seller Account</Text>
+        <Text style={styles.sellerText}>{t('Seller Account')}</Text>
         <TouchableOpacity onPress={toggleSellerMode} activeOpacity={0.8}>
           {isSellerOn ? (
             <OnSVG width={mvs(40)} height={mvs(45)} fill={colors.lightpastelgreen} />

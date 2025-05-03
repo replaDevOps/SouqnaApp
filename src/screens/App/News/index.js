@@ -18,11 +18,13 @@ import {
   removeItem,
   updateQuantity,
 } from '../../../redux/slices/cartSlice';
+import { useTranslation } from 'react-i18next';
 
 export default function CartScreen() {
   const dispatch = useDispatch();
   const cartItems = useSelector(state => state.cart.items);
   const navigation = useNavigation();
+  const {t} = useTranslation();
 
   const subTotal = cartItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
@@ -65,95 +67,95 @@ export default function CartScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" />
-      <MainHeader title={'Cart'} />
+    <StatusBar barStyle="dark-content" />
+    <MainHeader title={t('title')} />
 
-      <ScrollView
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}>
-        <Text style={styles.title}>Order details</Text>
+    <ScrollView
+      contentContainerStyle={styles.scrollContent}
+      showsVerticalScrollIndicator={false}>
+      <Text style={styles.title}>{t('orderDetails')}</Text>
 
-        {cartItems.length === 0 ? (
-          <View style={styles.emptyCartContainer}>
-            <Text style={styles.emptyCartText}>Your cart is empty</Text>
-          </View>
-        ) : (
-          <View style={styles.cartList}>
-            {cartItems.map(item => (
-              <View key={item.id} style={styles.cartItem}>
-                <Image
-                  source={getImageSource(item.image)}
-                  style={styles.itemImage}
-                />
-                <View style={styles.itemContent}>
-                  <View style={styles.itemHeader}>
-                    <View style={{justifyContent: 'center'}}>
-                      <Text style={styles.itemName}>{item.name}</Text>
-                      <Text style={styles.itemPrice}>$ {item.price}</Text>
-                    </View>
-                    <View style={{justifyContent: 'center'}}>
-                      <View style={styles.quantityContainer}>
-                        <TouchableOpacity
-                          style={styles.quantityButton}
-                          onPress={() => handleQuantityChange(item.id, -1)}
-                          disabled={item.quantity <= 1}>
-                          <Text>➖</Text>
-                        </TouchableOpacity>
-                        <Text style={styles.quantityText}>{item.quantity}</Text>
-                        <TouchableOpacity
-                          style={styles.quantityButton}
-                          onPress={() => handleQuantityChange(item.id, 1)}>
-                          <Text>➕</Text>
-                        </TouchableOpacity>
-                      </View>
+      {cartItems.length === 0 ? (
+        <View style={styles.emptyCartContainer}>
+          <Text style={styles.emptyCartText}>{t('empty')}</Text>
+        </View>
+      ) : (
+        <View style={styles.cartList}>
+          {cartItems.map(item => (
+            <View key={item.id} style={styles.cartItem}>
+              <Image
+                source={getImageSource(item.image)}
+                style={styles.itemImage}
+              />
+              <View style={styles.itemContent}>
+                <View style={styles.itemHeader}>
+                  <View style={{justifyContent: 'center'}}>
+                    <Text style={styles.itemName}>{item.name}</Text>
+                    <Text style={styles.itemPrice}>$ {item.price}</Text>
+                  </View>
+                  <View style={{justifyContent: 'center'}}>
+                    <View style={styles.quantityContainer}>
+                      <TouchableOpacity
+                        style={styles.quantityButton}
+                        onPress={() => handleQuantityChange(item.id, -1)}
+                        disabled={item.quantity <= 1}>
+                        <Text>➖</Text>
+                      </TouchableOpacity>
+                      <Text style={styles.quantityText}>{item.quantity}</Text>
+                      <TouchableOpacity
+                        style={styles.quantityButton}
+                        onPress={() => handleQuantityChange(item.id, 1)}>
+                        <Text>➕</Text>
+                      </TouchableOpacity>
                     </View>
                   </View>
-                  <TouchableOpacity
-                    style={styles.removeButton}
-                    onPress={() => handleRemoveItem(item.id)}>
-                    <Text style={styles.removeButtonText}>Remove</Text>
-                  </TouchableOpacity>
                 </View>
+                <TouchableOpacity
+                  style={styles.removeButton}
+                  onPress={() => handleRemoveItem(item.id)}>
+                  <Text style={styles.removeButtonText}>{t('remove')}</Text>
+                </TouchableOpacity>
               </View>
-            ))}
-          </View>
-        )}
-
-        <View style={{marginVertical: 100}} />
-      </ScrollView>
-
-      {cartItems.length > 0 && (
-        <View style={styles.summaryContainer}>
-          <ImageBackground
-            source={require('../../../assets/img/Pattern.png')}
-            style={styles.summaryBackground}>
-            <View style={styles.summaryContent}>
-              <View style={styles.summaryRow}>
-                <Text style={styles.summaryLabel}>Sub-Total</Text>
-                <Text style={styles.summaryLabel}>$ {subTotal}</Text>
-              </View>
-              <View style={styles.summaryRow}>
-                <Text style={styles.summaryLabel}>Delivery Charge</Text>
-                <Text style={styles.summaryLabel}>$ {deliveryCharge}</Text>
-              </View>
-              <View style={styles.summaryRow}>
-                <Text style={styles.summaryLabel}>Discount</Text>
-                <Text style={styles.summaryLabel}>$ {discount}</Text>
-              </View>
-              <View style={styles.totalRow}>
-                <Text style={styles.totalLabel}>Total</Text>
-                <Text style={styles.totalLabel}>$ {total}</Text>
-              </View>
-
-              <TouchableOpacity
-                onPress={handlePlaceOrder}
-                style={styles.placeOrderButton}>
-                <Text style={styles.placeOrderText}>Place My Order</Text>
-              </TouchableOpacity>
             </View>
-          </ImageBackground>
+          ))}
         </View>
       )}
-    </SafeAreaView>
+
+      <View style={{marginVertical: 100}} />
+    </ScrollView>
+
+    {cartItems.length > 0 && (
+      <View style={styles.summaryContainer}>
+        <ImageBackground
+          source={require('../../../assets/img/Pattern.png')}
+          style={styles.summaryBackground}>
+          <View style={styles.summaryContent}>
+            <View style={styles.summaryRow}>
+              <Text style={styles.summaryLabel}>{t('subtotal')}</Text>
+              <Text style={styles.summaryLabel}>$ {subTotal}</Text>
+            </View>
+            <View style={styles.summaryRow}>
+              <Text style={styles.summaryLabel}>{t('delivery')}</Text>
+              <Text style={styles.summaryLabel}>$ {deliveryCharge}</Text>
+            </View>
+            <View style={styles.summaryRow}>
+              <Text style={styles.summaryLabel}>{t('discount')}</Text>
+              <Text style={styles.summaryLabel}>$ {discount}</Text>
+            </View>
+            <View style={styles.totalRow}>
+              <Text style={styles.totalLabel}>{t('total')}</Text>
+              <Text style={styles.totalLabel}>$ {total}</Text>
+            </View>
+
+            <TouchableOpacity
+              onPress={handlePlaceOrder}
+              style={styles.placeOrderButton}>
+              <Text style={styles.placeOrderText}>{t('placeOrder')}</Text>
+            </TouchableOpacity>
+          </View>
+        </ImageBackground>
+      </View>
+    )}
+  </SafeAreaView>
   );
 }

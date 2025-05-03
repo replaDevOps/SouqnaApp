@@ -12,11 +12,13 @@ import {
   removeFavorite,
 } from '../../../redux/slices/favoritesSlice';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 
 const FavouriteScreen = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const {favorites} = useSelector(state => state.favorites);
+  const {t} = useTranslation();
 
   console.log('Favorites:', favorites);
 
@@ -38,9 +40,9 @@ const FavouriteScreen = () => {
   if (favorites.length === 0) {
     return (
       <View style={styles.container}>
-        <MainHeader title={'Favourites'} />
+         <MainHeader title={t('favourites')} />
         <View style={styles.content}>
-          <Bold>There are no favourites right now</Bold>
+        <Bold>{t('noFavourites')}</Bold>
         </View>
       </View>
     );
@@ -67,7 +69,7 @@ const FavouriteScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" />
-      <MainHeader title={'Favourites'} />
+      <MainHeader title={t('favourites')} />
       <View style={styles.recommendedContainer}>
         <FlatList
           data={favorites}

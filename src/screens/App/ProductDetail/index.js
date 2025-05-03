@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {View, Image, Dimensions, ScrollView, Text} from 'react-native';
-import {useRoute} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import Bold from '../../../typography/BoldText';
 import Regular from '../../../typography/RegularText';
 import styles from './style';
@@ -49,35 +49,29 @@ const ProductDetail = () => {
     if (!productId) return;
 
     const fetchProductDetails = async () => {
+      console.log('Fetching product details...');
+      console.log('Using role:', role);
+      
       try {
         let response;
-
+      
         if (role === 2 && token) {
-          // Authenticated request
           console.log('Using authenticated API');
-          response = await axios.get(
-            `https://backend.souqna.net/api/getProduct/${productId}`,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            },
-          );
+          response = await axios.get(`...`, { headers: { Authorization: `Bearer ${token}` } });
         } else {
-          // Public API fallback
-          console.log('Using Public API');
-          response = await axios.get(
-            `https://backend.souqna.net/api/productDetails/${productId}`,
-          );
+          console.log('Using public API');
+          response = await axios.get(`...`);
         }
-
+      
+        console.log('API response:', response.data);
+      
         if (response.status === 200 && response.data.success !== false) {
           setProduct(response.data.data);
         } else {
-          console.error('Failed to fetch product details.');
+          console.error('API call failed or product not found:', response.data);
         }
       } catch (error) {
-        console.error('Error fetching product:', error);
+        console.error('Error fetching product details:', error);
       } finally {
         setLoading(false);
       }

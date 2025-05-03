@@ -2,28 +2,28 @@ import React, { useCallback, useState } from 'react';
 import {
   View,
   TouchableOpacity,
-  Text,
   ScrollView,
   StatusBar,
   RefreshControl,
+  I18nManager,
+  Alert
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import styles from './styles';
+import { useTranslation } from 'react-i18next';
 import {
   logoutUser,
   setVerificationStatus,
 } from '../../../redux/slices/userSlice';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import { MyButton } from '../../../components/atoms/InputFields/MyButton';
 import { ForwardSVG, ProfileSVG, SouqnaLogo } from '../../../assets/svg';
 import Regular from '../../../typography/RegularText';
-import MainHeader from '../../../components/Headers/MainHeader'; // Import the new component
 import VerificationStatus from '../../../components/Structure/VerificationStatus';
 import axios from 'axios';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import ProfileHeader from '../../../components/Headers/ProfileHeader';
 import { colors } from '../../../util/color';
-import { mvs } from '../../../util/metrices';
+import RNRestart from 'react-native-restart';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Profile = () => {
   const dispatch = useDispatch();
@@ -75,6 +75,42 @@ const Profile = () => {
     navigation.navigate('ChangePassword');
   };
 
+  const { t, i18n } = useTranslation();
+
+  const toggleLanguage = async () => {
+    const newLang = i18n.language === 'en' ? 'ar' : 'en';
+    const isArabic = newLang === 'ar';
+  
+    try {
+      await AsyncStorage.setItem('appLanguage', newLang); // Save selected language
+  
+      const shouldForceRTL = I18nManager.isRTL !== isArabic;
+  
+      if (shouldForceRTL) {
+        I18nManager.allowRTL(isArabic);
+        I18nManager.forceRTL(isArabic);
+      }
+  
+      i18n.changeLanguage(newLang).then(() => {
+        Alert.alert(
+          isArabic ? 'تم التغيير' : 'Language Changed',
+          isArabic
+            ? 'سيتم إعادة تشغيل التطبيق لتطبيق اللغة العربية.'
+            : 'App will reload to apply English language.',
+          [
+            {
+              text: isArabic ? 'موافق' : 'OK',
+              onPress: () => RNRestart.restart(),
+            },
+          ]
+        );
+      });
+    } catch (error) {
+      console.error('Language toggle error:', error);
+    }
+  };
+  
+
   return (
     <ScrollView
       contentContainerStyle={styles.Scrollcontainer}
@@ -91,7 +127,7 @@ const Profile = () => {
         <VerificationStatus />
 
         <View style={styles.content}>
-          <Regular style={styles.regularText}>General</Regular>
+          <Regular style={styles.regularText}>{t('general')}</Regular>
           <View style={styles.menuContainer}>
 
             <TouchableOpacity style={styles.menuItemContainer}>
@@ -99,89 +135,90 @@ const Profile = () => {
                 <View style={styles.iconWrapper}>
                   <ProfileSVG width={22} height={22} fill={colors.green} />
                 </View>
-                <Regular style={styles.menuText}>My Account</Regular>
+                <Regular style={styles.menuText}>{t('myAccount')}</Regular>
               </View>
               <ForwardSVG width={30} height={30} fill={colors.green} />
             </TouchableOpacity>
 
-
-            <TouchableOpacity style={styles.menuItemContainer}
-              onPress={() => {
-                navigation.navigate('Verification');
-              }}>
+            <TouchableOpacity
+              style={styles.menuItemContainer}
+              onPress={() => navigation.navigate('Verification')}
+            >
               <View style={styles.leftRow}>
                 <View style={styles.iconWrapper}>
                   <ProfileSVG width={22} height={22} fill={colors.green} />
                 </View>
                 <Regular style={styles.menuText}>
-                  <Regular style={styles.menuText}>
-                    {verificationStatus === 'verified' ? 'Update Profile' : 'Get Verified'}
-                  </Regular>
+                  {verificationStatus === 'verified'
+                    ? t('updateProfile')
+                    : t('getVerified')}
                 </Regular>
               </View>
               <ForwardSVG width={30} height={30} fill={colors.green} />
             </TouchableOpacity>
 
-
-            <TouchableOpacity style={styles.menuItemContainer} onPress={handleChangePassword}>
+            <TouchableOpacity
+              style={styles.menuItemContainer}
+              onPress={handleChangePassword}
+            >
               <View style={styles.leftRow}>
                 <View style={styles.iconWrapper}>
                   <ProfileSVG width={22} height={22} fill={colors.green} />
                 </View>
-                <Regular style={styles.menuText}>ChangePassword</Regular>
+                <Regular style={styles.menuText}>{t('changePassword')}</Regular>
               </View>
               <ForwardSVG width={30} height={30} fill={colors.green} />
             </TouchableOpacity>
 
-
-            <TouchableOpacity style={styles.menuItemContainer}>
+            <TouchableOpacity style={styles.menuItemContainer} onPress={toggleLanguage}>
               <View style={styles.leftRow}>
                 <View style={styles.iconWrapper}>
                   <ProfileSVG width={22} height={22} fill={colors.green} />
                 </View>
-                <Regular style={styles.menuText}>My Account</Regular>
+                <Regular style={styles.menuText}>
+                  {i18n.language === 'en' ? t('switchToArabic') : t('switchToEnglish')}
+                </Regular>
               </View>
               <ForwardSVG width={30} height={30} fill={colors.green} />
             </TouchableOpacity>
+</View>
+            <Regular style={styles.regularText}>{t('favourites')}</Regular>
 
-
-          </View>
-
-          <Regular style={styles.regularText}>Favourites</Regular>
-          <View style={styles.menuContainer}>
-            <TouchableOpacity style={styles.menuItemContainer}>
-              <View style={styles.leftRow}>
-                <View style={styles.iconWrapper}>
-                  <ProfileSVG width={22} height={22} fill={colors.green} />
+            <View style={styles.menuContainer}>
+              <TouchableOpacity style={styles.menuItemContainer}>
+                <View style={styles.leftRow}>
+                  <View style={styles.iconWrapper}>
+                    <ProfileSVG width={22} height={22} fill={colors.green} />
+                  </View>
+                  <Regular style={styles.menuText}>{t('myAccount')}</Regular>
                 </View>
-                <Regular style={styles.menuText}>My Account</Regular>
-              </View>
-              <ForwardSVG width={30} height={30} fill={colors.green} />
-            </TouchableOpacity>
+                <ForwardSVG width={30} height={30} fill={colors.green} />
+              </TouchableOpacity>
 
-            <TouchableOpacity style={styles.menuItemContainer}>
-              <View style={styles.leftRow}>
-                <View style={styles.iconWrapper}>
-                  <ProfileSVG width={22} height={22} fill={colors.green} />
+              <TouchableOpacity style={styles.menuItemContainer}>
+                <View style={styles.leftRow}>
+                  <View style={styles.iconWrapper}>
+                    <ProfileSVG width={22} height={22} fill={colors.green} />
+                  </View>
+                  <Regular style={styles.menuText}>{t('myAccount')}</Regular>
                 </View>
-                <Regular style={styles.menuText}>My Account</Regular>
-              </View>
-              <ForwardSVG width={30} height={30} fill={colors.green} />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.menuItemContainer}>
-              <View style={styles.leftRow}>
-                <View style={styles.iconWrapper}>
-                  <ProfileSVG width={22} height={22} fill={colors.green} />
+                <ForwardSVG width={30} height={30} fill={colors.green} />
+              </TouchableOpacity>
+
+              <TouchableOpacity style={styles.menuItemContainer}>
+                <View style={styles.leftRow}>
+                  <View style={styles.iconWrapper}>
+                    <ProfileSVG width={22} height={22} fill={colors.green} />
+                  </View>
+                  <Regular style={styles.menuText}>{t('myAccount')}</Regular>
                 </View>
-                <Regular style={styles.menuText}>My Account</Regular>
-              </View>
-              <ForwardSVG width={30} height={30} fill={colors.green} />
-            </TouchableOpacity>
+                <ForwardSVG width={30} height={30} fill={colors.green} />
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
 
 
-      </View>
     </ScrollView>
   );
 };

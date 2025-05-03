@@ -25,12 +25,15 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { mvs } from '../../../../util/metrices';
 import { SearchSVG, UploadSVG } from '../../../../assets/svg';
 import GooglePlacesSuggestion from '../../../../components/GooglePlacesSuggestion';
+import { useTranslation } from 'react-i18next';
 
 const CreateProduct = () => {
   const route = useRoute();
   const { id: subCategoryId, categoryId, name, category } = route.params;
   const { token } = useSelector(state => state.user);
   const navigation = useNavigation();
+  const { t } = useTranslation();
+
 
   const [formData, setFormData] = useState({
     name: '',
@@ -147,7 +150,7 @@ const handlePlaceSelected = (placeData) => {
       console.log('✅ Response:', response.data);
 
       if (response.data.success) {
-        setSnackbarMessage('Product created successfully!');
+        setSnackbarMessage(t('productCreatedSuccess'));
         setFormData({
           name: '',
           description: '',
@@ -176,11 +179,11 @@ const handlePlaceSelected = (placeData) => {
       let errorMessage =
         error.response?.data?.message ||
         error.message ||
-        'Something went wrong. Try again!';
+        t('somethingWentWrong');
 
       // Check if 403 error (profile not verified)
       if (error.response?.status === 403) {
-        errorMessage = 'Your profile is not verified yet.';
+        errorMessage = t('profileNotVerified');
       }
       // Check if it's an image size error
       else if (
@@ -214,7 +217,7 @@ const handlePlaceSelected = (placeData) => {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <StatusBar barStyle="dark-content" />
-      <MainHeader title={`Post Your Product`} showBackIcon={true} />
+      <MainHeader title={t('titleProduct')} showBackIcon={true} />
 
       <ScrollView
         style={{
@@ -224,7 +227,7 @@ const handlePlaceSelected = (placeData) => {
         }}
         contentContainerStyle={{ paddingBottom: mvs(60) }}>
         <View style={styles.sectionContainer}>
-          <Text style={styles.sectionTitle}>Category</Text>
+          <Text style={styles.sectionTitle}>{t('category')}</Text>
           <View style={styles.categoryBox}>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <Image
@@ -237,7 +240,7 @@ const handlePlaceSelected = (placeData) => {
               </View>
             </View>
             <TouchableOpacity onPress={handleChange}>
-              <Text style={styles.changeText}>Change</Text>
+              <Text style={styles.changeText}>{t('change')}</Text>
             </TouchableOpacity>
           </View>
 
@@ -246,7 +249,7 @@ const handlePlaceSelected = (placeData) => {
               <TouchableOpacity
                 style={styles.addButton}
                 onPress={handleChooseImages}>
-                <Text style={styles.addButtonText}>Add images</Text>
+                <Text style={styles.addButtonText}>{t('addImages')}</Text>
               </TouchableOpacity>
             ) : (
               // After image is added
@@ -276,7 +279,7 @@ const handlePlaceSelected = (placeData) => {
                               height={22}
                               style={styles.uploadIcon}
                             />
-                            <Text style={styles.uploadText}>Upload Image</Text>
+                            <Text style={styles.uploadText}>{t('uploadImage')}</Text>
                           </TouchableOpacity>
                         ) : (
                           <View style={styles.imageWrapper}>
@@ -301,15 +304,14 @@ const handlePlaceSelected = (placeData) => {
             <View>{/* Display Selected Images */}</View>
 
             <Text style={styles.noteText}>
-              For the cover picture we recommend using the landscape mode.
-            </Text>
+            {t('coverNote')}            </Text>
           </View>
         </View>
 
         {/* Condition Section - Updated to Radio Buttons */}
         <View style={styles.sectionContainer}>
           <Text style={styles.sectionTitle}>
-            Condition
+          {t('condition')}
             <Text style={{ color: colors.red }}>*</Text>
           </Text>
 
@@ -326,7 +328,7 @@ const handlePlaceSelected = (placeData) => {
                   {selectedCondition === 'New' && <View style={styles.radioInner} />}
                 </View>
               </View>
-              <Text style={styles.radioText}>New</Text>
+              <Text style={styles.radioText}>{t('new')}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -341,7 +343,7 @@ const handlePlaceSelected = (placeData) => {
                   {selectedCondition === 'Used' && <View style={styles.radioInner} />}
                 </View>
               </View>
-              <Text style={styles.radioText}>Used</Text>
+              <Text style={styles.radioText}>{t('used')}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -349,12 +351,12 @@ const handlePlaceSelected = (placeData) => {
         {/* Name Section */}
         <View style={styles.sectionContainer}>
           <Text style={styles.sectionTitle}>
-            Name
+          {t('name')}
             <Text style={{ color: colors.red }}>*</Text>
           </Text>
           <TextInput
             style={styles.input}
-            placeholder="Enter product name"
+            placeholder={t('namePlaceholder')}
             placeholderTextColor={colors.grey}
             value={formData.name}
             onChangeText={text => handleInputChange('name', text)}
@@ -364,12 +366,12 @@ const handlePlaceSelected = (placeData) => {
         {/* Description Section */}
         <View style={styles.sectionContainer}>
           <Text style={styles.sectionTitle}>
-            Description
+          {t('description')}
             <Text style={{ color: colors.red }}>*</Text>
           </Text>
           <TextInput
             style={[styles.input, { height: mvs(100) }]}
-            placeholder="Enter product description......"
+            placeholder={t('descriptionPlaceholder')}
             placeholderTextColor={colors.grey}
             value={formData.description}
             multiline
@@ -380,7 +382,7 @@ const handlePlaceSelected = (placeData) => {
         {/* Location Section - Fixed */}
         <View style={styles.sectionContainer}>
           <Text style={styles.sectionTitle}>
-            Location
+          {t('location')}
             <Text style={{ color: colors.red }}>*</Text>
           </Text>
           <View style={styles.locationContainer}>
@@ -394,12 +396,12 @@ const handlePlaceSelected = (placeData) => {
         {/* Price Section */}
         <View style={styles.sectionContainer}>
           <Text style={styles.sectionTitle}>
-            Price
+          {t('price')}
             <Text style={{ color: colors.red }}>*</Text>
           </Text>
           <TextInput
             style={styles.input}
-            placeholder="Enter price"
+            placeholder={t('pricePlaceholder')}
             placeholderTextColor={colors.grey}
             keyboardType="numeric"
             value={formData.price}
@@ -410,12 +412,12 @@ const handlePlaceSelected = (placeData) => {
         {/* Discount Section */}
         <View style={styles.sectionContainer}>
           <Text style={styles.sectionTitle}>
-            Discount
+          {t('discount')}
             {/* <Text style={{color: colors.red}}>*</Text> */}
           </Text>
           <TextInput
             style={styles.input}
-            placeholder="Enter discount percentage"
+            placeholder={t('discountPlaceholder')}
             keyboardType="numeric"
             placeholderTextColor={colors.grey}
             value={formData.discount}
@@ -426,12 +428,12 @@ const handlePlaceSelected = (placeData) => {
         {/* Special Offer Section */}
         <View style={styles.sectionContainer}>
           <Text style={styles.sectionTitle}>
-            Special Offer
+          {t('specialOffer')}
             {/* <Text style={{color: colors.red}}>*</Text> */}
           </Text>
           <TextInput
             style={styles.input}
-            placeholder="Enter special offer"
+            placeholder={t('specialOfferPlaceholder')}
             placeholderTextColor={colors.grey}
             value={formData.specialOffer}
             onChangeText={text => handleInputChange('specialOffer', text)}
@@ -441,12 +443,12 @@ const handlePlaceSelected = (placeData) => {
         {/* Stock Section */}
         <View style={styles.sectionContainer}>
           <Text style={styles.sectionTitle}>
-            Available Stock
+          {t('availableStock')}
             <Text style={{ color: colors.red }}>*</Text>
           </Text>
           <TextInput
             style={styles.input}
-            placeholder="Enter available stock"
+            placeholder={t('stockPlaceholder')}
             placeholderTextColor={colors.grey}
             keyboardType="numeric"
             value={formData.stock}
@@ -456,14 +458,14 @@ const handlePlaceSelected = (placeData) => {
 
         {/* Submit Button */}
         <MyButton
-          title={loading ? 'Submitting...' : 'Submit Product'}
+          title={loading ? t('submitting') : t('submitProduct')}
           style={styles.submitButton}
           onPress={submitProduct}
           disabled={loading}>
           {loading ? (
             <ActivityIndicator color={colors.green} />
           ) : (
-            <Text style={styles.submitButtonText}>Submit Product</Text>
+            <Text style={styles.submitButtonText}>{t('submit')}</Text>
           )}
         </MyButton>
       </ScrollView>
@@ -481,3 +483,6 @@ const handlePlaceSelected = (placeData) => {
 };
 
 export default CreateProduct;
+
+
+

@@ -10,6 +10,7 @@ import axios from 'axios';
 import {useSelector} from 'react-redux';
 import LocationSvg from '../../../assets/svg/location-svg';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 
 const SERVER_URL = 'https://backend.souqna.net';
 const AdvertiseScreen = () => {
@@ -17,6 +18,7 @@ const AdvertiseScreen = () => {
   const [categories, setCategories] = useState([]);
   const {token} = useSelector(state => state.user);
   const navigation = useNavigation();
+  const {t} = useTranslation();
 
   const fetchCategories = async () => {
     try {
@@ -95,9 +97,9 @@ const AdvertiseScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" />
-      <MainHeader title="Post Ad" />
+      <MainHeader title={t('postAd')} />
       <View style={styles.content}>
-        <Regular style={styles.regularText}>Category Selection</Regular>
+        <Regular style={styles.regularText}>{t('categorySelection')}</Regular>
       </View>
       <FlatList
         data={filteredCategories}

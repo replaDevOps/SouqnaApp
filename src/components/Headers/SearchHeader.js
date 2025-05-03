@@ -11,6 +11,7 @@ import {NotificationSVG, SearchSVG} from '../../assets/svg';
 import {colors} from '../../util/color';
 import {mvs} from '../../util/metrices';
 import {useNavigation} from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 
 const SearchHeader = ({
   onFocusSearch,
@@ -20,6 +21,7 @@ const SearchHeader = ({
   showLocationIcon = true,
 }) => {
   const navigation = useNavigation();
+  const {t} = useTranslation();
 
   const onNotification = () => {
     navigation.navigate('Notification');
@@ -34,7 +36,7 @@ const SearchHeader = ({
         <TextInput
           style={styles.searchBar}
           onPress={onFocusSearch}
-          placeholder="What are you looking for?"
+          placeholder={t('placeholder')}
           placeholderTextColor={colors.grey}
           keyboardType="default"
           onFocus={onFocusSearch}
@@ -54,7 +56,7 @@ const SearchHeader = ({
         <TouchableOpacity
           onPress={onCancelSearch}
           style={styles.notificationIcon}>
-          <Text style={styles.cancelText}>Cancel</Text>
+          <Text style={styles.cancelText}>{t('cancel')}</Text>
         </TouchableOpacity>
       ) : (
         <TouchableOpacity

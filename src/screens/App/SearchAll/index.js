@@ -8,10 +8,12 @@ import styles from './style';
 import LocationSvg from '../../../assets/svg/location-svg';
 import {ForwardSVG, OtherCategorySVG} from '../../../assets/svg';
 import {Row} from '../../../components/atoms/row';
+import { useTranslation } from 'react-i18next';
 
 const AllCategories = () => {
   const navigation = useNavigation();
   const {categories, categoryIcons} = dummyData;
+  const {t} = useTranslation();
 
   const handleBack = () => {
     navigation.goBack();
@@ -52,14 +54,14 @@ const AllCategories = () => {
 
   return (
     <View style={styles.container}>
-      <CategoryHeader title="All Categories" onBack={handleBack} />
+      <CategoryHeader title={t('titleCategories')} onBack={handleBack} />
 
       {categories.at(4) && (
         <View style={styles.categoryItem}>
           <View style={styles.IconContainer}>
             <OtherCategorySVG width={24} height={24} />
           </View>
-          <Regular style={styles.categoryText}>Other Categories</Regular>
+          <Regular style={styles.categoryText}>O{t('otherCategories')}</Regular>
         </View>
       )}
 
