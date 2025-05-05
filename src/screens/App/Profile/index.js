@@ -130,7 +130,7 @@ const Profile = () => {
           <Regular style={styles.regularText}>{t('general')}</Regular>
           <View style={styles.menuContainer}>
 
-            <TouchableOpacity style={styles.menuItemContainer}>
+            <TouchableOpacity style={styles.menuItemContainer} onPress={()=> navigation.navigate('MyAccount')}>
               <View style={styles.leftRow}>
                 <View style={styles.iconWrapper}>
                   <ProfileSVG width={22} height={22} fill={colors.green} />

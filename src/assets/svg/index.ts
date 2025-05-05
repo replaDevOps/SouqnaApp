@@ -52,3 +52,4 @@ export {default as CalendersSVG} from './CalendersSVG';
 export {default as PowerOffSVG} from './powerOff';
 export {default as OnOffSVG} from './OnSVG';
 export {default as OffSVG} from './offSVG';
+export {default as BackwardSVG} from './backwardSVG';

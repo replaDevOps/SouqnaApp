@@ -79,7 +79,8 @@ const AddModal = ({visible, onClose, title, message}) => {
           </View>
 
           <View style={styles.logoAndTitleContainer}>
-            <SouqnaLogo width={40} height={40} />
+            {/* <SouqnaLogo width={40} height={40} /> */}
+            <Image source={require('../../assets/img/logo1.png')} style={styles.logo} />
             <Text style={styles.title}>Souqna</Text>
           </View>
 
@@ -161,6 +162,10 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  logo:{
+   width:45,
+  height:45
   },
   modalContainer: {
     backgroundColor: colors.white,
