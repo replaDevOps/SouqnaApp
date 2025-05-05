@@ -8,6 +8,7 @@ import {
   Animated,
   TouchableOpacity,
   Platform,
+  Image,
 } from 'react-native';
 // import {useDispatch} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
@@ -127,7 +128,7 @@ const Register = () => {
         title={'Help'}
       />
       <View style={styles.HeaderContainer}>
-        <SouqnaLogo width={50} height={50} />
+        <Image source={require('../../../assets/img/logo1.png')} style={{width:mvs(50),height:mvs(50)}} />
         <Bold style={styles.title}>Souqna</Bold>
       </View>
       <Bold style={styles.howText}>How do you want to use Souqna?</Bold>

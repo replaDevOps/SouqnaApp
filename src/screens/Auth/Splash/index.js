@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {View, Animated} from 'react-native';
+import {View, Animated, Image} from 'react-native';
 import {mvs} from '../../../util/metrices';
 import styles from './styles';
 import SouqnaLogo1 from '../../../assets/svg/logo-svg';
@@ -24,7 +24,7 @@ const SplashScreen = ({navigation}) => {
   return (
     <View style={styles.logoContainer}>
       <Animated.View style={{opacity: fadeAnim}}>
-        <SouqnaLogo1 width={mvs(200)} height={mvs(200)} />
+        <Image source={require('../../../assets/img/logo1.png')} style={{width:mvs(280),height:mvs(200)}} />
       </Animated.View>
     </View>
   );
