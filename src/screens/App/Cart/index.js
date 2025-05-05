@@ -11,9 +11,9 @@ import React, {useEffect, useState} from 'react';
 import MainHeader from '../../../components/Headers/MainHeader';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import styles from './styles';
-import {useDispatch, useSelector} from 'react-redux';
+// import {useDispatch, useSelector} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
-import {clearCart, updateQuantity} from '../../../redux/slices/cartSlice';
+// import {clearCart, updateQuantity} from '../../../redux/slices/cartSlice';
 import {useTranslation} from 'react-i18next';
 import {
   fetchCartItems,
@@ -24,12 +24,13 @@ import {Snackbar} from 'react-native-paper';
 import {mvs} from '../../../util/metrices';
 
 export default function CartScreen() {
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const [cartData, setCartData] = useState([]);
   const navigation = useNavigation();
   const {t} = useTranslation();
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   const subTotal = cartData.reduce(
     (sum, item) => sum + item.price * item.quantity,
@@ -49,15 +50,25 @@ export default function CartScreen() {
         const response = await fetchCartItems(page, 10);
         if (response?.data?.length) {
           const normalizedItems = response.data.map(item => ({
-            id: item.id,
+            id: item.product?.id,
+            cartItemId: item.id,
             name: item.product?.name || 'Unnamed',
             quantity: item.qty || 1,
-            price: 100, // Replace with actual price if available in API
+            price: parseFloat(item.price),
             image: item.product?.images?.[0]?.path
               ? `${BASE_URL_Product}${item.product.images[0].path}`
               : null,
           }));
-          allItems = [...allItems, ...normalizedItems];
+
+          normalizedItems.forEach(item => {
+            const existingIndex = allItems.findIndex(i => i.id === item.id);
+            if (existingIndex !== -1) {
+              allItems[existingIndex].quantity += item.quantity;
+            } else {
+              allItems.push(item);
+            }
+          });
+
           page += 1;
         } else {
           hasMore = false;
@@ -68,18 +79,27 @@ export default function CartScreen() {
     };
 
     loadCartItems();
-  }, []);
+  }, [refreshTrigger]);
 
   const handleQuantityChange = (id, change) => {
-    dispatch(updateQuantity({id, change}));
+    setCartData(prev =>
+      prev.map(item =>
+        item.id === id
+          ? { ...item, quantity: Math.max(1, item.quantity + change) }
+          : item,
+      ),
+    );
+    // // no Redux dispatch
+    // dispatch(updateQuantity({id, change}));
   };
 
-  const handleRemoveItem = async id => {
-    const response = await deleteCartItem(id);
+  const handleRemoveItem = async cartItemId => {
+    const response = await deleteCartItem(cartItemId);
     if (response?.success) {
-      setCartData(prev => prev.filter(item => item.id !== id));
+      setCartData(prev => prev.filter(item => item.cartItemId !== cartItemId));
       setSnackbarMessage('Item removed from cart');
       setSnackbarVisible(true);
+      setRefreshTrigger(prev => prev + 1);
     } else {
       console.warn('Failed to remove item from cart');
       setSnackbarMessage('Failed to remove item');
@@ -88,25 +108,16 @@ export default function CartScreen() {
   };
 
   const handlePlaceOrder = () => {
-    dispatch(clearCart());
+    // // no Redux clearCart
+    // dispatch(clearCart());
+    setCartData([]);
     // navigation.navigate('OrderCompleted');
   };
 
-  // Helper function to extract image URI safely
   const getImageSource = imageData => {
     if (!imageData) return {uri: 'fallback_image_url_here'};
-
-    // Handle case when image is already a string
-    if (typeof imageData === 'string') {
-      return {uri: imageData};
-    }
-
-    // Handle case when image is an object with uri property
-    if (typeof imageData === 'object' && imageData.uri) {
-      return {uri: imageData.uri};
-    }
-
-    // Default fallback
+    if (typeof imageData === 'string') return {uri: imageData};
+    if (imageData.uri) return {uri: imageData.uri};
     return {uri: 'fallback_image_url_here'};
   };
 
@@ -146,7 +157,9 @@ export default function CartScreen() {
                           disabled={item.quantity <= 1}>
                           <Text>➖</Text>
                         </TouchableOpacity>
-                        <Text style={styles.quantityText}>{item.quantity}</Text>
+                        <Text style={styles.quantityText}>
+                          {item.quantity}
+                        </Text>
                         <TouchableOpacity
                           style={styles.quantityButton}
                           onPress={() => handleQuantityChange(item.id, 1)}>
@@ -157,7 +170,7 @@ export default function CartScreen() {
                   </View>
                   <TouchableOpacity
                     style={styles.removeButton}
-                    onPress={() => handleRemoveItem(item.id)}>
+                    onPress={() => handleRemoveItem(item.cartItemId)}>
                     <Text style={styles.removeButtonText}>{t('remove')}</Text>
                   </TouchableOpacity>
                 </View>
@@ -207,7 +220,7 @@ export default function CartScreen() {
         duration={3000}
         style={{
           position: 'absolute',
-          bottom: mvs(70), // push it above the Buy button
+          bottom: mvs(70),
           left: 10,
           right: 10,
           borderRadius: 8,
