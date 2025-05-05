@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { Animated, View, StyleSheet, Image } from 'react-native';
+import { mvs } from '../util/metrices';
 
 export default function Loader() {
   const spinAnim = useRef(new Animated.Value(0)).current;
@@ -38,7 +39,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   tire: {
-    width: 80,
-    height: 80,
+    width: mvs(200),
+    height: mvs(200),
   },
 });
