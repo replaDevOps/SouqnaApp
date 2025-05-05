@@ -103,10 +103,12 @@ android {
 
 dependencies {
     implementation("com.facebook.react:react-android")
-
+    implementation 'com.google.firebase:firebase-auth:21.0.1'
+    implementation 'com.google.firebase:firebase-messaging:23.0.0'
     if (hermesEnabled.toBoolean()) {
         implementation("com.facebook.react:hermes-android")
     } else {
         implementation jscFlavor
     }
 }
+apply plugin: 'com.google.gms.google-services' 
