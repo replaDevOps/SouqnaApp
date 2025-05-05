@@ -25,6 +25,7 @@ import ProductImages from './ProductImages';
 import {addItem} from '../../../redux/slices/cartSlice';
 import {addToCart, getProduct} from '../../../api/apiServices';
 import {Snackbar} from 'react-native-paper';
+import Loader from '../../../components/Loader';
 
 const {height} = Dimensions.get('window');
 
@@ -142,7 +143,7 @@ const ProductDetail = () => {
   return (
     <SafeAreaView style={styles.container}>
       {loading || !product ? (
-        <Text>Loading...</Text>
+        <Loader/>
       ) : (
         <>
           <ProductHeader
