@@ -3,9 +3,13 @@ import {mvs} from '../../../util/metrices';
 import {colors} from '../../../util/color';
 
 const styles = StyleSheet.create({
-  container: {
+  Scrollcontainer: {
     // flexGrow: 1,
-    paddingBottom: 40,
+    // paddingBottom: 40,
+    backgroundColor:colors.white
+  },
+  container:{  
+    paddingVertical: mvs(45),
   },
   logoContainer: {
     marginVertical: mvs(20),
@@ -22,29 +26,34 @@ const styles = StyleSheet.create({
     marginVertical: mvs(10),
   },
   menuContainer: {
-    justifyContent: 'center',
-    paddingHorizontal: mvs(10),
+    // justifyContent: 'center',
     marginVertical: mvs(10),
-    backgroundColor: colors.white,
+    marginHorizontal: mvs(17),
   },
   menuItem: {
+    backgroundColor: colors.gray,
     paddingVertical: mvs(15),
-    borderBottomWidth: 1,
+    marginVertical: mvs(6),
+    borderRadius:mvs(22),
+    paddingHorizontal:mvs(10),
     flexDirection: 'row',
-    borderBottomColor: colors.grey,
+    alignItems:'center',
+    justifyContent:'space-between'
   },
   regularText: {
-    fontSize: mvs(18),
-    color: colors.green,
+    fontSize: mvs(24),
+    fontWeight:'bold',
+    color: colors.black,
     paddingLeft: mvs(20),
     paddingTop: mvs(10),
   },
   regularText1: {
-    fontSize: 16,
+    fontSize: mvs(18),
     paddingBottom: mvs(10),
   },
   menuText: {
-    fontSize: mvs(14),
+    fontSize: mvs(17),
+    fontWeight:'bold',
     marginLeft: mvs(10),
     color: colors.black,
   },
@@ -132,6 +141,35 @@ const styles = StyleSheet.create({
     width: '23%',
     height: 4,
     borderRadius: 2,
+  },
+  menuItemContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: mvs(10),
+    paddingHorizontal: mvs(10),
+    backgroundColor: colors.gray,
+    // elevation:8,
+    borderRadius: mvs(20),
+    marginBottom: mvs(10),
+  },
+  leftRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  iconWrapper: {
+    backgroundColor: '#fff',
+    width: mvs(37),
+    height: mvs(37),
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: mvs(8),
+  },
+  menuText: {
+    marginLeft: mvs(10),
+    color: colors.black,
+    fontSize: mvs(14),
+    fontWeight:'bold'
   },
 });
 

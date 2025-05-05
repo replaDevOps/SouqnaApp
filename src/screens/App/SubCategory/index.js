@@ -5,11 +5,13 @@ import Regular from '../../../typography/RegularText';
 import styles from './style';
 import CategoryHeader from '../../../components/Headers/CategoryHeader';
 import {ForwardSVG} from '../../../assets/svg';
+import { useTranslation } from 'react-i18next';
 
 const SubCategoryScreen = () => {
   const route = useRoute();
   const {category, subcategories} = route.params;
   const navigation = useNavigation();
+  const {t} = useTranslation();
 
   const handleSubcategoryPress = subcategory => {
     console.log(`Subcategory ${subcategory} clicked`);
@@ -31,7 +33,7 @@ const SubCategoryScreen = () => {
     <View style={styles.container}>
       <CategoryHeader title={category} onBack={handleBack} />
       <View style={styles.headerContainer}>
-        <Regular style={styles.header}>All in {category}</Regular>
+        <Regular style={styles.header}>{t('subcategoryScreen.allIn')}{category}</Regular>
       </View>
       <View style={styles.content}>
         <FlatList

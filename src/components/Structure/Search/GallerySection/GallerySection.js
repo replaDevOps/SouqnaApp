@@ -14,11 +14,13 @@ import Bold from '../../../../typography/BoldText';
 import Regular from '../../../../typography/RegularText';
 import {colors} from '../../../../util/color';
 import {mvs} from '../../../../util/metrices';
+import { useTranslation } from 'react-i18next';
 
 const GalleryContainer = ({onRefresh, refreshing, onProductSelect}) => {
   const [apiProducts, setApiProducts] = useState([]);
   const [productsLoading, setProductsLoading] = useState(true);
   const {token} = useSelector(state => state.user);
+  const {t} = useTranslation();
 
   useEffect(() => {
     const loadProducts = async () => {
@@ -68,7 +70,7 @@ const GalleryContainer = ({onRefresh, refreshing, onProductSelect}) => {
   return (
     <View style={styles.container}>
       <View style={{backgroundColor: colors.white}}>
-        <Bold style={styles.galleryLabel}>Gallery</Bold>
+        <Bold style={styles.galleryLabel}>{t('gallery')}</Bold>
         <FlatList
           data={apiProducts}
           keyExtractor={item => item.id.toString()}
@@ -76,9 +78,9 @@ const GalleryContainer = ({onRefresh, refreshing, onProductSelect}) => {
           horizontal={true}
           ListEmptyComponent={
             productsLoading ? (
-              <Text>Loading...</Text>
+              <Text>{t('loading')}</Text>
             ) : (
-              <Text>No products found</Text>
+              <Text>{t('noProducts')}</Text>
             )
           }
           refreshControl={

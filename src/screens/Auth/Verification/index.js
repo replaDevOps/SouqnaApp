@@ -27,6 +27,7 @@ import {UploadSVG, CalendarSVG, CalendersSVG} from '../../../assets/svg';
 import {colors} from '../../../util/color';
 import {mvs} from '../../../util/metrices';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 
 // Radio Button Component
 const RadioButton = ({selected, onPress, label}) => {
@@ -50,6 +51,8 @@ const VerificationScreen = () => {
   const {token} = useSelector(state => state.user);
   console.log(token);
   const [loading, setLoading] = useState(false);
+  const {t} = useTranslation();
+
 
   const [formData, setFormData] = useState({
     fullName: '',
@@ -160,7 +163,7 @@ const VerificationScreen = () => {
       !idBackSide
     ) {
       ToastAndroid.show(
-        'Please fill all fields and upload all images.',
+        t('fillAllFields'),
         ToastAndroid.SHORT,
       );
       return;
@@ -270,10 +273,10 @@ const VerificationScreen = () => {
         <View style={styles.container}>
           {/* Full Name input (first field) */}
           <View style={styles.inputContainer}>
-            <Text style={styles.label}>Full Name</Text>
+            <Text style={styles.label}>{t('fullName')}</Text>
             <TextInput
               style={styles.input}
-              placeholder="Enter Full Name"
+              placeholder={t('enterFullName')}
               value={formData.fullName}
               onChangeText={text => handleInputChange('fullName', text)}
             />
@@ -282,8 +285,8 @@ const VerificationScreen = () => {
           {/* Date of Birth input (second field) */}
           {renderDateInput(
             'dob',
-            'Date of Birth',
-            'Enter Date of Birth (YYYY-MM-DD)',
+            t('dateOfBirth'),
+            t('enterDOB'),
             openDob,
             setOpenDob,
             handleDobChange,
@@ -293,22 +296,22 @@ const VerificationScreen = () => {
 
           {/* Gender Radio Buttons */}
           <View style={styles.inputContainer}>
-            <Text style={styles.label}>Gender</Text>
+            <Text style={styles.label}>{t('gender')}</Text>
             <View style={styles.radioGroup}>
               <RadioButton
                 selected={formData.gender === 'male'}
                 onPress={() => handleGenderSelect('male')}
-                label="Male"
+                label={t('male')}
               />
               <RadioButton
                 selected={formData.gender === 'female'}
                 onPress={() => handleGenderSelect('female')}
-                label="Female"
+                label={t('female')}
               />
               <RadioButton
                 selected={formData.gender === 'other'}
                 onPress={() => handleGenderSelect('other')}
-                label="Other"
+                label={t('other')}
               />
             </View>
           </View>
@@ -327,7 +330,7 @@ const VerificationScreen = () => {
             };
             return (
               <View key={key} style={styles.inputContainer}>
-                <Text style={styles.label}>{labelMap[key]}</Text>
+                <Text style={styles.label}>{t(`${key}`)}</Text>
                 <TextInput
                   style={styles.input}
                   placeholder={placeholderMap[key]}
@@ -340,9 +343,9 @@ const VerificationScreen = () => {
 
           {/* Remaining date inputs */}
           {renderDateInput(
-            'issueDate',
-            'Issue Date',
-            'Enter Issue Date (YYYY-MM-DD)',
+              'issueDate',
+              t('issueDate'),
+              t('enterIssueDate'),
             openIssueDate,
             setOpenIssueDate,
             handleIssueDateChange,
@@ -351,9 +354,9 @@ const VerificationScreen = () => {
           )}
 
           {renderDateInput(
-            'expDate',
-            'Expiry Date',
-            'Enter Expiry Date (YYYY-MM-DD)',
+              'expDate',
+              t('expDate'),
+              t('enterExpDate'),
             openExpDate,
             setOpenExpDate,
             handleExpDateChange,
@@ -364,11 +367,11 @@ const VerificationScreen = () => {
           <View style={styles.uploadRow}>
             {[
               {
-                label: 'Front of ID',
+                label: t('uploadFrontID'),
                 state: idFrontSide,
                 setter: setIdFrontSide,
               },
-              {label: 'Back of ID', state: idBackSide, setter: setIdBackSide},
+              {label: t('uploadBackID'), state: idBackSide, setter: setIdBackSide},
             ].map(({label, state, setter}) => (
               <View key={label} style={styles.uploadBox}>
                 <TouchableOpacity
@@ -421,7 +424,7 @@ const VerificationScreen = () => {
                       height={16}
                       style={styles.uploadIcon}
                     />
-                    <Text style={styles.uploadLabel}>Upload Selfie</Text>
+                    <Text style={styles.uploadLabel}>{t('uploadSelfie')}</Text>
                   </View>
                 )}
               </TouchableOpacity>
@@ -436,7 +439,7 @@ const VerificationScreen = () => {
             </View>
           </View>
 
-          <MyButton title="Submit" onPress={handleSubmit} disabled={loading} />
+          <MyButton title={t('submit')}  onPress={handleSubmit} disabled={loading} />
 
           {loading && (
             <ActivityIndicator
@@ -455,12 +458,12 @@ const VerificationScreen = () => {
           <View style={styles.modalOverlay}>
             <View style={styles.modalContainer}>
               <Text style={styles.modalText}>
-                Your document is still Pending.
+              {t('documentPending')}
               </Text>
               <TouchableOpacity
                 style={styles.modalButton}
                 onPress={() => setModalVisible(false)}>
-                <Regular style={styles.modalButtonText}>Close</Regular>
+                <Regular style={styles.modalButtonText}>{t('close')}</Regular>
               </TouchableOpacity>
             </View>
           </View>

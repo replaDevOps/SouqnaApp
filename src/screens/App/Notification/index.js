@@ -6,10 +6,12 @@ import CategoryHeader from '../../../components/Headers/CategoryHeader';
 import Notificationsvg from '../../../assets/svg/notification-svg';
 import dummyData from '../../../util/dummyData';
 import styles from './style';
+import { useTranslation } from 'react-i18next';
 
 const Notification = () => {
   const navigation = useNavigation();
   const {notificationsData} = dummyData;
+  const {t} = useTranslation(); 
 
   const handleBack = () => {
     navigation.goBack();
@@ -32,7 +34,7 @@ const Notification = () => {
 
   return (
     <View style={styles.container}>
-      <CategoryHeader title={'Notification'} onBack={handleBack} />
+      <CategoryHeader title={t('titleNotification')} onBack={handleBack} />
 
       <FlatList
         data={notificationsData}

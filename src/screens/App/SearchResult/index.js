@@ -10,11 +10,13 @@ import {useNavigation, useRoute} from '@react-navigation/native';
 import {BackSVG} from '../../../assets/svg';
 import {colors} from '../../../util/color';
 import {mvs} from '../../../util/metrices';
+import { useTranslation } from 'react-i18next';
 
 const SearchResultsScreen = () => {
   const [searchText, setSearchText] = useState('');
   const navigation = useNavigation();
   const route = useRoute();
+  const {t} = useTranslation();
 
   // Get the search text passed from SearchScreen
   React.useEffect(() => {
@@ -43,7 +45,7 @@ const SearchResultsScreen = () => {
             style={styles.searchBar}
             value={searchText}
             onChangeText={setSearchText}
-            placeholder="Search Results"
+            placeholder={t('Searchplaceholder')}
             placeholderTextColor={colors.grey}
           />
           <TouchableOpacity
@@ -55,7 +57,7 @@ const SearchResultsScreen = () => {
       </View>
 
       <View style={styles.resultsContainer}>
-        <Text>Results for: {searchText}</Text>
+        <Text>{t('resultsFor')}{searchText}</Text>
       </View>
     </View>
   );

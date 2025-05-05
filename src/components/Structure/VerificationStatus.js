@@ -5,11 +5,13 @@ import {colors} from '../../util/color';
 import {useDispatch, useSelector} from 'react-redux'; // If you're storing token in Redux
 import {setVerificationStatus} from '../../redux/slices/userSlice';
 import {useIsFocused} from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 
 const VerificationStatus = () => {
   const [showModal, setShowModal] = useState(false);
   const [status, setStatus] = useState(null);
   const [loading, setLoading] = useState(true);
+  const {t} = useTranslation();
 
   // Get token from Redux or props
   const {token} = useSelector(state => state.user);
@@ -101,7 +103,7 @@ const VerificationStatus = () => {
     return (
       <View style={styles.verifiedContainer}>
         <View style={styles.greenDot} />
-        <Text style={styles.verifiedText}>Verified</Text>
+        <Text style={styles.verifiedText}>{t('verified')}</Text>
       </View>
     );
   }
@@ -110,7 +112,7 @@ const VerificationStatus = () => {
     return (
       <View style={styles.unverifiedContainer}>
         <View style={styles.redDot} />
-        <Text style={styles.unverifiedText}>Rejected</Text>
+        <Text style={styles.unverifiedText}>{t('rejected')}</Text>
       </View>
     );
   }
@@ -119,7 +121,7 @@ const VerificationStatus = () => {
     return (
       <View style={styles.unverifiedContainer}>
         <View style={styles.redDot} />
-        <Text style={styles.unverifiedText}>Unverified</Text>
+        <Text style={styles.unverifiedText}>{t('unverified')}</Text>
       </View>
     );
   }
@@ -127,9 +129,9 @@ const VerificationStatus = () => {
   return (
     <View style={styles.progressContainer}>
       <View style={styles.labelsContainer}>
-        <Text style={styles.labelVerified}>Unverified</Text>
-        <Text style={styles.labelInProgress}>In Progress</Text>
-        <Text style={styles.labelVerified}>Verified</Text>
+        <Text style={styles.labelVerified}>{t('unverified')}</Text>
+        <Text style={styles.labelInProgress}>{t('inProgress')}</Text>
+        <Text style={styles.labelVerified}>{t('verified')}</Text>
       </View>
 
       <View style={styles.trackerContainer}>

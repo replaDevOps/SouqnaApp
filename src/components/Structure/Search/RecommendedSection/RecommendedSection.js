@@ -15,6 +15,7 @@ import Bold from '../../../../typography/BoldText';
 import {colors} from '../../../../util/color';
 import {useSelector} from 'react-redux';
 import {fetchProducts} from '../../../../api/apiServices';
+import { useTranslation } from 'react-i18next';
 // import Icon from 'react-native-vector-icons/FontAwesome5'
 
 const RecommendedSection = ({
@@ -29,6 +30,7 @@ const RecommendedSection = ({
   const [apiProducts, setApiProducts] = useState([]);
   const [productsLoading, setProductsLoading] = useState(true);
   const {token} = useSelector(state => state.user);
+  const {t} = useTranslation();
 
   const loadProducts = useCallback(async () => {
     setProductsLoading(true);
@@ -79,7 +81,7 @@ const RecommendedSection = ({
 
   return (
     <View style={styles.recommendedContainer}>
-      <Bold style={{marginBottom: 10}}>Recommended For You</Bold>
+      <Bold style={{marginBottom: 10}}>{t('recommendedForYou')}</Bold>
       <FlatList
         data={apiProducts}
         numColumns={2}
@@ -91,14 +93,16 @@ const RecommendedSection = ({
           loading ? (
             <ActivityIndicator size="large" />
           ) : isEndOfResults ? (
-            <Regular style={styles.endOfResultsText}>End of Results</Regular>
+            <Regular style={styles.endOfResultsText}>
+               {t('endOfResults')}
+            </Regular>
           ) : null
         }
         ListEmptyComponent={
           productsLoading ? (
-            <Text>Loading...</Text>
+            <Text>{t('loading')}</Text>
           ) : (
-            <Text>No products found</Text>
+            <Text>{t('noProductsFound')}</Text>
           )
         }
       />
@@ -107,3 +111,4 @@ const RecommendedSection = ({
 };
 
 export default RecommendedSection;
+

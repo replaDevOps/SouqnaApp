@@ -24,6 +24,7 @@ import {fetchCategories, fetchProducts} from '../../../api/apiServices';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import axios from 'axios';
 import {setVerificationStatus} from '../../../redux/slices/userSlice';
+import { useTranslation } from 'react-i18next';
 
 const SearchScreen = () => {
   const [likedItems, setLikedItems] = useState({});
@@ -44,6 +45,7 @@ const SearchScreen = () => {
   const [refreshing, setRefreshing] = useState(false); // New state for pull-to-refresh
   const isFocused = useIsFocused();
   const [hasFetchedVerification, setHasFetchedVerification] = useState(false);
+  const {t} = useTranslation();
 
   useEffect(() => {
     if (role === 3) return;
