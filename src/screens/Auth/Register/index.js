@@ -1,5 +1,6 @@
 /* eslint-disable no-shadow */
 /* eslint-disable no-alert */
+//Register.js
 import React, {useEffect, useRef, useState} from 'react';
 import {
   View,
@@ -22,6 +23,12 @@ import PrimaryPasswordInput from '../../../components/atoms/InputFields/PrimaryP
 import CustomSwitch from '../../../components/atoms/InputFields/CustomSwitch';
 import {MyButton} from '../../../components/atoms/InputFields/MyButton';
 import API from '../../../api/apiServices';
+import {
+  getMessaging,
+  getToken,
+  requestPermission,
+} from '@react-native-firebase/messaging';
+
 // import {setRole} from '../../../redux/slices/userSlice';
 
 const Register = () => {
@@ -32,10 +39,29 @@ const Register = () => {
   const [profilename, setProfilename] = useState('');
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
+  const [fcmToken, setFcmToken] = useState(null);
   const [isSubscribed, setIsSubscribed] = useState(false);
   const profileNameOpacity = useRef(new Animated.Value(0)).current;
   // const dispatch = useDispatch();
   const navigation = useNavigation();
+
+  // useEffect(() => {
+  //   const fetchFCMToken = async () => {
+  //     try {
+  //       await requestPermission();
+  //       const messaging = getMessaging();
+  //       const token = await getToken(messaging, {
+  //         vapidKey:
+  //           'BLEhgLEXb20D5gVpCmaVxiJecC8aLLHAk1C4Cz1QbwdvJLuMJ5Cp7xEHtyLd0Q77vhUCxfsJ5llMjmdYgxpJb2Q',
+  //       });
+  //       setFcmToken(token);
+  //     } catch (error) {
+  //       console.error('Error fetching FCM token:', error);
+  //     }
+  //   };
+
+  //   fetchFCMToken();
+  // }, []);
 
   const handleRegister = async () => {
     if (!isEmailValid(email)) {
@@ -62,6 +88,7 @@ const Register = () => {
       email,
       password,
       role: selectedOption === 'Seller' ? 2 : 3, // 2=Seller, 3=Buyer
+      // fcm_token: fcmToken,
     };
 
     try {
