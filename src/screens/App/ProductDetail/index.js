@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View, Image, Dimensions, ScrollView, Text} from 'react-native';
+import {View, Dimensions, ScrollView, Text} from 'react-native';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import Bold from '../../../typography/BoldText';
 import Regular from '../../../typography/RegularText';
@@ -17,18 +17,16 @@ import {
 
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {mvs} from '../../../util/metrices';
-
-import axios from 'axios';
 import ProductMenu from '../../../components/Structure/ProductMenu/ProductMenu';
 import {colors} from '../../../util/color';
 import {MarkerSVG} from '../../../assets/svg';
 import ShareActions from '../../../components/Structure/ShareAction/ShareAction';
 import ProductImages from './ProductImages';
 import {addItem} from '../../../redux/slices/cartSlice';
-import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
-import {addToCart as addToCartAPI} from '../../../api/apiServices';
+import {addToCart, getProduct} from '../../../api/apiServices';
+import {Snackbar} from 'react-native-paper';
 
-const {width, height} = Dimensions.get('window');
+const {height} = Dimensions.get('window');
 
 const ProductDetail = () => {
   const [likedItems, setLikedItems] = useState({});
@@ -38,37 +36,29 @@ const ProductDetail = () => {
   const {token, role} = useSelector(state => state.user);
   const route = useRoute();
   const {productId} = route.params;
-  const navigation = useNavigation();
   const [addingToCart, setAddingToCart] = useState(false);
   const [showAddedSnackbar, setShowAddedSnackbar] = useState(false);
-  // const [showViewCartSnackbar, setShowViewCartSnackbar] = useState(false);
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
+  const navigation = useNavigation();
 
   useEffect(() => {
-    if (!productId) return;
+    if (!productId) {
+      return;
+    }
 
     const fetchProductDetails = async () => {
-      console.log('Fetching product details...');
-      console.log('Using role:', role);
-      
+      // console.log('Fetching product details using API Service...');
+      setLoading(true);
       try {
-        let response;
-      
-        if (role === 2 && token) {
-          console.log('Using authenticated API');
-          response = await axios.get(`...`, { headers: { Authorization: `Bearer ${token}` } });
+        const response = await getProduct(productId, token, role);
+        if (response && response.success !== false) {
+          setProduct(response.data);
         } else {
-          console.log('Using public API');
-          response = await axios.get(`...`);
-        }
-      
-        console.log('API response:', response.data);
-      
-        if (response.status === 200 && response.data.success !== false) {
-          setProduct(response.data.data);
-        } else {
-          console.error('API call failed or product not found:', response.data);
+          console.warn(
+            'Failed to fetch product:',
+            response?.message || 'Unknown error',
+          );
         }
       } catch (error) {
         console.error('Error fetching product details:', error);
@@ -79,8 +69,6 @@ const ProductDetail = () => {
 
     fetchProductDetails();
   }, [productId, token, role]);
-
-  console.log(product);
 
   const handleHeartPress = id => {
     setLikedItems(prevState => ({
@@ -120,23 +108,17 @@ const ProductDetail = () => {
 
     setAddingToCart(true);
 
-    console.log('Triggering haptic feedback...');
-    ReactNativeHapticFeedback.trigger('impactLight', {
-      enableVibrateFallback: true,
-      ignoreAndroidSystemSettings: false,
-    });
+    // dispatch(
+    //   addItem({
+    //     id: product.id,
+    //     name: product.name,
+    //     price: product.price,
+    //     image: `https://backend.souqna.net${product.images?.[0]?.path}`,
+    //     quantity: 1,
+    //   }),
+    // );
 
-    dispatch(
-      addItem({
-        id: product.id,
-        name: product.name,
-        price: product.price,
-        image: `https://backend.souqna.net${product.images?.[0]?.path}`,
-        quantity: 1,
-      }),
-    );
-
-    const result = await addToCartAPI(product.id, 1);
+    const result = await addToCart(product.id, 1);
 
     if (result?.success) {
       console.log('Product added to backend cart successfully:', result);
@@ -236,6 +218,26 @@ const ProductDetail = () => {
           {isModalVisible && <AddModal onClose={onClose} />}
         </>
       )}
+
+      <Snackbar
+        visible={showAddedSnackbar}
+        onDismiss={() => setShowAddedSnackbar(false)}
+        duration={3000}
+        style={{
+          position: 'absolute',
+          bottom: mvs(70), // push it above the Buy button
+          left: 10,
+          right: 10,
+          borderRadius: 8,
+        }}
+        action={{
+          label: 'View Cart',
+          onPress: () => {
+            navigation.navigate('Home', {screen: 'CartScreen'});
+          },
+        }}>
+        Product added to cart!
+      </Snackbar>
     </SafeAreaView>
   );
 };
