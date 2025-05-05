@@ -115,7 +115,7 @@ export const deleteCartItem = async cartId => {
 export const getProduct = async (productId, token, role) => {
   try {
     const endpoint =
-      role === 2 ? `getProduct/${productId}` : `getProduct/${productId}`;
+      role === 2 ? `getProduct/${productId}` : `productDetails/${productId}`;
     const response = await API.get(endpoint, {
       headers: {
         ...(role === 2 && token ? {Authorization: `Bearer ${token}`} : {}),

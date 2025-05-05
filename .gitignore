@@ -22,12 +22,17 @@ DerivedData
 *.xcuserstate
 **/.xcode.env.local
 
+# Ignore config with secrets
+config.private.js
+
+
 # Android/IntelliJ
 #
 build/
 .idea
 .gradle
 local.properties
+.env.gradle
 *.iml
 *.hprof
 .cxx/

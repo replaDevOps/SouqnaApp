@@ -85,7 +85,7 @@ export default function CartScreen() {
     setCartData(prev =>
       prev.map(item =>
         item.id === id
-          ? { ...item, quantity: Math.max(1, item.quantity + change) }
+          ? {...item, quantity: Math.max(1, item.quantity + change)}
           : item,
       ),
     );
@@ -157,9 +157,7 @@ export default function CartScreen() {
                           disabled={item.quantity <= 1}>
                           <Text>➖</Text>
                         </TouchableOpacity>
-                        <Text style={styles.quantityText}>
-                          {item.quantity}
-                        </Text>
+                        <Text style={styles.quantityText}>{item.quantity}</Text>
                         <TouchableOpacity
                           style={styles.quantityButton}
                           onPress={() => handleQuantityChange(item.id, 1)}>
