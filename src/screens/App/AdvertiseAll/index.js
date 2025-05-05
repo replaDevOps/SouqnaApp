@@ -5,8 +5,8 @@ import Regular from '../../../typography/RegularText';
 import styles from './style';
 import CategoryHeader from '../../../components/Headers/CategoryHeader';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import { ForwardSVG } from '../../../assets/svg';
-import { mvs } from '../../../util/metrices';
+import {ForwardSVG} from '../../../assets/svg';
+import {mvs} from '../../../util/metrices';
 
 const AdvertiseAll = () => {
   const route = useRoute();
@@ -26,13 +26,17 @@ const AdvertiseAll = () => {
     navigation.goBack();
   };
   const renderSubCategoryItem = ({item}) => (
-    
-    <TouchableOpacity  style={styles.subCategoryItem} onPress={() => handleSubcategoryPress(item)}>
-      <View style={styles.titleContainer} >
-      <Image source={require('../../../assets/img/phone.png')} style={{width:45,height:45,borderRadius:5}}/>
+    <TouchableOpacity
+      style={styles.subCategoryItem}
+      onPress={() => handleSubcategoryPress(item)}>
+      <View style={styles.titleContainer}>
+        <Image
+          source={require('../../../assets/img/driver1.png')}
+          style={{width: 45, height: 45, borderRadius: 5}}
+        />
         <Regular style={styles.subCategoryText}>{item.name}</Regular>
-    </View>
-        <ForwardSVG width={26} height={26}/>
+      </View>
+      <ForwardSVG width={26} height={26} />
     </TouchableOpacity>
   );
 

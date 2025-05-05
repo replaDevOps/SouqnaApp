@@ -11,7 +11,7 @@ import React, {useEffect, useState} from 'react';
 import MainHeader from '../../../components/Headers/MainHeader';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import styles from './styles';
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
 import {clearCart, updateQuantity} from '../../../redux/slices/cartSlice';
 import {useTranslation} from 'react-i18next';
@@ -52,7 +52,7 @@ export default function CartScreen() {
             id: item.id,
             name: item.product?.name || 'Unnamed',
             quantity: item.qty || 1,
-            price: 100, // Replace with actual price if available in API
+            price: item.product?.price,
             image: item.product?.images?.[0]?.path
               ? `${BASE_URL_Product}${item.product.images[0].path}`
               : null,
