@@ -16,7 +16,7 @@ import {mvs} from '../../util/metrices';
 import Profile from '../../screens/App/Profile';
 import SearchScreen from '../../screens/App/Search';
 import FavouriteScreen from '../../screens/App/Favourite';
-import CartScreen from '../../screens/App/News';
+import CartScreen from '../../screens/App/Cart';
 import AdvertiseScreen from '../../screens/App/Advertise';
 import Bold from '../../typography/BoldText';
 import AddModal from '../../components/Modals/AddModal';

@@ -3,6 +3,7 @@ import axios from 'axios';
 const API = axios.create({
   baseURL: 'https://backend.souqna.net/api/',
   timeout: 10000,
+  withCredentials: true,
 });
 export const BASE_URL = 'https://backend.souqna.net/';
 export const BASE_URL_Product = 'https://backend.souqna.net';
@@ -53,15 +54,77 @@ export const fetchProducts = async (token, filters = {}, role) => {
 
 export const addToCart = async (productId, qty = 1) => {
   try {
-    const response = await API.post('addToCart', {
-      productID: productId,
-      qty: qty,
-    });
+    const response = await API.post(
+      'addToCart',
+      {
+        productID: productId,
+        qty: qty,
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+    console.log('Sending productID:', productId);
+    console.log('AddToCart response:', response.status, response.data);
 
     return response.data;
   } catch (error) {
     console.error(
       'Error adding to cart:',
+      error?.response?.data || error.message,
+    );
+    return null;
+  }
+};
+
+export const fetchCartItems = async (pageNo = 1, recordsPerPage = 10) => {
+  try {
+    const response = await API.post('showCartItems', null, {
+      headers: {
+        pageNo: pageNo,
+        recordsPerPage: recordsPerPage,
+      },
+    });
+
+    console.log('Cart items from API:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error(
+      'Error fetching cart items:',
+      error?.response?.data || error.message,
+    );
+    return null;
+  }
+};
+
+export const deleteCartItem = async cartId => {
+  try {
+    const response = await API.delete(`deleteCartItem/${cartId}`);
+    return response.data;
+  } catch (error) {
+    console.error(
+      `Error deleting cart item (${cartId}):`,
+      error?.response?.data || error.message,
+    );
+    return null;
+  }
+};
+
+export const getProduct = async (productId, token, role) => {
+  try {
+    const endpoint =
+      role === 2 ? `getProduct/${productId}` : `getProduct/${productId}`;
+    const response = await API.get(endpoint, {
+      headers: {
+        ...(role === 2 && token ? {Authorization: `Bearer ${token}`} : {}),
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error(
+      'Error fetching single product:',
       error?.response?.data || error.message,
     );
     return null;
