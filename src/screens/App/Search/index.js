@@ -276,10 +276,10 @@ const SearchScreen = () => {
             showLocationIcon={false}
           />
         </View>
-        <View >
+        
        
-        {!categoriesLoading && <CategorySection categories={apiCategories} />}
-        </View>
+         <CategorySection categories={apiCategories} />
+        
         <GalleryContainer />
         <RecommendedSection
           products={allRecommendedProducts}

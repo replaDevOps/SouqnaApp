@@ -11,6 +11,7 @@ import {useSelector} from 'react-redux';
 import LocationSvg from '../../../assets/svg/location-svg';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
+import { mvs } from '../../../util/metrices';
 
 const SERVER_URL = 'https://backend.souqna.net';
 const AdvertiseScreen = () => {
@@ -76,7 +77,7 @@ const AdvertiseScreen = () => {
             {imageURL ? (
               <Image
                 source={{uri: imageURL}}
-                style={{width: 24, height: 24, borderRadius: 4}}
+                style={{width: mvs(40), height: mvs(40)}}
               />
             ) : (
               <LocationSvg width={24} height={24} />

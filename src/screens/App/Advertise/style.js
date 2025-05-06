@@ -29,10 +29,10 @@ const styles = StyleSheet.create({
     marginBottom: mvs(10),
   },
   IconContainer: {
-    padding: mvs(10),
+    // padding: mvs(10),
     marginLeft: mvs(10),
-    borderRadius: mvs(8),
-    backgroundColor: colors.lightgreen,
+    // borderRadius: mvs(8),
+    // backgroundColor: colors.lightgreen,
   },
   textContainer: {
     textAlign: 'center',

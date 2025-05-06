@@ -5,6 +5,7 @@ import {colors} from '../../../../util/color';
 const styles = StyleSheet.create({
   categoryContainer: {
     marginTop: mvs(10),
+    marginHorizontal:mvs(5),
     // paddingTop: mvs(10),
     // marginBottom: mvs(10),
     flexDirection: 'row',
@@ -13,7 +14,7 @@ const styles = StyleSheet.create({
   },
   categoryItem: {
     alignItems: 'center',
-    left: mvs(30),
+    // left: mvs(30),
     justifyContent: 'center',
     width: mvs(70),
     // marginBottom: mvs(10),
@@ -28,6 +29,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.lightorange,
   },
   textContainer: {
+    width:mvs(60),
     alignItems: 'center',
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -35,7 +37,7 @@ const styles = StyleSheet.create({
   },
   categoryText: {
     marginTop: mvs(8),
-    fontSize: mvs(14),
+    fontSize: mvs(13),
     fontWeight:'400',
     color: colors.black,
     textAlign: 'center',

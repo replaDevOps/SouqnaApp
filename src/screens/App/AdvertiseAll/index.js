@@ -30,10 +30,7 @@ const AdvertiseAll = () => {
       style={styles.subCategoryItem}
       onPress={() => handleSubcategoryPress(item)}>
       <View style={styles.titleContainer}>
-        <Image
-          source={require('../../../assets/img/driver1.png')}
-          style={{width: 45, height: 45, borderRadius: 5}}
-        />
+       
         <Regular style={styles.subCategoryText}>{item.name}</Regular>
       </View>
       <ForwardSVG width={26} height={26} />
@@ -45,7 +42,7 @@ const AdvertiseAll = () => {
       <StatusBar barStyle="dark-content" />
       <CategoryHeader title={category} onBack={handleBack} />
       <View style={styles.headerContainer}>
-        <Regular style={styles.header}>{category}</Regular>
+        <Regular style={styles.header}>All {category}</Regular>
       </View>
       <View style={styles.content}>
         <FlatList

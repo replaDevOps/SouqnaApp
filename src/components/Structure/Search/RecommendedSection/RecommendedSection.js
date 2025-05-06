@@ -117,9 +117,12 @@ const RecommendedSection = ({
           }
           ListEmptyComponent={
             !productsLoading && (
+              <View style={{paddingVertical:mvs(100)}}>
+              <Image source={require('../../../../assets/img/empty.png')} style={{width:'90%',resizeMode:'contain',height:mvs(200)}}/> 
               <Text style={{textAlign: 'center', marginTop: mvs(20)}}>
                 {t('noProductsFound')}
               </Text>
+              </View>
             )
           }
         />
