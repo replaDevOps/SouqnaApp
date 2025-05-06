@@ -12,7 +12,7 @@ import {
   removeFavorite,
 } from '../../../redux/slices/favoritesSlice';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 
 const FavouriteScreen = () => {
   const navigation = useNavigation();
@@ -40,9 +40,9 @@ const FavouriteScreen = () => {
   if (favorites.length === 0) {
     return (
       <View style={styles.container}>
-         <MainHeader title={t('favourites')} />
+        <MainHeader title={t('favourites')} />
         <View style={styles.content}>
-        <Bold>{t('noFavourites')}</Bold>
+          <Bold>{t('noFavourites')}</Bold>
         </View>
       </View>
     );
@@ -52,10 +52,18 @@ const FavouriteScreen = () => {
     <TouchableOpacity
       style={styles.recommendedItem}
       onPress={() => navigation.navigate('ProductDetail', {item})}>
-      <Image source={item.imageUrl} style={styles.recommendedImage} />
+      <Image
+        source={{uri: `https://backend.souqna.net${item.images?.[0]?.path}`}}
+        style={styles.recommendedImage}
+      />
       <View style={styles.recommendedTextContainer}>
-        <Regular style={styles.recommendedLocation}>{item.location}</Regular>
-        <Regular style={styles.recommendedTitle}>{item.title}</Regular>
+        <Regular
+          style={styles.recommendedLocation}
+          numberOfLines={2}
+          ellipsizeMode="tail">
+          {item.location}
+        </Regular>
+        <Regular style={styles.recommendedTitle}>{item.name}</Regular>
         <Regular style={styles.recommendedPrice}>${item.price}</Regular>
       </View>
       <TouchableOpacity
@@ -65,7 +73,7 @@ const FavouriteScreen = () => {
       </TouchableOpacity>
     </TouchableOpacity>
   );
-console.log('Favourites',favorites)
+  console.log('Favourites', favorites);
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" />
