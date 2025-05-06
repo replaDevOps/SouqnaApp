@@ -21,10 +21,17 @@ const CategorySection = ({categories}) => {
     }
   };
 
+  const formatCategoryName = (name) => {
+    if (name.length > 10) {
+      return name.substring(0, 10) + '...';
+    }
+    return name;
+  };
+
   return (
     <View style={styles.categoryContainer}>
       <FlatList
-        data={categories.slice(0, 5)}
+        data={categories}
         horizontal
         showsHorizontalScrollIndicator={false}
         keyExtractor={(category, index) => index.toString()}
@@ -48,7 +55,11 @@ const CategorySection = ({categories}) => {
                     <Icon width={24} height={24} />
                   )}
                 <View style={styles.textContainer}>
-                  <Text style={styles.categoryText}>{item.name}</Text>
+                  <Text 
+                  style={styles.categoryText}
+                  numberOfLines={2}
+                  ellipsizeMode="tail"
+                  >{item.name}</Text>
                 </View>
               </View>
             </TouchableOpacity>

@@ -21,9 +21,10 @@ const styles = StyleSheet.create({
   },
   // Recommended Section Styles
   recommendedContainer: {
-    marginTop: mvs(10),
+    // marginTop: mvs(10),
     paddingHorizontal: mvs(10),
-    paddingVertical: mvs(10),
+    // paddingVertical: mvs(10),
+    paddingBottom: mvs(10),
     overflow: 'visible',
     // elevation: 2,
     // backgroundColor: colors.white,

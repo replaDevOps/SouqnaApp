@@ -7,6 +7,7 @@ import {
   RefreshControl,
   TouchableOpacity,
   StyleSheet,
+  Dimensions,
 } from 'react-native';
 import {useSelector} from 'react-redux';
 import {fetchProducts} from '../../../../api/apiServices';
@@ -16,6 +17,9 @@ import {colors} from '../../../../util/color';
 import {mvs} from '../../../../util/metrices';
 import { useTranslation } from 'react-i18next';
 import Loader from '../../../Loader';
+
+
+const {width} = Dimensions.get('window');
 
 const GalleryContainer = ({onRefresh, refreshing, onProductSelect}) => {
   const [apiProducts, setApiProducts] = useState([]);
@@ -54,15 +58,17 @@ const GalleryContainer = ({onRefresh, refreshing, onProductSelect}) => {
         : null;
 
       return (
-        <TouchableOpacity
-          style={styles.galleryContainer}
-          onPress={() => onProductSelect(item.id)}>
-          <Image source={{uri: productImage}} style={styles.productImage} />
-          <View style={{marginTop: mvs(6)}}>
-            <Text style={styles.productTitle}>{item.name || 'Fall'}</Text>
-          </View>
-          {/* <Bold style={styles.productPrice}>${item.price || 0}</Bold> */}
-        </TouchableOpacity>
+        <View style={styles.productWrapper}>
+          <TouchableOpacity
+            style={styles.galleryContainer}
+            onPress={() => onProductSelect(item.id)}>
+            <Image source={{uri: productImage}} style={styles.productImage} />
+            <View style={{paddingVertical: mvs(15)}}>
+              <Text style={styles.productTitle}>{item.name || 'Fall'}</Text>
+            </View>
+            {/* <Bold style={styles.productPrice}>${item.price || 0}</Bold> */}
+          </TouchableOpacity>
+        </View>
       );
     },
     [onProductSelect],
@@ -72,21 +78,20 @@ const GalleryContainer = ({onRefresh, refreshing, onProductSelect}) => {
     <View style={styles.container}>
         <Bold style={styles.galleryLabel}>{t('gallery')}</Bold>
         <View>
-
         <FlatList
           data={apiProducts}
           showsHorizontalScrollIndicator={false}
           keyExtractor={item => item.id.toString()}
           renderItem={renderProduct}
           horizontal={true}
-           contentInset={{ right: 25 }}
-                                contentContainerStyle={styles.flatListContainer}
+          ItemSeparatorComponent={() => <View style={{width: mvs(4)}} />}
+          contentContainerStyle={styles.flatListContainer}
           ListEmptyComponent={
-            productsLoading ? (
-             <Loader width={mvs(30)} height={mvs(30)}/>
-            ) : (
+            // productsLoading ? (
+            //  <Loader width={mvs(30)} height={mvs(30)}/>
+            // ) : (
               <Text>{t('noProducts')}</Text>
-            )
+          //   )
           }
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
@@ -100,47 +105,52 @@ const GalleryContainer = ({onRefresh, refreshing, onProductSelect}) => {
 
 const styles = StyleSheet.create({
   container: {
-  flex:1,
+    flex: 1,
+    paddingBottom: mvs(15), // Add padding at the bottom to ensure shadow visibility
   },
   galleryLabel: {
     fontSize: mvs(19),
     paddingLeft: mvs(12),
     marginTop: mvs(20),
-    marginBottom: mvs(7),
-  },// Gallery Section Styles
-  flatListContainer:{
-    marginHorizontal:20
+    marginBottom: mvs(12), // Increased to provide more space
+  },
+  flatListContainer: {
+    paddingHorizontal: mvs(10),
+    paddingBottom: mvs(10), // Add padding to make shadow visible
+  },
+  productWrapper: {
+    // paddingBottom: mvs(10), // This creates space for the shadow to be visible
+    paddingHorizontal: mvs(5),
+    marginBottom: mvs(10), // Extra margin to ensure shadow is visible
   },
   galleryContainer: {
-    paddingHorizontal: mvs(10),
-    paddingVertical: mvs(10),
-    // backgroundColor: colors.white,
+    width: width * 0.4,
+    backgroundColor: colors.white,
     alignItems: 'center',
-    borderTopLeftRadius:mvs(18),
-    borderTopRightRadius:mvs(18),
+    borderRadius: mvs(10),
     justifyContent: 'center',
+    // Shadow properties
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.5,
-    shadowRadius: 4,
-    elevation: 6, // Android
-    zIndex: 10,
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.25,
+    shadowRadius: 5,
+    elevation: 8, // Increased for Android
+    // Remove overflow: 'hidden' to allow shadow to display properly
   },
   productImage: {
-    // borderRadius: mvs(18),
-    width: mvs(120),
-    height: mvs(90),
+    width: '100%',
+    height: mvs(100),
     resizeMode: 'cover',
-    marginRight: 'auto',
+    borderTopLeftRadius: mvs(10),
+    borderTopRightRadius: mvs(10),
   },
   productTitle: {
-    fontSize: mvs(13),
+    fontSize: mvs(18),
     textAlign: 'center',
     color: colors.black,
     marginRight: 'auto',
     marginBottom: mvs(4),
   },
- 
 })
 
 export default memo(GalleryContainer);

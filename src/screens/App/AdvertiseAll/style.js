@@ -8,19 +8,20 @@ const styles = StyleSheet.create({
    flex:1,
   },
   header: {
-    fontSize: mvs(25),
+    fontSize: mvs(16),
     fontWeight:'bold',
+    color:colors.grey,
     marginLeft: mvs(7),
   },
   headerContainer: {
     padding: mvs(10),
-    backgroundColor: colors.white,
+    backgroundColor: '#fbfbfb',
     marginVertical: mvs(20),
   },
   content: {
     // padding: mvs(10),
     backgroundColor: colors.white,
-   paddingHorizontal:mvs(10),
+   paddingHorizontal:mvs(4),
     // marginVertical: mvs(10),
   },
   // subCategoryItem: {
@@ -29,19 +30,20 @@ const styles = StyleSheet.create({
   //   borderBottomColor: colors.grey,
   // },
   subCategoryItem: {
-    paddingBottom: 10,
+   marginBottom: 10,
+   paddingVertical:8,
     // marginVertical: 6,
     // backgroundColor: '#f2f2f2',
     alignItems:'center',
     flexDirection:'row',
     borderRadius: 8,
     borderBottomWidth:1,
-    borderBottomColor:colors.grey,
+    borderBottomColor:'#f0f0f0',
     justifyContent:'space-between'   
   },
   subCategoryText: {
     fontSize: mvs(18),
-    paddingLeft:mvs(10)
+    paddingLeft:mvs(4)
 
   },
   titleContainer:{
