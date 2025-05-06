@@ -6,15 +6,16 @@ import {
   View,
   RefreshControl,
   TouchableOpacity,
+  StyleSheet,
 } from 'react-native';
 import {useSelector} from 'react-redux';
 import {fetchProducts} from '../../../../api/apiServices';
-import styles from '../../../../screens/App/Search/style';
 import Bold from '../../../../typography/BoldText';
 import Regular from '../../../../typography/RegularText';
 import {colors} from '../../../../util/color';
 import {mvs} from '../../../../util/metrices';
 import { useTranslation } from 'react-i18next';
+import Loader from '../../../Loader';
 
 const GalleryContainer = ({onRefresh, refreshing, onProductSelect}) => {
   const [apiProducts, setApiProducts] = useState([]);
@@ -69,16 +70,20 @@ const GalleryContainer = ({onRefresh, refreshing, onProductSelect}) => {
 
   return (
     <View style={styles.container}>
-      <View style={{backgroundColor: colors.white}}>
         <Bold style={styles.galleryLabel}>{t('gallery')}</Bold>
+        <View>
+
         <FlatList
           data={apiProducts}
+          showsHorizontalScrollIndicator={false}
           keyExtractor={item => item.id.toString()}
           renderItem={renderProduct}
           horizontal={true}
+           contentInset={{ right: 25 }}
+                                contentContainerStyle={styles.flatListContainer}
           ListEmptyComponent={
             productsLoading ? (
-              <Text>{t('loading')}</Text>
+             <Loader width={mvs(30)} height={mvs(30)}/>
             ) : (
               <Text>{t('noProducts')}</Text>
             )
@@ -86,10 +91,56 @@ const GalleryContainer = ({onRefresh, refreshing, onProductSelect}) => {
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
-        />
-      </View>
+          />
+          </View>
     </View>
   );
 };
+
+
+const styles = StyleSheet.create({
+  container: {
+  flex:1,
+  },
+  galleryLabel: {
+    fontSize: mvs(19),
+    paddingLeft: mvs(12),
+    marginTop: mvs(20),
+    marginBottom: mvs(7),
+  },// Gallery Section Styles
+  flatListContainer:{
+    marginHorizontal:20
+  },
+  galleryContainer: {
+    paddingHorizontal: mvs(10),
+    paddingVertical: mvs(10),
+    // backgroundColor: colors.white,
+    alignItems: 'center',
+    borderTopLeftRadius:mvs(18),
+    borderTopRightRadius:mvs(18),
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.5,
+    shadowRadius: 4,
+    elevation: 6, // Android
+    zIndex: 10,
+  },
+  productImage: {
+    // borderRadius: mvs(18),
+    width: mvs(120),
+    height: mvs(90),
+    resizeMode: 'cover',
+    marginRight: 'auto',
+  },
+  productTitle: {
+    fontSize: mvs(13),
+    textAlign: 'center',
+    color: colors.black,
+    marginRight: 'auto',
+    marginBottom: mvs(4),
+  },
+ 
+})
 
 export default memo(GalleryContainer);

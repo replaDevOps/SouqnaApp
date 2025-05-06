@@ -6,6 +6,8 @@ import {useDispatch, useSelector} from 'react-redux'; // If you're storing token
 import {setVerificationStatus} from '../../redux/slices/userSlice';
 import {useIsFocused} from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
+import Loader from '../Loader';
+import { mvs } from '../../util/metrices';
 
 const VerificationStatus = () => {
   const [showModal, setShowModal] = useState(false);
@@ -94,7 +96,7 @@ const VerificationStatus = () => {
   };
 
   if (loading) {
-    return <ActivityIndicator size="small" color={colors.green} />;
+    return <Loader width={mvs(22)} heigh={mvs(22)}/>
   }
   if (status === null) {
     return <ActivityIndicator size="small" color={colors.green} />;

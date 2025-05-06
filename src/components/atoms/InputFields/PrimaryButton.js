@@ -3,7 +3,8 @@ import {StyleSheet, TouchableOpacity} from 'react-native';
 import Label from './Label';
 import {mvs} from '../../config/metrices';
 import {colors} from '../../config/colors';
-import {Loader} from '../atoms/loader';
+import Loader from '../../Loader';
+
 const PrimaryButton = ({
   disabled,
   loading = false,

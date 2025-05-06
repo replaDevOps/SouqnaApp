@@ -1,6 +1,6 @@
 // CategoryList.js
 import React, {memo} from 'react';
-import {FlatList, Image, TouchableOpacity, View} from 'react-native';
+import {FlatList, Image, Text, TouchableOpacity, View} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import Bold from '../../../../typography/BoldText';
 import styles from './style';
@@ -38,18 +38,17 @@ const CategorySection = ({categories}) => {
                 handleCategoryPress(item.name, item.subcategories)
               }>
               <View style={styles.categoryItem}>
-                <View style={styles.IconContainer}>
+               
                   {imageURL ? (
                     <Image
                       source={{uri: imageURL}}
-                      style={{width: 24, height: 24}}
+                      style={styles.IconContainer}
                     />
                   ) : (
                     <Icon width={24} height={24} />
                   )}
-                </View>
                 <View style={styles.textContainer}>
-                  <Bold style={styles.categoryText}>{item.name}</Bold>
+                  <Text style={styles.categoryText}>{item.name}</Text>
                 </View>
               </View>
             </TouchableOpacity>
