@@ -64,7 +64,7 @@ const SkeletonPlaceholder = () => {
                 ]}
               />
             </View>
-            
+
             {/* Text placeholder */}
             <View style={styles.skeletonTextContainer}>
               <View style={styles.skeletonText}>
@@ -85,7 +85,13 @@ const SkeletonPlaceholder = () => {
   );
 };
 
-const GalleryContainer = ({onRefresh, refreshing, onProductSelect}) => {
+const GalleryContainer = ({
+  onRefresh,
+  refreshing,
+  onProductSelect,
+  loading,
+  products = [],
+}) => {
   const [apiProducts, setApiProducts] = useState([]);
   const [productsLoading, setProductsLoading] = useState(true);
   const {token} = useSelector(state => state.user);
@@ -136,6 +142,7 @@ const GalleryContainer = ({onRefresh, refreshing, onProductSelect}) => {
     },
     [onProductSelect],
   );
+  if (loading) return <SkeletonPlaceholder />;
 
   return (
     <View style={styles.container}>
@@ -215,7 +222,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: mvs(20),
     paddingVertical: mvs(10),
   },
-  
+
   // Skeleton styles
   skeletonContainer: {
     flexDirection: 'row',
