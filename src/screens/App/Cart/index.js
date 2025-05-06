@@ -7,7 +7,7 @@ import {
   Image,
   StatusBar,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import MainHeader from '../../../components/Headers/MainHeader';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import styles from './styles';
@@ -19,9 +19,11 @@ import {
   fetchCartItems,
   BASE_URL_Product,
   deleteCartItem,
+  updateCartItem,
 } from '../../../api/apiServices';
 import {Snackbar} from 'react-native-paper';
 import {mvs} from '../../../util/metrices';
+import debounce from 'lodash/debounce'; // npm install lodash
 
 export default function CartScreen() {
   // const dispatch = useDispatch();
@@ -31,6 +33,7 @@ export default function CartScreen() {
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const updateQtyRef = useRef({});
 
   const subTotal = cartData.reduce(
     (sum, item) => sum + item.price * item.quantity,
@@ -81,16 +84,41 @@ export default function CartScreen() {
     loadCartItems();
   }, [refreshTrigger]);
 
-  const handleQuantityChange = (id, change) => {
-    setCartData(prev =>
-      prev.map(item =>
-        item.id === id
+  const debouncedUpdate = useCallback((cartItemId, qty, productID) => {
+    if (!updateQtyRef.current[cartItemId]) {
+      updateQtyRef.current[cartItemId] = debounce(
+        async (id, quantity, prodId) => {
+          const response = await updateCartItem(id, quantity, prodId);
+          if (!response?.success) {
+            console.warn('Failed to update item quantity');
+          }
+        },
+        500,
+      );
+    }
+
+    updateQtyRef.current[cartItemId](cartItemId, qty, productID);
+  }, []);
+
+  const handleQuantityChange = (productId, change) => {
+    setCartData(prev => {
+      const updatedCart = prev.map(item =>
+        item.id === productId
           ? {...item, quantity: Math.max(1, item.quantity + change)}
           : item,
-      ),
-    );
-    // // no Redux dispatch
-    // dispatch(updateQuantity({id, change}));
+      );
+
+      const updatedItem = updatedCart.find(item => item.id === productId);
+      if (updatedItem) {
+        debouncedUpdate(
+          updatedItem.cartItemId,
+          updatedItem.quantity - 1,
+          updatedItem.id,
+        );
+      }
+
+      return updatedCart;
+    });
   };
 
   const handleRemoveItem = async cartItemId => {

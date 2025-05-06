@@ -1,12 +1,6 @@
 // RecommendedSection.js
 import React, {useCallback, useEffect, useState} from 'react';
-import {
-  FlatList,
-  View,
-  TouchableOpacity,
-  Image,
-  Text,
-} from 'react-native';
+import {FlatList, View, TouchableOpacity, Image, Text} from 'react-native';
 import styles from './style';
 import Regular from '../../../../typography/RegularText';
 import {HeartSvg} from '../../../../assets/svg';
@@ -81,8 +75,10 @@ const RecommendedSection = ({
   // Render skeleton items in the same layout as the actual product items
   const renderSkeletonList = () => {
     // Create an array of 6 dummy items for skeleton
-    const skeletonItems = Array(6).fill(null).map((_, index) => ({id: `skeleton-${index}`}));
-    
+    const skeletonItems = Array(6)
+      .fill(null)
+      .map((_, index) => ({id: `skeleton-${index}`}));
+
     return (
       <FlatList
         data={skeletonItems}
@@ -96,8 +92,10 @@ const RecommendedSection = ({
 
   return (
     <View style={styles.recommendedContainer}>
-      <Bold style={[{marginBottom: 10},styles.recommendedText]}>{t('recommendedForYou')}</Bold>
-      
+      <Bold style={[{marginBottom: 10}, styles.recommendedText]}>
+        {t('recommendedForYou')}
+      </Bold>
+
       {productsLoading ? (
         renderSkeletonList()
       ) : (
