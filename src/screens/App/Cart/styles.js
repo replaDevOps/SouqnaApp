@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
     marginRight: mvs(10),
   },
   itemContent: {
-    paddingTop:mvs(7),
+    paddingTop: mvs(7),
     flex: 1,
     justifyContent: 'space-between',
   },
@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
     bottom: mvs(12),
     left: mvs(14),
     right: mvs(14),
-    backgroundColor: colors.grey,
+    backgroundColor: colors.green,
     borderRadius: mvs(16),
     zIndex: 10,
     overflow: 'hidden',
@@ -122,19 +122,19 @@ const styles = StyleSheet.create({
     fontSize: mvs(15),
   },
 
-  removeButtonText:{
-    fontWeight:'800',
-    color:colors.red1
+  removeButtonText: {
+    fontWeight: '800',
+    color: colors.red1,
   },
-  removeButton:{
-    flexDirection:'row',
-    justifyContent:'flex-end',
-    paddingRight:mvs(4)
+  removeButton: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    paddingRight: mvs(4),
   },
   totalRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginVertical:mvs(8),
+    marginVertical: mvs(8),
   },
   totalLabel: {
     color: '#fff',

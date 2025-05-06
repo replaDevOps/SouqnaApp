@@ -278,7 +278,7 @@ const SearchScreen = () => {
         </View>
         
        
-        {!categoriesLoading && <CategorySection categories={apiCategories} />}
+         <CategorySection categories={apiCategories} />
         
         <GalleryContainer />
         <RecommendedSection

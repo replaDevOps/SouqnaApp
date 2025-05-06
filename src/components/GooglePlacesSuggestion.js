@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {
   View,
   StyleSheet,
@@ -8,12 +8,14 @@ import {
   Text,
   ActivityIndicator,
 } from 'react-native';
-import { mvs } from '../util/metrices';
-import { CloseSvg, SearchSVG } from '../assets/svg';
-import { colors } from '../util/color';
+import {mvs} from '../util/metrices';
+import {CloseSvg, SearchSVG} from '../assets/svg';
+import {colors} from '../util/color';
+import config from '../util/config';
 
-const GOOGLE_PLACES_API_KEY = 'AIzaSyDEMyxKPArv-AwMAWFg4gHlbN_6DqMwIS8';
-const AUTOCOMPLETE_URL = 'https://maps.googleapis.com/maps/api/place/autocomplete/json';
+const GOOGLE_PLACES_API_KEY = config.GOOGLE_PLACES_API_KEY;
+const AUTOCOMPLETE_URL =
+  'https://maps.googleapis.com/maps/api/place/autocomplete/json';
 
 const GooglePlacesSuggestion = ({
   onPlaceSelected,
@@ -42,7 +44,9 @@ const GooglePlacesSuggestion = ({
     let active = true;
     setLoading(true);
     const query = encodeURIComponent(text);
-    fetch(`${AUTOCOMPLETE_URL}?key=${GOOGLE_PLACES_API_KEY}&input=${query}&language=en`)
+    fetch(
+      `${AUTOCOMPLETE_URL}?key=${GOOGLE_PLACES_API_KEY}&input=${query}&language=en`,
+    )
       .then(res => res.json())
       .then(json => {
         if (!active) return;
@@ -50,7 +54,9 @@ const GooglePlacesSuggestion = ({
       })
       .catch(() => active && setSuggestions([]))
       .finally(() => active && setLoading(false));
-    return () => { active = false; };
+    return () => {
+      active = false;
+    };
   }, [text]);
 
   const handleSelect = item => {
@@ -59,21 +65,27 @@ const GooglePlacesSuggestion = ({
     setText(item.description);
     setSuggestions([]);
     fetch(
-      `https://maps.googleapis.com/maps/api/place/details/json?key=${GOOGLE_PLACES_API_KEY}&place_id=${item.place_id}&fields=geometry`
+      `https://maps.googleapis.com/maps/api/place/details/json?key=${GOOGLE_PLACES_API_KEY}&place_id=${item.place_id}&fields=geometry`,
     )
       .then(res => res.json())
       .then(json => {
         if (json.status === 'OK') {
-          const { lat, lng } = json.result.geometry.location;
-          onPlaceSelected({ location: item.description, lat: String(lat), long: String(lng) });
+          const {lat, lng} = json.result.geometry.location;
+          onPlaceSelected({
+            location: item.description,
+            lat: String(lat),
+            long: String(lng),
+          });
         } else {
-          onPlaceSelected({ location: item.description, lat: '', long: '' });
+          onPlaceSelected({location: item.description, lat: '', long: ''});
         }
       })
-      .catch(() => onPlaceSelected({ location: item.description, lat: '', long: '' }));
+      .catch(() =>
+        onPlaceSelected({location: item.description, lat: '', long: ''}),
+      );
   };
 
-  const renderItem = ({ item }) => (
+  const renderItem = ({item}) => (
     <TouchableOpacity style={styles.row} onPress={() => handleSelect(item)}>
       <Text style={styles.description}>{item.description}</Text>
     </TouchableOpacity>
@@ -81,27 +93,28 @@ const GooglePlacesSuggestion = ({
 
   return (
     <View style={styles.container}>
-     <View style={styles.textInputContainer}>
-  <View style={styles.leftButton}>
-    <SearchSVG width={25} height={25} />
-  </View>
-  <TextInput
-    style={styles.textInput}
-    placeholder={placeholder}
-    placeholderTextColor={colors.grey}
-    value={text}
-    onChangeText={setText}
-  />
-  {text.length > 0 && (
-    <TouchableOpacity onPress={() => {
-      setText('');
-      setSuggestions([]);
-    }}>
-     <CloseSvg width={16} height={16}/>
-    </TouchableOpacity>
-  )}
-</View>
-      {loading && <ActivityIndicator style={{ marginTop: mvs(5) }} />}
+      <View style={styles.textInputContainer}>
+        <View style={styles.leftButton}>
+          <SearchSVG width={25} height={25} />
+        </View>
+        <TextInput
+          style={styles.textInput}
+          placeholder={placeholder}
+          placeholderTextColor={colors.grey}
+          value={text}
+          onChangeText={setText}
+        />
+        {text.length > 0 && (
+          <TouchableOpacity
+            onPress={() => {
+              setText('');
+              setSuggestions([]);
+            }}>
+            <CloseSvg width={16} height={16} />
+          </TouchableOpacity>
+        )}
+      </View>
+      {loading && <ActivityIndicator style={{marginTop: mvs(5)}} />}
       {suggestions.length > 0 && (
         <FlatList
           data={suggestions}
@@ -153,7 +166,7 @@ const styles = StyleSheet.create({
     marginTop: mvs(5),
     elevation: 3,
     shadowColor: colors.black,
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.1,
     shadowRadius: 2,
   },
@@ -162,7 +175,7 @@ const styles = StyleSheet.create({
     marginLeft: mvs(10),
     color: colors.black,
   },
-  
+
   row: {
     backgroundColor: colors.white,
     padding: mvs(13),

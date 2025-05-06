@@ -17,7 +17,7 @@ const ProductFooter = ({onBuyPress, loading}) => {
         <TouchableOpacity style={[styles.buyButton]} onPress={onBuyPress}>
           <CartSVG width={24} height={24} />
           {loading ? (
-            <ActivityIndicator size="small" color={colors.white} />
+            <ActivityIndicator size="small" color={colors.green} />
           ) : (
             <Text style={styles.buttonText}>Buy Directly</Text>
           )}
