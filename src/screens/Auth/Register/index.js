@@ -24,11 +24,8 @@ import PrimaryPasswordInput from '../../../components/atoms/InputFields/PrimaryP
 import CustomSwitch from '../../../components/atoms/InputFields/CustomSwitch';
 import {MyButton} from '../../../components/atoms/InputFields/MyButton';
 import API from '../../../api/apiServices';
-import {
-  getMessaging,
-  getToken,
-  requestPermission,
-} from '@react-native-firebase/messaging';
+import { mvs } from '../../../util/metrices';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // import {setRole} from '../../../redux/slices/userSlice';
 
@@ -40,31 +37,13 @@ const Register = () => {
   const [profilename, setProfilename] = useState('');
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
-  const [fcmToken, setFcmToken] = useState(null);
   const [isSubscribed, setIsSubscribed] = useState(false);
   const profileNameOpacity = useRef(new Animated.Value(0)).current;
   // const dispatch = useDispatch();
   const navigation = useNavigation();
-
-  // useEffect(() => {
-  //   const fetchFCMToken = async () => {
-  //     try {
-  //       await requestPermission();
-  //       const messaging = getMessaging();
-  //       const token = await getToken(messaging, {
-  //         vapidKey:
-  //           'BLEhgLEXb20D5gVpCmaVxiJecC8aLLHAk1C4Cz1QbwdvJLuMJ5Cp7xEHtyLd0Q77vhUCxfsJ5llMjmdYgxpJb2Q',
-  //       });
-  //       setFcmToken(token);
-  //     } catch (error) {
-  //       console.error('Error fetching FCM token:', error);
-  //     }
-  //   };
-
-  //   fetchFCMToken();
-  // }, []);
-
+  
   const handleRegister = async () => {
+    console.log('Register button pressed');
     if (!isEmailValid(email)) {
       setEmailError('Please enter a valid email.');
       return;
@@ -83,32 +62,33 @@ const Register = () => {
       alert('Please provide a profile name for your Seller account');
       return;
     }
+    
+    const storedFcmToken = await AsyncStorage.getItem('fcmToken');
+    console.log("Stored FCM Token: ", storedFcmToken);
 
     const payload = {
       name: selectedOption === 'Seller' ? profilename : 'Buyer',
       email,
       password,
       role: selectedOption === 'Seller' ? 2 : 3, // 2=Seller, 3=Buyer
-      // fcm_token: fcmToken,
+      fcm: storedFcmToken,
     };
+
+    console.log("Payload: ", payload); // Log the payload being sent to the API
 
     try {
       const response = await API.post('register', payload);
-      const data = response.data;
+      console.log('API Response:', response.data);
 
+      const data = response.data;
       if (data.success) {
         alert(data.message || 'Registration successful! Please login.');
-        // dispatch(setRole(payload.role));
-        // console.log('Registered as role:', payload.role);
         navigation.replace('Login');
       } else {
         alert(data.message || 'Registration failed. Please try again.');
       }
     } catch (error) {
-      console.error(
-        'Registration Error:',
-        error?.response?.data || error.message,
-      );
+      console.error('Registration Error:', error?.response?.data || error.message);
       alert(
         error?.response?.data?.message ||
           'An error occurred during registration. Please try again.',
@@ -116,13 +96,18 @@ const Register = () => {
     }
   };
 
+
   const isEmailValid = email => {
     const emailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/;
-    return emailRegex.test(email);
+    const isValid = emailRegex.test(email);
+    console.log('Email validation result: ', isValid, email); // Add a console log here
+    return isValid;
   };
-
+  
   const isPasswordValid = password => {
-    return password.length >= 8;
+    const isValid = password.length >= 8;
+    console.log('Password validation result: ', isValid, password); // Add a console log here
+    return isValid;
   };
 
   const handleClearEmail = () => {
@@ -213,6 +198,7 @@ const Register = () => {
 
       <View style={styles.buttonContainer}>
         <MyButton
+        
           title="Register For Free"
           onPress={handleRegister}
           disabled={!email || !password} // Disable button if form is not valid
