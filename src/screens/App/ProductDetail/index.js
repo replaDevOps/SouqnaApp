@@ -143,7 +143,7 @@ const ProductDetail = () => {
   return (
     <SafeAreaView style={styles.container}>
       {loading || !product ? (
-        <Loader/>
+                    <Loader width={mvs(220)} height={mvs(220)}/>
       ) : (
         <>
           <ProductHeader

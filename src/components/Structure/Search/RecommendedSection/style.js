@@ -1,6 +1,10 @@
-import {StyleSheet} from 'react-native';
+import {Dimensions, StyleSheet} from 'react-native';
 import {mvs} from '../../../../util/metrices';
 import {colors} from '../../../../util/color';
+
+const { width } = Dimensions.get('window');
+// const imageWidth = width * 0.4;
+const cardWidth = (width - mvs(45)) / 2;
 
 const styles = StyleSheet.create({
   container: {
@@ -12,27 +16,29 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-
+  recommendedText:{
+   fontSize:mvs(18),
+  },
   // Recommended Section Styles
   recommendedContainer: {
     marginTop: mvs(10),
     paddingHorizontal: mvs(10),
     paddingVertical: mvs(10),
     overflow: 'visible',
-    elevation: 2,
+    // elevation: 2,
     // backgroundColor: colors.white,
   },
   recommendedItem: {
-    flex: 1, // Allow each item to take equal space
+    width: cardWidth,
     marginHorizontal: mvs(8),
     marginBottom: mvs(13),
     backgroundColor: colors.white,
     borderRadius: mvs(10),
-    width: '48%',
-    elevation: 2,
-    shadowOffset: {width: 0, height: 2},
+    elevation: 3, // Add this for Android shadow
+    shadowColor: '#000', // iOS shadow
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
-    shadowRadius: 5,
+    shadowRadius: 4,
   },
 
   recommendedImage: {
@@ -50,7 +56,7 @@ const styles = StyleSheet.create({
   },
   recommendedTextContainer: {
     flexDirection: 'column',
-    elevation: 3,
+    // elevation: 3,
     paddingVertical: mvs(6),
     paddingHorizontal: mvs(6),
   },

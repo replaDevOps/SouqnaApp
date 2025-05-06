@@ -1,22 +1,21 @@
-// RecommendedProducts.js
+// RecommendedSection.js
 import React, {useCallback, useEffect, useState} from 'react';
 import {
   FlatList,
   View,
   TouchableOpacity,
   Image,
-  ActivityIndicator,
   Text,
 } from 'react-native';
 import styles from './style';
 import Regular from '../../../../typography/RegularText';
-import {HeartSvg, MarkerSVG} from '../../../../assets/svg';
+import {HeartSvg} from '../../../../assets/svg';
 import Bold from '../../../../typography/BoldText';
-import {colors} from '../../../../util/color';
 import {useSelector} from 'react-redux';
 import {fetchProducts} from '../../../../api/apiServices';
-import { useTranslation } from 'react-i18next';
-// import Icon from 'react-native-vector-icons/FontAwesome5'
+import {useTranslation} from 'react-i18next';
+import {mvs} from '../../../../util/metrices';
+import ProductCardSkeleton from './ProductCardSkeleton';
 
 const RecommendedSection = ({
   products,
@@ -79,36 +78,54 @@ const RecommendedSection = ({
     [handleHeartClick, likedItems, navigateToProductDetails],
   );
 
+  // Render skeleton items in the same layout as the actual product items
+  const renderSkeletonList = () => {
+    // Create an array of 6 dummy items for skeleton
+    const skeletonItems = Array(6).fill(null).map((_, index) => ({id: `skeleton-${index}`}));
+    
+    return (
+      <FlatList
+        data={skeletonItems}
+        numColumns={2}
+        keyExtractor={item => item.id}
+        renderItem={() => <ProductCardSkeleton />}
+        contentContainerStyle={{paddingBottom: mvs(10)}}
+      />
+    );
+  };
+
   return (
     <View style={styles.recommendedContainer}>
-      <Bold style={{marginBottom: 10}}>{t('recommendedForYou')}</Bold>
-      <FlatList
-        data={apiProducts}
-        numColumns={2}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={renderRecommendedItem}
-        onEndReached={loadMoreProducts}
-        onEndReachedThreshold={0.2}
-        ListFooterComponent={
-          loading ? (
-            <ActivityIndicator size="large" />
-          ) : isEndOfResults ? (
-            <Regular style={styles.endOfResultsText}>
-               {t('endOfResults')}
-            </Regular>
-          ) : null
-        }
-        ListEmptyComponent={
-          productsLoading ? (
-            <Text>{t('loading')}</Text>
-          ) : (
-            <Text>{t('noProductsFound')}</Text>
-          )
-        }
-      />
+      <Bold style={[{marginBottom: 10},styles.recommendedText]}>{t('recommendedForYou')}</Bold>
+      
+      {productsLoading ? (
+        renderSkeletonList()
+      ) : (
+        <FlatList
+          data={apiProducts}
+          numColumns={2}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={renderRecommendedItem}
+          onEndReached={loadMoreProducts}
+          onEndReachedThreshold={0.2}
+          ListFooterComponent={
+            isEndOfResults ? (
+              <Regular style={styles.endOfResultsText}>
+                {t('endOfResults')}
+              </Regular>
+            ) : null
+          }
+          ListEmptyComponent={
+            !productsLoading && (
+              <Text style={{textAlign: 'center', marginTop: mvs(20)}}>
+                {t('noProductsFound')}
+              </Text>
+            )
+          }
+        />
+      )}
     </View>
   );
 };
 
 export default RecommendedSection;
-

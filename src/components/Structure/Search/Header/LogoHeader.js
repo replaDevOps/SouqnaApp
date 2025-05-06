@@ -1,0 +1,52 @@
+import React, {useState} from 'react';
+import {Image, TouchableOpacity, View} from 'react-native';
+import SearchHeader from '../../../Headers/SearchHeader';
+import {useNavigation} from '@react-navigation/native';
+import { mvs } from '../../../../util/metrices';
+import { NotificationSVG } from '../../../../assets/svg';
+
+export default function LogoHeader() {
+  const [isSearchMode, setIsSearchMode] = useState(false);
+  const navigation = useNavigation();
+
+  const onCancelSearch = () => {
+    setIsSearchMode(false);
+  };
+
+  const onFocusSearch = () => {
+    setIsSearchMode(true);
+  };
+
+  const onNotification = () => {
+    navigation.navigate('Notification');
+  };
+  const navigateToSearchResults = () => {
+    navigation.navigate('SearchResultsScreen');
+  };
+
+  return (
+    <View style={{ backgroundColor: '#fff', elevation: 3 }}>
+  <View
+  
+    style={{
+      paddingTop: mvs(45),
+      paddingBottom: mvs(4),
+      backgroundColor: '#fff',
+      justifyContent: 'space-between',
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingHorizontal: mvs(12),
+     
+    }}
+  >
+            <Image source={require('../../../../assets/img/Souqna_Logo3.png')}  
+            
+            style={{width:mvs(145),height:mvs(28),resizeMode:'contain'}}/>
+            <TouchableOpacity onPress={onNotification}>
+                <NotificationSVG width={mvs(22)} height={mvs(22)}/>
+            </TouchableOpacity>
+        </View>
+       
+    </View>
+  );
+}

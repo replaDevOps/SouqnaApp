@@ -1,12 +1,21 @@
-import {StyleSheet} from 'react-native';
-import {colors} from '../../../util/color';
-import {mvs} from '../../../util/metrices';
+import { StyleSheet } from 'react-native';
+import { colors } from '../../../util/color';
+import { mvs } from '../../../util/metrices';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     // elevation: 3,
+    // backgroundColor: '#000',
     // paddingBottom: mvs(40),
+  },
+  LogoHeader: {
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.5,
+    shadowRadius: 4,
+    elevation: 6, // Android
+    zIndex: 10, // iOS (optional for overlap issues)
   },
   categoryContainer: {
     marginTop: mvs(10),
@@ -43,14 +52,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
 
-  // Gallery Section Styles
-  galleryContainer: {
-    paddingHorizontal: mvs(10),
-    paddingVertical: mvs(10),
-    backgroundColor: colors.white,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+  
   content: {
     backgroundColor: colors.white,
   },
@@ -76,11 +78,7 @@ const styles = StyleSheet.create({
     marginRight: 'auto',
     marginBottom: mvs(4),
   },
-  galleryLabel: {
-    fontSize: mvs(16),
-    paddingLeft: mvs(12),
-    marginTop: mvs(16),
-  },
+ 
   productPrice: {
     fontSize: mvs(10),
     color: colors.green,

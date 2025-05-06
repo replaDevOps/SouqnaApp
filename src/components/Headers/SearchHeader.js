@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   TextInput,
@@ -7,7 +7,7 @@ import {
   Text,
 } from 'react-native';
 import LocationSvg from '../../assets/svg/location-svg';
-import {NotificationSVG, SearchSVG} from '../../assets/svg';
+import {CloseSvg, NotificationSVG, SearchSVG} from '../../assets/svg';
 import {colors} from '../../util/color';
 import {mvs} from '../../util/metrices';
 import {useNavigation} from '@react-navigation/native';
@@ -20,17 +20,22 @@ const SearchHeader = ({
   onSearch,
   showLocationIcon = true,
 }) => {
+  const [searchText, setSearchText] = useState('');
   const navigation = useNavigation();
   const {t} = useTranslation();
 
   const onNotification = () => {
     navigation.navigate('Notification');
   };
+
+  const handleClearText = () => {
+    setSearchText('');
+  };
   return (
     <View style={styles.container}>
       <View style={styles.searchBarContainer}>
         <TouchableOpacity style={styles.icon}>
-          <SearchSVG />
+          <SearchSVG width={22} height={22} fill={colors.grey}/>
         </TouchableOpacity>
 
         <TextInput
@@ -39,32 +44,28 @@ const SearchHeader = ({
           placeholder={t('placeholder')}
           placeholderTextColor={colors.grey}
           keyboardType="default"
+          value={searchText}
+          onChangeText={setSearchText}
           onFocus={onFocusSearch}
-          onSubmitEditing={onSearch}
+          onSubmitEditing={() => {
+            if (searchText.trim() !== '') {
+              onSearch(searchText);
+            }
+          }}
         />
 
-        {!isSearchMode && showLocationIcon && (
+{searchText.length > 0 ? (
+          <TouchableOpacity onPress={handleClearText} style={styles.notificationIcon}>
+            <CloseSvg width={13} height={13} />
+          </TouchableOpacity>
+        ) : !isSearchMode && showLocationIcon ? (
           <TouchableOpacity style={styles.locationIconContainer}>
             <View style={styles.locationIcon}>
               <LocationSvg width={18} height={18} />
             </View>
           </TouchableOpacity>
-        )}
-      </View>
-
-      {isSearchMode ? (
-        <TouchableOpacity
-          onPress={onCancelSearch}
-          style={styles.notificationIcon}>
-          <Text style={styles.cancelText}>{t('cancel')}</Text>
-        </TouchableOpacity>
-      ) : (
-        <TouchableOpacity
-          onPress={onNotification}
-          style={styles.notificationIcon}>
-          <NotificationSVG />
-        </TouchableOpacity>
-      )}
+        ) : null}
+          </View>
     </View>
   );
 };
@@ -72,30 +73,37 @@ const SearchHeader = ({
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: mvs(10),
-    paddingTop: mvs(10),
+    paddingTop: mvs(20),
     paddingBottom: mvs(10),
-    backgroundColor: colors.white,
   },
   searchBarContainer: {
+    // add shadow here 
     flexDirection: 'row',
     alignItems: 'center',
     flex: 1,
-    borderWidth: 1,
-    borderColor: colors.grey,
-    backgroundColor: colors.lightGray,
-    borderRadius: mvs(50),
+    shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.5,
+      shadowRadius: 4,
+      elevation: 3, // Android
+      zIndex: 10,
+    // borderWidth: 1,
+    // borderColor: colors.grey,
+    backgroundColor: colors.white,
+    borderRadius: mvs(4),
     paddingHorizontal: mvs(10),
-    marginRight: mvs(20),
+    paddingVertical: mvs(4),
+    marginHorizontal:mvs(10)
   },
   searchBar: {
     flex: 1,
     height: 40,
     fontSize: 16,
     marginLeft: 10,
-    color: colors.grey,
+    color: colors.black,
   },
   icon: {
     justifyContent: 'center',
@@ -114,6 +122,10 @@ const styles = StyleSheet.create({
   notificationIcon: {
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor:colors.gray,
+    width:24,
+    height:24,
+    borderRadius:14
   },
   cancelText: {
     color: colors.green,
