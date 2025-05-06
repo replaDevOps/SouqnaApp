@@ -131,6 +131,31 @@ export const getProduct = async (productId, token, role) => {
   }
 };
 
+export const updateCartItem = async (cartItemId, qty, productID) => {
+  try {
+    console.log('Updating cart item with body:', {
+      id: cartItemId,
+      qty,
+      productID,
+    });
+
+    const response = await API.post('updateCartItem', {
+      id: cartItemId,
+      qty,
+      productID,
+    });
+
+    console.log('Updated Cart : ', response.data);
+    return response.data;
+  } catch (error) {
+    console.error(
+      'Error updating cart item:',
+      error?.response?.data || error.message,
+    );
+    return null;
+  }
+};
+
 API.interceptors.request.use(
   async config => {
     // Example: Get token from AsyncStorage if needed

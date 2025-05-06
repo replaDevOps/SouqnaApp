@@ -6,6 +6,7 @@ import {
   Platform,
   Alert,
   ActivityIndicator,
+  StatusBar,
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
@@ -20,6 +21,7 @@ import Header from '../../../components/Headers/Header';
 import {loginUser} from '../../../api/authServices';
 import {colors} from '../../../util/color';
 import {Snackbar} from 'react-native-paper';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
@@ -126,9 +128,8 @@ const LoginScreen = () => {
   const isFormValid = email && password; // Button activation condition
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="dark-content" />
       <Header title={'Help'} />
       <View style={styles.HeaderContainer}>
         <SouqnaLogo width={50} height={50} />
@@ -179,7 +180,7 @@ const LoginScreen = () => {
         style={{backgroundColor: colors.green}}>
         {snackbarMessage}
       </Snackbar>
-    </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 };
 
