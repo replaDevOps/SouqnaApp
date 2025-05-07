@@ -22,10 +22,10 @@ import {colors} from '../../../util/color';
 import {MarkerSVG} from '../../../assets/svg';
 import ShareActions from '../../../components/Structure/ShareAction/ShareAction';
 import ProductImages from './ProductImages';
-import {addItem} from '../../../redux/slices/cartSlice';
 import {addToCart, getProduct} from '../../../api/apiServices';
 import {Snackbar} from 'react-native-paper';
 import Loader from '../../../components/Loader';
+import {addItem} from '../../../redux/slices/cartSlice';
 
 const {height} = Dimensions.get('window');
 
@@ -55,6 +55,7 @@ const ProductDetail = () => {
         const response = await getProduct(productId, token, role);
         if (response && response.success !== false) {
           setProduct(response.data);
+          console.log('Product Data setting: ', response.data);
         } else {
           console.warn(
             'Failed to fetch product:',
@@ -69,7 +70,7 @@ const ProductDetail = () => {
     };
 
     fetchProductDetails();
-  }, [productId, token, role]);
+  }, [productId, token, role, dispatch]);
 
   const handleHeartPress = id => {
     setLikedItems(prevState => ({
@@ -109,15 +110,24 @@ const ProductDetail = () => {
 
     setAddingToCart(true);
 
-    // dispatch(
-    //   addItem({
-    //     id: product.id,
-    //     name: product.name,
-    //     price: product.price,
-    //     image: `https://backend.souqna.net${product.images?.[0]?.path}`,
-    //     quantity: 1,
-    //   }),
-    // );
+    dispatch(
+      addItem({
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        image: `https://backend.souqna.net${product.images?.[0]?.path}`,
+        quantity: 1,
+        stock: product.stock,
+      }),
+    );
+    console.log('Added to Redux:', {
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image: `https://backend.souqna.net${product.images?.[0]?.path}`,
+      quantity: 1,
+      stock: product.stock,
+    });
 
     const result = await addToCart(product.id, 1);
 
@@ -143,7 +153,7 @@ const ProductDetail = () => {
   return (
     <SafeAreaView style={styles.container}>
       {loading || !product ? (
-                    <Loader width={mvs(220)} height={mvs(220)}/>
+        <Loader width={mvs(220)} height={mvs(220)} />
       ) : (
         <>
           <ProductHeader

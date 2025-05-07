@@ -6,6 +6,7 @@ import {
   ScrollView,
   Image,
   StatusBar,
+  RefreshControl,
 } from 'react-native';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import MainHeader from '../../../components/Headers/MainHeader';
@@ -24,16 +25,21 @@ import {
 import {Snackbar} from 'react-native-paper';
 import {mvs} from '../../../util/metrices';
 import debounce from 'lodash/debounce'; // npm install lodash
+import {useSelector} from 'react-redux';
 
 export default function CartScreen() {
-  // const dispatch = useDispatch();
   const [cartData, setCartData] = useState([]);
-  const navigation = useNavigation();
+  const [refreshing, setRefreshing] = useState(false); // <-- Add refreshing state
   const {t} = useTranslation();
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const updateQtyRef = useRef({});
+  const stockMap = useSelector(state => state.cart.items);
+  const getStockForItem = productId => {
+    const item = stockMap.find(item => item.id === productId);
+    return item ? item.stock : 0;
+  };
 
   const subTotal = cartData.reduce(
     (sum, item) => sum + item.price * item.quantity,
@@ -43,44 +49,45 @@ export default function CartScreen() {
   const discount = 0;
   const total = subTotal + deliveryCharge - discount;
 
-  useEffect(() => {
-    const loadCartItems = async () => {
-      let allItems = [];
-      let page = 1;
-      let hasMore = true;
+  const loadCartItems = async () => {
+    let allItems = [];
+    let page = 1;
+    let hasMore = true;
 
-      while (hasMore) {
-        const response = await fetchCartItems(page, 10);
-        if (response?.data?.length) {
-          const normalizedItems = response.data.map(item => ({
-            id: item.product?.id,
-            cartItemId: item.id,
-            name: item.product?.name || 'Unnamed',
-            quantity: item.qty || 1,
-            price: parseFloat(item.price),
-            image: item.product?.images?.[0]?.path
-              ? `${BASE_URL_Product}${item.product.images[0].path}`
-              : null,
-          }));
+    while (hasMore) {
+      const response = await fetchCartItems(page, 10);
+      if (response?.data?.length) {
+        const normalizedItems = response.data.map(item => ({
+          id: item.product?.id,
+          cartItemId: item.id,
+          name: item.product?.name || 'Unnamed',
+          quantity: item.qty || 1,
+          price: parseFloat(item.price),
+          image: item.product?.images?.[0]?.path
+            ? `${BASE_URL_Product}${item.product.images[0].path}`
+            : null,
+        }));
 
-          normalizedItems.forEach(item => {
-            const existingIndex = allItems.findIndex(i => i.id === item.id);
-            if (existingIndex !== -1) {
-              allItems[existingIndex].quantity += item.quantity;
-            } else {
-              allItems.push(item);
-            }
-          });
+        normalizedItems.forEach(item => {
+          const existingIndex = allItems.findIndex(i => i.id === item.id);
+          if (existingIndex !== -1) {
+            allItems[existingIndex].quantity += item.quantity;
+          } else {
+            allItems.push(item);
+          }
+        });
 
-          page += 1;
-        } else {
-          hasMore = false;
-        }
+        page += 1;
+      } else {
+        hasMore = false;
       }
+    }
 
-      setCartData(allItems);
-    };
+    setCartData(allItems);
+    setRefreshing(false); // Stop refreshing after loading data
+  };
 
+  useEffect(() => {
     loadCartItems();
   }, [refreshTrigger]);
 
@@ -90,7 +97,10 @@ export default function CartScreen() {
         async (id, quantity, prodId) => {
           const response = await updateCartItem(id, quantity, prodId);
           if (!response?.success) {
-            console.warn('Failed to update item quantity');
+            setSnackbarMessage(
+              response?.message || 'Failed to update item quantity',
+            );
+            setSnackbarVisible(true);
           }
         },
         500,
@@ -101,21 +111,22 @@ export default function CartScreen() {
   }, []);
 
   const handleQuantityChange = (productId, change) => {
-    setCartData(prev => {
-      const updatedCart = prev.map(item =>
-        item.id === productId
-          ? {...item, quantity: Math.max(1, item.quantity + change)}
-          : item,
-      );
+    const stock = getStockForItem(productId); // Get the available stock for the item
 
-      const updatedItem = updatedCart.find(item => item.id === productId);
-      if (updatedItem) {
-        debouncedUpdate(
-          updatedItem.cartItemId,
-          updatedItem.quantity - 1,
-          updatedItem.id,
-        );
-      }
+    setCartData(prev => {
+      const updatedCart = prev.map(item => {
+        if (item.id === productId) {
+          const newQuantity = Math.max(1, item.quantity + change);
+          if (newQuantity > stock) {
+            setSnackbarMessage(`Cannot exceed stock quantity of ${stock}`);
+            setSnackbarVisible(true);
+            return item; // Don't update the quantity if it exceeds stock
+          }
+          debouncedUpdate(item.cartItemId, newQuantity, item.id); // Debounced update
+          return {...item, quantity: newQuantity}; // Update quantity if within stock limit
+        }
+        return item;
+      });
 
       return updatedCart;
     });
@@ -149,6 +160,11 @@ export default function CartScreen() {
     return {uri: 'fallback_image_url_here'};
   };
 
+  const onRefresh = () => {
+    setRefreshing(true); // Start refreshing
+    setRefreshTrigger(prev => prev + 1); // Trigger the cart data reload
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" />
@@ -156,7 +172,13 @@ export default function CartScreen() {
 
       <ScrollView
         contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}>
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh} // Trigger refresh on pull
+          />
+        }>
         <Text style={styles.title}>{t('orderDetails')}</Text>
 
         {cartData.length === 0 ? (

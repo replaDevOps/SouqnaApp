@@ -31,6 +31,7 @@ export const cartSlice = createSlice({
         state.items.push({
           ...formattedPayload,
           quantity: formattedPayload.quantity || 1,
+          stock: formattedPayload.stock, // 👈 attach stock directly to item
         });
       }
     },

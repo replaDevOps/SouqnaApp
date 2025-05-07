@@ -4,8 +4,8 @@ import Svg, {Path, Rect} from 'react-native-svg';
 const HeartSVG = props => (
   <Svg
     fill="#000000"
-    width={18}
-    height={18}
+    width={24}
+    height={24}
     viewBox="0 0 36 36"
     preserveAspectRatio="xMidYMid meet"
     xmlns="http://www.w3.org/2000/svg"
