@@ -5,18 +5,21 @@ import {
   StyleSheet, 
   TextInput, 
   TouchableOpacity, 
-  FlatList, 
-  KeyboardAvoidingView,
+  FlatList,
   Platform,
   Keyboard,
+  Dimensions,
+  KeyboardAvoidingView,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-const ChatScreen = () => {
+const Chat = () => {
   const [messages, setMessages] = useState([]);
   const [inputText, setInputText] = useState('');
   const flatListRef = useRef();
   const [keyboardVisible, setKeyboardVisible] = useState(false);
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
+  const screenHeight = Dimensions.get('window').height;
 
   useEffect(() => {
     // Initialize with some sample messages
@@ -35,17 +38,21 @@ const ChatScreen = () => {
       },
     ]);
 
-    // Add keyboard listeners to detect when keyboard shows/hides
+    // Add keyboard listeners with explicit height detection for Android
     const keyboardDidShowListener = Keyboard.addListener(
       'keyboardDidShow',
-      () => {
+      (e) => {
+        const keyboardHeight = e.endCoordinates.height;
+        setKeyboardHeight(keyboardHeight);
         setKeyboardVisible(true);
         scrollToBottom();
       }
     );
+    
     const keyboardDidHideListener = Keyboard.addListener(
       'keyboardDidHide',
       () => {
+        setKeyboardHeight(0);
         setKeyboardVisible(false);
       }
     );
@@ -128,60 +135,64 @@ const ChatScreen = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
-      <KeyboardAvoidingView
-        style={styles.keyboardAvoidingView}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}
-      >
-        <FlatList
-          ref={flatListRef}
-          data={messages}
-          renderItem={renderMessage}
-          keyExtractor={item => item.id}
-          contentContainerStyle={[
-            styles.messageList,
-            keyboardVisible && styles.messageListWithKeyboard
-          ]}
-        />
-        
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.input}
-            value={inputText}
-            onChangeText={setInputText}
-            placeholder="Type a message..."
-            placeholderTextColor="#999"
-            multiline
-            maxHeight={80}
+    <SafeAreaView style={styles.safeAreaContainer} edges={['top']}>
+      <View style={styles.container}>
+        <View style={[
+          styles.messagesContainer,
+          { marginBottom: keyboardVisible ? keyboardHeight : 70 } // Dynamic bottom margin
+        ]}>
+          <FlatList
+            ref={flatListRef}
+            data={messages}
+            renderItem={renderMessage}
+            keyExtractor={item => item.id}
+            contentContainerStyle={styles.messageList}
           />
-          <TouchableOpacity 
-            style={styles.sendButton}
-            onPress={sendMessage}
-          >
-            <Text style={styles.sendButtonText}>Send</Text>
-          </TouchableOpacity>
         </View>
-      </KeyboardAvoidingView>
+        
+        {/* Position the input container absolutely so it stays at bottom or floats above keyboard */}
+        <View style={[
+          styles.inputContainerWrapper,
+          { bottom: keyboardVisible ? keyboardHeight : 0 }
+        ]}>
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.input}
+              value={inputText}
+              onChangeText={setInputText}
+              placeholder="Type a message..."
+              placeholderTextColor="#999"
+              multiline
+              maxHeight={80}
+            />
+            <TouchableOpacity 
+              style={styles.sendButton}
+              onPress={sendMessage}
+            >
+              <Text style={styles.sendButtonText}>Send</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  safeAreaContainer: {
     flex: 1,
     backgroundColor: '#FFFFFF',
   },
-  keyboardAvoidingView: {
+  container: {
+    flex: 1,
+    position: 'relative',
+  },
+  messagesContainer: {
     flex: 1,
   },
   messageList: {
     padding: 10,
-    paddingBottom: 20,
-    flexGrow: 1,
-  },
-  messageListWithKeyboard: {
-    paddingBottom: 10,
+    paddingBottom: 40,
   },
   messageContainer: {
     marginVertical: 5,
@@ -232,12 +243,21 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 5,
   },
+  inputContainerWrapper: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    borderTopWidth: 1,
+    borderTopColor: '#ECECEC',
+    backgroundColor: '#FFFFFF',
+  },
   inputContainer: {
     flexDirection: 'row',
     padding: 10,
-    borderTopWidth: 1,
-    borderTopColor: '#ECECEC',
     alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    // Add shadow for Android
+    elevation: 4,
   },
   input: {
     flex: 1,
@@ -262,4 +282,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ChatScreen;
+export default Chat;

@@ -16,12 +16,11 @@ import AllCategories from '../../screens/App/SearchAll';
 import SubCategoryScreen from '../../screens/App/SubCategory';
 import ChangePassword from '../../screens/App/ChangePassword';
 import AdvertiseAll from '../../screens/App/AdvertiseAll';
-import Notification from '../../screens/App/Notification';
 import VerificationPage from '../../screens/Auth/Verification';
 import CreateProduct from '../../screens/App/Product/CreateProduct';
 import MyAccount from '../../screens/App/Sub-Profile/MyAccount';
-import ChatScreen from '../../screens/App/Chat';
-
+import Chat from '../../screens/App/Chat';
+import InboxScreen from '../../screens/App/Inbox';
 
 const Stack = createStackNavigator();
 
@@ -49,11 +48,21 @@ const AppNavigator = () => {
         <Stack.Screen name="SubCategoryScreen" component={SubCategoryScreen} />
         <Stack.Screen name="AdvertiseAll" component={AdvertiseAll} />
         <Stack.Screen name="ChangePassword" component={ChangePassword} />
-        <Stack.Screen name="Notification" component={Notification} />
+        {/* <Stack.Screen name="Notification" component={Notification} /> */}
         <Stack.Screen name="Verification" component={VerificationPage} />
         <Stack.Screen name="CreateProduct" component={CreateProduct} />
         <Stack.Screen name="MyAccount" component={MyAccount} />
-        <Stack.Screen name="Chat" component={ChatScreen} options={{headerShown:true}}/>
+        <Stack.Screen
+  name="Chat"
+  component={Chat}
+  options={({ route }) => ({
+    headerTitle: route.params?.userName || 'Chat',
+    headerTitleAlign: 'center',
+    headerBackTitleVisible: false,
+    headerShown:true
+  })}
+/>
+        <Stack.Screen name="Inbox" component={InboxScreen} options={{headerShown:true}}/>
       </Stack.Navigator>
     </View>
   );
