@@ -1,19 +1,17 @@
-import * as React from "react";
-import Svg, { Rect, Path } from "react-native-svg";
+import * as React from 'react';
+import Svg, {Rect, Path} from 'react-native-svg';
 
-const PlusSvg = ({ color = "#282E68"}) => (
+const PlusSvg = ({color = '#282E68'}) => (
   <Svg
     width={42}
     height={42}
     viewBox="0 0 42 42"
     fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-
-  >
+    xmlns="http://www.w3.org/2000/svg">
     <Rect width={42} height={42} rx={21} fill="white" />
     <Rect
-      x={0.5}
-      y={0.5}
+      x={0}
+      y={0}
       width={41}
       height={41}
       rx={20.5}

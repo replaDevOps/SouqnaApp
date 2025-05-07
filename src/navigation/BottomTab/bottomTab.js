@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unstable-nested-components */
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -21,6 +22,8 @@ import AdvertiseScreen from '../../screens/App/Advertise';
 import Bold from '../../typography/BoldText';
 import AddModal from '../../components/Modals/AddModal';
 import {createStackNavigator} from '@react-navigation/stack';
+import Icon from 'react-native-vector-icons/Feather';
+import PlusSvg from '../../assets/svg/plussvg';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -61,40 +64,40 @@ const MyTabs = () => {
 
             switch (route.name) {
               case 'Search':
-                IconComponent = SearchSVG;
-                label = 'Search';
+                IconComponent = HOMESVG;
+                // label = 'Home';
                 break;
               case 'Favourite':
                 IconComponent = HeartSVG;
-                label = 'Favourite';
+                // label = 'Favourite';
                 break;
               case 'Advertise':
-                IconComponent = AdvertiseSVG;
-                label = 'Advertise';
+                IconComponent = PlusSvg;
+                // label = 'Advertise';
                 break;
               case 'CartScreen':
                 IconComponent = CartSVG;
-                label = 'Cart';
+                // label = 'Cart';
                 break;
               case 'Profile':
                 IconComponent = ProfileSVG;
-                label = 'Profile';
+                // label = 'Profile';
                 break;
               default:
                 IconComponent = HOMESVG;
-                label = 'Home';
+              // label = 'Home';
             }
 
             return (
               <View style={styles.iconContainer}>
                 <IconComponent color={focused ? activeColor : inactiveColor} />
-                <Bold
+                {/* <Bold
                   style={[
                     styles.label,
                     {color: focused ? activeColor : inactiveColor},
                   ]}>
                   {label}
-                </Bold>
+                </Bold> */}
               </View>
             );
           },
