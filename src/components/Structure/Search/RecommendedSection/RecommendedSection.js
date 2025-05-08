@@ -1,6 +1,13 @@
 // RecommendedSection.js
 import React, {useCallback, useEffect, useState} from 'react';
-import {FlatList, View, TouchableOpacity, Image, Text} from 'react-native';
+import {
+  FlatList,
+  View,
+  TouchableOpacity,
+  Image,
+  Text,
+  RefreshControl,
+} from 'react-native';
 import styles from './style';
 import Regular from '../../../../typography/RegularText';
 import {HeartSvg} from '../../../../assets/svg';
@@ -20,6 +27,8 @@ const RecommendedSection = ({
   handleHeartClick,
   navigateToProductDetails,
   hideTitle,
+  refreshing,
+  onRefresh,
 }) => {
   const [apiProducts, setApiProducts] = useState([]);
   const [productsLoading, setProductsLoading] = useState(true);
@@ -109,6 +118,10 @@ const RecommendedSection = ({
           renderItem={renderRecommendedItem}
           onEndReached={loadMoreProducts}
           onEndReachedThreshold={0.2}
+          refreshControl={
+            // 👈 add this
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
           ListFooterComponent={
             isEndOfResults ? (
               <Regular style={styles.endOfResultsText}>

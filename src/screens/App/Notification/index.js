@@ -1,17 +1,18 @@
 import React from 'react';
-import {View, Text, TouchableOpacity, FlatList} from 'react-native';
+import {View, Text, TouchableOpacity, FlatList, StatusBar} from 'react-native';
 import {colors} from '../../../util/color';
 import {useNavigation} from '@react-navigation/native';
 import CategoryHeader from '../../../components/Headers/CategoryHeader';
 import Notificationsvg from '../../../assets/svg/notification-svg';
 import dummyData from '../../../util/dummyData';
 import styles from './style';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const Notification = () => {
   const navigation = useNavigation();
   const {notificationsData} = dummyData;
-  const {t} = useTranslation(); 
+  const {t} = useTranslation();
 
   const handleBack = () => {
     navigation.goBack();
@@ -33,7 +34,8 @@ const Notification = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="dark-content" />
       <CategoryHeader title={t('titleNotification')} onBack={handleBack} />
 
       <FlatList
@@ -42,7 +44,7 @@ const Notification = () => {
         keyExtractor={item => item.id}
         contentContainerStyle={styles.notificationContainer}
       />
-    </View>
+    </SafeAreaView>
   );
 };
 
