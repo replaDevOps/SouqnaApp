@@ -18,6 +18,7 @@ import {colors} from '../../../util/color';
 import {mvs} from '../../../util/metrices';
 import MainHeader from '../../../components/Headers/MainHeader';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import InboxSkeleton from './InboxSkeleton';
 
 const dummyMessages = Array.from({length: 15}, (_, i) => ({
   id: i.toString(),
@@ -119,16 +120,8 @@ const InboxScreen = () => {
           <Text style={styles.header}>Messages</Text>
 
           {isLoading ? (
-            // Skeleton Loader Placeholder
-            Array.from({length: 6}).map((_, index) => (
-              <View
-                key={index}
-                style={[
-                  styles.messageContainer,
-                  {opacity: 0.3, backgroundColor: '#e0e0e0'},
-                ]}
-              />
-            ))
+            // Use the new MessageSkeletonPlaceholder component
+            <InboxSkeleton count={12} />
           ) : (
             <FlatList
               data={dummyMessages}
