@@ -267,7 +267,7 @@ const SearchScreen = () => {
 
         <CategorySection categories={apiCategories} />
 
-        <GalleryContainer />
+        <GalleryContainer onProductSelect={navigateToProductDetails} />
         <RecommendedSection
           products={allRecommendedProducts}
           loadMoreProducts={loadMoreRecommendedProducts}
