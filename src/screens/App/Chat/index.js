@@ -1,17 +1,18 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  TextInput, 
-  TouchableOpacity, 
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, {useState, useEffect, useRef} from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
   FlatList,
   Platform,
   Keyboard,
   Dimensions,
   KeyboardAvoidingView,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const Chat = () => {
   const [messages, setMessages] = useState([]);
@@ -38,41 +39,41 @@ const Chat = () => {
       },
     ]);
 
-    // Add keyboard listeners with explicit height detection for Android
-    const keyboardDidShowListener = Keyboard.addListener(
-      'keyboardDidShow',
-      (e) => {
-        const keyboardHeight = e.endCoordinates.height;
-        setKeyboardHeight(keyboardHeight);
-        setKeyboardVisible(true);
-        scrollToBottom();
-      }
-    );
-    
-    const keyboardDidHideListener = Keyboard.addListener(
-      'keyboardDidHide',
-      () => {
-        setKeyboardHeight(0);
-        setKeyboardVisible(false);
-      }
-    );
+    // // Add keyboard listeners with explicit height detection for Android
+    // const keyboardDidShowListener = Keyboard.addListener(
+    //   'keyboardDidShow',
+    //   (e) => {
+    //     const keyboardHeight = e.endCoordinates.height;
+    //     setKeyboardHeight(keyboardHeight);
+    //     setKeyboardVisible(true);
+    //     scrollToBottom();
+    //   }
+    // );
 
-    // Cleanup function
-    return () => {
-      keyboardDidShowListener.remove();
-      keyboardDidHideListener.remove();
-    };
+    // const keyboardDidHideListener = Keyboard.addListener(
+    //   'keyboardDidHide',
+    //   () => {
+    //     setKeyboardHeight(0);
+    //     setKeyboardVisible(false);
+    //   }
+    // );
+
+    // // Cleanup function
+    // return () => {
+    //   keyboardDidShowListener.remove();
+    //   keyboardDidHideListener.remove();
+    // };
   }, []);
 
   // Scroll to bottom whenever messages change
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [messages, scrollToBottom]);
 
   const scrollToBottom = () => {
     if (flatListRef.current && messages.length > 0) {
       setTimeout(() => {
-        flatListRef.current.scrollToEnd({ animated: true });
+        flatListRef.current.scrollToEnd({animated: true});
       }, 100);
     }
   };
@@ -99,12 +100,12 @@ const Chat = () => {
         timestamp: new Date(),
         isUser: false,
       };
-      
+
       setMessages(prevMessages => [...prevMessages, responseMessage]);
     }, 1000);
   };
 
-  const renderMessage = ({ item }) => {
+  const renderMessage = ({item}) => {
     if (item.isSystem) {
       return (
         <View style={styles.systemMessageContainer}>
@@ -114,21 +115,31 @@ const Chat = () => {
     }
 
     return (
-      <View style={[
-        styles.messageContainer,
-        item.isUser ? styles.userMessageContainer : styles.agentMessageContainer
-      ]}>
-        <View style={[
-          styles.messageBubble,
-          item.isUser ? styles.userMessageBubble : styles.agentMessageBubble
+      <View
+        style={[
+          styles.messageContainer,
+          item.isUser
+            ? styles.userMessageContainer
+            : styles.agentMessageContainer,
         ]}>
-          <Text style={[
-            styles.messageText,
-            item.isUser ? styles.userMessageText : styles.agentMessageText
-          ]}>{item.text}</Text>
+        <View
+          style={[
+            styles.messageBubble,
+            item.isUser ? styles.userMessageBubble : styles.agentMessageBubble,
+          ]}>
+          <Text
+            style={[
+              styles.messageText,
+              item.isUser ? styles.userMessageText : styles.agentMessageText,
+            ]}>
+            {item.text}
+          </Text>
         </View>
         <Text style={styles.timestamp}>
-          {item.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+          {item.timestamp.toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit',
+          })}
         </Text>
       </View>
     );
@@ -137,10 +148,11 @@ const Chat = () => {
   return (
     <SafeAreaView style={styles.safeAreaContainer} edges={['top']}>
       <View style={styles.container}>
-        <View style={[
-          styles.messagesContainer,
-          { marginBottom: keyboardVisible ? keyboardHeight : 70 } // Dynamic bottom margin
-        ]}>
+        <View
+          style={[
+            styles.messagesContainer,
+            {marginBottom: keyboardVisible ? keyboardHeight : 70}, // Dynamic bottom margin
+          ]}>
           <FlatList
             ref={flatListRef}
             data={messages}
@@ -149,12 +161,13 @@ const Chat = () => {
             contentContainerStyle={styles.messageList}
           />
         </View>
-        
+
         {/* Position the input container absolutely so it stays at bottom or floats above keyboard */}
-        <View style={[
-          styles.inputContainerWrapper,
-          { bottom: keyboardVisible ? keyboardHeight : 0 }
-        ]}>
+        <View
+          style={[
+            styles.inputContainerWrapper,
+            {bottom: keyboardVisible ? keyboardHeight : 0},
+          ]}>
           <View style={styles.inputContainer}>
             <TextInput
               style={styles.input}
@@ -165,10 +178,7 @@ const Chat = () => {
               multiline
               maxHeight={80}
             />
-            <TouchableOpacity 
-              style={styles.sendButton}
-              onPress={sendMessage}
-            >
+            <TouchableOpacity style={styles.sendButton} onPress={sendMessage}>
               <Text style={styles.sendButtonText}>Send</Text>
             </TouchableOpacity>
           </View>
@@ -270,7 +280,7 @@ const styles = StyleSheet.create({
     maxHeight: 80,
   },
   sendButton: {
-    backgroundColor: '#007AFF',
+    backgroundColor: '#adbd6e',
     borderRadius: 20,
     paddingVertical: 10,
     paddingHorizontal: 15,
