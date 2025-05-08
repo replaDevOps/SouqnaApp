@@ -39,12 +39,13 @@ const FavouriteScreen = () => {
 
   if (favorites.length === 0) {
     return (
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
+        <StatusBar barStyle="dark-content" />
         <MainHeader title={t('favourites')} />
         <View style={styles.content}>
           <Bold>{t('noFavourites')}</Bold>
         </View>
-      </View>
+      </SafeAreaView>
     );
   }
 

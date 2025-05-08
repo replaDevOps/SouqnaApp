@@ -2,24 +2,29 @@ import React from 'react';
 import {View, FlatList, TouchableOpacity, StatusBar, Image} from 'react-native';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import Regular from '../../../typography/RegularText';
-import styles from './style';
 import CategoryHeader from '../../../components/Headers/CategoryHeader';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {ForwardSVG} from '../../../assets/svg';
 import {mvs} from '../../../util/metrices';
+import styles from '../AdvertiseAll/style';
 
-const AdvertiseAll = () => {
+const SubCategoryMain = () => {
   const route = useRoute();
   const {category, subcategories, categoryId} = route.params;
   const navigation = useNavigation();
 
   const handleSubcategoryPress = subcategory => {
     console.log(`Advertise ${subcategory.name} clicked`);
-    navigation.navigate('CreateProduct', {
+    navigation.navigate('Products', {
       categoryId: categoryId,
       id: subcategory.id,
       name: subcategory.name,
     });
+    // navigation.navigate('CreateProduct', {
+    //   categoryId: categoryId,
+    //   id: subcategory.id,
+    //   name: subcategory.name,
+    // });
   };
 
   const handleBack = () => {
@@ -54,4 +59,4 @@ const AdvertiseAll = () => {
   );
 };
 
-export default AdvertiseAll;
+export default SubCategoryMain;
