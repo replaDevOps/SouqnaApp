@@ -156,6 +156,19 @@ export const updateCartItem = async (cartItemId, qty, productID) => {
   }
 };
 
+export const fetchProductsBySubCategory = async subCategoryId => {
+  try {
+    const response = await API.get(`getProductBySubCategory/${subCategoryId}`);
+    return response.data;
+  } catch (error) {
+    console.error(
+      `Error fetching products for subCategoryId ${subCategoryId}:`,
+      error?.response?.data || error.message,
+    );
+    return null;
+  }
+};
+
 API.interceptors.request.use(
   async config => {
     // Example: Get token from AsyncStorage if needed

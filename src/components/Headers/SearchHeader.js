@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
   View,
   TextInput,
@@ -11,7 +11,7 @@ import {CloseSvg, NotificationSVG, SearchSVG} from '../../assets/svg';
 import {colors} from '../../util/color';
 import {mvs} from '../../util/metrices';
 import {useNavigation} from '@react-navigation/native';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 
 const SearchHeader = ({
   onFocusSearch,
@@ -35,7 +35,7 @@ const SearchHeader = ({
     <View style={styles.container}>
       <View style={styles.searchBarContainer}>
         <TouchableOpacity style={styles.icon}>
-          <SearchSVG width={22} height={22} fill={colors.grey}/>
+          <SearchSVG width={22} height={22} fill={colors.grey} />
         </TouchableOpacity>
 
         <TextInput
@@ -54,8 +54,10 @@ const SearchHeader = ({
           }}
         />
 
-{searchText.length > 0 ? (
-          <TouchableOpacity onPress={handleClearText} style={styles.notificationIcon}>
+        {searchText.length > 0 ? (
+          <TouchableOpacity
+            onPress={handleClearText}
+            style={styles.notificationIcon}>
             <CloseSvg width={13} height={13} />
           </TouchableOpacity>
         ) : !isSearchMode && showLocationIcon ? (
@@ -65,7 +67,7 @@ const SearchHeader = ({
             </View>
           </TouchableOpacity>
         ) : null}
-          </View>
+      </View>
     </View>
   );
 };
@@ -78,25 +80,26 @@ const styles = StyleSheet.create({
     paddingHorizontal: mvs(10),
     paddingTop: mvs(20),
     paddingBottom: mvs(10),
+    backgroundColor: '#fbfbfb',
   },
   searchBarContainer: {
-    // add shadow here 
+    // add shadow here
     flexDirection: 'row',
     alignItems: 'center',
     flex: 1,
     shadowColor: '#000',
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.5,
-      shadowRadius: 4,
-      elevation: 3, // Android
-      zIndex: 10,
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.5,
+    shadowRadius: 4,
+    elevation: 3, // Android
+    zIndex: 10,
     // borderWidth: 1,
     // borderColor: colors.grey,
     backgroundColor: colors.white,
     borderRadius: mvs(4),
     paddingHorizontal: mvs(10),
     paddingVertical: mvs(4),
-    marginHorizontal:mvs(10)
+    marginHorizontal: mvs(10),
   },
   searchBar: {
     flex: 1,
@@ -122,10 +125,10 @@ const styles = StyleSheet.create({
   notificationIcon: {
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor:colors.gray,
-    width:24,
-    height:24,
-    borderRadius:14
+    backgroundColor: colors.gray,
+    width: 24,
+    height: 24,
+    borderRadius: 14,
   },
   cancelText: {
     color: colors.green,

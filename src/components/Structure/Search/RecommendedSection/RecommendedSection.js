@@ -19,6 +19,7 @@ const RecommendedSection = ({
   likedItems,
   handleHeartClick,
   navigateToProductDetails,
+  hideTitle,
 }) => {
   const [apiProducts, setApiProducts] = useState([]);
   const [productsLoading, setProductsLoading] = useState(true);
@@ -92,9 +93,11 @@ const RecommendedSection = ({
 
   return (
     <View style={styles.recommendedContainer}>
-      <Bold style={[{marginBottom: 10}, styles.recommendedText]}>
-        {t('recommendedForYou')}
-      </Bold>
+      {!hideTitle && (
+        <Bold style={[{marginBottom: 10}, styles.recommendedText]}>
+          {t('recommendedForYou')}
+        </Bold>
+      )}
 
       {productsLoading ? (
         renderSkeletonList()
@@ -115,11 +118,18 @@ const RecommendedSection = ({
           }
           ListEmptyComponent={
             !productsLoading && (
-              <View style={{paddingVertical:mvs(100)}}>
-              <Image source={require('../../../../assets/img/empty.png')} style={{width:'90%',resizeMode:'contain',height:mvs(200)}}/> 
-              <Text style={{textAlign: 'center', marginTop: mvs(20)}}>
-                {t('noProductsFound')}
-              </Text>
+              <View style={{paddingVertical: mvs(100)}}>
+                <Image
+                  source={require('../../../../assets/img/empty.png')}
+                  style={{
+                    width: '90%',
+                    resizeMode: 'contain',
+                    height: mvs(200),
+                  }}
+                />
+                <Text style={{textAlign: 'center', marginTop: mvs(20)}}>
+                  {t('noProductsFound')}
+                </Text>
               </View>
             )
           }

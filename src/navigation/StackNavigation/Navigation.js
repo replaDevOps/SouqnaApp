@@ -19,6 +19,8 @@ import AdvertiseAll from '../../screens/App/AdvertiseAll';
 import VerificationPage from '../../screens/Auth/Verification';
 import CreateProduct from '../../screens/App/Product/CreateProduct';
 import MyAccount from '../../screens/App/Sub-Profile/MyAccount';
+import SubCategoryMain from '../../screens/App/SubCategoryMain';
+import Products from '../../screens/App/Products';
 
 const Stack = createStackNavigator();
 
@@ -50,6 +52,8 @@ const AppNavigator = () => {
         <Stack.Screen name="Verification" component={VerificationPage} />
         <Stack.Screen name="CreateProduct" component={CreateProduct} />
         <Stack.Screen name="MyAccount" component={MyAccount} />
+        <Stack.Screen name="SubCategoryMain" component={SubCategoryMain} />
+        <Stack.Screen name="Products" component={Products} />
       </Stack.Navigator>
     </View>
   );
