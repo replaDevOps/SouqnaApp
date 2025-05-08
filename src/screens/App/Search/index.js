@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unstable-nested-components */
 import React, {useCallback, useEffect, useState} from 'react';
 import {RefreshControl, ScrollView, StatusBar, View} from 'react-native';
 import SearchHeader from '../../../components/Headers/SearchHeader';

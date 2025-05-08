@@ -1,19 +1,59 @@
-import { View, Text, Dimensions, TouchableOpacity, StyleSheet, Image } from 'react-native';
-import React, { useState } from 'react';
-import { colors } from '../../util/color';
-import { mvs } from '../../util/metrices';
-import { OffSVG, PowerOffSVG, SouqnaLogo } from '../../assets/svg';
+import {
+  View,
+  Text,
+  Dimensions,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+  Animated,
+} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {colors} from '../../util/color';
+import {mvs} from '../../util/metrices';
+import {OffSVG, PowerOffSVG, SouqnaLogo} from '../../assets/svg';
 import OnSVG from '../../assets/svg/OnSVG';
-import { t } from 'i18next';
+import {t} from 'i18next';
+import {useDispatch, useSelector} from 'react-redux';
+import {setRole} from '../../redux/slices/userSlice';
+import {Snackbar} from 'react-native-paper';
+import {useNavigation} from '@react-navigation/native';
 
-const { height } = Dimensions.get('window');
+const {height} = Dimensions.get('window');
 const headerHeight = height * 0.28;
 
-export default function ProfileHeader({ OnPressLogout }) {
-  const [isSellerOn, setIsSellerOn] = useState(true);
+export default function ProfileHeader({OnPressLogout}) {
+  const [isSellerOn, setIsSellerOn] = useState(role === '2' || role === 2); // Initialize based on role
+
+  const [snackbarVisible, setSnackbarVisible] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const {role} = useSelector(state => state.user);
+  const [fadeAnim] = useState(new Animated.Value(1));
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    setIsSellerOn(role === '2' || role === 2); // Update seller mode on role change
+  }, [role]);
 
   const toggleSellerMode = () => {
-    setIsSellerOn(prev => !prev);
+    const message = isSellerOn
+      ? t('Logged out as seller')
+      : t('Logged out as buyer');
+    setSnackbarMessage(message);
+    setSnackbarVisible(true);
+
+    // Fade-out animation
+    Animated.timing(fadeAnim, {
+      toValue: 0,
+      duration: 1000,
+      useNativeDriver: true,
+    }).start();
+
+    // Call logout function and navigate to Login screen after animation
+    OnPressLogout();
+
+    setTimeout(() => {
+      navigation.navigate('Login');
+    }, 1000); // Delay navigation until snackbar fade-out finishes
   };
 
   return (
@@ -23,12 +63,13 @@ export default function ProfileHeader({ OnPressLogout }) {
       </TouchableOpacity>
 
       {/* <View style={styles.logoRow}> */}
-        <View style={styles.logoWrapper}>
-          {/* <SouqnaLogo width={mvs(50)} height={mvs(50)} /> */}
-          <Image source={require('../../assets/img/logo1.png')} style={styles.logo} />
-        </View>
-        {/* <Text style={styles.appTitle}>{t('Souqna App')}</Text> */}
-      {/* </View> */}
+      <View style={styles.logoWrapper}>
+        {/* <SouqnaLogo width={mvs(50)} height={mvs(50)} /> */}
+        <Image
+          source={require('../../assets/img/logo1.png')}
+          style={styles.logo}
+        />
+      </View>
 
       <View style={styles.sellerContainer}>
         <Text style={styles.sellerText}>{t('Seller Account')}</Text>
@@ -40,6 +81,16 @@ export default function ProfileHeader({ OnPressLogout }) {
           )}
         </TouchableOpacity>
       </View>
+      <Snackbar
+        visible={snackbarVisible}
+        onDismiss={() => setSnackbarVisible(false)}
+        duration={Snackbar.DURATION_LONG} // Adjusted duration for better visibility
+        action={{
+          label: 'Dismiss',
+          onPress: () => setSnackbarVisible(false),
+        }}>
+        {snackbarMessage}
+      </Snackbar>
     </View>
   );
 }
@@ -61,7 +112,7 @@ const styles = StyleSheet.create({
   },
   logoRow: {
     alignItems: 'center',
-    justifyContent:'center',
+    justifyContent: 'center',
   },
   logoWrapper: {
     // backgroundColor: '#e1e1e1',
@@ -94,12 +145,12 @@ const styles = StyleSheet.create({
   },
   sellerText: {
     color: colors.black,
-    fontWeight:'bold',
+    fontWeight: 'bold',
     fontSize: mvs(20),
   },
-  logo:{
+  logo: {
     width: mvs(100),
     height: mvs(90),
-    resizeMode:'cover'
-  }
+    resizeMode: 'cover',
+  },
 });

@@ -39,7 +39,7 @@ const MyTabs = () => {
 
   useEffect(() => {
     console.log('TOKEN: ', token);
-  }, [token]); // This will log the token every time it changes.
+  }, [token]);
 
   const handleLoginSuccess = () => {
     setIsModalVisible(false);
@@ -47,8 +47,8 @@ const MyTabs = () => {
 
   const handleTabPress = (e, route, navigation) => {
     if (!token) {
-      e.preventDefault(); // Prevent navigation if not logged in
-      setIsModalVisible(true); // Show the modal if not logged in
+      e.preventDefault();
+      setIsModalVisible(true);
     } else {
       navigation.navigate(route.name);
     }
@@ -77,7 +77,7 @@ const MyTabs = () => {
   };
 
   const renderTabs = () => {
-    if (role === 2) {
+    if (role == 2) {
       // Seller: Home, Inbox, Advertise, Profile
       return (
         <>
@@ -112,7 +112,7 @@ const MyTabs = () => {
           />
         </>
       );
-    } else if (role === 3) {
+    } else if (role == 3) {
       // Buyer: Home, Inbox, Favourites, Cart, Profile
       return (
         <>
@@ -187,6 +187,7 @@ const MyTabs = () => {
   return (
     <View style={{flex: 1}}>
       <Tab.Navigator
+        key={role}
         screenOptions={({route}) => ({
           headerShown: false,
           tabBarShowLabel: false,
