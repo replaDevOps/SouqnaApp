@@ -37,6 +37,7 @@ const ProductDetail = () => {
   const {token, role} = useSelector(state => state.user);
   const route = useRoute();
   const {productId} = route.params;
+  const [chatLoading, setChatLoading] = useState(false);
   const [addingToCart, setAddingToCart] = useState(false);
   const [showAddedSnackbar, setShowAddedSnackbar] = useState(false);
   const [product, setProduct] = useState(null);
@@ -103,6 +104,18 @@ const ProductDetail = () => {
   const onClose = () => {
     setIsModalVisible(false);
     setLikedItems(false);
+  };
+
+  const handleChatPress = async () => {
+    setChatLoading(true);
+    try {
+      navigation.navigate('Chat');
+      // Add any async logic here (e.g., analytics, logging, or a backend API call)
+    } catch (error) {
+      console.error('Failed to initiate chat:', error);
+    } finally {
+      setChatLoading(false);
+    }
   };
 
   const handleBuyPress = async () => {
@@ -225,7 +238,12 @@ const ProductDetail = () => {
               productLink={product.productLink}
             />
           </ScrollView>
-          <ProductFooter loading={addingToCart} onBuyPress={handleBuyPress} />
+          <ProductFooter
+            loadingBuy={addingToCart}
+            loadingChat={chatLoading}
+            onBuyPress={handleBuyPress}
+            onChatPress={handleChatPress}
+          />
           {isModalVisible && <AddModal onClose={onClose} />}
         </>
       )}
