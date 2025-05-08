@@ -28,6 +28,7 @@ import Icon from 'react-native-vector-icons/Feather';
 import PlusSvg from '../../assets/svg/plussvg';
 import Chat from '../../screens/App/Chat';
 import Notification from '../../screens/App/Notification/index';
+import InboxScreen from '../../screens/App/Inbox';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -83,7 +84,7 @@ const MyTabs = () => {
           <Tab.Screen name="Search" component={SearchScreen} />
           <Tab.Screen
             name="Inbox"
-            component={Chat}
+            component={InboxScreen}
             listeners={({navigation, route}) => ({
               tabPress: e => handleTabPress(e, route, navigation),
             })}

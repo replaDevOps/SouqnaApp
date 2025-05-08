@@ -9,11 +9,22 @@ import {
 import {mvs} from '../../util/metrices';
 import {colors} from '../../util/color';
 import {CartSVG, ChatSVG} from '../../assets/svg';
+import { useNavigation } from '@react-navigation/native';
+
 
 const ProductFooter = ({onBuyPress, loading}) => {
+  const navigation = useNavigation();
   return (
     <View style={styles.footerContainer}>
       <View style={styles.buttonRow}>
+        <TouchableOpacity style={[styles.buyButton]} onPress={()=>navigation.navigate('Chat')}>
+          <ChatSVG width={24} height={24} />
+          {loading ? (
+            <ActivityIndicator size="small" color={colors.green} />
+          ) : (
+            <Text style={styles.buttonText}>Chat with Selleer</Text> 
+          )}
+        </TouchableOpacity>
         <TouchableOpacity style={[styles.buyButton]} onPress={onBuyPress}>
           <CartSVG width={24} height={24} />
           {loading ? (
