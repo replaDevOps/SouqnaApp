@@ -267,11 +267,15 @@ const SearchScreen = () => {
 
         <CategorySection categories={apiCategories} />
 
-        <GalleryContainer onProductSelect={navigateToProductDetails} />
+        <GalleryContainer
+          onProductSelect={navigateToProductDetails}
+          // refreshing={refreshing}
+          onRefresh={onRefresh}
+        />
         <RecommendedSection
           products={allRecommendedProducts}
           loadMoreProducts={loadMoreRecommendedProducts}
-          loading={loading}
+          onRefresh={onRefresh}
           isEndOfResults={isEndOfResults}
           likedItems={likedItems}
           handleHeartClick={handleHeartClick}
