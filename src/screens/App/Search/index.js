@@ -19,6 +19,7 @@ import axios from 'axios';
 import {setVerificationStatus} from '../../../redux/slices/userSlice';
 import {useTranslation} from 'react-i18next';
 import LogoHeader from '../../../components/Structure/Search/Header/LogoHeader';
+import {Snackbar} from 'react-native-paper';
 
 const SearchScreen = () => {
   const [likedItems, setLikedItems] = useState({});
@@ -40,6 +41,13 @@ const SearchScreen = () => {
   const isFocused = useIsFocused();
   const [hasFetchedVerification, setHasFetchedVerification] = useState(false);
   const {t} = useTranslation();
+  const [snackbarVisible, setSnackbarVisible] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+
+  const showSnackbar = message => {
+    setSnackbarMessage(message);
+    setSnackbarVisible(true);
+  };
 
   useEffect(() => {
     if (role === 3) return;
@@ -177,6 +185,11 @@ const SearchScreen = () => {
   };
 
   const handleHeartClick = (id, product) => {
+    if (role === 2) {
+      showSnackbar('Log in as buyer');
+      return;
+    }
+
     if (likedItems[id]) {
       // If the product is already in the favorites, remove it
       dispatch(removeFavorite(product));
@@ -290,6 +303,16 @@ const SearchScreen = () => {
         onSkip={handleSkipVerification}
         onClose={() => setModalVisible(false)}
       />
+      <Snackbar
+        visible={snackbarVisible}
+        onDismiss={() => setSnackbarVisible(false)}
+        duration={3000}
+        action={{
+          label: 'OK',
+          onPress: () => setSnackbarVisible(false),
+        }}>
+        {snackbarMessage}
+      </Snackbar>
     </View>
   );
 };

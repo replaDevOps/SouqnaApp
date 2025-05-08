@@ -38,31 +38,6 @@ const Chat = () => {
         isSystem: true,
       },
     ]);
-
-    // // Add keyboard listeners with explicit height detection for Android
-    // const keyboardDidShowListener = Keyboard.addListener(
-    //   'keyboardDidShow',
-    //   (e) => {
-    //     const keyboardHeight = e.endCoordinates.height;
-    //     setKeyboardHeight(keyboardHeight);
-    //     setKeyboardVisible(true);
-    //     scrollToBottom();
-    //   }
-    // );
-
-    // const keyboardDidHideListener = Keyboard.addListener(
-    //   'keyboardDidHide',
-    //   () => {
-    //     setKeyboardHeight(0);
-    //     setKeyboardVisible(false);
-    //   }
-    // );
-
-    // // Cleanup function
-    // return () => {
-    //   keyboardDidShowListener.remove();
-    //   keyboardDidHideListener.remove();
-    // };
   }, []);
 
   // Scroll to bottom whenever messages change
