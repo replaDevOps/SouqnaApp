@@ -1,13 +1,25 @@
-import React, { useEffect, useState } from 'react';
-import { FlatList, Image, Text, TextInput, TouchableOpacity, View, ScrollView, ActivityIndicator } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import React, {useEffect, useState} from 'react';
+import {
+  FlatList,
+  Image,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+  ScrollView,
+  ActivityIndicator,
+  StatusBar,
+} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 import SearchSvg from '../../../assets/svg/SearchSVG';
-import { CloseSvg } from '../../../assets/svg';
+import {CloseSvg} from '../../../assets/svg';
 import styles from './styles';
-import { colors } from '../../../util/color';
-import { mvs } from '../../../util/metrices';
+import {colors} from '../../../util/color';
+import {mvs} from '../../../util/metrices';
+import MainHeader from '../../../components/Headers/MainHeader';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
-const dummyMessages = Array.from({ length: 15 }, (_, i) => ({
+const dummyMessages = Array.from({length: 15}, (_, i) => ({
   id: i.toString(),
   name: `John Doe ${i + 1}`,
   message: `This is message number ${i + 1}`,
@@ -27,7 +39,7 @@ const InboxScreen = () => {
     setShowLocationIcon(false);
   };
 
-  const onSearch = (query) => {
+  const onSearch = query => {
     console.log('Searching for:', query);
   };
 
@@ -42,10 +54,15 @@ const InboxScreen = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  const renderItem = ({ item }) => (
-    <TouchableOpacity onPress={() => navigation.navigate('Chat', {userName: 'John Doe'})} style={styles.messageContainer}>
+  const renderItem = ({item}) => (
+    <TouchableOpacity
+      onPress={() => navigation.navigate('Chat', {userName: item.name})}
+      style={styles.messageContainer}>
       <View style={styles.messageHeader}>
-        <Image source={require('../../../assets/img/profile.png')} style={styles.profileImage} />
+        <Image
+          source={require('../../../assets/img/profile.png')}
+          style={styles.profileImage}
+        />
         <View style={styles.messageHeaderInfo}>
           <Text style={styles.senderName}>{item.name}</Text>
           <Text style={styles.messageText}>{item.message}</Text>
@@ -61,8 +78,12 @@ const InboxScreen = () => {
   );
 
   return (
-    <ScrollView style={{flex:1,backgroundColor:'#fbfbfb',paddingBottom:mvs(40)}}>
-      <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="dark-content" />
+
+      <ScrollView
+        style={{flex: 1, backgroundColor: '#fbfbfb', paddingBottom: mvs(40)}}>
+        <MainHeader title={'Messages'} />
         {/* Search Bar */}
         <View style={styles.searchBarContainer}>
           <TouchableOpacity style={styles.icon}>
@@ -85,33 +106,41 @@ const InboxScreen = () => {
           />
 
           {searchText.length > 0 && (
-            <TouchableOpacity onPress={handleClearText} style={styles.notificationIcon}>
+            <TouchableOpacity
+              onPress={handleClearText}
+              style={styles.notificationIcon}>
               <CloseSvg width={13} height={13} />
             </TouchableOpacity>
           )}
         </View>
-      </View>
 
-      {/* Messages */}
-      <View style={styles.messagesWrapper}>
-        <Text style={styles.header}>Messages</Text>
+        {/* Messages */}
+        <View style={styles.messagesWrapper}>
+          <Text style={styles.header}>Messages</Text>
 
-        {isLoading ? (
-          // Skeleton Loader Placeholder
-          Array.from({ length: 6 }).map((_, index) => (
-            <View key={index} style={[styles.messageContainer, { opacity: 0.3, backgroundColor: '#e0e0e0' }]} />
-          ))
-        ) : (
-          <FlatList
-            data={dummyMessages}
-            keyExtractor={(item) => item.id}
-            renderItem={renderItem}
-            contentContainerStyle={{ gap: 12 }}
-            showsVerticalScrollIndicator={false}
-          />
-        )}
-      </View>
-    </ScrollView>
+          {isLoading ? (
+            // Skeleton Loader Placeholder
+            Array.from({length: 6}).map((_, index) => (
+              <View
+                key={index}
+                style={[
+                  styles.messageContainer,
+                  {opacity: 0.3, backgroundColor: '#e0e0e0'},
+                ]}
+              />
+            ))
+          ) : (
+            <FlatList
+              data={dummyMessages}
+              keyExtractor={item => item.id}
+              renderItem={renderItem}
+              contentContainerStyle={{gap: 12}}
+              showsVerticalScrollIndicator={false}
+            />
+          )}
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 

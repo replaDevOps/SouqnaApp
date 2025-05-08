@@ -119,7 +119,7 @@ const MyTabs = () => {
           <Tab.Screen name="Search" component={SearchScreen} />
           <Tab.Screen
             name="Inbox"
-            component={Chat}
+            component={InboxScreen}
             listeners={({navigation, route}) => ({
               tabPress: e => handleTabPress(e, route, navigation),
             })}
