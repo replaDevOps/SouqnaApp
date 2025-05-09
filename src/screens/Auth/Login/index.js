@@ -80,7 +80,7 @@ const LoginScreen = () => {
         }
         console.log('Login successful:', user);
 
-        navigation.replace('Home');
+        navigation.replace('MainTabs');
       } else {
         showErrorMessage();
       }

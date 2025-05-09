@@ -24,7 +24,7 @@ import PrimaryPasswordInput from '../../../components/atoms/InputFields/PrimaryP
 import CustomSwitch from '../../../components/atoms/InputFields/CustomSwitch';
 import {MyButton} from '../../../components/atoms/InputFields/MyButton';
 import API from '../../../api/apiServices';
-import { mvs } from '../../../util/metrices';
+import {mvs} from '../../../util/metrices';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // import {setRole} from '../../../redux/slices/userSlice';
@@ -41,7 +41,7 @@ const Register = () => {
   const profileNameOpacity = useRef(new Animated.Value(0)).current;
   // const dispatch = useDispatch();
   const navigation = useNavigation();
-  
+
   const handleRegister = async () => {
     console.log('Register button pressed');
     if (!isEmailValid(email)) {
@@ -62,9 +62,9 @@ const Register = () => {
       alert('Please provide a profile name for your Seller account');
       return;
     }
-    
+
     const storedFcmToken = await AsyncStorage.getItem('fcmToken');
-    console.log("Stored FCM Token: ", storedFcmToken);
+    console.log('Stored FCM Token: ', storedFcmToken);
 
     const payload = {
       name: selectedOption === 'Seller' ? profilename : 'Buyer',
@@ -74,7 +74,7 @@ const Register = () => {
       fcm: storedFcmToken,
     };
 
-    console.log("Payload: ", payload); // Log the payload being sent to the API
+    console.log('Payload: ', payload); // Log the payload being sent to the API
 
     try {
       const response = await API.post('register', payload);
@@ -88,7 +88,10 @@ const Register = () => {
         alert(data.message || 'Registration failed. Please try again.');
       }
     } catch (error) {
-      console.error('Registration Error:', error?.response?.data || error.message);
+      console.error(
+        'Registration Error:',
+        error?.response?.data || error.message,
+      );
       alert(
         error?.response?.data?.message ||
           'An error occurred during registration. Please try again.',
@@ -96,14 +99,13 @@ const Register = () => {
     }
   };
 
-
   const isEmailValid = email => {
     const emailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/;
     const isValid = emailRegex.test(email);
     console.log('Email validation result: ', isValid, email); // Add a console log here
     return isValid;
   };
-  
+
   const isPasswordValid = password => {
     const isValid = password.length >= 8;
     console.log('Password validation result: ', isValid, password); // Add a console log here
@@ -140,7 +142,10 @@ const Register = () => {
         title={'Help'}
       />
       <View style={styles.HeaderContainer}>
-        <Image source={require('../../../assets/img/logo1.png')} style={{width:mvs(50),height:mvs(50)}} />
+        <Image
+          source={require('../../../assets/img/logo1.png')}
+          style={{width: mvs(50), height: mvs(50)}}
+        />
         <Bold style={styles.title}>Souqna</Bold>
       </View>
       <Bold style={styles.howText}>How do you want to use Souqna?</Bold>
@@ -198,7 +203,6 @@ const Register = () => {
 
       <View style={styles.buttonContainer}>
         <MyButton
-        
           title="Register For Free"
           onPress={handleRegister}
           disabled={!email || !password} // Disable button if form is not valid

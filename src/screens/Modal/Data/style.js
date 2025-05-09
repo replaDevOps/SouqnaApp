@@ -3,6 +3,9 @@ import {colors} from '../../../util/color';
 import {mvs} from '../../../util/metrices';
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
   menuContainer: {
     justifyContent: 'center',
     paddingHorizontal: mvs(10),

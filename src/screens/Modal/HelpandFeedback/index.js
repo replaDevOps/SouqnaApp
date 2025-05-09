@@ -1,9 +1,10 @@
-import {Text, TouchableOpacity, View} from 'react-native';
+import {StatusBar, Text, TouchableOpacity, View} from 'react-native';
 import React from 'react';
 import {useNavigation} from '@react-navigation/native';
 import ModalHeader from '../../../components/Headers/ModalHeader';
 import {OpenSVG} from '../../../assets/svg';
 import styles from './style';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const HelpScreen = () => {
   const navigation = useNavigation();
@@ -11,7 +12,8 @@ const HelpScreen = () => {
     navigation.goBack();
   };
   return (
-    <View>
+    <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="dark-content" />
       <ModalHeader title="Help and Feedback" onBack={handleBack} />
       <View style={styles.menuContainer}>
         <TouchableOpacity
@@ -29,7 +31,7 @@ const HelpScreen = () => {
           <Text style={styles.menuText}>Give us Feedback</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 

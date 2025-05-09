@@ -180,11 +180,34 @@ export const placeOrder = async (orderData, token) => {
 
     return response.data;
   } catch (error) {
-    console.error('Error placing order:', error?.response?.data || error.message);
+    console.error(
+      'Error placing order:',
+      error?.response?.data || error.message,
+    );
     return null;
   }
 };
 
+const sendPushNotification = async (title, body, receiverToken) => {
+  try {
+    const res = await axios.post(
+      'https://your-backend.com/api/send-notification',
+      {
+        title,
+        body,
+        token: receiverToken, // or userId, depending on backend design
+      },
+    );
+
+    if (res.data.success) {
+      console.log('Notification sent!');
+    } else {
+      console.warn('Notification failed:', res.data.message);
+    }
+  } catch (err) {
+    console.error('Error sending push notification:', err);
+  }
+};
 
 API.interceptors.request.use(
   async config => {
