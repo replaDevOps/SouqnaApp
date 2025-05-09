@@ -32,6 +32,7 @@ build/
 .idea
 .gradle
 local.properties
+gradle.properties
 .env.gradle
 *.iml
 *.hprof

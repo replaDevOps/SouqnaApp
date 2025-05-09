@@ -68,6 +68,8 @@ android {
 
     namespace "com.souqnaapp"
     defaultConfig {
+    manifestPlaceholders = [GOOGLE_PLACES_API_KEY: project.GOOGLE_PLACES_API_KEY ?: ""]
+
         applicationId "com.souqnaapp"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
