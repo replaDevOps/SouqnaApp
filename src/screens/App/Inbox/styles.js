@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     fontWeight: '600', // Lighter font weight for smaller screens
   },
   messagesWrapper: {
-    marginHorizontal: mvs(14),
+    // marginHorizontal: mvs(14),
   },
   messageContainer: {
     shadowColor: '#000',

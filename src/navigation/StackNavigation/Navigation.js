@@ -23,6 +23,7 @@ import SubCategoryMain from '../../screens/App/SubCategoryMain';
 import Products from '../../screens/App/Products';
 import Chat from '../../screens/App/Chat';
 import InboxScreen from '../../screens/App/Inbox';
+import CheckoutScreen from '../../screens/Checkout';
 
 const Stack = createStackNavigator();
 
@@ -66,7 +67,8 @@ const AppNavigator = () => {
             headerShown: true
           })}
         />
-        <Stack.Screen name="Inbox" component={InboxScreen} options={{ headerShown: true }} />
+        <Stack.Screen name="Inbox" component={InboxScreen}  />
+        <Stack.Screen name="Checkout" component={CheckoutScreen} />
       </Stack.Navigator>
     </View>
   );

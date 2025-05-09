@@ -26,6 +26,7 @@ import {Snackbar} from 'react-native-paper';
 import {mvs} from '../../../util/metrices';
 import debounce from 'lodash/debounce'; // npm install lodash
 import {useSelector} from 'react-redux';
+import PaymentModal from '../../../components/Modals/PaymentModal';
 
 export default function CartScreen() {
   const [cartData, setCartData] = useState([]);
@@ -35,6 +36,7 @@ export default function CartScreen() {
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const updateQtyRef = useRef({});
+  const navigation = useNavigation();
   const stockMap = useSelector(state => state.cart.items);
   const getStockForItem = productId => {
     const item = stockMap.find(item => item.id === productId);
@@ -48,6 +50,20 @@ export default function CartScreen() {
   const deliveryCharge = 50;
   const discount = 0;
   const total = subTotal + deliveryCharge - discount;
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('');
+
+  const handleOpenModal = () => {
+    setModalVisible(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalVisible(false);
+  };
+
+  const handleSelectPaymentMethod = (method) => {
+    setSelectedPaymentMethod(method);
+  };
 
   const loadCartItems = async () => {
     let allItems = [];
@@ -146,12 +162,16 @@ export default function CartScreen() {
     }
   };
 
+  // const handlePlaceOrder = (handleOrderSubmit) => {
+  //   navigation.navigate('Checkout', {
+  //     onSubmit: handleOrderSubmit, // Pass it as param
+  //   });
+  // };
+
   const handlePlaceOrder = () => {
-    // // no Redux clearCart
-    // dispatch(clearCart());
-    setCartData([]);
-    // navigation.navigate('OrderCompleted');
+handleOpenModal(true)
   };
+  
 
   const getImageSource = imageData => {
     if (!imageData) return {uri: 'fallback_image_url_here'};
@@ -256,7 +276,7 @@ export default function CartScreen() {
               <TouchableOpacity
                 onPress={handlePlaceOrder}
                 style={styles.placeOrderButton}>
-                <Text style={styles.placeOrderText}>{t('placeOrder')}</Text>
+                <Text style={styles.placeOrderText}>{t('checkout')}</Text>
               </TouchableOpacity>
             </View>
           </ImageBackground>
@@ -279,6 +299,11 @@ export default function CartScreen() {
         }}>
         {snackbarMessage}
       </Snackbar>
+      <PaymentModal
+        visible={isModalVisible}
+        onClose={handleCloseModal}
+        onSelectPaymentMethod={handleSelectPaymentMethod}
+      />
     </SafeAreaView>
   );
 }

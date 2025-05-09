@@ -169,6 +169,23 @@ export const fetchProductsBySubCategory = async subCategoryId => {
   }
 };
 
+export const placeOrder = async (orderData, token) => {
+  try {
+    const response = await API.post('placeOrder', orderData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error('Error placing order:', error?.response?.data || error.message);
+    return null;
+  }
+};
+
+
 API.interceptors.request.use(
   async config => {
     // Example: Get token from AsyncStorage if needed

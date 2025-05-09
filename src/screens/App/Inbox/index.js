@@ -127,7 +127,7 @@ const InboxScreen = () => {
               data={dummyMessages}
               keyExtractor={item => item.id}
               renderItem={renderItem}
-              contentContainerStyle={{gap: 12}}
+              contentContainerStyle={{gap: 15,  marginHorizontal: mvs(14),}}
               showsVerticalScrollIndicator={false}
             />
           )}

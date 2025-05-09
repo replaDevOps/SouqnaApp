@@ -94,6 +94,7 @@
   "discount": "Discount",
   "total": "Total",
   "placeOrder": "Place My Order",
+  "checkout" : "Checkout",
   "titleNotification": "Notifications",
   "newOffer": "New Offer",
   "offerDescription": "You've received a new offer!",
