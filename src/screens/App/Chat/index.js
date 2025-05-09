@@ -38,7 +38,6 @@ const Chat = () => {
         isSystem: true,
       },
     ]);
-
     // Set up keyboard event listeners
     const keyboardWillShowListener = Platform.OS === 'ios' ? 
       Keyboard.addListener('keyboardWillShow', detectKeyboardBehavior) : null;
@@ -61,6 +60,7 @@ const Chat = () => {
       keyboardDidShowListener.remove();
       keyboardDidHideListener.remove();
     };
+
   }, []);
 
   // Function to detect keyboard behavior and determine if it's floating or pushing content

@@ -51,9 +51,9 @@ export default function ProfileHeader({OnPressLogout}) {
     // Call logout function and navigate to Login screen after animation
     OnPressLogout();
 
-    setTimeout(() => {
-      navigation.navigate('Login');
-    }, 1000); // Delay navigation until snackbar fade-out finishes
+    // setTimeout(() => {
+    navigation.replace('Login');
+    // }, 1000); // Delay navigation until snackbar fade-out finishes
   };
 
   return (
