@@ -1,12 +1,20 @@
-import React, { useState } from 'react';
-import { Modal, View, Text, StyleSheet, TouchableOpacity, Alert, Linking } from 'react-native';
-import { RadioButton } from 'react-native-paper';
-import { CloseSvg } from '../../assets/svg';
-import { placeOrder } from '../../api/apiServices';
-import { useSelector } from 'react-redux';
-import { colors } from '../../util/color';
+import React, {useState} from 'react';
+import {
+  Modal,
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Alert,
+  Linking,
+} from 'react-native';
+import {RadioButton} from 'react-native-paper';
+import {CloseSvg} from '../../assets/svg';
+import {placeOrder} from '../../api/apiServices';
+import {useSelector} from 'react-redux';
+import {colors} from '../../util/color';
 
-const PaymentModal = ({ visible, onClose, onSelectPaymentMethod }) => {
+const PaymentModal = ({visible, onClose, onSelectPaymentMethod}) => {
   const {token} = useSelector(state => state.user);
   const [loading, setLoading] = useState(false);
   const [selectedMethod, setSelectedMethod] = useState('CARD');
@@ -15,7 +23,7 @@ const PaymentModal = ({ visible, onClose, onSelectPaymentMethod }) => {
     setLoading(true);
     try {
       const orderPayload = {
-        paymentType:selectedMethod === 'CARD' ? 1 : 2,
+        paymentType: selectedMethod === 'CARD' ? 1 : 2,
       };
 
       const result = await placeOrder(orderPayload, token);
@@ -43,28 +51,33 @@ const PaymentModal = ({ visible, onClose, onSelectPaymentMethod }) => {
     setLoading(false);
   };
 
-  const handleSelectPaymentMethod = (value) => {
+  const handleSelectPaymentMethod = value => {
     setSelectedMethod(value);
     if (onSelectPaymentMethod) {
       onSelectPaymentMethod(value); // Optional callback for parent component
     }
   };
-  
 
   return (
-    <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
+    <Modal
+      visible={visible}
+      transparent
+      animationType="fade"
+      onRequestClose={onClose}>
       <View style={styles.overlay}>
         <View style={styles.container}>
-        <TouchableOpacity onPress={onClose} style={styles.closeButton}>
+          <TouchableOpacity onPress={onClose} style={styles.closeButton}>
             <CloseSvg />
           </TouchableOpacity>
           <Text style={styles.title}>Select Payment Method</Text>
 
           <View>
             <TouchableOpacity
-              style={[styles.option, selectedMethod === 'CARD' && styles.selectedOption]} // Apply selected style
-              onPress={() => handleSelectPaymentMethod('CARD')}
-            >
+              style={[
+                styles.option,
+                selectedMethod === 'CARD' && styles.selectedOption,
+              ]} // Apply selected style
+              onPress={() => handleSelectPaymentMethod('CARD')}>
               <RadioButton
                 value="CARD"
                 color={colors.green}
@@ -74,9 +87,11 @@ const PaymentModal = ({ visible, onClose, onSelectPaymentMethod }) => {
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={[styles.option, selectedMethod === 'COD' && styles.selectedOption]} // Apply selected style
-              onPress={() => handleSelectPaymentMethod('COD')}
-            >
+              style={[
+                styles.option,
+                selectedMethod === 'COD' && styles.selectedOption,
+              ]} // Apply selected style
+              onPress={() => handleSelectPaymentMethod('COD')}>
               <RadioButton
                 value="COD"
                 color={colors.green}
@@ -87,7 +102,9 @@ const PaymentModal = ({ visible, onClose, onSelectPaymentMethod }) => {
           </View>
 
           <TouchableOpacity onPress={handleOrderSubmit} style={styles.button}>
-          <Text style={styles.buttonText}>{loading ? 'Processing...' : 'Confirm'}</Text>
+            <Text style={styles.buttonText}>
+              {loading ? 'Processing...' : 'Confirm'}
+            </Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -96,11 +113,22 @@ const PaymentModal = ({ visible, onClose, onSelectPaymentMethod }) => {
 };
 
 const styles = StyleSheet.create({
-  overlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center', alignItems: 'center' },
-  container: { width: '90%',height: '30%', backgroundColor: 'white', borderRadius: 10, padding: 20 },
-  title: { fontSize: 18, fontWeight: 'bold', marginBottom: 15 },
-  option: { flexDirection: 'row', alignItems: 'center', marginBottom: 10 },
-  label: { fontSize: 16 },
+  overlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  container: {
+    width: '90%',
+    height: '30%',
+    backgroundColor: 'white',
+    borderRadius: 10,
+    padding: 20,
+  },
+  title: {fontSize: 18, fontWeight: 'bold', marginBottom: 15},
+  option: {flexDirection: 'row', alignItems: 'center', marginVertical: 10},
+  label: {fontSize: 16},
   closeButton: {
     position: 'absolute',
     right: 10,
@@ -108,8 +136,14 @@ const styles = StyleSheet.create({
     zIndex: 1,
     padding: 5,
   },
-  button: { marginTop: 30, backgroundColor: colors.green, padding: 10, borderRadius: 5, alignItems: 'center' },
-  buttonText: { color: 'white', fontWeight: 'bold' },
+  button: {
+    marginTop: 50,
+    backgroundColor: colors.green,
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  buttonText: {color: 'white', fontWeight: 'bold'},
 });
 
 export default PaymentModal;

@@ -1,6 +1,8 @@
+import config from './util/config';
+
 // firebaseConfig.js
 export const firebaseConfig = {
-  apiKey: 'AIzaSyCOFSK5GhT4dG0yNinE-0JRj4ofWMDoQEs',
+  apiKey: config.GOOGLE_API_KEY,
   authDomain: 'shujat-eecf2.firebaseapp.com',
   projectId: 'shujat-eecf2',
   storageBucket: 'shujat-eecf2.firebasestorage.app',
