@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import {
   Text,
   TextInput,
@@ -21,7 +22,7 @@ import {MyButton} from '../../../../components/atoms/InputFields/MyButton';
 import {colors} from '../../../../util/color';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {mvs} from '../../../../util/metrices';
-import {SearchSVG, UploadSVG} from '../../../../assets/svg';
+import {UploadSVG} from '../../../../assets/svg';
 import GooglePlacesSuggestion from '../../../../components/GooglePlacesSuggestion';
 import {useTranslation} from 'react-i18next';
 

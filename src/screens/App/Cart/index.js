@@ -1,3 +1,5 @@
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable no-shadow */
 import {
   View,
   Text,
@@ -12,9 +14,6 @@ import React, {useCallback, useEffect, useRef, useState} from 'react';
 import MainHeader from '../../../components/Headers/MainHeader';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import styles from './styles';
-// import {useDispatch, useSelector} from 'react-redux';
-import {useNavigation} from '@react-navigation/native';
-// import {clearCart, updateQuantity} from '../../../redux/slices/cartSlice';
 import {useTranslation} from 'react-i18next';
 import {
   fetchCartItems,
@@ -36,7 +35,6 @@ export default function CartScreen() {
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const updateQtyRef = useRef({});
-  const navigation = useNavigation();
   const stockMap = useSelector(state => state.cart.items);
   const getStockForItem = productId => {
     const item = stockMap.find(item => item.id === productId);
@@ -51,7 +49,7 @@ export default function CartScreen() {
   const discount = 0;
   const total = subTotal + deliveryCharge - discount;
   const [isModalVisible, setModalVisible] = useState(false);
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('');
+  const [setSelectedPaymentMethod] = useState('');
 
   const handleOpenModal = () => {
     setModalVisible(true);
@@ -61,7 +59,7 @@ export default function CartScreen() {
     setModalVisible(false);
   };
 
-  const handleSelectPaymentMethod = (method) => {
+  const handleSelectPaymentMethod = method => {
     setSelectedPaymentMethod(method);
   };
 
@@ -169,14 +167,13 @@ export default function CartScreen() {
   // };
 
   const handlePlaceOrder = () => {
-handleOpenModal(true)
+    handleOpenModal(true);
   };
-  
 
   const getImageSource = imageData => {
-    if (!imageData) return {uri: 'fallback_image_url_here'};
-    if (typeof imageData === 'string') return {uri: imageData};
-    if (imageData.uri) return {uri: imageData.uri};
+    if (!imageData) {return {uri: 'fallback_image_url_here'};}
+    if (typeof imageData === 'string') {return {uri: imageData};}
+    if (imageData.uri) {return {uri: imageData.uri};}
     return {uri: 'fallback_image_url_here'};
   };
 

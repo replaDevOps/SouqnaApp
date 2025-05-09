@@ -1,12 +1,11 @@
 import React from 'react';
-import {View, FlatList, TouchableOpacity, StatusBar, Image} from 'react-native';
+import {View, FlatList, TouchableOpacity, StatusBar} from 'react-native';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import Regular from '../../../typography/RegularText';
 import styles from './style';
 import CategoryHeader from '../../../components/Headers/CategoryHeader';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {ForwardSVG} from '../../../assets/svg';
-import {mvs} from '../../../util/metrices';
 
 const AdvertiseAll = () => {
   const route = useRoute();
