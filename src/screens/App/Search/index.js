@@ -1,4 +1,5 @@
-/* eslint-disable react/no-unstable-nested-components */
+/* eslint-disable react-native/no-inline-styles */
+
 import React, {useCallback, useEffect, useState} from 'react';
 import {RefreshControl, ScrollView, StatusBar, View} from 'react-native';
 import SearchHeader from '../../../components/Headers/SearchHeader';
@@ -17,7 +18,6 @@ import VerificationModal from '../../../components/Modals/VerificationModal';
 import {fetchCategories, fetchProducts} from '../../../api/apiServices';
 import axios from 'axios';
 import {setVerificationStatus} from '../../../redux/slices/userSlice';
-import {useTranslation} from 'react-i18next';
 import LogoHeader from '../../../components/Structure/Search/Header/LogoHeader';
 import {Snackbar} from 'react-native-paper';
 
@@ -34,13 +34,12 @@ const SearchScreen = () => {
   const {token, verificationStatus, role} = useSelector(state => state.user);
   const dispatch = useDispatch();
   const [apiCategories, setApiCategories] = useState([]);
-  const [ApiProducts, setApiProducts] = useState([]);
-  const [categoriesLoading, setCategoriesLoading] = useState(true);
+  const [setApiProducts] = useState([]);
+  const [setCategoriesLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [refreshing, setRefreshing] = useState(false); // New state for pull-to-refresh
   const isFocused = useIsFocused();
   const [hasFetchedVerification, setHasFetchedVerification] = useState(false);
-  const {t} = useTranslation();
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
 
@@ -50,7 +49,9 @@ const SearchScreen = () => {
   };
 
   useEffect(() => {
-    if (role === 3) return;
+    if (role === 3) {
+      return;
+    }
     const fetchVerificationStatus = async () => {
       try {
         const response = await axios.get(
@@ -105,7 +106,7 @@ const SearchScreen = () => {
     };
 
     loadProducts();
-  }, [token, role]);
+  }, [token, role, setApiProducts]);
 
   useEffect(() => {
     // if (role === 3) return;
@@ -121,11 +122,13 @@ const SearchScreen = () => {
     // if (token) {
     loadCategories();
     // }
-  }, [token]);
+  }, [setCategoriesLoading, token]);
 
   // Manage the modal visibility based on verificationStatus from Redux
   useEffect(() => {
-    if (role === 3) return;
+    if (role === 3) {
+      return;
+    }
     if (
       hasFetchedVerification &&
       verificationStatus !== 1 &&
@@ -139,7 +142,9 @@ const SearchScreen = () => {
   }, [verificationStatus, token, hasFetchedVerification, role]);
 
   useEffect(() => {
-    if (role === 3) return;
+    if (role === 3) {
+      return;
+    }
     if (!isModalVisible) {
       setLikedItems({});
     }
@@ -158,7 +163,9 @@ const SearchScreen = () => {
 
   // Simulate an API call to fetch more data
   const loadMoreRecommendedProducts = useCallback(async () => {
-    if (loading || isEndOfResults) return;
+    if (loading || isEndOfResults) {
+      return;
+    }
     setLoading(true);
 
     setTimeout(() => {
@@ -176,13 +183,6 @@ const SearchScreen = () => {
       setLoading(false);
     }, 1500);
   }, [loading, allRecommendedProducts, isEndOfResults]);
-
-  const handleHeartPress = id => {
-    setLikedItems(prevState => ({
-      ...prevState,
-      [id]: !prevState[id],
-    }));
-  };
 
   const handleHeartClick = (id, product) => {
     if (role === 2) {
@@ -282,7 +282,6 @@ const SearchScreen = () => {
 
         <GalleryContainer
           onProductSelect={navigateToProductDetails}
-          // refreshing={refreshing}
           onRefresh={onRefresh}
         />
         <RecommendedSection

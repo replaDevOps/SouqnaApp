@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 // Navigation.js
 import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';

@@ -1,17 +1,19 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  TextInput, 
-  TouchableOpacity, 
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable no-shadow */
+import React, {useState, useEffect, useRef} from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
   FlatList,
   Platform,
   Keyboard,
   Dimensions,
   KeyboardAvoidingView,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const Chat = () => {
   const [messages, setMessages] = useState([]);
@@ -21,7 +23,6 @@ const Chat = () => {
   const [keyboardHeight, setKeyboardHeight] = useState(0);
   // Track if the device has a keyboard that floats over content vs pushes content
   const [keyboardFloating, setKeyboardFloating] = useState(false);
-  const screenHeight = Dimensions.get('window').height;
 
   useEffect(() => {
     setMessages([
@@ -39,36 +40,39 @@ const Chat = () => {
       },
     ]);
     // Set up keyboard event listeners
-    const keyboardWillShowListener = Platform.OS === 'ios' ? 
-      Keyboard.addListener('keyboardWillShow', detectKeyboardBehavior) : null;
-      
+    const keyboardWillShowListener =
+      Platform.OS === 'ios'
+        ? Keyboard.addListener('keyboardWillShow', detectKeyboardBehavior)
+        : null;
+
     const keyboardDidShowListener = Keyboard.addListener(
       'keyboardDidShow',
-      detectKeyboardBehavior
+      detectKeyboardBehavior,
     );
-    
+
     const keyboardDidHideListener = Keyboard.addListener(
       'keyboardDidHide',
       () => {
         setKeyboardHeight(0);
         setKeyboardVisible(false);
-      }
+      },
     );
 
     return () => {
-      if (keyboardWillShowListener) keyboardWillShowListener.remove();
+      if (keyboardWillShowListener) {
+        keyboardWillShowListener.remove();
+      }
       keyboardDidShowListener.remove();
       keyboardDidHideListener.remove();
     };
-
   }, []);
 
   // Function to detect keyboard behavior and determine if it's floating or pushing content
-  const detectKeyboardBehavior = (e) => {
+  const detectKeyboardBehavior = e => {
     const keyboardHeight = e.endCoordinates.height;
     setKeyboardHeight(keyboardHeight);
     setKeyboardVisible(true);
-    
+
     // Determine if keyboard is floating or pushing content based on platform and version
     // This is a simple check - in a production app you might need more sophisticated detection
     if (Platform.OS === 'android') {
@@ -78,7 +82,7 @@ const Chat = () => {
       // iOS typically pushes content up
       setKeyboardFloating(false);
     }
-    
+
     scrollToBottom();
   };
 
@@ -89,7 +93,7 @@ const Chat = () => {
   const scrollToBottom = () => {
     if (flatListRef.current && messages.length > 0) {
       setTimeout(() => {
-        flatListRef.current.scrollToEnd({ animated: true });
+        flatListRef.current.scrollToEnd({animated: true});
       }, 100);
     }
   };
@@ -114,12 +118,12 @@ const Chat = () => {
         timestamp: new Date(),
         isUser: false,
       };
-      
+
       setMessages(prevMessages => [...prevMessages, responseMessage]);
     }, 1000);
   };
 
-  const renderMessage = ({ item }) => {
+  const renderMessage = ({item}) => {
     if (item.isSystem) {
       return (
         <View style={styles.systemMessageContainer}>
@@ -129,21 +133,31 @@ const Chat = () => {
     }
 
     return (
-      <View style={[
-        styles.messageContainer,
-        item.isUser ? styles.userMessageContainer : styles.agentMessageContainer
-      ]}>
-        <View style={[
-          styles.messageBubble,
-          item.isUser ? styles.userMessageBubble : styles.agentMessageBubble
+      <View
+        style={[
+          styles.messageContainer,
+          item.isUser
+            ? styles.userMessageContainer
+            : styles.agentMessageContainer,
         ]}>
-          <Text style={[
-            styles.messageText,
-            item.isUser ? styles.userMessageText : styles.agentMessageText
-          ]}>{item.text}</Text>
+        <View
+          style={[
+            styles.messageBubble,
+            item.isUser ? styles.userMessageBubble : styles.agentMessageBubble,
+          ]}>
+          <Text
+            style={[
+              styles.messageText,
+              item.isUser ? styles.userMessageText : styles.agentMessageText,
+            ]}>
+            {item.text}
+          </Text>
         </View>
         <Text style={styles.timestamp}>
-          {item.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+          {item.timestamp.toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit',
+          })}
         </Text>
       </View>
     );
@@ -153,13 +167,14 @@ const Chat = () => {
     <SafeAreaView style={styles.safeAreaContainer} edges={['top']}>
       <View style={styles.container}>
         {/* For floating keyboards (mostly Android), we need a dynamic margin */}
-        <View style={[
-          styles.messagesContainer,
-          // Only adjust bottom margin for floating keyboards
-          keyboardFloating && keyboardVisible ? 
-            { marginBottom: keyboardHeight } : 
-            { marginBottom: 70 }
-        ]}>
+        <View
+          style={[
+            styles.messagesContainer,
+            // Only adjust bottom margin for floating keyboards
+            keyboardFloating && keyboardVisible
+              ? {marginBottom: keyboardHeight}
+              : {marginBottom: 70},
+          ]}>
           <FlatList
             ref={flatListRef}
             data={messages}
@@ -168,14 +183,13 @@ const Chat = () => {
             contentContainerStyle={styles.messageList}
           />
         </View>
-        
+
         {/* For pushing keyboards (mostly iOS), use KeyboardAvoidingView */}
         {!keyboardFloating ? (
           <KeyboardAvoidingView
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
             style={styles.keyboardAvoidingView}
-            keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
-          >
+            keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
             <View style={styles.inputContainerWrapper}>
               <View style={styles.inputContainer}>
                 <TextInput
@@ -187,10 +201,9 @@ const Chat = () => {
                   multiline
                   maxHeight={80}
                 />
-                <TouchableOpacity 
+                <TouchableOpacity
                   style={styles.sendButton}
-                  onPress={sendMessage}
-                >
+                  onPress={sendMessage}>
                   <Text style={styles.sendButtonText}>Send</Text>
                 </TouchableOpacity>
               </View>
@@ -198,10 +211,11 @@ const Chat = () => {
           </KeyboardAvoidingView>
         ) : (
           /* For floating keyboards, use absolute positioning with bottom offset */
-          <View style={[
-            styles.inputContainerWrapperFloating,
-            { bottom: keyboardVisible ? keyboardHeight : 0 }
-          ]}>
+          <View
+            style={[
+              styles.inputContainerWrapperFloating,
+              {bottom: keyboardVisible ? keyboardHeight : 0},
+            ]}>
             <View style={styles.inputContainer}>
               <TextInput
                 style={styles.input}
@@ -212,10 +226,7 @@ const Chat = () => {
                 multiline
                 maxHeight={80}
               />
-              <TouchableOpacity 
-                style={styles.sendButton}
-                onPress={sendMessage}
-              >
+              <TouchableOpacity style={styles.sendButton} onPress={sendMessage}>
                 <Text style={styles.sendButtonText}>Send</Text>
               </TouchableOpacity>
             </View>

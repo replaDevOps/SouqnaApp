@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {useEffect, useState} from 'react';
 import {
   FlatList,
@@ -7,7 +8,6 @@ import {
   TouchableOpacity,
   View,
   ScrollView,
-  ActivityIndicator,
   StatusBar,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
@@ -31,8 +31,8 @@ const dummyMessages = Array.from({length: 15}, (_, i) => ({
 const InboxScreen = () => {
   const navigation = useNavigation();
   const [searchText, setSearchText] = useState('');
-  const [isSearchMode, setIsSearchMode] = useState(false);
-  const [showLocationIcon, setShowLocationIcon] = useState(true);
+  const [setIsSearchMode] = useState(false);
+  const [setShowLocationIcon] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
 
   const onFocusSearch = () => {

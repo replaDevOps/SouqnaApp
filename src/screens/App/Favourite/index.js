@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import {View, FlatList, TouchableOpacity, Image, StatusBar} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux'; // Import dispatch
 import MainHeader from '../../../components/Headers/MainHeader';
