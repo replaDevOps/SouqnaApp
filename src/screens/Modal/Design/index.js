@@ -1,9 +1,10 @@
-import {Text, TouchableOpacity, View} from 'react-native';
+import {StatusBar, Text, TouchableOpacity, View} from 'react-native';
 import React, {useState} from 'react';
 import ModalHeader from '../../../components/Headers/ModalHeader';
 import {useNavigation} from '@react-navigation/native';
 import Regular from '../../../typography/RegularText';
 import styles from './style';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const DesignScreen = () => {
   const navigation = useNavigation();
@@ -18,7 +19,8 @@ const DesignScreen = () => {
   };
 
   return (
-    <View>
+    <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="dark-content" />
       <ModalHeader title="Design" onBack={handleBack} />
 
       <View style={styles.menuContainer}>
@@ -61,7 +63,7 @@ const DesignScreen = () => {
           <Text style={styles.menuText}>Light Design</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 

@@ -262,7 +262,7 @@ const ProductDetail = () => {
         action={{
           label: 'View Cart',
           onPress: () => {
-            navigation.navigate('Home', {screen: 'CartScreen'});
+            navigation.navigate('MainTabs', {screen: 'CartScreen'});
           },
         }}>
         Product added to cart!
