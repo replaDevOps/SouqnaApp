@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
     fontSize: mvs(12),
   },
   unreadBadge: {
-    backgroundColor: '#adbd6e',
+    backgroundColor: colors.lightgreen,
     paddingVertical: mvs(3), // Adjusted padding for better centering
     paddingHorizontal: mvs(8), // Adjusted to fit content dynamically
     borderRadius: mvs(15),
