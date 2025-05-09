@@ -1,9 +1,7 @@
 import {
-  StyleSheet,
   Text,
   TextInput,
   View,
-  Button,
   ScrollView,
   Image,
   TouchableOpacity,
@@ -11,29 +9,28 @@ import {
   StatusBar,
   FlatList,
 } from 'react-native';
-import React, { useState } from 'react';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import React, {useState} from 'react';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import axios from 'axios';
-import { useSelector } from 'react-redux';
-import { launchImageLibrary } from 'react-native-image-picker';
-import { Snackbar } from 'react-native-paper';
-import { styles } from './styles';
+import {useSelector} from 'react-redux';
+import {launchImageLibrary} from 'react-native-image-picker';
+import {Snackbar} from 'react-native-paper';
+import {styles} from './styles';
 import MainHeader from '../../../../components/Headers/MainHeader';
-import { MyButton } from '../../../../components/atoms/InputFields/MyButton';
-import { colors } from '../../../../util/color';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { mvs } from '../../../../util/metrices';
-import { SearchSVG, UploadSVG } from '../../../../assets/svg';
+import {MyButton} from '../../../../components/atoms/InputFields/MyButton';
+import {colors} from '../../../../util/color';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import {mvs} from '../../../../util/metrices';
+import {SearchSVG, UploadSVG} from '../../../../assets/svg';
 import GooglePlacesSuggestion from '../../../../components/GooglePlacesSuggestion';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 
 const CreateProduct = () => {
   const route = useRoute();
-  const { id: subCategoryId, categoryId, name, category } = route.params;
-  const { token } = useSelector(state => state.user);
+  const {id: subCategoryId, categoryId, name, category} = route.params;
+  const {token} = useSelector(state => state.user);
   const navigation = useNavigation();
-  const { t } = useTranslation();
-
+  const {t} = useTranslation();
 
   const [formData, setFormData] = useState({
     name: '',
@@ -94,15 +91,15 @@ const CreateProduct = () => {
     }));
   };
 
-// Handle place selection from Google Places component
-const handlePlaceSelected = (placeData) => {
-  setFormData(prev => ({
-    ...prev,
-    location: placeData.location,
-    lat: placeData.lat,
-    long: placeData.long,
-  }));
-};
+  // Handle place selection from Google Places component
+  const handlePlaceSelected = placeData => {
+    setFormData(prev => ({
+      ...prev,
+      location: placeData.location,
+      lat: placeData.lat,
+      long: placeData.long,
+    }));
+  };
 
   const submitProduct = async () => {
     const data = new FormData();
@@ -210,12 +207,12 @@ const handlePlaceSelected = (placeData) => {
   const handleChange = () => {
     navigation.reset({
       index: 0,
-      routes: [{ name: 'MyTabs', params: { screen: 'Advertise' } }],
+      routes: [{name: 'MyTabs', params: {screen: 'Advertise'}}],
     });
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{flex: 1}}>
       <StatusBar barStyle="dark-content" />
       <MainHeader title={t('titleProduct')} showBackIcon={true} />
 
@@ -225,16 +222,16 @@ const handlePlaceSelected = (placeData) => {
           paddingTop: mvs(25),
           backgroundColor: colors.white,
         }}
-        contentContainerStyle={{ paddingBottom: mvs(60) }}>
+        contentContainerStyle={{paddingBottom: mvs(60)}}>
         <View style={styles.sectionContainer}>
           <Text style={styles.sectionTitle}>{t('category')}</Text>
           <View style={styles.categoryBox}>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <Image
                 source={require('../../../../assets/img/driver1.png')}
                 style={styles.categoryImage}
               />
-              <View style={{ marginLeft: mvs(10) }}>
+              <View style={{marginLeft: mvs(10)}}>
                 <Text style={styles.categoryTitle}>{category}</Text>
                 <Text style={styles.categorySubtitle}>{name}</Text>
               </View>
@@ -264,12 +261,12 @@ const handlePlaceSelected = (placeData) => {
                     <FlatList
                       horizontal
                       showsHorizontalScrollIndicator={false}
-                      data={[{ isUploadIcon: true }, ...formData.images]}
+                      data={[{isUploadIcon: true}, ...formData.images]}
                       keyExtractor={(item, index) => index.toString()}
-                      contentInset={{ right: 25 }}
+                      contentInset={{right: 25}}
                       contentContainerStyle={styles.flatListContainer}
                       // style
-                      renderItem={({ item, index }) =>
+                      renderItem={({item, index}) =>
                         item.isUploadIcon ? (
                           <TouchableOpacity
                             onPress={handleChooseImages}
@@ -279,12 +276,14 @@ const handlePlaceSelected = (placeData) => {
                               height={22}
                               style={styles.uploadIcon}
                             />
-                            <Text style={styles.uploadText}>{t('uploadImage')}</Text>
+                            <Text style={styles.uploadText}>
+                              {t('uploadImage')}
+                            </Text>
                           </TouchableOpacity>
                         ) : (
                           <View style={styles.imageWrapper}>
                             <Image
-                              source={{ uri: item.uri }}
+                              source={{uri: item.uri}}
                               style={styles.imagePreview}
                             />
                             <TouchableOpacity
@@ -303,16 +302,15 @@ const handlePlaceSelected = (placeData) => {
             )}
             <View>{/* Display Selected Images */}</View>
 
-            <Text style={styles.noteText}>
-            {t('coverNote')}            </Text>
+            <Text style={styles.noteText}>{t('coverNote')} </Text>
           </View>
         </View>
 
         {/* Condition Section - Updated to Radio Buttons */}
         <View style={styles.sectionContainer}>
           <Text style={styles.sectionTitle}>
-          {t('condition')}
-            <Text style={{ color: colors.red }}>*</Text>
+            {t('condition')}
+            <Text style={{color: colors.red}}>*</Text>
           </Text>
 
           <View style={styles.radioContainer}>
@@ -325,7 +323,9 @@ const handlePlaceSelected = (placeData) => {
                     styles.radioOuter,
                     selectedCondition === 'New' && styles.radioOuterSelected,
                   ]}>
-                  {selectedCondition === 'New' && <View style={styles.radioInner} />}
+                  {selectedCondition === 'New' && (
+                    <View style={styles.radioInner} />
+                  )}
                 </View>
               </View>
               <Text style={styles.radioText}>{t('new')}</Text>
@@ -340,7 +340,9 @@ const handlePlaceSelected = (placeData) => {
                     styles.radioOuter,
                     selectedCondition === 'Used' && styles.radioOuterSelected,
                   ]}>
-                  {selectedCondition === 'Used' && <View style={styles.radioInner} />}
+                  {selectedCondition === 'Used' && (
+                    <View style={styles.radioInner} />
+                  )}
                 </View>
               </View>
               <Text style={styles.radioText}>{t('used')}</Text>
@@ -351,8 +353,8 @@ const handlePlaceSelected = (placeData) => {
         {/* Name Section */}
         <View style={styles.sectionContainer}>
           <Text style={styles.sectionTitle}>
-          {t('name')}
-            <Text style={{ color: colors.red }}>*</Text>
+            {t('name')}
+            <Text style={{color: colors.red}}>*</Text>
           </Text>
           <TextInput
             style={styles.input}
@@ -366,11 +368,11 @@ const handlePlaceSelected = (placeData) => {
         {/* Description Section */}
         <View style={styles.sectionContainer}>
           <Text style={styles.sectionTitle}>
-          {t('description')}
-            <Text style={{ color: colors.red }}>*</Text>
+            {t('description')}
+            <Text style={{color: colors.red}}>*</Text>
           </Text>
           <TextInput
-            style={[styles.input, { height: mvs(100) }]}
+            style={[styles.input, {height: mvs(100)}]}
             placeholder={t('descriptionPlaceholder')}
             placeholderTextColor={colors.grey}
             value={formData.description}
@@ -382,22 +384,22 @@ const handlePlaceSelected = (placeData) => {
         {/* Location Section - Fixed */}
         <View style={styles.sectionContainer}>
           <Text style={styles.sectionTitle}>
-          {t('location')}
-            <Text style={{ color: colors.red }}>*</Text>
+            {t('location')}
+            <Text style={{color: colors.red}}>*</Text>
           </Text>
           <View style={styles.locationContainer}>
             <GooglePlacesSuggestion
-            initialValue={formData.location}
-            onPlaceSelected={handlePlaceSelected}
-          />
+              initialValue={formData.location}
+              onPlaceSelected={handlePlaceSelected}
+            />
           </View>
         </View>
 
         {/* Price Section */}
         <View style={styles.sectionContainer}>
           <Text style={styles.sectionTitle}>
-          {t('price')}
-            <Text style={{ color: colors.red }}>*</Text>
+            {t('price')}
+            <Text style={{color: colors.red}}>*</Text>
           </Text>
           <TextInput
             style={styles.input}
@@ -412,7 +414,7 @@ const handlePlaceSelected = (placeData) => {
         {/* Discount Section */}
         <View style={styles.sectionContainer}>
           <Text style={styles.sectionTitle}>
-          {t('discount')}
+            {t('discount')}
             {/* <Text style={{color: colors.red}}>*</Text> */}
           </Text>
           <TextInput
@@ -428,7 +430,7 @@ const handlePlaceSelected = (placeData) => {
         {/* Special Offer Section */}
         <View style={styles.sectionContainer}>
           <Text style={styles.sectionTitle}>
-          {t('specialOffer')}
+            {t('specialOffer')}
             {/* <Text style={{color: colors.red}}>*</Text> */}
           </Text>
           <TextInput
@@ -443,8 +445,8 @@ const handlePlaceSelected = (placeData) => {
         {/* Stock Section */}
         <View style={styles.sectionContainer}>
           <Text style={styles.sectionTitle}>
-          {t('availableStock')}
-            <Text style={{ color: colors.red }}>*</Text>
+            {t('availableStock')}
+            <Text style={{color: colors.red}}>*</Text>
           </Text>
           <TextInput
             style={styles.input}
@@ -483,6 +485,3 @@ const handlePlaceSelected = (placeData) => {
 };
 
 export default CreateProduct;
-
-
-
