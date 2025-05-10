@@ -16,7 +16,7 @@ import {
   setVerificationStatus,
 } from '../../../redux/slices/userSlice';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
-import {ForwardSVG, ProfileSVG} from '../../../assets/svg';
+import {BackwardSVG, ForwardSVG, ProfileSVG} from '../../../assets/svg';
 import Regular from '../../../typography/RegularText';
 import VerificationStatus from '../../../components/Structure/VerificationStatus';
 import axios from 'axios';
@@ -117,13 +117,21 @@ const Profile = () => {
     }
   };
 
+  const renderDirectionalIcon = () => {
+    if (I18nManager.isRTL) {
+      return <BackwardSVG width={20} height={20} fill={colors.green} />;
+    }
+    return <ForwardSVG width={30} height={30} fill={colors.green} />;
+  };
+
   return (
     <ScrollView
       contentContainerStyle={styles.Scrollcontainer}
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }>
-      <StatusBar barStyle="dark-content" />
+      <View
+      />
       <ProfileHeader OnPressLogout={handleLogout} />
       <View style={styles.container}>
       {role === 2 && <VerificationStatus />}
@@ -141,7 +149,7 @@ const Profile = () => {
                 </View>
                 <Regular style={styles.menuText}>{t('myAccount')}</Regular>
               </View>
-              <ForwardSVG width={30} height={30} fill={colors.green} />
+              {renderDirectionalIcon()}
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -157,7 +165,7 @@ const Profile = () => {
                     : t('getVerified')}
                 </Regular>
               </View>
-              <ForwardSVG width={30} height={30} fill={colors.green} />
+              {renderDirectionalIcon()}
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -169,7 +177,7 @@ const Profile = () => {
                 </View>
                 <Regular style={styles.menuText}>{t('changePassword')}</Regular>
               </View>
-              <ForwardSVG width={30} height={30} fill={colors.green} />
+              {renderDirectionalIcon()}
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -185,7 +193,7 @@ const Profile = () => {
                     : t('switchToEnglish')}
                 </Regular>
               </View>
-              <ForwardSVG width={30} height={30} fill={colors.green} />
+              {renderDirectionalIcon()}
             </TouchableOpacity>
           </View>
           <Regular style={styles.regularText}>{t('favourites')}</Regular>
@@ -198,7 +206,7 @@ const Profile = () => {
                 </View>
                 <Regular style={styles.menuText}>{t('myAccount')}</Regular>
               </View>
-              <ForwardSVG width={30} height={30} fill={colors.green} />
+              {renderDirectionalIcon()}
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.menuItemContainer}>
@@ -208,7 +216,7 @@ const Profile = () => {
                 </View>
                 <Regular style={styles.menuText}>{t('myAccount')}</Regular>
               </View>
-              <ForwardSVG width={30} height={30} fill={colors.green} />
+              {renderDirectionalIcon()}
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.menuItemContainer}>
@@ -218,7 +226,7 @@ const Profile = () => {
                 </View>
                 <Regular style={styles.menuText}>{t('myAccount')}</Regular>
               </View>
-              <ForwardSVG width={30} height={30} fill={colors.green} />
+              {renderDirectionalIcon()}
             </TouchableOpacity>
           </View>
         </View>
