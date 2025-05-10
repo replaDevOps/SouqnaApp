@@ -1,10 +1,10 @@
-import {StyleSheet} from 'react-native';
+import {StatusBar, StyleSheet} from 'react-native';
 import {mvs} from '../../../util/metrices';
 import {colors} from '../../../util/color';
 
 const styles = StyleSheet.create({
   Scrollcontainer: {
-    // flexGrow: 1,
+    flex: 1,
     // paddingBottom: 40,
     backgroundColor:colors.white
   },

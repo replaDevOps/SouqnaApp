@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Image,
   Animated,
+  StatusBar,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {colors} from '../../util/color';
@@ -58,6 +59,11 @@ export default function ProfileHeader({OnPressLogout}) {
 
   return (
     <View style={styles.headerContainer}>
+       <StatusBar
+        translucent={true}
+        backgroundColor="transparent"
+        barStyle="light-content"
+      />
       <TouchableOpacity onPress={OnPressLogout} style={styles.logoutButton}>
         <PowerOffSVG width={mvs(25)} height={mvs(25)} fill={colors.white} />
       </TouchableOpacity>
@@ -99,7 +105,7 @@ const styles = StyleSheet.create({
   headerContainer: {
     backgroundColor: colors.lightorange,
     height: headerHeight,
-    paddingTop: mvs(30),
+    paddingTop:StatusBar.currentHeight,
     paddingHorizontal: mvs(15),
     flexDirection: 'column',
     justifyContent: 'space-between',
