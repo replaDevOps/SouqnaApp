@@ -239,12 +239,15 @@ const ProductDetail = () => {
               productLink={product.productLink}
             />
           </ScrollView>
-          <ProductFooter
-            loadingBuy={addingToCart}
-            loadingChat={chatLoading}
-            onBuyPress={handleBuyPress}
-            onChatPress={handleChatPress}
-          />
+          {(role !== 2 || role === null) && (
+            <ProductFooter
+              loadingBuy={addingToCart}
+              loadingChat={chatLoading}
+              onBuyPress={handleBuyPress}
+              onChatPress={handleChatPress}
+            />
+          )}
+
           {isModalVisible && <AddModal onClose={onClose} />}
         </>
       )}

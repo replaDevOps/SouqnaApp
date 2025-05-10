@@ -72,7 +72,14 @@ export default function ProfileHeader({OnPressLogout}) {
       </View>
 
       <View style={styles.sellerContainer}>
-        <Text style={styles.sellerText}>{t('Seller Account')}</Text>
+        <Text style={styles.sellerText}>
+          {role === '2' || role === 2
+            ? t('Seller Account')
+            : role === '3' || role === 3
+            ? t('Buyer Account')
+            : t('Demo Account')}
+        </Text>
+
         <TouchableOpacity onPress={toggleSellerMode} activeOpacity={0.8}>
           {isSellerOn ? (
             <OnSVG width={mvs(40)} height={mvs(45)} fill={colors.white} />
