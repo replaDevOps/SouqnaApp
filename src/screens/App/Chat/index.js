@@ -39,6 +39,7 @@ const Chat = () => {
         isSystem: true,
       },
     ]);
+
     // Set up keyboard event listeners
     const keyboardWillShowListener =
       Platform.OS === 'ios'
