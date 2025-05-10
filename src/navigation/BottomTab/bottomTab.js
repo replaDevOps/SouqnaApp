@@ -54,10 +54,13 @@ const MyTabs = () => {
     }
   };
 
-  const getIconComponent = (routeName, focused) => {
-    const color = focused ? colors.green : colors.grey;
+  const getIconComponent = React.useCallback((routeName, focused) => {
+    const activeColor = 'rgba(70, 80, 45, 1)';
+    const inactiveColor = colors.grey;
+    const color = focused ? activeColor : inactiveColor;
+
     switch (routeName) {
-      case 'Search':
+      case 'Home':
         return <HOMESVG color={color} />;
       case 'Favourite':
         return <HeartSVG color={color} />;
@@ -74,14 +77,14 @@ const MyTabs = () => {
       default:
         return <HOMESVG color={color} />;
     }
-  };
+  }, []);
 
   const renderTabs = () => {
     if (role == 2) {
       // Seller: Home, Inbox, Advertise, Profile
       return (
         <>
-          <Tab.Screen name="Search" component={SearchScreen} />
+          <Tab.Screen name="Home" component={SearchScreen} />
           <Tab.Screen
             name="Inbox"
             component={InboxScreen}
@@ -116,7 +119,7 @@ const MyTabs = () => {
       // Buyer: Home, Inbox, Favourites, Cart, Profile
       return (
         <>
-          <Tab.Screen name="Search" component={SearchScreen} />
+          <Tab.Screen name="Home" component={SearchScreen} />
           <Tab.Screen
             name="Inbox"
             component={InboxScreen}
@@ -150,7 +153,7 @@ const MyTabs = () => {
     } else {
       return (
         <>
-          <Tab.Screen name="Search" component={SearchScreen} />
+          <Tab.Screen name="Home" component={SearchScreen} />
           <Tab.Screen
             name="Inbox"
             component={Chat}
@@ -192,7 +195,7 @@ const MyTabs = () => {
           headerShown: false,
           tabBarShowLabel: false,
           tabBarStyle: styles.tabBar,
-          tabBarActiveTintColor: colors.green,
+          tabBarActiveTintColor: '#ADBD6E',
           tabBarIcon: ({focused}) => (
             <View style={styles.iconContainer}>
               {getIconComponent(route.name, focused)}
