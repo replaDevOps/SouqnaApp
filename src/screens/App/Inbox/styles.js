@@ -4,6 +4,8 @@ import {colors} from '../../../util/color';
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+    backgroundColor: colors.white,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
@@ -47,12 +49,14 @@ const styles = StyleSheet.create({
     borderRadius: mvs(14),
   },
   header: {
-    paddingVertical: mvs(12),
-    fontSize: mvs(24),
+    paddingVertical: mvs(16),
+    paddingLeft: mvs(10),
+    fontSize: mvs(22),
     fontWeight: '600', // Lighter font weight for smaller screens
   },
   messagesWrapper: {
-    marginHorizontal: mvs(14),
+    // marginHorizontal: mvs(14),
+    marginBottom: 20,
   },
   messageContainer: {
     shadowColor: '#000',
@@ -63,7 +67,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     borderRadius: mvs(8),
     paddingHorizontal: mvs(12),
-    paddingVertical: mvs(10),
+    paddingVertical: mvs(12),
     flexDirection: 'row',
     justifyContent: 'space-between',
   },

@@ -1,10 +1,11 @@
-import {Linking, Text, TouchableOpacity, View} from 'react-native';
+import {Linking, StatusBar, Text, TouchableOpacity, View} from 'react-native';
 import React from 'react';
 import ModalHeader from '../../../components/Headers/ModalHeader';
 import {useNavigation} from '@react-navigation/native';
 import {OpenSVG} from '../../../assets/svg';
 import Regular from '../../../typography/RegularText';
 import styles from './style';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const DataScreen = () => {
   const navigation = useNavigation();
@@ -16,7 +17,8 @@ const DataScreen = () => {
     Linking.openURL(url);
   };
   return (
-    <View>
+    <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="dark-content" />
       <ModalHeader title="Data" onBack={handleBack} />
       <View style={styles.menuContainer}>
         <TouchableOpacity
@@ -45,7 +47,7 @@ const DataScreen = () => {
           <OpenSVG width={20} height={20} />
         </TouchableOpacity>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 

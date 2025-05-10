@@ -1,3 +1,5 @@
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable no-shadow */
 import {
   View,
   Text,
@@ -12,9 +14,6 @@ import React, {useCallback, useEffect, useRef, useState} from 'react';
 import MainHeader from '../../../components/Headers/MainHeader';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import styles from './styles';
-// import {useDispatch, useSelector} from 'react-redux';
-import {useNavigation} from '@react-navigation/native';
-// import {clearCart, updateQuantity} from '../../../redux/slices/cartSlice';
 import {useTranslation} from 'react-i18next';
 import {
   fetchCartItems,
@@ -26,6 +25,7 @@ import {Snackbar} from 'react-native-paper';
 import {mvs} from '../../../util/metrices';
 import debounce from 'lodash/debounce'; // npm install lodash
 import {useSelector} from 'react-redux';
+import PaymentModal from '../../../components/Modals/PaymentModal';
 
 export default function CartScreen() {
   const [cartData, setCartData] = useState([]);
@@ -48,6 +48,20 @@ export default function CartScreen() {
   const deliveryCharge = 50;
   const discount = 0;
   const total = subTotal + deliveryCharge - discount;
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [setSelectedPaymentMethod] = useState('');
+
+  const handleOpenModal = () => {
+    setModalVisible(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalVisible(false);
+  };
+
+  const handleSelectPaymentMethod = method => {
+    setSelectedPaymentMethod(method);
+  };
 
   const loadCartItems = async () => {
     let allItems = [];
@@ -146,17 +160,20 @@ export default function CartScreen() {
     }
   };
 
+  // const handlePlaceOrder = (handleOrderSubmit) => {
+  //   navigation.navigate('Checkout', {
+  //     onSubmit: handleOrderSubmit, // Pass it as param
+  //   });
+  // };
+
   const handlePlaceOrder = () => {
-    // // no Redux clearCart
-    // dispatch(clearCart());
-    setCartData([]);
-    // navigation.navigate('OrderCompleted');
+    handleOpenModal(true);
   };
 
   const getImageSource = imageData => {
-    if (!imageData) return {uri: 'fallback_image_url_here'};
-    if (typeof imageData === 'string') return {uri: imageData};
-    if (imageData.uri) return {uri: imageData.uri};
+    if (!imageData) {return {uri: 'fallback_image_url_here'};}
+    if (typeof imageData === 'string') {return {uri: imageData};}
+    if (imageData.uri) {return {uri: imageData.uri};}
     return {uri: 'fallback_image_url_here'};
   };
 
@@ -256,7 +273,7 @@ export default function CartScreen() {
               <TouchableOpacity
                 onPress={handlePlaceOrder}
                 style={styles.placeOrderButton}>
-                <Text style={styles.placeOrderText}>{t('placeOrder')}</Text>
+                <Text style={styles.placeOrderText}>{t('checkout')}</Text>
               </TouchableOpacity>
             </View>
           </ImageBackground>
@@ -279,6 +296,11 @@ export default function CartScreen() {
         }}>
         {snackbarMessage}
       </Snackbar>
+      <PaymentModal
+        visible={isModalVisible}
+        onClose={handleCloseModal}
+        onSelectPaymentMethod={handleSelectPaymentMethod}
+      />
     </SafeAreaView>
   );
 }

@@ -32,6 +32,8 @@ const Profile = () => {
   const [refreshing, setRefreshing] = useState(false);
 
   const fetchVerificationStatus = async () => {
+    if (!token) return;
+
     try {
       const response = await axios.get(
         'https://backend.souqna.net/api/viewVerification',
@@ -43,7 +45,7 @@ const Profile = () => {
       );
 
       if (response.data.success) {
-        const apiStatus = response.data.data.status || response.data.data;
+        const apiStatus = response.data?.data?.status ?? response.data?.data ?? 'unverified';
         dispatch(setVerificationStatus(apiStatus));
         console.log('Fetched verification status: ', apiStatus);
       }
@@ -54,16 +56,21 @@ const Profile = () => {
 
   const onRefresh = async () => {
     setRefreshing(true);
-    fetchVerificationStatus();
+    if (role === 2) {
+      await fetchVerificationStatus();
+    }
     setRefreshing(false);
     console.log('Profile Refreshed');
   };
 
   useFocusEffect(
     useCallback(() => {
-      fetchVerificationStatus();
-    }, []),
+      if (role === 2) {
+        fetchVerificationStatus();
+      }
+    }, [role]),
   );
+  
 
   const handleLogout = () => {
     dispatch(logoutUser());
@@ -119,7 +126,8 @@ const Profile = () => {
       <StatusBar barStyle="dark-content" />
       <ProfileHeader OnPressLogout={handleLogout} />
       <View style={styles.container}>
-        <VerificationStatus />
+      {role === 2 && <VerificationStatus />}
+
 
         <View style={styles.content}>
           <Regular style={styles.regularText}>{t('general')}</Regular>

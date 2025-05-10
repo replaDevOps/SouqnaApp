@@ -1,10 +1,5 @@
 import React, {useEffect, useRef} from 'react';
-import {
-  View,
-  StyleSheet,
-  Dimensions,
-  Animated,
-} from 'react-native';
+import {View, StyleSheet, Dimensions, Animated} from 'react-native';
 import {colors} from '../../../util/color';
 import {mvs} from '../../../util/metrices';
 
@@ -40,9 +35,7 @@ const InboxSkeleton = ({count = 6}) => {
     <View style={styles.skeletonContainer}>
       {/* Generate requested number of message skeleton items */}
       {[...Array(count)].map((_, index) => (
-        <View
-          key={index}
-          style={styles.messageContainer}>
+        <View key={index} style={styles.messageContainer}>
           <View style={styles.messageHeader}>
             {/* Profile image placeholder */}
             <View style={styles.profileImageSkeleton}>
@@ -55,7 +48,7 @@ const InboxSkeleton = ({count = 6}) => {
                 ]}
               />
             </View>
-            
+
             <View style={styles.messageHeaderInfo}>
               {/* Name placeholder */}
               <View style={styles.senderNameSkeleton}>
@@ -68,7 +61,7 @@ const InboxSkeleton = ({count = 6}) => {
                   ]}
                 />
               </View>
-              
+
               {/* Message text placeholder */}
               <View style={styles.messageTextSkeleton}>
                 <Animated.View
@@ -82,7 +75,7 @@ const InboxSkeleton = ({count = 6}) => {
               </View>
             </View>
           </View>
-          
+
           <View style={styles.messageBody}>
             {/* Time placeholder */}
             <View style={styles.timeTextSkeleton}>
@@ -95,7 +88,7 @@ const InboxSkeleton = ({count = 6}) => {
                 ]}
               />
             </View>
-            
+
             {/* Unread badge placeholder */}
             <View style={styles.unreadBadgeSkeleton}>
               <Animated.View

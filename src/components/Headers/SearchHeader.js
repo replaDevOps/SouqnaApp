@@ -1,32 +1,19 @@
 import React, {useState} from 'react';
-import {
-  View,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-  Text,
-} from 'react-native';
+import {View, TextInput, TouchableOpacity, StyleSheet} from 'react-native';
 import LocationSvg from '../../assets/svg/location-svg';
-import {CloseSvg, NotificationSVG, SearchSVG} from '../../assets/svg';
+import {CloseSvg, SearchSVG} from '../../assets/svg';
 import {colors} from '../../util/color';
 import {mvs} from '../../util/metrices';
-import {useNavigation} from '@react-navigation/native';
 import {useTranslation} from 'react-i18next';
 
 const SearchHeader = ({
   onFocusSearch,
   isSearchMode,
-  onCancelSearch,
   onSearch,
   showLocationIcon = true,
 }) => {
   const [searchText, setSearchText] = useState('');
-  const navigation = useNavigation();
   const {t} = useTranslation();
-
-  const onNotification = () => {
-    navigation.navigate('Notification');
-  };
 
   const handleClearText = () => {
     setSearchText('');

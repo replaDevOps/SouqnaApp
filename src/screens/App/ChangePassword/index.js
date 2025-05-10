@@ -1,10 +1,11 @@
+/* eslint-disable no-alert */
 import React, {useState} from 'react';
 import {View, TextInput, Button, SafeAreaView} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {setUser} from '../../../redux/slices/userSlice';
 import {useNavigation} from '@react-navigation/native';
 import styles from './style';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 
 const ChangePassword = () => {
   const dispatch = useDispatch();

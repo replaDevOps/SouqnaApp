@@ -12,23 +12,25 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import i18n from './src/i18n/i18n';
 import RNRestart from 'react-native-restart';
 import messaging from '@react-native-firebase/messaging';
+import useNotificationListener from './src/util/NotificationService';
 
 LogBox.ignoreAllLogs();
 
 const App = () => {
   const [isReady, setIsReady] = useState(false);
+  useNotificationListener();
 
   useEffect(() => {
     const requestUserPermission = async () => {
       await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
       );
-  
+
       const authStatus = await messaging().requestPermission();
       const enabled =
         authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
         authStatus === messaging.AuthorizationStatus.PROVISIONAL;
-  
+
       if (enabled) {
         console.log('Authorization status:', authStatus);
         const token = await messaging().getToken();
@@ -36,23 +38,21 @@ const App = () => {
         await AsyncStorage.setItem('fcmToken', token);
       }
     };
-  
+
     requestUserPermission();
-  
+
     // Listen to token refresh
-    const unsubscribe = messaging().onTokenRefresh(async (newToken) => {
+    const unsubscribe = messaging().onTokenRefresh(async newToken => {
       console.log('FCM Token refreshed:', newToken);
       await AsyncStorage.setItem('fcmToken', newToken);
       // Optionally, send the new token to your backend server here
     });
-  
+
     // Cleanup on unmount
     return () => {
       unsubscribe();
     };
   }, []);
-  
-  
 
   useEffect(() => {
     const initLanguage = async () => {

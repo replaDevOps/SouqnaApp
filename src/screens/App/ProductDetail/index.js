@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {useEffect, useState} from 'react';
 import {View, Dimensions, ScrollView, Text} from 'react-native';
 import {useNavigation, useRoute} from '@react-navigation/native';
@@ -262,7 +263,7 @@ const ProductDetail = () => {
         action={{
           label: 'View Cart',
           onPress: () => {
-            navigation.navigate('Home', {screen: 'CartScreen'});
+            navigation.navigate('MainTabs', {screen: 'CartScreen'});
           },
         }}>
         Product added to cart!

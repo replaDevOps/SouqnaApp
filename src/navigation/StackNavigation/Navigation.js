@@ -1,10 +1,11 @@
+/* eslint-disable react-native/no-inline-styles */
 // Navigation.js
 import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
+import {createStackNavigator} from '@react-navigation/stack';
 import Login from '../../screens/Auth/Login';
 import Register from '../../screens/Auth/Register';
 import SplashScreen from '../../screens/Auth/Splash';
-import { View } from 'react-native';
+import {View} from 'react-native';
 import MyTabs from '../BottomTab/bottomTab';
 import DataScreen from '../../screens/Modal/Data';
 import DesignScreen from '../../screens/Modal/Design';
@@ -23,19 +24,20 @@ import SubCategoryMain from '../../screens/App/SubCategoryMain';
 import Products from '../../screens/App/Products';
 import Chat from '../../screens/App/Chat';
 import InboxScreen from '../../screens/App/Inbox';
+import CheckoutScreen from '../../screens/Checkout';
 
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{flex: 1}}>
       <Stack.Navigator
         initialRouteName="Splash"
-        screenOptions={{ headerShown: false }}>
+        screenOptions={{headerShown: false}}>
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Register" component={Register} />
         <Stack.Screen name="Splash" component={SplashScreen} />
-        <Stack.Screen name="Home" component={MyTabs} />
+        <Stack.Screen name="MainTabs" component={MyTabs} />
 
         <Stack.Screen name="Data" component={DataScreen} />
         <Stack.Screen name="Design" component={DesignScreen} />
@@ -59,14 +61,15 @@ const AppNavigator = () => {
         <Stack.Screen
           name="Chat"
           component={Chat}
-          options={({ route }) => ({
+          options={({route}) => ({
             headerTitle: route.params?.userName || 'Chat',
             headerTitleAlign: 'center',
             headerBackTitleVisible: false,
-            headerShown: true
+            headerShown: true,
           })}
         />
-        <Stack.Screen name="Inbox" component={InboxScreen} options={{ headerShown: true }} />
+        <Stack.Screen name="Inbox" component={InboxScreen} />
+        <Stack.Screen name="Checkout" component={CheckoutScreen} />
       </Stack.Navigator>
     </View>
   );

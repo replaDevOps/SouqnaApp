@@ -1,9 +1,10 @@
-import {Linking, Text, TouchableOpacity, View} from 'react-native';
+import {Linking, StatusBar, Text, TouchableOpacity, View} from 'react-native';
 import React from 'react';
 import {useNavigation} from '@react-navigation/native';
 import ModalHeader from '../../../components/Headers/ModalHeader';
 import {OpenSVG} from '../../../assets/svg';
 import styles from './style';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const AboutScreen = () => {
   const navigation = useNavigation();
@@ -14,7 +15,8 @@ const AboutScreen = () => {
     Linking.openURL(url);
   };
   return (
-    <View>
+    <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="dark-content" />
       <ModalHeader title="About Souqna" onBack={handleBack} />
       <View style={styles.menuContainer}>
         <TouchableOpacity
@@ -34,7 +36,7 @@ const AboutScreen = () => {
           <OpenSVG width={20} height={20} />
         </TouchableOpacity>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 

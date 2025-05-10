@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unstable-nested-components */
 import React, {memo, useCallback, useEffect, useState} from 'react';
 import {
   FlatList,
@@ -13,7 +14,6 @@ import {
 import {useSelector} from 'react-redux';
 import {fetchProducts} from '../../../../api/apiServices';
 import Bold from '../../../../typography/BoldText';
-import Regular from '../../../../typography/RegularText';
 import {colors} from '../../../../util/color';
 import {mvs} from '../../../../util/metrices';
 import {useTranslation} from 'react-i18next';
@@ -142,7 +142,9 @@ const GalleryContainer = ({
     },
     [onProductSelect],
   );
-  if (loading) return <SkeletonPlaceholder />;
+  if (loading) {
+    return <SkeletonPlaceholder />;
+  }
 
   return (
     <View style={styles.container}>
