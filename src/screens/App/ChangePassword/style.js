@@ -27,12 +27,26 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   input: {
+    flex:1,
+    fontSize: mvs(16),
+    color:colors.black,
+    // backgroundColor:'#000'
+  },
+  inputWrapper: {
+    
     height: mvs(50),
+    // flex:1,
+    position: 'relative',
+    width: '100%',
+    marginBottom: 0,
+    flexDirection:'row',
+    justifyContent:'space-between',
+    alignItems:'center',
+    
     backgroundColor: '#fff', // Light gray background for inputs
     borderRadius: mvs(5),
     marginBottom: mvs(20),
     paddingHorizontal: mvs(15),
-    fontSize: mvs(14),
     // Shadow for iOS
     shadowColor: '#000',
     shadowOffset: {
@@ -78,6 +92,9 @@ const styles = StyleSheet.create({
     alignItems: 'center', // Changed from 'flex-end' to 'center'
     // marginBottom: mvs(20), 
     marginVertical:mvs(0)// Added some margin at the bottom for spacing
+  },
+  eyeButton: {
+    // backgroundColor:'#000'
   }
 });
 
