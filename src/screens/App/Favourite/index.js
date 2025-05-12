@@ -18,6 +18,7 @@ const FavouriteScreen = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const {favorites} = useSelector(state => state.favorites);
+  const {role} = useSelector(state => state.user);
   const {t} = useTranslation();
 
   console.log('Favorites:', favorites);
@@ -70,11 +71,14 @@ const FavouriteScreen = () => {
         <Regular style={styles.recommendedTitle}>{item.name}</Regular>
         <Regular style={styles.recommendedPrice}>${item.price}</Regular>
       </View>
+      { role!=2 && (
+
       <TouchableOpacity
         style={styles.heartIconContainer}
         onPress={() => handleHeartClick(item.id, item)}>
         <HeartSvg filled={favorites.some(fav => fav.id === item.id)} />
       </TouchableOpacity>
+      )}
     </TouchableOpacity>
   );
   console.log('Favourites', favorites);

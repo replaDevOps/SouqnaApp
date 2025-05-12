@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import React, {useCallback, useEffect, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {useNavigation, useRoute} from '@react-navigation/native';
 
 import {
@@ -30,6 +30,8 @@ const Products = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [likedItems, setLikedItems] = useState({});
+  
+  const {role} = useSelector(state => state.user);
 
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -87,11 +89,13 @@ const Products = () => {
           <Regular style={styles.recommendedTitle}>{item.name}</Regular>
           <Regular style={styles.recommendedPrice}>${item.price} - USD</Regular>
         </View>
-        <TouchableOpacity
-          onPress={() => handleHeartClick(item.id, item)}
-          style={styles.heartIconContainer}>
-          <HeartSvg filled={likedItems[item.id]} />
-        </TouchableOpacity>
+        {role !== 2 && (
+          <TouchableOpacity
+            onPress={() => handleHeartClick(item.id, item)}
+            style={styles.heartIconContainer}>
+            <HeartSvg filled={likedItems[item.id]} />
+          </TouchableOpacity>
+        )}
       </TouchableOpacity>
     ),
     [handleHeartClick, likedItems, navigateToProductDetails],
