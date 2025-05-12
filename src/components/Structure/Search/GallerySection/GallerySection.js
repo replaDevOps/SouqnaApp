@@ -134,7 +134,12 @@ const GalleryContainer = ({
             onPress={() => onProductSelect(item.id)}>
             <Image source={{uri: productImage}} style={styles.productImage} />
             <View style={{paddingVertical: mvs(15)}}>
-              <Text style={styles.productTitle}>{item.name || 'Fall'}</Text>
+              <Text
+                style={styles.productTitle}
+                numberOfLines={1}
+                ellipsizeMode="tail">
+                {item.name || 'Fall'}
+              </Text>
             </View>
           </TouchableOpacity>
         </View>
