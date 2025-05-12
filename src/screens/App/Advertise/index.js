@@ -41,7 +41,7 @@ const AdvertiseScreen = () => {
     fetchCategories();
   }, []);
 
-  const handleCategoryPress = async (categoryName, categoryId) => {
+  const handleCategoryPress = async (categoryName, categoryId,image) => {
     try {
       const res = await axios.get(
         `${SERVER_URL}/api/getSubCategory/${categoryId}`,
@@ -57,6 +57,7 @@ const AdvertiseScreen = () => {
         navigation.navigate('AdvertiseAll', {
           category: categoryName,
           categoryId: categoryId,
+          categoryImage: image,
           subcategories,
         });
       } else {
@@ -71,7 +72,7 @@ const AdvertiseScreen = () => {
     // const Icon = categoryIcons[item.name] || LocationSvg;
     const imageURL = item.image ? `${SERVER_URL}${item.image}` : null;
     return (
-      <TouchableOpacity onPress={() => handleCategoryPress(item.name, item.id)}>
+      <TouchableOpacity onPress={() => handleCategoryPress(item.name, item.id,imageURL)}>
         <View style={styles.categoryItem}>
           <View style={styles.IconContainer}>
             {imageURL ? (
