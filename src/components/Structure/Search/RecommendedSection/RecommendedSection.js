@@ -1,5 +1,5 @@
 // RecommendedSection.js
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   FlatList,
   View,
@@ -23,7 +23,7 @@ const RecommendedSection = ({
   loadMoreProducts,
   loading,
   isEndOfResults,
-  likedItems,
+  // likedItems,
   handleHeartClick,
   navigateToProductDetails,
   hideTitle,
@@ -34,6 +34,16 @@ const RecommendedSection = ({
   const [productsLoading, setProductsLoading] = useState(true);
 
   const { token, role } = useSelector(state => state.user);
+  const favorites = useSelector(state => state.favorites.favorites);
+
+  const likedItemes = useMemo(() => {
+    const map = {};
+    favorites.forEach(item => {
+      map[item.id] = true;
+    });
+    return map;
+  }, [favorites]);
+
   const { t } = useTranslation();
 
   const loadProducts = useCallback(async () => {
@@ -77,12 +87,12 @@ const RecommendedSection = ({
           <TouchableOpacity
             onPress={() => handleHeartClick(item.id, item)}
             style={styles.heartIconContainer}>
-            <HeartSvg filled={likedItems[item.id]} />
+            <HeartSvg filled={likedItemes[item.id]} />
           </TouchableOpacity>
         )}
       </TouchableOpacity>
     ),
-    [handleHeartClick, likedItems, navigateToProductDetails],
+    [handleHeartClick, likedItemes, navigateToProductDetails],
   );
 
   // Render skeleton items in the same layout as the actual product items
