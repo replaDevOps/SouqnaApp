@@ -7,9 +7,9 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'space-between', // Ensures that footer stays at the bottom
   },
-  scrollContent: {
-    paddingBottom: mvs(60), // Adjust this value to prevent overlap with the footer
-  },
+  // scrollContent: {
+  //   paddingBottom: mvs(60), // Adjust this value to prevent overlap with the footer
+  // },
   imageContainer: {
     marginBottom: mvs(2),
   },
