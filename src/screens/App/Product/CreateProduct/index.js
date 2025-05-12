@@ -28,7 +28,13 @@ import {useTranslation} from 'react-i18next';
 
 const CreateProduct = () => {
   const route = useRoute();
-  const {id: subCategoryId, categoryId, name, category,categoryImage } = route.params;
+  const {
+    id: subCategoryId,
+    categoryId,
+    name,
+    category,
+    categoryImage,
+  } = route.params;
   const {token} = useSelector(state => state.user);
   const navigation = useNavigation();
   const {t} = useTranslation();
@@ -163,16 +169,16 @@ const CreateProduct = () => {
           condition: '',
         });
 
-         navigation.dispatch(
-        CommonActions.reset({
-          index: 0,
-          routes: [
-            {
-              name: 'MainTabs',
-            },
-          ],
-        })
-      );
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [
+              {
+                name: 'MainTabs',
+              },
+            ],
+          }),
+        );
       } else {
         setSnackbarMessage(
           response.data.message || 'Failed to create product.',
@@ -216,23 +222,21 @@ const CreateProduct = () => {
     }
   };
 
-
-const handleChange = () => {
-  navigation.dispatch(
-    CommonActions.reset({
-      index: 0,
-      routes: [
-        {
-          name: 'MainTabs',
-          // pass params to switch to Advertise tab
-          params: {
-            screen: 'Advertise',
+  const handleChange = () => {
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [
+          {
+            name: 'MainTabs',
+            params: {
+              screen: 'Advertise',
+            },
           },
-        },
-      ],
-    })
-  );
-};
+        ],
+      }),
+    );
+  };
 
   return (
     <SafeAreaView style={{flex: 1}}>
@@ -251,7 +255,7 @@ const handleChange = () => {
           <View style={styles.categoryBox}>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <Image
-                source={{ uri: categoryImage }}
+                source={{uri: categoryImage}}
                 style={styles.categoryImage}
               />
               <View style={{marginLeft: mvs(10)}}>
@@ -272,13 +276,7 @@ const handleChange = () => {
                 <Text style={styles.addButtonText}>{t('addImages')}</Text>
               </TouchableOpacity>
             ) : (
-              // After image is added
               <View>
-                {/* <TouchableOpacity onPress={handleChooseImages} style={styles.iconRow}>
-                <UploadSVG width={22} height={22} style={styles.uploadIcon} />
-                <Text>Upload Image</Text>
-              </TouchableOpacity> */}
-
                 {formData.images.length > 0 && (
                   <View style={styles.imagePreviewContainer}>
                     <FlatList
