@@ -28,7 +28,7 @@ import {useTranslation} from 'react-i18next';
 
 const CreateProduct = () => {
   const route = useRoute();
-  const {id: subCategoryId, categoryId, name, category} = route.params;
+  const {id: subCategoryId, categoryId, name, category,categoryImage } = route.params;
   const {token} = useSelector(state => state.user);
   const navigation = useNavigation();
   const {t} = useTranslation();
@@ -229,7 +229,7 @@ const CreateProduct = () => {
           <View style={styles.categoryBox}>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <Image
-                source={require('../../../../assets/img/driver1.png')}
+                source={{ uri: categoryImage }}
                 style={styles.categoryImage}
               />
               <View style={{marginLeft: mvs(10)}}>

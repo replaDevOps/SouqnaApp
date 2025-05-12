@@ -26,6 +26,8 @@ const GooglePlacesSuggestion = ({
   const [suggestions, setSuggestions] = useState([]);
   const [loading, setLoading] = useState(false);
   const suppressFetchRef = useRef(false);
+  const textInputRef = useRef(null);
+  const [isPlaceSelected, setIsPlaceSelected] = useState(false);
 
   useEffect(() => {
     setText(initialValue);
@@ -62,8 +64,19 @@ const GooglePlacesSuggestion = ({
   const handleSelect = item => {
     // Prevent immediate refetch
     suppressFetchRef.current = true;
+    setIsPlaceSelected(true);
     setText(item.description);
     setSuggestions([]);
+    
+    // After setting text, position cursor at beginning
+    setTimeout(() => {
+      if (textInputRef.current) {
+        textInputRef.current.setNativeProps({
+          selection: { start: 0, end: 0 }
+        });
+      }
+    }, 50);
+    
     fetch(
       `https://maps.googleapis.com/maps/api/place/details/json?key=${GOOGLE_PLACES_API_KEY}&place_id=${item.place_id}&fields=geometry`,
     )
@@ -85,9 +98,16 @@ const GooglePlacesSuggestion = ({
       );
   };
 
+  const handleFocus = () => {
+    // Reset the place selected flag when the user interacts with the input again
+    setIsPlaceSelected(false);
+  };
+
   const renderItem = ({item}) => (
-    <TouchableOpacity style={styles.row} onPress={() => handleSelect(item)}>
-      <Text style={styles.description}>{item.description}</Text>
+    <TouchableOpacity style={styles.suggestionItem} onPress={() => handleSelect(item)}>
+      <View style={styles.row}>
+        <Text style={styles.description}>{item.description}</Text>
+      </View>
     </TouchableOpacity>
   );
 
@@ -98,11 +118,15 @@ const GooglePlacesSuggestion = ({
           <SearchSVG width={25} height={25} />
         </View>
         <TextInput
+          ref={textInputRef}
           style={styles.textInput}
           placeholder={placeholder}
           placeholderTextColor={colors.grey}
           value={text}
           onChangeText={setText}
+          onFocus={handleFocus}
+          // Only apply selection when a place is selected, not during normal typing
+          selection={isPlaceSelected ? { start: 0, end: 0 } : null}
         />
         {text.length > 0 && (
           <TouchableOpacity
@@ -175,7 +199,9 @@ const styles = StyleSheet.create({
     marginLeft: mvs(10),
     color: colors.black,
   },
-
+  suggestionItem: {
+    width: '100%',
+  },
   row: {
     backgroundColor: colors.white,
     padding: mvs(13),

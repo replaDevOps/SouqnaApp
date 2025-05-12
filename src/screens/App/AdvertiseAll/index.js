@@ -9,7 +9,7 @@ import {ForwardSVG} from '../../../assets/svg';
 
 const AdvertiseAll = () => {
   const route = useRoute();
-  const {category, subcategories, categoryId} = route.params;
+  const {category, subcategories, categoryId,categoryImage} = route.params;
   const navigation = useNavigation();
 
   const handleSubcategoryPress = subcategory => {
@@ -18,6 +18,8 @@ const AdvertiseAll = () => {
       categoryId: categoryId,
       id: subcategory.id,
       name: subcategory.name,
+      category:category,
+      categoryImage: categoryImage,
     });
   };
 
