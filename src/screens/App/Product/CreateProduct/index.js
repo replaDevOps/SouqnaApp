@@ -11,7 +11,7 @@ import {
   FlatList,
 } from 'react-native';
 import React, {useState} from 'react';
-import {useNavigation, useRoute} from '@react-navigation/native';
+import {CommonActions, useNavigation, useRoute} from '@react-navigation/native';
 import axios from 'axios';
 import {useSelector} from 'react-redux';
 import {launchImageLibrary} from 'react-native-image-picker';
@@ -162,6 +162,17 @@ const CreateProduct = () => {
           long: '',
           condition: '',
         });
+
+         navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [
+            {
+              name: 'MainTabs',
+            },
+          ],
+        })
+      );
       } else {
         setSnackbarMessage(
           response.data.message || 'Failed to create product.',
@@ -205,12 +216,23 @@ const CreateProduct = () => {
     }
   };
 
-  const handleChange = () => {
-    navigation.reset({
+
+const handleChange = () => {
+  navigation.dispatch(
+    CommonActions.reset({
       index: 0,
-      routes: [{name: 'MyTabs', params: {screen: 'Advertise'}}],
-    });
-  };
+      routes: [
+        {
+          name: 'MainTabs',
+          // pass params to switch to Advertise tab
+          params: {
+            screen: 'Advertise',
+          },
+        },
+      ],
+    })
+  );
+};
 
   return (
     <SafeAreaView style={{flex: 1}}>
