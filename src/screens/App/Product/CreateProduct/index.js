@@ -86,6 +86,8 @@ const CreateProduct = () => {
     });
   };
 
+  //sghhss
+
   const handleInputChange = (field, value) => {
     // if (field === 'stock') {
     //   const numericValue = Number(value);
