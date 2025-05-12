@@ -181,7 +181,9 @@ const ProductDetail = () => {
           />
           <ScrollView
             showsVerticalScrollIndicator={false}
-            contentContainerStyle={styles.scrollContent}
+            contentContainerStyle={
+              role !== 2 || role == null ? {paddingBottom: mvs(80)} : null
+            }
             onScroll={onScroll}
             scrollEventThrottle={16}>
             <ProductImages images={product?.images || []} />
