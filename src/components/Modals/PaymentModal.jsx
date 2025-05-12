@@ -71,12 +71,12 @@ const PaymentModal = ({visible, onClose, onSelectPaymentMethod}) => {
           </TouchableOpacity>
           <Text style={styles.title}>Select Payment Method</Text>
 
-          <View>
+          <View style={styles.content}>
             <TouchableOpacity
               style={[
                 styles.option,
                 selectedMethod === 'CARD' && styles.selectedOption,
-              ]} // Apply selected style
+              ]}
               onPress={() => handleSelectPaymentMethod('CARD')}>
               <RadioButton
                 value="CARD"
@@ -90,7 +90,7 @@ const PaymentModal = ({visible, onClose, onSelectPaymentMethod}) => {
               style={[
                 styles.option,
                 selectedMethod === 'COD' && styles.selectedOption,
-              ]} // Apply selected style
+              ]}
               onPress={() => handleSelectPaymentMethod('COD')}>
               <RadioButton
                 value="COD"
@@ -125,9 +125,22 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 10,
     padding: 20,
+    justifyContent: 'space-between',
   },
-  title: {fontSize: 18, fontWeight: 'bold', marginBottom: 15},
-  option: {flexDirection: 'row', alignItems: 'center', marginVertical: 10},
+  content: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  button: {
+    width: '100%',
+    backgroundColor: colors.lightgreen,
+    padding: 12,
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+
+  title: {fontSize: 18, fontWeight: 'bold', marginBottom: 0},
+  option: {flexDirection: 'row', alignItems: 'center', marginVertical: 4},
   label: {fontSize: 16},
   closeButton: {
     position: 'absolute',
@@ -136,13 +149,14 @@ const styles = StyleSheet.create({
     zIndex: 1,
     padding: 5,
   },
-  button: {
-    marginTop: 50,
-    backgroundColor: colors.green,
-    padding: 10,
-    borderRadius: 5,
-    alignItems: 'center',
-  },
+  // button: {
+  //   width: '100%',
+  //   marginTop: 50,
+  //   backgroundColor: colors.lightgreen,
+  //   padding: 10,
+  //   borderRadius: 5,
+  //   alignItems: 'center',
+  // },
   buttonText: {color: 'white', fontWeight: 'bold'},
 });
 
