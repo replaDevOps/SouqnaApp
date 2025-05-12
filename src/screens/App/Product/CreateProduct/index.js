@@ -162,6 +162,8 @@ const CreateProduct = () => {
           long: '',
           condition: '',
         });
+
+        navigation.navigate('MainTabs')
       } else {
         setSnackbarMessage(
           response.data.message || 'Failed to create product.',
