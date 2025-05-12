@@ -26,6 +26,7 @@ import {mvs} from '../../../util/metrices';
 import debounce from 'lodash/debounce'; // npm install lodash
 import {useSelector} from 'react-redux';
 import PaymentModal from '../../../components/Modals/PaymentModal';
+import {useNavigation} from '@react-navigation/native';
 
 export default function CartScreen() {
   const [cartData, setCartData] = useState([]);
@@ -49,7 +50,9 @@ export default function CartScreen() {
   const discount = 0;
   const total = subTotal + deliveryCharge - discount;
   const [isModalVisible, setModalVisible] = useState(false);
-  const [setSelectedPaymentMethod] = useState('');
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('');
+
+  const navigation = useNavigation();
 
   const handleOpenModal = () => {
     setModalVisible(true);
@@ -160,7 +163,7 @@ export default function CartScreen() {
     }
   };
 
-  // const handlePlaceOrder = (handleOrderSubmit) => {
+  // const handlePlaceOrder = handleOrderSubmit => {
   //   navigation.navigate('Checkout', {
   //     onSubmit: handleOrderSubmit, // Pass it as param
   //   });
@@ -171,9 +174,15 @@ export default function CartScreen() {
   };
 
   const getImageSource = imageData => {
-    if (!imageData) {return {uri: 'fallback_image_url_here'};}
-    if (typeof imageData === 'string') {return {uri: imageData};}
-    if (imageData.uri) {return {uri: imageData.uri};}
+    if (!imageData) {
+      return {uri: 'fallback_image_url_here'};
+    }
+    if (typeof imageData === 'string') {
+      return {uri: imageData};
+    }
+    if (imageData.uri) {
+      return {uri: imageData.uri};
+    }
     return {uri: 'fallback_image_url_here'};
   };
 
