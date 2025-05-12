@@ -20,7 +20,7 @@ export default function LogoHeader() {
   };
 
   const onNotification = () => {
-    navigation.navigate('Notification');
+    navigation.navigate('BuyerNotification');
   };
   const navigateToSearchResults = () => {
     navigation.navigate('SearchResultsScreen');

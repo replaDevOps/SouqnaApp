@@ -209,6 +209,45 @@ const sendPushNotification = async (title, body, receiverToken) => {
   }
 };
 
+export const fetchNotifications = async (token, role) => {
+  try {
+    let endpoint = null;
+    let response = null;
+
+    if (role === 2) {
+      endpoint = 'viewAllNotificaionsSeller';
+      response = await API.post(
+        endpoint,
+        {amount: 200},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+    } else if (role === 3) {
+      endpoint = 'viewAllNotificaionsBuyer';
+      response = await API.get(endpoint, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    } else {
+      console.warn('Unsupported role for notifications:', role);
+      return null;
+    }
+
+    return response.data;
+  } catch (error) {
+    console.error(
+      'Error fetching notifications:',
+      error?.response?.data || error.message,
+    );
+    return null;
+  }
+};
+
 API.interceptors.request.use(
   async config => {
     // Example: Get token from AsyncStorage if needed

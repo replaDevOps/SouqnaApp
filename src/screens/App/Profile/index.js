@@ -45,7 +45,8 @@ const Profile = () => {
       );
 
       if (response.data.success) {
-        const apiStatus = response.data?.data?.status ?? response.data?.data ?? 'unverified';
+        const apiStatus =
+          response.data?.data?.status ?? response.data?.data ?? 'unverified';
         dispatch(setVerificationStatus(apiStatus));
         console.log('Fetched verification status: ', apiStatus);
       }
@@ -70,7 +71,6 @@ const Profile = () => {
       }
     }, [role]),
   );
-  
 
   const handleLogout = () => {
     dispatch(logoutUser());
@@ -128,14 +128,16 @@ const Profile = () => {
     <ScrollView
       contentContainerStyle={styles.Scrollcontainer}
       refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+          progressViewOffset={60}
+        />
       }>
-      <View
-      />
+      <View />
       <ProfileHeader OnPressLogout={handleLogout} />
       <View style={styles.container}>
-      {role === 2 && <VerificationStatus />}
-
+        {role === 2 && <VerificationStatus />}
 
         <View style={styles.content}>
           <Regular style={styles.regularText}>{t('general')}</Regular>

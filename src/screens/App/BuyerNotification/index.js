@@ -1,4 +1,3 @@
-/* eslint-disable react-native/no-inline-styles */
 import React, {useEffect, useState} from 'react';
 import {
   View,
@@ -13,17 +12,17 @@ import {colors} from '../../../util/color';
 import {useNavigation} from '@react-navigation/native';
 import CategoryHeader from '../../../components/Headers/CategoryHeader';
 import Notificationsvg from '../../../assets/svg/notification-svg';
-import styles from './style';
 import {useTranslation} from 'react-i18next';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {fetchNotifications} from '../../../api/apiServices';
+import styles from '../Notification/style';
 import {useSelector} from 'react-redux';
+import {fetchNotifications} from '../../../api/apiServices';
 import {mvs} from '../../../util/metrices';
 
 const Notification = () => {
   const navigation = useNavigation();
-  const [notifications, setNotifications] = useState([]);
   const {token, role} = useSelector(state => state.user);
+  const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
   const {t} = useTranslation();
 
