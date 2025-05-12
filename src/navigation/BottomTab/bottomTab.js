@@ -4,15 +4,12 @@ import {StyleSheet, View} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {useSelector} from 'react-redux';
 import {
-  AdvertiseSVG,
   CartSVG,
   ChatSVG,
   HeartSVG,
   HOMESVG,
-  NewsSVG,
   NotificationSVG,
   ProfileSVG,
-  SearchSVG,
 } from '../../assets/svg';
 import {colors} from '../../util/color';
 import {mvs} from '../../util/metrices';
@@ -21,14 +18,13 @@ import SearchScreen from '../../screens/App/Search';
 import FavouriteScreen from '../../screens/App/Favourite';
 import CartScreen from '../../screens/App/Cart';
 import AdvertiseScreen from '../../screens/App/Advertise';
-import Bold from '../../typography/BoldText';
 import AddModal from '../../components/Modals/AddModal';
 import {createStackNavigator} from '@react-navigation/stack';
-import Icon from 'react-native-vector-icons/Feather';
 import PlusSvg from '../../assets/svg/plussvg';
 import Chat from '../../screens/App/Chat';
 import Notification from '../../screens/App/Notification/index';
 import InboxScreen from '../../screens/App/Inbox';
+import {fetchNotifications} from '../../api/apiServices';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -36,6 +32,8 @@ const Stack = createStackNavigator();
 const MyTabs = () => {
   const {token, role} = useSelector(state => state.user); // Token will indicate if the user is logged in
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [notifications, setNotifications] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     console.log('TOKEN: ', token);
@@ -44,6 +42,21 @@ const MyTabs = () => {
   const handleLoginSuccess = () => {
     setIsModalVisible(false);
   };
+
+  useEffect(() => {
+    const getNotifications = async () => {
+      setLoading(true);
+      const res = await fetchNotifications(token, role);
+      if (res?.status === true && Array.isArray(res?.data)) {
+        setNotifications(res.data);
+      } else {
+        console.warn('No notifications found or error occurred');
+      }
+      setLoading(false);
+    };
+
+    getNotifications();
+  }, [token, role]);
 
   const handleTabPress = (e, route, navigation) => {
     if (!token) {

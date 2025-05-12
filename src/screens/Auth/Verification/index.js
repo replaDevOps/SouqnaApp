@@ -9,10 +9,7 @@ import {
   ActivityIndicator,
   ToastAndroid,
   Image,
-  Button,
   Modal,
-  StatusBar,
-  StyleSheet,
 } from 'react-native';
 import {launchImageLibrary} from 'react-native-image-picker';
 import {useNavigation} from '@react-navigation/native';
@@ -23,11 +20,10 @@ import Regular from '../../../typography/RegularText';
 import {MyButton} from '../../../components/atoms/InputFields/MyButton';
 import API from '../../../api/apiServices';
 import MainHeader from '../../../components/Headers/MainHeader';
-import {UploadSVG, CalendarSVG, CalendersSVG} from '../../../assets/svg';
+import {UploadSVG, CalendersSVG} from '../../../assets/svg';
 import {colors} from '../../../util/color';
-import {mvs} from '../../../util/metrices';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 
 // Radio Button Component
 const RadioButton = ({selected, onPress, label}) => {
@@ -52,7 +48,6 @@ const VerificationScreen = () => {
   console.log(token);
   const [loading, setLoading] = useState(false);
   const {t} = useTranslation();
-
 
   const [formData, setFormData] = useState({
     fullName: '',
@@ -162,10 +157,7 @@ const VerificationScreen = () => {
       !idFrontSide ||
       !idBackSide
     ) {
-      ToastAndroid.show(
-        t('fillAllFields'),
-        ToastAndroid.SHORT,
-      );
+      ToastAndroid.show(t('fillAllFields'), ToastAndroid.SHORT);
       return;
     }
 
@@ -343,9 +335,9 @@ const VerificationScreen = () => {
 
           {/* Remaining date inputs */}
           {renderDateInput(
-              'issueDate',
-              t('issueDate'),
-              t('enterIssueDate'),
+            'issueDate',
+            t('issueDate'),
+            t('enterIssueDate'),
             openIssueDate,
             setOpenIssueDate,
             handleIssueDateChange,
@@ -354,9 +346,9 @@ const VerificationScreen = () => {
           )}
 
           {renderDateInput(
-              'expDate',
-              t('expDate'),
-              t('enterExpDate'),
+            'expDate',
+            t('expDate'),
+            t('enterExpDate'),
             openExpDate,
             setOpenExpDate,
             handleExpDateChange,
@@ -371,7 +363,11 @@ const VerificationScreen = () => {
                 state: idFrontSide,
                 setter: setIdFrontSide,
               },
-              {label: t('uploadBackID'), state: idBackSide, setter: setIdBackSide},
+              {
+                label: t('uploadBackID'),
+                state: idBackSide,
+                setter: setIdBackSide,
+              },
             ].map(({label, state, setter}) => (
               <View key={label} style={styles.uploadBox}>
                 <TouchableOpacity
@@ -390,7 +386,7 @@ const VerificationScreen = () => {
                         height={16}
                         style={styles.uploadIcon}
                       />
-                      <Text style={styles.uploadLabel}>Upload {label}</Text>
+                      <Text style={styles.uploadLabel}>{label}</Text>
                     </View>
                   )}
                 </TouchableOpacity>
@@ -439,7 +435,11 @@ const VerificationScreen = () => {
             </View>
           </View>
 
-          <MyButton title={t('submit')}  onPress={handleSubmit} disabled={loading} />
+          <MyButton
+            title={t('submit')}
+            onPress={handleSubmit}
+            disabled={loading}
+          />
 
           {loading && (
             <ActivityIndicator
@@ -457,9 +457,7 @@ const VerificationScreen = () => {
           onRequestClose={() => setModalVisible(false)}>
           <View style={styles.modalOverlay}>
             <View style={styles.modalContainer}>
-              <Text style={styles.modalText}>
-              {t('documentPending')}
-              </Text>
+              <Text style={styles.modalText}>{t('documentPending')}</Text>
               <TouchableOpacity
                 style={styles.modalButton}
                 onPress={() => setModalVisible(false)}>

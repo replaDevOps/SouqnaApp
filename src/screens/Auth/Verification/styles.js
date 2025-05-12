@@ -1,6 +1,6 @@
 import {StyleSheet} from 'react-native';
 import {colors} from '../../../util/color';
-import { mvs } from '../../../util/metrices';
+import {mvs} from '../../../util/metrices';
 
 const styles = StyleSheet.create({
   modalOverlay: {
@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingHorizontal: 10,
     fontSize: 16,
-    justifyContent:'center',
+    justifyContent: 'center',
     // alignItems:'center'
   },
   errorContainer: {
@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: mvs(8),
     fontSize: mvs(16),
-    paddingLeft: mvs(3)
+    paddingLeft: mvs(3),
   },
   imagePickerContainer: {
     marginVertical: 10,
@@ -152,15 +152,21 @@ const styles = StyleSheet.create({
   uploadLabelContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 5,
+    justifyContent: 'center',
+    paddingVertical: 10, // Ensure padding around the text
+    paddingHorizontal: 10,
+    maxWidth: '80%', // Prevent stretching across the whole width
+  },
+
+  uploadLabel: {
+    fontSize: 14, // Adjust font size if necessary
+    color: '#888',
+    textAlign: 'center', // Center align the text
+    flexShrink: 1, // Ensure text doesn't overflow or stretch
   },
 
   uploadIcon: {
     marginRight: 5,
-  },
-  uploadLabel: {
-    textAlign: 'center',
-    color: '#888',
   },
 
   imagePreview: {
@@ -235,7 +241,7 @@ const styles = StyleSheet.create({
     height: mvs(50),
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: colors.gray ,
+    borderColor: colors.gray,
   },
   radioOption: {
     marginHorizontal: mvs(5),
