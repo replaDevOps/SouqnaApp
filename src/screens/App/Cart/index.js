@@ -294,7 +294,7 @@ export default function CartScreen() {
         duration={3000}
         style={{
           position: 'absolute',
-          bottom: mvs(70),
+          bottom: mvs(30),
           left: 10,
           right: 10,
           borderRadius: 8,
