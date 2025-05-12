@@ -1,18 +1,11 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useState, useCallback, useEffect} from 'react';
-import {
-  GiftedChat,
-  IMessage,
-  Bubble,
-  Send,
-  InputToolbar,
-} from 'react-native-gifted-chat';
-import {SafeAreaView, View, Text} from 'react-native';
-import { UploadSVG } from '../../../assets/svg';
-import { mvs } from '../../../util/metrices';
+import React, { useState, useCallback, useEffect } from 'react';
+import { GiftedChat, Bubble, Send, InputToolbar } from 'react-native-gifted-chat';
+import { SafeAreaView, View, Text } from 'react-native';
+import { mvs } from '../../../util/metrices'; // Assuming this is a utility function
 
 const Chat = () => {
-  const [messages, setMessages] = useState<IMessage[]>([]);
+  const [messages, setMessages] = useState([]);
 
   useEffect(() => {
     setMessages([
@@ -34,13 +27,13 @@ const Chat = () => {
     ]);
   }, []);
 
-  const onSend = useCallback((newMessages: IMessage[] = []) => {
+  const onSend = useCallback((newMessages = []) => {
     setMessages(previousMessages =>
       GiftedChat.append(previousMessages, newMessages),
     );
 
     setTimeout(() => {
-      const response: IMessage = {
+      const response = {
         _id: Date.now().toString(),
         text: 'Thanks for your message. This is a simulated response.',
         createdAt: new Date(),
@@ -53,7 +46,7 @@ const Chat = () => {
     }, 1000);
   }, []);
 
-  const renderBubble = props => {
+  const renderBubble = (props) => {
     return (
       <Bubble
         {...props}
@@ -78,17 +71,17 @@ const Chat = () => {
     );
   };
 
-  const renderSend = props => {
+  const renderSend = (props) => {
     return (
       <Send {...props}>
-        <View style={{backgroundColor:'#ADBD6E',paddingHorizontal:mvs(15),paddingVertical:mvs(10),borderRadius:mvs(5)}}>
-          <Text style={{color:'#fff',fontWeight:'bold'}}>Send</Text>
+        <View style={{ backgroundColor: '#ADBD6E', paddingHorizontal: mvs(15), paddingVertical: mvs(10), borderRadius: mvs(5) }}>
+          <Text style={{ color: '#fff', fontWeight: 'bold' }}>Send</Text>
         </View>
       </Send>
     );
   };
 
-  const renderInputToolbar = props => (
+  const renderInputToolbar = (props) => (
     <InputToolbar
       {...props}
       containerStyle={{
@@ -101,7 +94,7 @@ const Chat = () => {
   );
 
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
       <GiftedChat
         messages={messages}
         onSend={messages => onSend(messages)}
