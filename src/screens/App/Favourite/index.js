@@ -13,6 +13,7 @@ import {
 } from '../../../redux/slices/favoritesSlice';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useTranslation} from 'react-i18next';
+import { mvs } from '../../../util/metrices';
 
 const FavouriteScreen = () => {
   const navigation = useNavigation();
@@ -62,12 +63,12 @@ const FavouriteScreen = () => {
         style={styles.recommendedImage}
       />
       <View style={styles.recommendedTextContainer}>
-        <Regular
+        {/* <Regular
           style={styles.recommendedLocation}
           numberOfLines={2}
           ellipsizeMode="tail">
           {item.location}
-        </Regular>
+        </Regular> */}
         <Regular style={styles.recommendedTitle}>{item.name}</Regular>
         <Regular style={styles.recommendedPrice}>${item.price}</Regular>
       </View>
@@ -92,6 +93,11 @@ const FavouriteScreen = () => {
           numColumns={2}
           keyExtractor={(item, index) => index.toString()}
           renderItem={renderFavoriteItem}
+           contentContainerStyle={{
+
+        paddingTop:mvs(15),
+        paddingBottom:mvs(60),
+          }}
         />
       </View>
     </SafeAreaView>
