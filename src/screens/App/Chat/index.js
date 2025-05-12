@@ -52,7 +52,7 @@ const Chat = () => {
         {...props}
         wrapperStyle={{
           right: {
-            backgroundColor: '#ADBDFE',
+            backgroundColor: '#ADBD6E',
             padding: 8,
           },
           left: {
@@ -94,7 +94,7 @@ const Chat = () => {
   );
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
+    <View style={{ flex: 1, backgroundColor: '#fff' }}>
       <GiftedChat
         messages={messages}
         onSend={messages => onSend(messages)}
@@ -111,7 +111,7 @@ const Chat = () => {
         renderSend={renderSend}
         renderInputToolbar={renderInputToolbar}
       />
-    </SafeAreaView>
+    </View>
   );
 };
 

@@ -1,213 +1,260 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+// import React from 'react';
+// import { View, Text, StyleSheet } from 'react-native';
 
-const MyAccount = () => {
+// const MyAccount = () => {
+//   return (
+//     <View style={styles.container}>
+//       <Text style={styles.text}>My Account Screen</Text>
+//     </View>
+//   );
+// };
+
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//     backgroundColor: '#fff',
+//   },
+//   text: {
+//     fontSize: 20,
+//     fontWeight: 'bold',
+//   },
+// });
+
+// export default MyAccount;
+
+import { View, Text, Image, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform, ScrollView, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import OnSVG from '../../../../assets/svg/OnSVG';
+import { OffSVG } from '../../../../assets/svg';
+import MainHeader from '../../../../components/Headers/MainHeader';
+
+export default function MyAccount() {
+  const [isEditing, setIsEditing] = useState(false);
+  const [originalData, setOriginalData] = useState({
+    name: 'Bibhushan Saakha',
+    occupation: 'Student',
+    address: 'Koteshwor,Kathmandu',
+    phone: '+92*********',
+    email: 'email@example.com',
+    isMember: true
+  });
+  const [editedData, setEditedData] = useState(originalData);
+
+  const handleEditToggle = () => {
+    if (isEditing) {
+      setOriginalData(editedData);
+    } else {
+      setEditedData(originalData);
+    }
+    setIsEditing(!isEditing);
+  };
+
+  const handleCancel = () => {
+    setEditedData(originalData);
+    setIsEditing(false);
+  };
+
+  const handleChange = (field, value) => {
+    setEditedData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const toggleMember = () => {
+    setEditedData(prev => ({ ...prev, isMember: !prev.isMember }));
+  };
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>My Account Screen</Text>
-    </View>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={styles.flexOne}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0}
+    >
+      <View style={styles.flexOne}>
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          {/* <MainHeader/> */}
+          <View>
+            {/* Profile Image */}
+            <View style={styles.profileImageContainer}>
+              <View style={styles.profileImageWrapper}>
+                <Image 
+                  style={styles.profileImage}
+                  source={require('../../../../assets/img/profile.png')}
+                />
+              </View>
+            </View>
+
+            {/* Personal Info */}
+            <View style={styles.card}>
+              <Text style={styles.cardTitle}>Personal Info</Text>
+
+              {renderEditableRow('Your name', 'name')}
+              {renderEditableRow('Occupation', 'occupation')}
+              {renderEditableRow('Address', 'address')}
+
+              <View style={styles.row}>
+                <Text>Seller</Text>
+                <TouchableOpacity onPress={isEditing ? toggleMember : undefined}>
+                  {editedData.isMember ? 
+                    <OnSVG width={50} height={50} stroke={'white'} fill={'green'} />
+                    :
+                    <OffSVG width={50} height={50} stroke={'white'} fill={'green'} />
+                  }
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            {/* Contact Info */}
+            <View style={[styles.card, { marginTop: 16, marginBottom: 24 }]}>
+              <Text style={styles.cardTitle}>Contact Info</Text>
+
+              {renderEditableRow('Phone number', 'phone', 'phone-pad')}
+              {renderEditableRow('Email', 'email', 'email-address')}
+            </View>
+          </View>
+
+          {/* Save/Cancel Buttons */}
+          <View style={styles.centered}>
+            <View style={styles.buttonRow}>
+              {isEditing ? (
+                <>
+                  <TouchableOpacity style={styles.cancelBtn} onPress={handleCancel}>
+                    <Text style={styles.cancelText}>Cancel</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.saveBtn} onPress={handleEditToggle}>
+                    <Text style={styles.saveText}>Save</Text>
+                  </TouchableOpacity>
+                </>
+              ) : (
+                <TouchableOpacity style={styles.editBtn} onPress={handleEditToggle}>
+                  <Text style={styles.editText}>Edit Profile</Text>
+                </TouchableOpacity>
+              )}
+            </View>
+          </View>
+        </ScrollView>
+      </View>
+    </KeyboardAvoidingView>
   );
-};
+
+  function renderEditableRow(label, field, keyboardType = 'default') {
+    return (
+      <View style={styles.row}>
+        <Text>{label}</Text>
+        {isEditing ? (
+          <TextInput
+            style={styles.input}
+            value={editedData[field]}
+            onChangeText={(text) => handleChange(field, text)}
+            keyboardType={keyboardType}
+          />
+        ) : (
+          <Text style={styles.value}>{editedData[field]}</Text>
+        )}
+      </View>
+    );
+  }
+}
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  flexOne: {
+    flex: 1
+  },
+  scrollContainer: {
+    flexGrow: 1
+  },
+  profileImageContainer: {
+    marginVertical: 80,
+    alignItems: 'center'
+  },
+  profileImageWrapper: {
+    backgroundColor: '#BBF7D0', // green-200
+    borderRadius: 999,
+    width: 144,
+    height: 144,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    overflow: 'hidden'
   },
-  text: {
-    fontSize: 20,
+  profileImage: {
+    width: 112,
+    height: 112,
+    borderRadius: 999
+  },
+  card: {
+    backgroundColor: 'white',
+    marginHorizontal: 24,
+    borderRadius: 12,
+    padding: 16
+  },
+  cardTitle: {
     fontWeight: 'bold',
+    fontSize: 20,
+    marginBottom: 20
   },
+  row: {
+    flexDirection: 'row',
+    paddingVertical: 8,
+    paddingHorizontal: 8,
+    justifyContent: 'space-between',
+    alignItems: 'center'
+  },
+  input: {
+    fontSize: 18,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E7EB',
+    paddingHorizontal: 8,
+    flex: 1,
+    marginLeft: 16
+  },
+  value: {
+    fontSize: 18
+  },
+  centered: {
+    alignItems: 'center'
+  },
+  buttonRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginHorizontal: 24,
+    paddingVertical: 16,
+    borderRadius: 12,
+    marginTop: 24
+  },
+  cancelBtn: {
+    paddingVertical: 8,
+    paddingHorizontal: 24,
+    borderRadius: 12,
+    backgroundColor: '#D1D5DB'
+  },
+  cancelText: {
+    fontSize: 18,
+    color: '#374151',
+    textAlign: 'center'
+  },
+  saveBtn: {
+    paddingVertical: 8,
+    paddingHorizontal: 24,
+    borderRadius: 12,
+    backgroundColor: '#22C55E'
+  },
+  saveText: {
+    fontSize: 18,
+    color: 'white',
+    textAlign: 'center'
+  },
+  editBtn: {
+    marginHorizontal: 24,
+    paddingVertical: 16,
+    borderRadius: 12,
+    marginTop: 16,
+    width: 320,
+    backgroundColor: '#ADBD6E'
+  },
+  editText: {
+    textAlign: 'center',
+    fontWeight: '600',
+    fontSize: 20,
+    color: 'white'
+  }
 });
-
-export default MyAccount;
-
-
-// import { View, Text, Image, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
-// import React, { useState } from 'react';
-// import Header from '../components/Header';
-// import * as Icon from 'react-native-feather';
-// import theme from '../../constants/theme';
-
-// export default function MyAccount() {
-//   const [isEditing, setIsEditing] = useState(false);
-//   const [originalData, setOriginalData] = useState({
-//     name: 'Bibhushan Saakha',
-//     occupation: 'Student',
-//     address: 'Koteshwor,Kathmandu',
-//     phone: '+92*********',
-//     email: 'email@example.com',
-//     isMember: true
-//   });
-//   const [editedData, setEditedData] = useState(originalData);
-
-//   const handleEditToggle = () => {
-//     if (isEditing) {
-//       setOriginalData(editedData);
-//     } else {
-//       setEditedData(originalData);
-//     }
-//     setIsEditing(!isEditing);
-//   };
-
-//   const handleCancel = () => {
-//     setEditedData(originalData);
-//     setIsEditing(false);
-//   };
-
-//   const handleChange = (field, value) => {
-//     setEditedData(prev => ({ ...prev, [field]: value }));
-//   };
-
-//   const toggleMember = () => {
-//     setEditedData(prev => ({ ...prev, isMember: !prev.isMember }));
-//   };
-
-//   return (
-//     <KeyboardAvoidingView
-//       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-//       style={{ flex: 1 }}
-//       keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0}
-//     >
-//       <View className='flex-1'>
-//         <Header />
-
-//         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-//           <View>
-//             {/* Profile Image */}
-//             <View className='my-20 items-center'>
-//               <View className='bg-green-200 rounded-full w-36 h-36 justify-center overflow-visible items-center'>
-//                 <Image 
-//                   className='w-28 h-28 rounded-full' 
-//                   source={require('../../assets/Images/profile-Img.jpg')}
-//                 />
-//               </View>
-//             </View>
-
-//             {/* Personal info */}
-//             <View className='bg-white mx-6 rounded-lg p-4'>
-//               <Text className='font-bold text-xl mb-5'>Personal Info</Text>
-              
-//               <View className='flex-row py-2 px-2 justify-between items-center'>
-//                 <Text>Your name</Text>
-//                 {isEditing ? (
-//                   <TextInput
-//                     className='text-lg border-b border-gray-200 px-2 flex-1 ml-4'
-//                     value={editedData.name}
-//                     onChangeText={(text) => handleChange('name', text)}
-//                   />
-//                 ) : (
-//                   <Text className='text-lg'>{editedData.name}</Text>
-//                 )}
-//               </View>
-              
-//               <View className='flex-row py-2 px-2 justify-between items-center'>
-//                 <Text>Occupation</Text>
-//                 {isEditing ? (
-//                   <TextInput
-//                     className='text-lg border-b border-gray-200 px-2 flex-1 ml-4'
-//                     value={editedData.occupation}
-//                     onChangeText={(text) => handleChange('occupation', text)}
-//                   />
-//                 ) : (
-//                   <Text className='text-lg'>{editedData.occupation}</Text>
-//                 )}
-//               </View>
-              
-//               <View className='flex-row py-2 px-2 justify-between items-center'>
-//                 <Text>Address</Text>
-//                 {isEditing ? (
-//                   <TextInput
-//                     className='text-lg border-b border-gray-200 px-2 flex-1 ml-4'
-//                     value={editedData.address}
-//                     onChangeText={(text) => handleChange('address', text)}
-//                   />
-//                 ) : (
-//                   <Text className='text-lg'>{editedData.address}</Text>
-//                 )}
-//               </View>
-              
-//               <View className='flex-row py-2 px-2 justify-between items-center'>
-//                 <Text>Member</Text>
-//                 <TouchableOpacity onPress={isEditing ? toggleMember : undefined}>
-//                   {editedData.isMember ? 
-//                     <Icon.ToggleLeft width={50} height={50} stroke={'white'} fill={'green'} />
-//                     :
-//                     <Icon.ToggleRight width={50} height={50} stroke={'white'} fill={'green'} />
-//                   }
-//                 </TouchableOpacity>
-//               </View>
-//             </View>
-
-//             {/* Contact info */}
-//             <View className='bg-white mx-6 rounded-lg mt-4 mb-6 p-4'>
-//               <Text className='font-bold text-xl mb-5'>Contact Info</Text>
-              
-//               <View className='flex-row py-2 px-2 justify-between items-center'>
-//                 <Text>Phone number</Text>
-//                 {isEditing ? (
-//                   <TextInput
-//                     className='text-lg border-b border-gray-200 px-2 flex-1 ml-4'
-//                     value={editedData.phone}
-//                     onChangeText={(text) => handleChange('phone', text)}
-//                     keyboardType='phone-pad'
-//                   />
-//                 ) : (
-//                   <Text className='text-lg'>{editedData.phone}</Text>
-//                 )}
-//               </View>
-              
-//               <View className='flex-row py-2 px-2 justify-between items-center'>
-//                 <Text>Email</Text>
-//                 {isEditing ? (
-//                   <TextInput
-//                     className='text-lg border-b border-gray-200 px-2 flex-1 ml-4'
-//                     value={editedData.email}
-//                     onChangeText={(text) => handleChange('email', text)}
-//                     keyboardType='email-address'
-//                   />
-//                 ) : (
-//                   <Text className='text-lg'>{editedData.email}</Text>
-//                 )}
-//               </View>
-//             </View>
-//           </View>
-
-//           <View className='items-center'>
-//             {/* Save/Cancel buttons */}
-//             <View className='flex-row justify-between mx-6 py-4 rounded-lg mt-6'>
-//               {isEditing ? (
-//                 <>
-//                   <TouchableOpacity 
-//                     className='py-2 px-6 rounded-lg bg-gray-300'
-//                     onPress={handleCancel}
-//                   >
-//                     <Text className='text-center text-lg text-gray-700'>Cancel</Text>
-//                   </TouchableOpacity>
-//                   <TouchableOpacity 
-//                     className='py-2 px-6 rounded-lg bg-green-500'
-//                     onPress={handleEditToggle}
-//                   >
-//                     <Text className='text-center text-lg text-white'>Save</Text>
-//                   </TouchableOpacity>
-//                 </>
-//               ) : (
-//                 <TouchableOpacity 
-//                   className='mx-6 py-4 rounded-lg mt-4 w-96'
-//                   style={{ backgroundColor: theme.colors.primary }}
-//                   onPress={handleEditToggle}
-//                 >
-//                   <Text className='text-center font-semibold text-xl text-white'>
-//                     Edit Profile
-//                   </Text>
-//                 </TouchableOpacity>
-//               )}
-//             </View>
-//           </View>
-//         </ScrollView>
-//       </View>
-//     </KeyboardAvoidingView>
-//   );
-// }
