@@ -4,11 +4,11 @@ import {colors} from '../../../util/color';
 
 const styles = StyleSheet.create({
   Scrollcontainer: {
-    flex: 1,
+    // flex: 1,
     // paddingBottom: 40,
-    backgroundColor:colors.white
+    backgroundColor: colors.white,
   },
-  container:{  
+  container: {
     paddingVertical: mvs(45),
   },
   logoContainer: {
@@ -34,15 +34,15 @@ const styles = StyleSheet.create({
     backgroundColor: colors.gray,
     paddingVertical: mvs(15),
     marginVertical: mvs(6),
-    borderRadius:mvs(22),
-    paddingHorizontal:mvs(10),
+    borderRadius: mvs(22),
+    paddingHorizontal: mvs(10),
     flexDirection: 'row',
-    alignItems:'center',
-    justifyContent:'space-between'
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   regularText: {
     fontSize: mvs(24),
-    fontWeight:'bold',
+    fontWeight: 'bold',
     color: colors.black,
     paddingLeft: mvs(20),
     paddingTop: mvs(10),
@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
   },
   menuText: {
     fontSize: mvs(17),
-    fontWeight:'bold',
+    fontWeight: 'bold',
     marginLeft: mvs(10),
     color: colors.black,
   },
@@ -165,12 +165,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: mvs(8),
   },
-  menuText: {
-    marginLeft: mvs(10),
-    color: colors.black,
-    fontSize: mvs(14),
-    fontWeight:'bold'
-  },
+  // menuText: {
+  //   marginLeft: mvs(10),
+  //   color: colors.black,
+  //   fontSize: mvs(14),
+  //   fontWeight: 'bold',
+  // },
 });
 
 export default styles;

@@ -1,9 +1,9 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, {useCallback, useState} from 'react';
 import {
   View,
   TouchableOpacity,
   ScrollView,
-  StatusBar,
   RefreshControl,
   I18nManager,
   Alert,
@@ -131,7 +131,7 @@ const Profile = () => {
         <RefreshControl
           refreshing={refreshing}
           onRefresh={onRefresh}
-          progressViewOffset={60}
+          progressViewOffset={50}
         />
       }>
       <View />

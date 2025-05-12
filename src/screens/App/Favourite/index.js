@@ -52,7 +52,10 @@ const FavouriteScreen = () => {
   const renderFavoriteItem = ({item}) => (
     <TouchableOpacity
       style={styles.recommendedItem}
-      onPress={() => navigation.navigate('ProductDetail', {item})}>
+      onPress={() => {
+        console.log('ITEM ID:', item.id);
+        navigation.navigate('ProductDetail', {productId: item.id});
+      }}>
       <Image
         source={{uri: `https://backend.souqna.net${item.images?.[0]?.path}`}}
         style={styles.recommendedImage}
