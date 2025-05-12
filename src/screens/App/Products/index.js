@@ -10,7 +10,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useDispatch, useSelector} from 'react-redux';
 import {useNavigation, useRoute} from '@react-navigation/native';
@@ -32,6 +32,7 @@ const Products = () => {
   const [likedItems, setLikedItems] = useState({});
   
   const {role} = useSelector(state => state.user);
+ const favorites = useSelector(state => state.favorites.favorites);
 
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -51,6 +52,15 @@ const Products = () => {
 
     fetchData();
   }, [subCategoryId]);
+
+
+  const likedItemes = useMemo(() => {
+    const map = {};
+    favorites.forEach(item => {
+      map[item.id] = true;
+    });
+    return map;
+  }, [favorites]);
 
   const navigateToProductDetails = productId => {
     navigation.navigate('ProductDetail', {productId});
@@ -93,12 +103,12 @@ const Products = () => {
           <TouchableOpacity
             onPress={() => handleHeartClick(item.id, item)}
             style={styles.heartIconContainer}>
-            <HeartSvg filled={likedItems[item.id]} />
+            <HeartSvg filled={likedItemes[item.id]} />
           </TouchableOpacity>
         )}
       </TouchableOpacity>
     ),
-    [handleHeartClick, likedItems, navigateToProductDetails],
+    [handleHeartClick, likedItemes, navigateToProductDetails],
   );
 
   return (
