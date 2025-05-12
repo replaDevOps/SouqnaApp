@@ -28,13 +28,7 @@ import {useTranslation} from 'react-i18next';
 
 const CreateProduct = () => {
   const route = useRoute();
-  const {
-    id: subCategoryId,
-    categoryId,
-    name,
-    category,
-    categoryImage,
-  } = route.params;
+  const {id: subCategoryId, categoryId, name, category,categoryImage } = route.params;
   const {token} = useSelector(state => state.user);
   const navigation = useNavigation();
   const {t} = useTranslation();
@@ -58,7 +52,6 @@ const CreateProduct = () => {
   const [selectedCondition, setSelectedCondition] = useState('');
   const conditionValue =
     selectedCondition === 'New' ? 1 : selectedCondition === 'Used' ? 2 : null;
-  const [stockError, setStockError] = useState('');
 
   const handleConditionSelect = condition => {
     setSelectedCondition(condition);
@@ -87,12 +80,6 @@ const CreateProduct = () => {
   };
 
   const handleInputChange = (field, value) => {
-    // if (field === 'stock') {
-    //   const numericValue = Number(value);
-    //   if (numericValue <= 0 || isNaN(numericValue)) {
-    //     return; // Don't update if zero, negative or not a number
-    //   }
-    // }
     setFormData(prev => ({
       ...prev,
       [field]: value,
@@ -115,46 +102,7 @@ const CreateProduct = () => {
     }));
   };
 
-  const validateForm = () => {
-    if (!formData.name.trim()) {
-      setSnackbarMessage('Product name is required.');
-      setSnackbarVisible(true);
-      return false;
-    }
-
-    if (!formData.description.trim()) {
-      setSnackbarMessage('Description is required.');
-      setSnackbarVisible(true);
-      return false;
-    }
-
-    const price = Number(formData.price);
-    if (isNaN(price) || price <= 0) {
-      setSnackbarMessage('Price must be greater than 0.');
-      setSnackbarVisible(true);
-      return false;
-    }
-
-    const stock = Number(formData.stock);
-    if (isNaN(stock) || stock <= 0) {
-      setSnackbarMessage('Stock must be greater than 0.');
-      setSnackbarVisible(true);
-      return false;
-    }
-
-    if (!selectedCondition) {
-      setSnackbarMessage('Please select a product condition.');
-      setSnackbarVisible(true);
-      return false;
-    }
-
-    return true;
-  };
-
   const submitProduct = async () => {
-    if (!validateForm()) {
-      return;
-    }
     const data = new FormData();
     data.append('name', formData.name);
     data.append('description', formData.description);
@@ -215,16 +163,16 @@ const CreateProduct = () => {
           condition: '',
         });
 
-        navigation.dispatch(
-          CommonActions.reset({
-            index: 0,
-            routes: [
-              {
-                name: 'MainTabs',
-              },
-            ],
-          }),
-        );
+         navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [
+            {
+              name: 'MainTabs',
+            },
+          ],
+        })
+      );
       } else {
         setSnackbarMessage(
           response.data.message || 'Failed to create product.',
@@ -268,22 +216,23 @@ const CreateProduct = () => {
     }
   };
 
-  const handleChange = () => {
-    navigation.dispatch(
-      CommonActions.reset({
-        index: 0,
-        routes: [
-          {
-            name: 'MainTabs',
-            // pass params to switch to Advertise tab
-            params: {
-              screen: 'Advertise',
-            },
+
+const handleChange = () => {
+  navigation.dispatch(
+    CommonActions.reset({
+      index: 0,
+      routes: [
+        {
+          name: 'MainTabs',
+          // pass params to switch to Advertise tab
+          params: {
+            screen: 'Advertise',
           },
-        ],
-      }),
-    );
-  };
+        },
+      ],
+    })
+  );
+};
 
   return (
     <SafeAreaView style={{flex: 1}}>
@@ -302,7 +251,7 @@ const CreateProduct = () => {
           <View style={styles.categoryBox}>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <Image
-                source={{uri: categoryImage}}
+                source={{ uri: categoryImage }}
                 style={styles.categoryImage}
               />
               <View style={{marginLeft: mvs(10)}}>
@@ -523,31 +472,13 @@ const CreateProduct = () => {
             <Text style={{color: colors.red}}>*</Text>
           </Text>
           <TextInput
-            style={[
-              styles.input,
-              stockError ? {borderColor: colors.red, borderWidth: 1} : null,
-            ]}
+            style={styles.input}
             placeholder={t('stockPlaceholder')}
             placeholderTextColor={colors.grey}
             keyboardType="numeric"
             value={formData.stock}
-            onChangeText={text => {
-              // Remove non-digit characters
-              const cleaned = text.replace(/[^0-9]/g, '');
-
-              // Set error if 0
-              if (cleaned === '0') {
-                setStockError(t('Stock cannot be zero'));
-              } else {
-                setStockError('');
-              }
-
-              handleInputChange('stock', cleaned);
-            }}
+            onChangeText={text => handleInputChange('stock', text)}
           />
-          {stockError ? (
-            <Text style={{color: colors.red, marginTop: 5}}>{stockError}</Text>
-          ) : null}
         </View>
 
         {/* Submit Button */}
@@ -564,10 +495,12 @@ const CreateProduct = () => {
         </MyButton>
       </ScrollView>
 
+      {/* Snackbar */}
       <Snackbar
         visible={snackbarVisible}
         onDismiss={() => setSnackbarVisible(false)}
-        duration={3000}>
+        duration={3000}
+        style={styles.snackbar}>
         {snackbarMessage}
       </Snackbar>
     </SafeAreaView>
