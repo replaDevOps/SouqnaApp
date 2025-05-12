@@ -1,5 +1,5 @@
 import React from 'react';
-import {View} from 'react-native';
+import {Text, View} from 'react-native';
 import styles from './style';
 import {Row} from '../../atoms/row';
 import Regular from '../../../typography/RegularText';
@@ -11,11 +11,13 @@ const ProductMenu = ({color, condition, material}) => {
         <Regular style={styles.menuText}>{color}</Regular>
       </Row>
       <Row style={styles.menuItem}>
-        <Regular style={styles.leftText}>Description</Regular>
-        <Regular style={styles.menuText}>{condition}</Regular>
+        <Regular style={styles.leftText}>Discounts</Regular>
+        <Text style={styles.menuText} numberOfLines={1} ellipsizeMode="tail">
+          {condition}
+        </Text>
       </Row>
       <Row style={styles.menuItem}>
-        <Regular style={styles.leftText}>User</Regular>
+        <Regular style={styles.leftText}>Condition</Regular>
         <Regular style={styles.menuText}>{material}</Regular>
       </Row>
     </View>

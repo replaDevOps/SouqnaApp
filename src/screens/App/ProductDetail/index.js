@@ -190,16 +190,7 @@ const ProductDetail = () => {
 
             <View style={styles.itemContainer}>
               <Bold style={styles.productPrice}>
-                <Regular
-                  // eslint-disable-next-line react-native/no-inline-styles
-                  style={{
-                    fontWeight: '400',
-                    fontSize: mvs(24),
-                    color: colors.lightgreen,
-                  }}>
-                  ${' '}
-                </Regular>
-                {product.price}
+                $ {Number(product.price).toLocaleString()}
               </Bold>
               <Bold style={styles.productTitle}>{product.name}</Bold>
               {
@@ -210,7 +201,7 @@ const ProductDetail = () => {
                     fill={colors.grey}
                   />
                   <Regular style={styles.productLocation}>
-                    <Text>Pakistan</Text>
+                    <Text>{product.location}</Text>
                     {/* {product.location} */}
                   </Regular>
                 </View>
@@ -218,8 +209,18 @@ const ProductDetail = () => {
             </View>
             <ProductMenu
               color={product.stock}
-              condition={product.description}
-              material={product.user?.name}
+              condition={
+                product.discounts && Object.keys(product.discounts).length > 0
+                  ? JSON.stringify(product.discounts) // or format as needed
+                  : 'No Discount'
+              }
+              material={
+                product.condition === 2
+                  ? 'Used'
+                  : product.condition === 1
+                  ? 'New'
+                  : ''
+              }
             />
             <View style={styles.descriptionContainer}>
               <Bold style={{fontSize: mvs(22)}}>Description</Bold>

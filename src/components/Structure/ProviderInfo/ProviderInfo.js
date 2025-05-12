@@ -28,8 +28,9 @@ const ProviderInfo = ({provider}) => {
           <Regular style={styles.leftText}>{provider.category?.name}</Regular>
         </View>
         <View style={styles.attributeBox}>
+          {' '}
           <Regular style={styles.leftText}>
-            <WorldSVG width={13} height={13} /> {provider.sub_category?.name}
+            {provider.sub_category?.name}
           </Regular>
         </View>
       </View>
