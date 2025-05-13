@@ -77,12 +77,19 @@ const App = () => {
   }, []);
 
   if (!isReady) return null; // You can replace this with a splash screen
-
+  const linking = {
+    prefixes: ['myapp://', 'https://yourdomain.com'],
+    config: {
+      screens: {
+        ProductDetail: 'product/:productId',
+      },
+    },
+  };
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <GestureHandlerRootView style={{flex: 1}}>
-          <NavigationContainer>
+          <NavigationContainer linking={linking}>
             <AppNavigator />
           </NavigationContainer>
         </GestureHandlerRootView>

@@ -240,6 +240,7 @@ const ProductDetail = () => {
             <ShareActions
               productTitle={product.name}
               productLink={product.productLink}
+              productId={product.id}
             />
           </ScrollView>
           {(role !== 2 || role === null) && (

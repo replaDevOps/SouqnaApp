@@ -27,6 +27,7 @@ import debounce from 'lodash/debounce'; // npm install lodash
 import {useSelector} from 'react-redux';
 import PaymentModal from '../../../components/Modals/PaymentModal';
 import {useNavigation} from '@react-navigation/native';
+import Bold from '../../../typography/BoldText';
 
 export default function CartScreen() {
   const [cartData, setCartData] = useState([]);
@@ -197,7 +198,12 @@ export default function CartScreen() {
       <MainHeader title={t('title')} />
 
       <ScrollView
-        contentContainerStyle={styles.scrollContent}
+        contentContainerStyle={[
+          styles.scrollContent,
+          cartData.length === 0
+            ? {flex: 1, justifyContent: 'center'}
+            : {paddingHorizontal: mvs(12), paddingVertical: mvs(20)},
+        ]}
         showsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl
@@ -205,11 +211,11 @@ export default function CartScreen() {
             onRefresh={onRefresh} // Trigger refresh on pull
           />
         }>
-        <Text style={styles.title}>{t('orderDetails')}</Text>
+        {/* <Text style={styles.title}>{t('orderDetails')}</Text> */}
 
         {cartData.length === 0 ? (
           <View style={styles.emptyCartContainer}>
-            <Text style={styles.emptyCartText}>{t('empty')}</Text>
+            <Bold style={styles.emptyCartText}>{t('empty')}</Bold>
           </View>
         ) : (
           <View style={styles.cartList}>
