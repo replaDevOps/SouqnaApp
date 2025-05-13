@@ -181,7 +181,9 @@ const VerificationScreen = () => {
       console.log('API Response:', response.data);
       if (response.status === 200 && response.data.success) {
         Alert.alert('Success', 'Verification completed!');
-        navigation.navigate('Profile');
+        navigation.navigate('MainTabs', {
+          screen: 'Profile',
+        });
       } else if (
         !response.data.success &&
         response.data.message === 'Your document is still Pending'
@@ -436,7 +438,7 @@ const VerificationScreen = () => {
           </View>
 
           <MyButton
-            title={t('submit')}
+            title={'Submit'}
             onPress={handleSubmit}
             disabled={loading}
           />

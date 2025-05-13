@@ -15,7 +15,11 @@ import {
   logoutUser,
   setVerificationStatus,
 } from '../../../redux/slices/userSlice';
-import {useFocusEffect, useNavigation} from '@react-navigation/native';
+import {
+  CommonActions,
+  useFocusEffect,
+  useNavigation,
+} from '@react-navigation/native';
 import {BackwardSVG, ForwardSVG, ProfileSVG} from '../../../assets/svg';
 import Regular from '../../../typography/RegularText';
 import VerificationStatus from '../../../components/Structure/VerificationStatus';
@@ -74,10 +78,14 @@ const Profile = () => {
 
   const handleLogout = () => {
     dispatch(logoutUser());
-    navigation.replace('Login');
-    console.log('Login');
-  };
 
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [{name: 'Login'}],
+      }),
+    );
+  };
   const handleChangePassword = () => {
     navigation.navigate('ChangePassword');
   };

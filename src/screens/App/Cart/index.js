@@ -297,10 +297,10 @@ export default function CartScreen() {
       <Snackbar
         visible={snackbarVisible}
         onDismiss={() => setSnackbarVisible(false)}
-        duration={3000}
+        duration={2000}
         style={{
           position: 'absolute',
-          bottom: mvs(30),
+          bottom: mvs(20),
           left: 10,
           right: 10,
           borderRadius: 8,

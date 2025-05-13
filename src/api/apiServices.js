@@ -112,15 +112,21 @@ export const deleteCartItem = async cartId => {
   }
 };
 
-export const getProduct = async (productId, token, role) => {
+export const getProduct = async (
+  productId,
+  token,
+  role,
+  verificationStatus,
+) => {
   try {
     const endpoint =
-      role === 2 ? `getProduct/${productId}` : `productDetails/${productId}`;
-    const response = await API.get(endpoint, {
-      headers: {
-        ...(role === 2 && token ? {Authorization: `Bearer ${token}`} : {}),
-      },
-    });
+      role === 2 && verificationStatus === 2
+        ? `getProduct/${productId}`
+        : `productDetails/${productId}`;
+
+    const headers = token ? {Authorization: `Bearer ${token}`} : {};
+
+    const response = await API.get(endpoint, {headers});
     return response.data;
   } catch (error) {
     console.error(
@@ -216,7 +222,7 @@ export const fetchNotifications = async (token, role) => {
 
     if (role === 2) {
       endpoint = 'viewAllNotificaionsSeller';
-      response = await API.post(
+      response = await API.get(
         endpoint,
         {amount: 200},
         {
