@@ -80,9 +80,9 @@ const LoginScreen = () => {
         }
         console.log('Login successful:', user);
 
-        // setTimeout(() => {
-        //   navigation.replace('MainTabs');
-        // }, 1500);
+        setTimeout(() => {
+          navigation.replace('MainTabs');
+        }, 1500);
       } else {
         showErrorMessage();
       }
