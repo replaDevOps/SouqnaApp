@@ -20,7 +20,14 @@ import {
   useFocusEffect,
   useNavigation,
 } from '@react-navigation/native';
-import {BackwardSVG, ForwardSVG, ProfileSVG} from '../../../assets/svg';
+import {
+  BackwardSVG,
+  ChangePassSVG,
+  ForwardSVG,
+  LanguageSVG,
+  ProfileSVG,
+  VerifiedSVG,
+} from '../../../assets/svg';
 import Regular from '../../../typography/RegularText';
 import VerificationStatus from '../../../components/Structure/VerificationStatus';
 import axios from 'axios';
@@ -177,7 +184,7 @@ const Profile = () => {
               onPress={() => navigation.navigate('MyAccount')}>
               <View style={styles.leftRow}>
                 <View style={styles.iconWrapper}>
-                  <ProfileSVG width={22} height={22} fill={colors.green} />
+                  <ProfileSVG width={22} height={22} />
                 </View>
                 <Regular style={styles.menuText}>{t('myAccount')}</Regular>
               </View>
@@ -189,7 +196,7 @@ const Profile = () => {
               onPress={() => navigation.navigate('Verification')}>
               <View style={styles.leftRow}>
                 <View style={styles.iconWrapper}>
-                  <ProfileSVG width={22} height={22} fill={colors.green} />
+                  <VerifiedSVG width={22} height={22} />
                 </View>
                 <Regular style={styles.menuText}>
                   {verificationStatus === 'verified'
@@ -205,7 +212,7 @@ const Profile = () => {
               onPress={handleChangePassword}>
               <View style={styles.leftRow}>
                 <View style={styles.iconWrapper}>
-                  <ProfileSVG width={22} height={22} fill={colors.green} />
+                  <ChangePassSVG width={22} height={22} />
                 </View>
                 <Regular style={styles.menuText}>{t('changePassword')}</Regular>
               </View>
@@ -217,7 +224,7 @@ const Profile = () => {
               onPress={toggleLanguage}>
               <View style={styles.leftRow}>
                 <View style={styles.iconWrapper}>
-                  <ProfileSVG width={22} height={22} fill={colors.green} />
+                  <LanguageSVG width={24} height={24} />
                 </View>
                 <Regular style={styles.menuText}>
                   {i18n.language === 'en'
@@ -228,7 +235,7 @@ const Profile = () => {
               {renderDirectionalIcon()}
             </TouchableOpacity>
           </View>
-          <Regular style={styles.regularText}>{t('favourites')}</Regular>
+          {/* <Regular style={styles.regularText}>{t('favourites')}</Regular>
 
           <View style={styles.menuContainer}>
             <TouchableOpacity style={styles.menuItemContainer}>
@@ -260,7 +267,7 @@ const Profile = () => {
               </View>
               {renderDirectionalIcon()}
             </TouchableOpacity>
-          </View>
+          </View> */}
         </View>
       </View>
     </ScrollView>

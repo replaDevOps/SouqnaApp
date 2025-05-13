@@ -6,7 +6,6 @@ import {
   Image,
   StatusBar,
   StyleSheet,
-  Text,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -20,19 +19,23 @@ import {
   removeFavorite,
 } from '../../../redux/slices/favoritesSlice';
 import MainHeader from '../../../components/Headers/MainHeader';
-import {BASE_URL, fetchProductsBySubCategory} from '../../../api/apiServices';
+import {
+  BASE_URL_Product,
+  fetchProductsBySubCategory,
+} from '../../../api/apiServices';
 import {colors} from '../../../util/color';
 import {mvs} from '../../../util/metrices';
 import Regular from '../../../typography/RegularText';
 import {HeartSvg} from '../../../assets/svg';
+import Bold from '../../../typography/BoldText';
 
 const Products = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [likedItems, setLikedItems] = useState({});
-  
+
   const {role} = useSelector(state => state.user);
- const favorites = useSelector(state => state.favorites.favorites);
+  const favorites = useSelector(state => state.favorites.favorites);
 
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -52,7 +55,6 @@ const Products = () => {
 
     fetchData();
   }, [subCategoryId]);
-
 
   const likedItemes = useMemo(() => {
     const map = {};
@@ -92,7 +94,7 @@ const Products = () => {
         style={styles.recommendedItem}
         onPress={() => navigateToProductDetails(item.id)}>
         <Image
-          source={{uri: `https://backend.souqna.net${item.images?.[0]?.path}`}}
+          source={{uri: `${BASE_URL_Product}${item.images?.[0]?.path}`}}
           style={styles.recommendedImage}
         />
         <View style={styles.recommendedTextContainer}>
@@ -116,7 +118,17 @@ const Products = () => {
       <StatusBar barStyle="dark-content" />
       <MainHeader title={name} showBackIcon />
       {loading ? (
-        <ActivityIndicator size="large" style={{marginTop: 20}} />
+        <View style={styles.noListingsContainer}>
+          <ActivityIndicator size="large" style={{marginTop: 20}} />
+        </View>
+      ) : products.length === 0 ? (
+        <View style={styles.noListingsContainer}>
+          <Image
+            source={require('../../../assets/img/empty.png')}
+            style={{width: '90%', resizeMode: 'contain', height: mvs(200)}}
+          />
+          <Bold>No Listings Right Now</Bold>
+        </View>
       ) : (
         <FlatList
           data={products}
@@ -247,5 +259,15 @@ const styles = StyleSheet.create({
 
   endOfResultsText: {
     textAlign: 'center',
+  },
+  noListingsContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  noListingsText: {
+    fontSize: mvs(18),
+    fontWeight: 'bold',
+    color: colors.grey,
   },
 });
