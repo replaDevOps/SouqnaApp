@@ -5,72 +5,12 @@ import {colors} from '../../util/color';
 import {useDispatch, useSelector} from 'react-redux'; // If you're storing token in Redux
 import {setVerificationStatus} from '../../redux/slices/userSlice';
 import {useIsFocused} from '@react-navigation/native';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 import Loader from '../Loader';
-import { mvs } from '../../util/metrices';
+import {mvs} from '../../util/metrices';
 
-const VerificationStatus = () => {
-  const [showModal, setShowModal] = useState(false);
-  const [status, setStatus] = useState(null);
-  const [loading, setLoading] = useState(true);
+const VerificationStatus = ({status, loading}) => {
   const {t} = useTranslation();
-
-  // Get token from Redux or props
-  const {token} = useSelector(state => state.user);
-  const dispatch = useDispatch();
-  const isFocused = useIsFocused();
-
-  useEffect(() => {
-    const fetchVerificationStatus = async () => {
-      try {
-        const response = await axios.get(
-          'https://backend.souqna.net/api/viewVerification',
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          },
-        );
-
-        // Success case
-        if (response.data.success) {
-          const apiStatus = response.data.data.status || response.data.data;
-          setStatus(apiStatus);
-          dispatch(setVerificationStatus(apiStatus));
-          console.log('api Status: ', apiStatus);
-        }
-        // If status === false and message === 'Unauthenticated'
-        else if (
-          response.data.status === false &&
-          response.data.message === 'Unauthenticated'
-        ) {
-          setStatus(0);
-          dispatch(setVerificationStatus(0));
-          console.log('Unauthenticated: setting Unverified status');
-        }
-      } catch (error) {
-        console.error('Verification API error:', error);
-
-        if (
-          error.response &&
-          error.response.status === 401 &&
-          error.response.data.message === 'Unauthenticated'
-        ) {
-          setStatus(0);
-          dispatch(setVerificationStatus(0));
-          console.log(
-            'Unauthenticated (catch block): setting Unverified status',
-          );
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (isFocused) {
-      fetchVerificationStatus();
-    }
-  }, [token, dispatch, isFocused]);
 
   const isStepCompleted = stepNumber => {
     return status >= stepNumber;
@@ -96,7 +36,7 @@ const VerificationStatus = () => {
   };
 
   if (loading) {
-    return <Loader width={mvs(22)} heigh={mvs(22)}/>
+    return <Loader width={mvs(22)} heigh={mvs(22)} />;
   }
   if (status === null) {
     return <ActivityIndicator size="small" color={colors.green} />;

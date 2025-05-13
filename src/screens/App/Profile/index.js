@@ -15,8 +15,19 @@ import {
   logoutUser,
   setVerificationStatus,
 } from '../../../redux/slices/userSlice';
-import {useFocusEffect, useNavigation} from '@react-navigation/native';
-import {BackwardSVG, ForwardSVG, ProfileSVG} from '../../../assets/svg';
+import {
+  CommonActions,
+  useFocusEffect,
+  useNavigation,
+} from '@react-navigation/native';
+import {
+  BackwardSVG,
+  ChangePassSVG,
+  ForwardSVG,
+  LanguageSVG,
+  ProfileSVG,
+  VerifiedSVG,
+} from '../../../assets/svg';
 import Regular from '../../../typography/RegularText';
 import VerificationStatus from '../../../components/Structure/VerificationStatus';
 import axios from 'axios';
@@ -30,9 +41,12 @@ const Profile = () => {
   const navigation = useNavigation();
   const {token, verificationStatus, role} = useSelector(state => state.user);
   const [refreshing, setRefreshing] = useState(false);
+  const [verificationLoading, setVerificationLoading] = useState(true);
+  const [localStatus, setLocalStatus] = useState(null);
 
   const fetchVerificationStatus = async () => {
     if (!token) return;
+    setVerificationLoading(true);
 
     try {
       const response = await axios.get(
@@ -48,12 +62,26 @@ const Profile = () => {
         const apiStatus =
           response.data?.data?.status ?? response.data?.data ?? 'unverified';
         dispatch(setVerificationStatus(apiStatus));
+        setLocalStatus(apiStatus);
+
         console.log('Fetched verification status: ', apiStatus);
+      } else {
+        setLocalStatus(0);
       }
     } catch (error) {
       console.error('Verification API error:', error);
+      setLocalStatus(0);
+    } finally {
+      setVerificationLoading(false);
     }
   };
+  useFocusEffect(
+    useCallback(() => {
+      if (role === 2) {
+        fetchVerificationStatus();
+      }
+    }, [role]),
+  );
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -74,10 +102,14 @@ const Profile = () => {
 
   const handleLogout = () => {
     dispatch(logoutUser());
-    navigation.replace('Login');
-    console.log('Login');
-  };
 
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [{name: 'Login'}],
+      }),
+    );
+  };
   const handleChangePassword = () => {
     navigation.navigate('ChangePassword');
   };
@@ -137,7 +169,12 @@ const Profile = () => {
       <View />
       <ProfileHeader OnPressLogout={handleLogout} />
       <View style={styles.container}>
-        {role === 2 && <VerificationStatus />}
+        {role === 2 && (
+          <VerificationStatus
+            status={localStatus}
+            loading={verificationLoading}
+          />
+        )}
 
         <View style={styles.content}>
           <Regular style={styles.regularText}>{t('general')}</Regular>
@@ -147,7 +184,7 @@ const Profile = () => {
               onPress={() => navigation.navigate('MyAccount')}>
               <View style={styles.leftRow}>
                 <View style={styles.iconWrapper}>
-                  <ProfileSVG width={22} height={22} fill={colors.green} />
+                  <ProfileSVG width={22} height={22} />
                 </View>
                 <Regular style={styles.menuText}>{t('myAccount')}</Regular>
               </View>
@@ -159,7 +196,7 @@ const Profile = () => {
               onPress={() => navigation.navigate('Verification')}>
               <View style={styles.leftRow}>
                 <View style={styles.iconWrapper}>
-                  <ProfileSVG width={22} height={22} fill={colors.green} />
+                  <VerifiedSVG width={22} height={22} />
                 </View>
                 <Regular style={styles.menuText}>
                   {verificationStatus === 'verified'
@@ -175,7 +212,7 @@ const Profile = () => {
               onPress={handleChangePassword}>
               <View style={styles.leftRow}>
                 <View style={styles.iconWrapper}>
-                  <ProfileSVG width={22} height={22} fill={colors.green} />
+                  <ChangePassSVG width={22} height={22} />
                 </View>
                 <Regular style={styles.menuText}>{t('changePassword')}</Regular>
               </View>
@@ -187,7 +224,7 @@ const Profile = () => {
               onPress={toggleLanguage}>
               <View style={styles.leftRow}>
                 <View style={styles.iconWrapper}>
-                  <ProfileSVG width={22} height={22} fill={colors.green} />
+                  <LanguageSVG width={24} height={24} />
                 </View>
                 <Regular style={styles.menuText}>
                   {i18n.language === 'en'
@@ -198,7 +235,7 @@ const Profile = () => {
               {renderDirectionalIcon()}
             </TouchableOpacity>
           </View>
-          <Regular style={styles.regularText}>{t('favourites')}</Regular>
+          {/* <Regular style={styles.regularText}>{t('favourites')}</Regular>
 
           <View style={styles.menuContainer}>
             <TouchableOpacity style={styles.menuItemContainer}>
@@ -230,7 +267,7 @@ const Profile = () => {
               </View>
               {renderDirectionalIcon()}
             </TouchableOpacity>
-          </View>
+          </View> */}
         </View>
       </View>
     </ScrollView>

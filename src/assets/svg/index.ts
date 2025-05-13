@@ -53,3 +53,6 @@ export {default as PowerOffSVG} from './powerOff';
 export {default as OnOffSVG} from './OnSVG';
 export {default as OffSVG} from './offSVG';
 export {default as BackwardSVG} from './backwardSVG';
+export {default as VerifiedSVG} from './verifiedSVG';
+export {default as ChangePassSVG} from './changePassSVG';
+export {default as LanguageSVG} from './languageSVG';

@@ -80,7 +80,9 @@ const LoginScreen = () => {
         }
         console.log('Login successful:', user);
 
-        navigation.replace('MainTabs');
+        setTimeout(() => {
+          navigation.replace('MainTabs');
+        }, 1500);
       } else {
         showErrorMessage();
       }
@@ -177,8 +179,20 @@ const LoginScreen = () => {
         visible={snackbarVisible}
         onDismiss={() => setSnackbarVisible(false)}
         duration={Snackbar.DURATION_SHORT}
-        style={{backgroundColor: colors.green}}>
-        {snackbarMessage}
+        wrapperStyle={{
+          position: 'absolute',
+          bottom: 40,
+          left: 0,
+          right: 0,
+          alignItems: 'center', // centers the snackbar horizontally
+        }}
+        style={{
+          backgroundColor: colors.lightgreen,
+          width: '90%',
+          borderRadius: 8,
+          left: 30,
+        }}>
+        <Regular style={{textAlign: 'center'}}>{snackbarMessage}</Regular>
       </Snackbar>
     </SafeAreaView>
   );

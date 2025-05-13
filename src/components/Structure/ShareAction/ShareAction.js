@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  Clipboard,
-  Linking,
-  ToastAndroid,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {Linking, ToastAndroid, TouchableOpacity, View} from 'react-native';
 import {Share} from 'react-native';
 import {
   WhatsappSVG,
@@ -16,17 +10,23 @@ import {
 } from '../../../assets/svg';
 import styles from './style';
 import Regular from '../../../typography/RegularText';
+import Clipboard from '@react-native-clipboard/clipboard';
 
-const ShareActions = ({productTitle, productLink}) => {
+const ShareActions = ({productTitle, productLink, productId}) => {
+  if (!productId) {
+    console.warn('Product ID is missing!');
+    return null;
+  }
+  const appLink = `myapp://product/${productId}`;
   const handleShareToWhatsApp = async () => {
     try {
-      const message = `Check out this product: ${productTitle}. More details here: ${productLink}`;
+      const message = `Check out this product: ${productTitle}. More details here: ${appLink}`;
       const url = `whatsapp://send?text=${encodeURIComponent(message)}`;
 
       const canOpen = await Linking.canOpenURL(url);
       if (canOpen) {
         await Linking.openURL(url);
-
+      } else {
         ToastAndroid.show('WhatsApp not installed', ToastAndroid.SHORT);
       }
     } catch (error) {
@@ -36,7 +36,7 @@ const ShareActions = ({productTitle, productLink}) => {
 
   const handleShareToEmail = async () => {
     try {
-      const message = `Check out this product: ${productTitle}. More details here: ${productLink}`;
+      const message = `Check out this product: ${productTitle}. More details here: ${appLink}`;
       const url = `mailto:?subject=Check out this product&body=${encodeURIComponent(
         message,
       )}`;
@@ -54,7 +54,7 @@ const ShareActions = ({productTitle, productLink}) => {
 
   const handleShareToSMS = async () => {
     try {
-      const message = `Check out this product: ${productTitle}. More details here: ${productLink}`;
+      const message = `Check out this product: ${productTitle}. More details here: ${appLink}`;
       const url = `sms:?body=${encodeURIComponent(message)}`;
 
       const canOpen = await Linking.canOpenURL(url);
@@ -69,7 +69,7 @@ const ShareActions = ({productTitle, productLink}) => {
   };
 
   const handleCopyLink = () => {
-    Clipboard.setString(productLink);
+    Clipboard.setString(appLink);
     ToastAndroid.show('Link copied to clipboard!', ToastAndroid.SHORT);
   };
 
@@ -77,7 +77,7 @@ const ShareActions = ({productTitle, productLink}) => {
     try {
       const shareOptions = {
         title: 'Share Product',
-        message: `Check out this product: ${productTitle}. More details here: ${productLink}`,
+        message: `Check out this product: ${productTitle}. More details here: ${appLink}`,
       };
       await Share.open(shareOptions);
     } catch (error) {
