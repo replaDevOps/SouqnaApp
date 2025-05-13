@@ -10,11 +10,12 @@ import {
   StatusBar,
   FlatList,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {CommonActions, useNavigation, useRoute} from '@react-navigation/native';
 import axios from 'axios';
 import {useSelector} from 'react-redux';
-import {launchImageLibrary} from 'react-native-image-picker';
+// import {launchImageLibrary} from 'react-native-image-picker';
+import ImagePicker from 'react-native-image-crop-picker';
 import {Snackbar} from 'react-native-paper';
 import {styles} from './styles';
 import MainHeader from '../../../../components/Headers/MainHeader';
@@ -63,26 +64,54 @@ const CreateProduct = () => {
     setSelectedCondition(condition);
     handleInputChange('condition', condition);
   };
+  useEffect(() => {
+    return () => {
+      ImagePicker.clean()
+        .then(() => console.log('Temp images cleaned up'))
+        .catch(e => console.log('Cleanup error:', e));
+    };
+  }, []);
 
   const handleChooseImages = async () => {
-    const options = {
-      mediaType: 'photo',
-      selectionLimit: 0,
-    };
+    try {
+      const selectedImages = await ImagePicker.openPicker({
+        multiple: true,
+        mediaType: 'photo',
+      });
 
-    launchImageLibrary(options, response => {
-      if (response.didCancel) {
-        console.log('User cancelled image picker');
-      } else if (response.errorCode) {
-        console.log('ImagePicker Error: ', response.errorMessage);
-      } else {
-        const selectedImages = response.assets || [];
-        setFormData(prev => ({
-          ...prev,
-          images: [...prev.images, ...selectedImages],
-        }));
+      // Manually crop each selected image
+      const croppedImages = await Promise.all(
+        selectedImages.map(async image => {
+          const cropped = await ImagePicker.openCropper({
+            path: image.path,
+            width: 1024, // landscape width
+            height: 800, // landscape height
+            cropping: true,
+            freeStyleCropEnabled: true,
+            cropperToolbarTitle: 'Crop Image',
+            cropperCircleOverlay: false,
+          });
+
+          return {
+            uri: cropped.path,
+            fileName: cropped.filename || cropped.path.split('/').pop(),
+            type: cropped.mime,
+            fileSize: cropped.size,
+          };
+        }),
+      );
+
+      setFormData(prev => ({
+        ...prev,
+        images: [...prev.images, ...croppedImages],
+      }));
+    } catch (error) {
+      if (error.code !== 'E_PICKER_CANCELLED') {
+        console.log('Image selection error:', error);
+        setSnackbarMessage('Failed to pick image.');
+        setSnackbarVisible(true);
       }
-    });
+    }
   };
 
   const handleInputChange = (field, value) => {

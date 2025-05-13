@@ -36,7 +36,6 @@ const ProductImages = ({images}) => {
         ))}
       </ScrollView>
 
-      {/* Floating Dot Indicator */}
       <View
         style={{
           position: 'absolute',
