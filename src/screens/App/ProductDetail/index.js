@@ -35,7 +35,7 @@ const ProductDetail = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [headerTitleVisible, setHeaderTitleVisible] = useState(false); // Track header title visibility
   const dispatch = useDispatch();
-  const {token, role} = useSelector(state => state.user);
+  const {token, role, verificationStatus} = useSelector(state => state.user);
   const route = useRoute();
   const {productId} = route.params;
   const [chatLoading, setChatLoading] = useState(false);
@@ -54,7 +54,12 @@ const ProductDetail = () => {
       // console.log('Fetching product details using API Service...');
       setLoading(true);
       try {
-        const response = await getProduct(productId, token, role);
+        const response = await getProduct(
+          productId,
+          token,
+          role,
+          verificationStatus,
+        );
         if (response && response.success !== false) {
           setProduct(response.data);
           console.log('Product Data setting: ', response.data);
@@ -72,7 +77,7 @@ const ProductDetail = () => {
     };
 
     fetchProductDetails();
-  }, [productId, token, role, dispatch]);
+  }, [productId, token, role, verificationStatus, dispatch]);
 
   const handleHeartPress = id => {
     setLikedItems(prevState => ({
