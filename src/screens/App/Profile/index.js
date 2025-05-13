@@ -34,9 +34,12 @@ const Profile = () => {
   const navigation = useNavigation();
   const {token, verificationStatus, role} = useSelector(state => state.user);
   const [refreshing, setRefreshing] = useState(false);
+  const [verificationLoading, setVerificationLoading] = useState(true);
+  const [localStatus, setLocalStatus] = useState(null);
 
   const fetchVerificationStatus = async () => {
     if (!token) return;
+    setVerificationLoading(true);
 
     try {
       const response = await axios.get(
@@ -52,12 +55,26 @@ const Profile = () => {
         const apiStatus =
           response.data?.data?.status ?? response.data?.data ?? 'unverified';
         dispatch(setVerificationStatus(apiStatus));
+        setLocalStatus(apiStatus);
+
         console.log('Fetched verification status: ', apiStatus);
+      } else {
+        setLocalStatus(0);
       }
     } catch (error) {
       console.error('Verification API error:', error);
+      setLocalStatus(0);
+    } finally {
+      setVerificationLoading(false);
     }
   };
+  useFocusEffect(
+    useCallback(() => {
+      if (role === 2) {
+        fetchVerificationStatus();
+      }
+    }, [role]),
+  );
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -145,7 +162,12 @@ const Profile = () => {
       <View />
       <ProfileHeader OnPressLogout={handleLogout} />
       <View style={styles.container}>
-        {role === 2 && <VerificationStatus />}
+        {role === 2 && (
+          <VerificationStatus
+            status={localStatus}
+            loading={verificationLoading}
+          />
+        )}
 
         <View style={styles.content}>
           <Regular style={styles.regularText}>{t('general')}</Regular>
