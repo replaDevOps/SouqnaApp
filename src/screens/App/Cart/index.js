@@ -215,6 +215,10 @@ export default function CartScreen() {
 
         {cartData.length === 0 ? (
           <View style={styles.emptyCartContainer}>
+            <Image
+              source={require('../../../assets/img/empty.png')}
+              style={{width: '90%', resizeMode: 'contain', height: mvs(200)}}
+            />
             <Bold style={styles.emptyCartText}>{t('empty')}</Bold>
           </View>
         ) : (

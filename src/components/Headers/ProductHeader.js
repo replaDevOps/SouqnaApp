@@ -12,6 +12,7 @@ import {useNavigation} from '@react-navigation/native';
 import {BackSVG, HeartSVG, OpenSVG} from '../../assets/svg'; // Replace these with your actual imports
 import {mvs} from '../../util/metrices';
 import {colors} from '../../util/color';
+import {useSelector} from 'react-redux';
 
 const {width} = Dimensions.get('window');
 const ProductHeader = ({
@@ -23,6 +24,7 @@ const ProductHeader = ({
   productLink,
 }) => {
   const navigation = useNavigation();
+  const {role} = useSelector(state => state.user);
 
   const onHeartPressHandler = () => {
     // Call the function passed as a prop with the correct parameters
@@ -40,17 +42,17 @@ const ProductHeader = ({
           styles.headerContainer,
           headerTitleVisible && styles.headerTitleVisible,
         ]}>
-        <TouchableOpacity 
-        style={{
-          backgroundColor:colors.lightgreen,
-          padding:mvs(4),
-          justifyContent:'center',
-          alignItems:'center',
-          borderRadius:mvs(23),
-          width:mvs(40),
-          height:mvs(40)
-        }}
-        onPress={() => navigation.goBack()}>
+        <TouchableOpacity
+          style={{
+            backgroundColor: colors.lightgreen,
+            padding: mvs(4),
+            justifyContent: 'center',
+            alignItems: 'center',
+            borderRadius: mvs(23),
+            width: mvs(40),
+            height: mvs(40),
+          }}
+          onPress={() => navigation.goBack()}>
           <BackSVG width={30} fill={'white'} height={30} />
         </TouchableOpacity>
 
@@ -60,9 +62,11 @@ const ProductHeader = ({
 
         {/* Icons Container: Heart and Open icons */}
         <View style={styles.iconsContainer}>
-          <TouchableOpacity  onPress={onHeartPressHandler}>
-            <HeartSVG width={24} height={24} />
-          </TouchableOpacity>
+          {role !== 2 && (
+            <TouchableOpacity onPress={onHeartPressHandler}>
+              <HeartSVG width={24} height={24} />
+            </TouchableOpacity>
+          )}
           <TouchableOpacity
             style={styles.openIconContainer}
             onPress={handleCopyLink}>

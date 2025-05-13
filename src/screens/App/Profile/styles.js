@@ -6,6 +6,7 @@ const styles = StyleSheet.create({
   Scrollcontainer: {
     // flex: 1,
     // paddingBottom: 40,
+    flex: 1,
     backgroundColor: colors.white,
   },
   container: {
