@@ -27,6 +27,7 @@ import {addToCart, getProduct} from '../../../api/apiServices';
 import {Snackbar} from 'react-native-paper';
 import Loader from '../../../components/Loader';
 import {addItem} from '../../../redux/slices/cartSlice';
+import { getOrCreateConversation } from '../../../firebase/chatService';
 
 const {height} = Dimensions.get('window');
 
@@ -35,7 +36,7 @@ const ProductDetail = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [headerTitleVisible, setHeaderTitleVisible] = useState(false); // Track header title visibility
   const dispatch = useDispatch();
-  const {token, role, verificationStatus} = useSelector(state => state.user);
+  const {token, role, verificationStatus,id: userId} = useSelector(state => state.user);
   const route = useRoute();
   const {productId} = route.params;
   const [chatLoading, setChatLoading] = useState(false);
@@ -113,10 +114,40 @@ const ProductDetail = () => {
   };
 
   const handleChatPress = async () => {
+    if (!product || !product.seller || !userId) {
+      console.error('Missing required data for chat');
+      return;
+    }
+
     setChatLoading(true);
     try {
-      navigation.navigate('Chat');
-      // Add any async logic here (e.g., analytics, logging, or a backend API call)
+      const sellerId = product.seller.id;
+      const sellerName = product.seller.name;
+      
+      console.log(`Creating/getting conversation between ${userId} and seller ${sellerId}`);
+      
+      // Get or create a conversation between the current user and the seller
+      const conversation = await getOrCreateConversation(userId, sellerId, token);
+      
+      if (conversation) {
+        // Navigate to the Chat screen with the necessary parameters
+        navigation.navigate('Chat', {
+          conversationId: conversation.id,
+          otherUserId: sellerId,
+          userName: sellerName || 'Seller',
+          productInfo: {
+            id: product.id,
+            name: product.name,
+            price: product.price,
+            image: product.images && product.images.length > 0 
+              ? `https://backend.souqna.net${product.images[0].path}`
+              : null
+          }
+        });
+        console.log('Successfully navigated to chat with conversation ID:', conversation.id);
+      } else {
+        console.error('Failed to create conversation');
+      }
     } catch (error) {
       console.error('Failed to initiate chat:', error);
     } finally {
