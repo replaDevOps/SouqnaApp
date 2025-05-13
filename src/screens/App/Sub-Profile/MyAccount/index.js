@@ -24,11 +24,20 @@
 
 // export default MyAccount;
 
-import { View, Text, Image, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform, ScrollView, StyleSheet } from 'react-native';
-import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  TextInput,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+} from 'react-native';
+import React, {useState} from 'react';
 import OnSVG from '../../../../assets/svg/OnSVG';
-import { OffSVG } from '../../../../assets/svg';
-import MainHeader from '../../../../components/Headers/MainHeader';
+import {OffSVG} from '../../../../assets/svg';
 
 export default function MyAccount() {
   const [isEditing, setIsEditing] = useState(false);
@@ -38,7 +47,7 @@ export default function MyAccount() {
     address: 'Koteshwor,Kathmandu',
     phone: '+92*********',
     email: 'email@example.com',
-    isMember: true
+    isMember: true,
   });
   const [editedData, setEditedData] = useState(originalData);
 
@@ -57,19 +66,18 @@ export default function MyAccount() {
   };
 
   const handleChange = (field, value) => {
-    setEditedData(prev => ({ ...prev, [field]: value }));
+    setEditedData(prev => ({...prev, [field]: value}));
   };
 
   const toggleMember = () => {
-    setEditedData(prev => ({ ...prev, isMember: !prev.isMember }));
+    setEditedData(prev => ({...prev, isMember: !prev.isMember}));
   };
 
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.flexOne}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0}
-    >
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0}>
       <View style={styles.flexOne}>
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           {/* <MainHeader/> */}
@@ -77,7 +85,7 @@ export default function MyAccount() {
             {/* Profile Image */}
             <View style={styles.profileImageContainer}>
               <View style={styles.profileImageWrapper}>
-                <Image 
+                <Image
                   style={styles.profileImage}
                   source={require('../../../../assets/img/profile.png')}
                 />
@@ -94,18 +102,29 @@ export default function MyAccount() {
 
               <View style={styles.row}>
                 <Text>Seller</Text>
-                <TouchableOpacity onPress={isEditing ? toggleMember : undefined}>
-                  {editedData.isMember ? 
-                    <OnSVG width={50} height={50} stroke={'white'} fill={'green'} />
-                    :
-                    <OffSVG width={50} height={50} stroke={'white'} fill={'green'} />
-                  }
+                <TouchableOpacity
+                  onPress={isEditing ? toggleMember : undefined}>
+                  {editedData.isMember ? (
+                    <OnSVG
+                      width={50}
+                      height={50}
+                      stroke={'white'}
+                      fill={'green'}
+                    />
+                  ) : (
+                    <OffSVG
+                      width={50}
+                      height={50}
+                      stroke={'white'}
+                      fill={'green'}
+                    />
+                  )}
                 </TouchableOpacity>
               </View>
             </View>
 
             {/* Contact Info */}
-            <View style={[styles.card, { marginTop: 16, marginBottom: 24 }]}>
+            <View style={[styles.card, {marginTop: 16, marginBottom: 24}]}>
               <Text style={styles.cardTitle}>Contact Info</Text>
 
               {renderEditableRow('Phone number', 'phone', 'phone-pad')}
@@ -118,15 +137,21 @@ export default function MyAccount() {
             <View style={styles.buttonRow}>
               {isEditing ? (
                 <>
-                  <TouchableOpacity style={styles.cancelBtn} onPress={handleCancel}>
+                  <TouchableOpacity
+                    style={styles.cancelBtn}
+                    onPress={handleCancel}>
                     <Text style={styles.cancelText}>Cancel</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={styles.saveBtn} onPress={handleEditToggle}>
+                  <TouchableOpacity
+                    style={styles.saveBtn}
+                    onPress={handleEditToggle}>
                     <Text style={styles.saveText}>Save</Text>
                   </TouchableOpacity>
                 </>
               ) : (
-                <TouchableOpacity style={styles.editBtn} onPress={handleEditToggle}>
+                <TouchableOpacity
+                  style={styles.editBtn}
+                  onPress={handleEditToggle}>
                   <Text style={styles.editText}>Edit Profile</Text>
                 </TouchableOpacity>
               )}
@@ -145,7 +170,7 @@ export default function MyAccount() {
           <TextInput
             style={styles.input}
             value={editedData[field]}
-            onChangeText={(text) => handleChange(field, text)}
+            onChangeText={text => handleChange(field, text)}
             keyboardType={keyboardType}
           />
         ) : (
@@ -158,14 +183,14 @@ export default function MyAccount() {
 
 const styles = StyleSheet.create({
   flexOne: {
-    flex: 1
+    flex: 1,
   },
   scrollContainer: {
-    flexGrow: 1
+    flexGrow: 1,
   },
   profileImageContainer: {
     marginVertical: 80,
-    alignItems: 'center'
+    alignItems: 'center',
   },
   profileImageWrapper: {
     backgroundColor: '#BBF7D0', // green-200
@@ -174,30 +199,30 @@ const styles = StyleSheet.create({
     height: 144,
     justifyContent: 'center',
     alignItems: 'center',
-    overflow: 'hidden'
+    overflow: 'hidden',
   },
   profileImage: {
     width: 112,
     height: 112,
-    borderRadius: 999
+    borderRadius: 999,
   },
   card: {
     backgroundColor: 'white',
     marginHorizontal: 24,
     borderRadius: 12,
-    padding: 16
+    padding: 16,
   },
   cardTitle: {
     fontWeight: 'bold',
     fontSize: 20,
-    marginBottom: 20
+    marginBottom: 20,
   },
   row: {
     flexDirection: 'row',
     paddingVertical: 8,
     paddingHorizontal: 8,
     justifyContent: 'space-between',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   input: {
     fontSize: 18,
@@ -205,13 +230,13 @@ const styles = StyleSheet.create({
     borderBottomColor: '#E5E7EB',
     paddingHorizontal: 8,
     flex: 1,
-    marginLeft: 16
+    marginLeft: 16,
   },
   value: {
-    fontSize: 18
+    fontSize: 18,
   },
   centered: {
-    alignItems: 'center'
+    alignItems: 'center',
   },
   buttonRow: {
     flexDirection: 'row',
@@ -219,29 +244,29 @@ const styles = StyleSheet.create({
     marginHorizontal: 24,
     paddingVertical: 16,
     borderRadius: 12,
-    marginTop: 24
+    marginTop: 24,
   },
   cancelBtn: {
     paddingVertical: 8,
     paddingHorizontal: 24,
     borderRadius: 12,
-    backgroundColor: '#D1D5DB'
+    backgroundColor: '#D1D5DB',
   },
   cancelText: {
     fontSize: 18,
     color: '#374151',
-    textAlign: 'center'
+    textAlign: 'center',
   },
   saveBtn: {
     paddingVertical: 8,
     paddingHorizontal: 24,
     borderRadius: 12,
-    backgroundColor: '#22C55E'
+    backgroundColor: '#22C55E',
   },
   saveText: {
     fontSize: 18,
     color: 'white',
-    textAlign: 'center'
+    textAlign: 'center',
   },
   editBtn: {
     marginHorizontal: 24,
@@ -249,12 +274,12 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     marginTop: 16,
     width: 320,
-    backgroundColor: '#ADBD6E'
+    backgroundColor: '#ADBD6E',
   },
   editText: {
     textAlign: 'center',
     fontWeight: '600',
     fontSize: 20,
-    color: 'white'
-  }
+    color: 'white',
+  },
 });
