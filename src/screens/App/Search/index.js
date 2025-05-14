@@ -1,12 +1,12 @@
 /* eslint-disable react-native/no-inline-styles */
 
-import React, {useCallback, useEffect, useState} from 'react';
-import {RefreshControl, ScrollView, StatusBar, View} from 'react-native';
+import React, { useCallback, useEffect, useState } from 'react';
+import { RefreshControl, ScrollView, StatusBar, TouchableOpacity, View } from 'react-native';
 import SearchHeader from '../../../components/Headers/SearchHeader';
 import styles from './style';
 import AddModal from '../../../components/Modals/AddModal';
-import {useIsFocused, useNavigation} from '@react-navigation/native';
-import {useDispatch, useSelector} from 'react-redux';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
+import { useDispatch, useSelector } from 'react-redux';
 import CategorySection from '../../../components/Structure/Search/CategorySection/CategorySection';
 import RecommendedSection from '../../../components/Structure/Search/RecommendedSection/RecommendedSection';
 import GalleryContainer from '../../../components/Structure/Search/GallerySection/GallerySection';
@@ -15,11 +15,14 @@ import {
   removeFavorite,
 } from '../../../redux/slices/favoritesSlice';
 import VerificationModal from '../../../components/Modals/VerificationModal';
-import {fetchCategories, fetchProducts} from '../../../api/apiServices';
+import { fetchCategories, fetchProducts } from '../../../api/apiServices';
 import axios from 'axios';
-import {setVerificationStatus} from '../../../redux/slices/userSlice';
+import { setVerificationStatus } from '../../../redux/slices/userSlice';
 import LogoHeader from '../../../components/Structure/Search/Header/LogoHeader';
-import {Snackbar} from 'react-native-paper';
+import { Snackbar } from 'react-native-paper';
+import { colors } from '../../../util/color';
+import { CurrentLocationSVG } from '../../../assets/svg';
+import { log } from 'console';
 
 const SearchScreen = () => {
   const [likedItems, setLikedItems] = useState({});
@@ -28,10 +31,11 @@ const SearchScreen = () => {
   const navigation = useNavigation();
   const [isSearchMode, setIsSearchMode] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [allProducts, setAllProducts] = useState([]);
   const [allRecommendedProducts, setAllRecommendedProducts] = useState([]);
 
   const [isEndOfResults, setIsEndOfResults] = useState(false);
-  const {token, verificationStatus, role} = useSelector(state => state.user);
+  const { token, verificationStatus, role } = useSelector(state => state.user);
   const dispatch = useDispatch();
   const [apiCategories, setApiCategories] = useState([]);
   const [setApiProducts] = useState([]);
@@ -98,6 +102,7 @@ const SearchScreen = () => {
       if (response?.success) {
         const products = response.data;
         setAllRecommendedProducts(products.slice(0, 6));
+        setAllProducts(products);
         setApiProducts(products);
         setIsEndOfResults(false);
       }
@@ -194,7 +199,7 @@ const SearchScreen = () => {
       // If the product is already in the favorites, remove it
       dispatch(removeFavorite(product));
       setLikedItems(prevState => {
-        const updatedState = {...prevState};
+        const updatedState = { ...prevState };
         delete updatedState[id];
         return updatedState;
       });
@@ -227,7 +232,7 @@ const SearchScreen = () => {
   };
 
   const navigateToProductDetails = productId => {
-    navigation.navigate('ProductDetail', {productId});
+    navigation.navigate('ProductDetail', { productId });
     console.log('Product ID: ', productId);
   };
 
@@ -263,12 +268,23 @@ const SearchScreen = () => {
         <LogoHeader />
       </View>
 
+      {/* Map */}
+      <TouchableOpacity 
+      onPress={()=>
+      {
+        console.log('[All products]',allProducts);
+        
+        navigation.navigate('Map', { allProducts })}
+      }
+      style={styles.mapContainer}>
+        <CurrentLocationSVG width={40} height={40} fill={colors.green} />
+      </TouchableOpacity>
       <ScrollView
-        contentContainerStyle={{backgroundColor: '#fbfbfb'}}
+        contentContainerStyle={{ backgroundColor: '#fbfbfb' }}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }>
-        <View style={{backgroundColor: '#fbfbfb'}}>
+        <View style={{ backgroundColor: '#fbfbfb' }}>
           <SearchHeader
             onFocusSearch={onFocusSearch}
             isSearchMode={isSearchMode}
@@ -293,7 +309,9 @@ const SearchScreen = () => {
           handleHeartClick={handleHeartClick}
           navigateToProductDetails={navigateToProductDetails}
         />
+
       </ScrollView>
+
 
       {isModalVisible && <AddModal onClose={onClose} />}
       <VerificationModal

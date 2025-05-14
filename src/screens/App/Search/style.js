@@ -9,6 +9,18 @@ const styles = StyleSheet.create({
     // backgroundColor: '#000',
     // paddingBottom: mvs(40),
   },
+  mapContainer: {
+    position: 'absolute',
+    width: mvs(55),
+    height: mvs(55),
+    backgroundColor: '#fbfbfb',
+    bottom: 10,
+    right:10,
+    zIndex: 10,
+    borderRadius: mvs(27),
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
   LogoHeader: {
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -52,7 +64,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
 
-  
+
   content: {
     backgroundColor: colors.white,
   },
@@ -78,7 +90,7 @@ const styles = StyleSheet.create({
     marginRight: 'auto',
     marginBottom: mvs(4),
   },
- 
+
   productPrice: {
     fontSize: mvs(10),
     color: colors.green,

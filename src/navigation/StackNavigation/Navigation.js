@@ -26,6 +26,7 @@ import Chat from '../../screens/App/Chat';
 import InboxScreen from '../../screens/App/Inbox';
 import CheckoutScreen from '../../screens/Checkout';
 import BuyerNotification from '../../screens/App/BuyerNotification';
+import MapScreen from '../../screens/App/Map';
 
 const Stack = createStackNavigator();
 
@@ -72,6 +73,7 @@ const AppNavigator = () => {
         <Stack.Screen name="Inbox" component={InboxScreen} />
         <Stack.Screen name="Checkout" component={CheckoutScreen} />
         <Stack.Screen name="BuyerNotification" component={BuyerNotification} />
+        <Stack.Screen name="Map" component={MapScreen} />
       </Stack.Navigator>
     </View>
   );
