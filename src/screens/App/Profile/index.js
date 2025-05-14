@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useMemo, useState} from 'react';
 import {
   View,
   TouchableOpacity,
@@ -149,15 +149,19 @@ const Profile = () => {
     }
   };
 
-  const renderDirectionalIcon = () => {
-    if (I18nManager.isRTL) {
-      return <BackwardSVG width={20} height={20} fill={colors.green} />;
-    }
-    return <ForwardSVG width={30} height={30} fill={colors.green} />;
-  };
+  const renderDirectionalIcon = useMemo(
+    () =>
+      I18nManager.isRTL ? (
+        <BackwardSVG width={20} height={20} fill={colors.green} />
+      ) : (
+        <ForwardSVG width={30} height={30} fill={colors.green} />
+      ),
+    [],
+  );
 
   return (
     <ScrollView
+      style={{flex: 1, backgroundColor: '#fff'}}
       contentContainerStyle={styles.Scrollcontainer}
       refreshControl={
         <RefreshControl
@@ -166,8 +170,10 @@ const Profile = () => {
           progressViewOffset={50}
         />
       }>
-      <View />
-      <ProfileHeader OnPressLogout={handleLogout} />
+      <View style={{backgroundColor: '#fff', elevation: 0, shadowOpacity: 0}}>
+        <ProfileHeader OnPressLogout={handleLogout} />
+      </View>
+
       <View style={styles.container}>
         {role === 2 && (
           <VerificationStatus

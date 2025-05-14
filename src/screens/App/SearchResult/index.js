@@ -112,6 +112,7 @@ const SearchResultsScreen = () => {
       ) : (
         <FlatList
           data={filteredProducts}
+          numColumns={2}
           keyExtractor={item => item.id?.toString()}
           renderItem={({item}) => <ProductCard product={item} />}
           ListEmptyComponent={renderEmptyState}

@@ -49,6 +49,7 @@ const ProductDetail = () => {
   const [showAddedSnackbar, setShowAddedSnackbar] = useState(false);
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isReadMore, setIsReadMore] = useState(true);
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -274,10 +275,25 @@ const ProductDetail = () => {
             />
             <View style={styles.descriptionContainer}>
               <Bold style={{fontSize: mvs(22)}}>Description</Bold>
-              <Regular style={styles.description}>
+              <Regular
+                style={styles.description}
+                numberOfLines={isReadMore ? 3 : 0}>
                 {product.description}
               </Regular>
+              {product.description?.split(' ').length > 20 && (
+                <Text
+                  style={{
+                    color: colors.primary,
+                    marginTop: 4,
+                    marginRight: 10,
+                    textAlign: 'right',
+                  }}
+                  onPress={() => setIsReadMore(!isReadMore)}>
+                  {isReadMore ? 'Read More' : 'Show Less'}
+                </Text>
+              )}
             </View>
+
             <ProviderInfo provider={product} />
 
             <View style={styles.providerContainer}>
