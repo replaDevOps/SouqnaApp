@@ -1,18 +1,42 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Text,
   TouchableOpacity,
   StyleSheet,
   ActivityIndicator,
+  Linking,
 } from 'react-native';
 import {mvs} from '../../util/metrices';
 import {colors} from '../../util/color';
-import {CartSVG, ChatSVG} from '../../assets/svg';
+import {CallSVG, CartSVG, ChatSVG} from '../../assets/svg';
 import {useNavigation} from '@react-navigation/native';
 
-const ProductFooter = ({onBuyPress, onChatPress, loadingChat, loadingBuy}) => {
+const ProductFooter = ({
+  onBuyPress,
+  onChatPress,
+  onCallPress,
+  loadingChat,
+  loadingBuy,
+  loadingCall,
+  sellerPhone,
+}) => {
   const navigation = useNavigation();
+  const [showCall, setShowCall] = useState(false);
+  const [showBuy, setShowBuy] = useState(false);
+
+  const handleCallPress = () => {
+    if (sellerPhone) {
+      Linking.openURL(`tel:${sellerPhone}`);
+      setShowCall(true); // Once called, show permanently
+    } else {
+      console.warn('Seller phone number not available');
+    }
+  };
+  const handleBuyPress = () => {
+    setShowBuy(true);
+    onBuyPress && onBuyPress();
+  };
   return (
     <View style={styles.footerContainer}>
       <View style={styles.buttonRow}>
@@ -24,14 +48,26 @@ const ProductFooter = ({onBuyPress, onChatPress, loadingChat, loadingBuy}) => {
             <Text style={styles.buttonText}>Chat with Seller</Text>
           )}
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.buyButton]} onPress={onBuyPress}>
-          <CartSVG width={24} height={24} />
-          {loadingBuy ? (
+        {showBuy ? (
+          <TouchableOpacity style={[styles.buyButton]} onPress={onBuyPress}>
+            <CartSVG width={24} height={24} />
+            {loadingBuy ? (
+              <ActivityIndicator size="small" color={colors.green} />
+            ) : (
+              <Text style={styles.buttonText}>Buy Directly</Text>
+            )}
+          </TouchableOpacity>
+        ) : null}
+        {/* {showCall ? ( */}
+        <TouchableOpacity style={styles.buyButton} onPress={handleCallPress}>
+          <CallSVG width={24} height={24} />
+          {loadingCall ? (
             <ActivityIndicator size="small" color={colors.green} />
           ) : (
-            <Text style={styles.buttonText}>Buy Directly</Text>
+            <Text style={styles.buttonText}>Call Seller</Text>
           )}
         </TouchableOpacity>
+        {/* ) : null} */}
       </View>
     </View>
   );
