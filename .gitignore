@@ -24,7 +24,7 @@ DerivedData
 
 # Ignore config with secrets
 config.private.js
-
+firebaseConfig.js
 
 # Android/IntelliJ
 #
