@@ -284,12 +284,12 @@ useEffect(() => {
         right: { 
           backgroundColor: '#ADBD6E', 
           padding: mvs(10),
-          marginRight: mvs(10),
+          marginRight: mvs(0),
         },
         left: { 
           backgroundColor: '#F0F0F0',
           padding: mvs(10),
-          marginLeft: mvs(10),
+          marginLeft: mvs(0),
         },
       }}
       textStyle={{
@@ -416,7 +416,8 @@ useEffect(() => {
             }}
             placeholder="Type a message..."
             alwaysShowSend
-            showUserAvatar={false} // Hide avatars
+            showUserAvatar={false}
+            renderAvatar={()=>null} // Hide avatars
             renderAvatarOnTop={false} // Hide avatars
             renderUsernameOnMessage={false} // Hide usernames
             scrollToBottom
