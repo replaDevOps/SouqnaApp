@@ -427,7 +427,7 @@ useEffect(() => {
             renderInputToolbar={renderInputToolbar}
             renderComposer={renderComposer}
             renderCustomView={renderCustomView}
-            renderMessageImage={renderMessageImage}
+            // renderMessageImage={renderMessageImage}
             timeFormat="HH:mm"
             dateFormat="MMM D"
           />
