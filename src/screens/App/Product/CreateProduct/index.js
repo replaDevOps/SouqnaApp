@@ -26,6 +26,7 @@ import {mvs} from '../../../../util/metrices';
 import {UploadSVG} from '../../../../assets/svg';
 import GooglePlacesSuggestion from '../../../../components/GooglePlacesSuggestion';
 import {useTranslation} from 'react-i18next';
+import PriceInputWithDropdown from '../../../../components/atoms/InputFields/PriceInputWithCurrency';
 
 const CreateProduct = () => {
   const route = useRoute();
@@ -451,6 +452,16 @@ const CreateProduct = () => {
             {t('price')}
             <Text style={{color: colors.red}}>*</Text>
           </Text>
+          {/* <PriceInputWithDropdown
+            value={formData.price}
+            onChangeText={text => handleInputChange('price', text)}
+            selectedCurrency={formData.currency}
+            onCurrencyChange={currency =>
+              handleInputChange('currency', currency)
+            }
+            placeholder={t('pricePlaceholder')}
+          /> */}
+
           <TextInput
             style={styles.input}
             placeholder={t('pricePlaceholder')}

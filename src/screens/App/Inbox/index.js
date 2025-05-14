@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, { useEffect, useState, useCallback } from 'react';
+import React, {useEffect, useState, useCallback} from 'react';
 import {
   FlatList,
   Image,
@@ -11,10 +11,10 @@ import {
   StatusBar,
   ActivityIndicator,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { useSelector } from 'react-redux';
-import { getUserConversations, getUserInfo } from '../../../firebase/chatService';
-import { formatDistanceToNow } from 'date-fns';
+import {useNavigation} from '@react-navigation/native';
+import {useSelector} from 'react-redux';
+import {getUserConversations, getUserInfo} from '../../../firebase/chatService';
+import {formatDistanceToNow} from 'date-fns';
 import SearchSVG from '../../../assets/svg/SearchSVG';
 import {CloseSvg} from '../../../assets/svg';
 import styles from './styles';
@@ -26,8 +26,8 @@ import InboxSkeleton from './InboxSkeleton';
 
 const InboxScreen = () => {
   const navigation = useNavigation();
-  const { token, id: userId, role } = useSelector(state => state.user);
-  
+  const {token, id: userId, role} = useSelector(state => state.user);
+
   const [searchText, setSearchText] = useState('');
   const [conversations, setConversations] = useState([]);
   const [filteredConversations, setFilteredConversations] = useState([]);
@@ -47,43 +47,45 @@ const InboxScreen = () => {
 
     const unsubscribe = getUserConversations(
       userId,
-      async (querySnapshot) => {
+      async querySnapshot => {
         const conversationsData = [];
-        
+
         for (const doc of querySnapshot.docs) {
-          const conversation = { id: doc.id, ...doc.data() };
-          
+          const conversation = {id: doc.id, ...doc.data()};
+
           // Find the other user's ID
-          const otherUserId = conversation.members.find(memberId => memberId !== userId);
-          
+          const otherUserId = conversation.members.find(
+            memberId => memberId !== userId,
+          );
+
           if (otherUserId && !usersInfo[otherUserId]) {
             try {
               // Fetch user info if not already in state
               const userInfo = await getUserInfo(otherUserId);
               if (userInfo) {
-                setUsersInfo(prev => ({ ...prev, [otherUserId]: userInfo }));
+                setUsersInfo(prev => ({...prev, [otherUserId]: userInfo}));
               }
             } catch (error) {
               console.error('Error fetching user info:', error);
             }
           }
-          
+
           conversationsData.push({
             ...conversation,
             otherUserId,
           });
         }
-        
+
         setConversations(conversationsData);
         setFilteredConversations(conversationsData);
         setIsLoading(false);
       },
-      (error) => {
+      error => {
         console.error('Error getting conversations:', error);
         setIsLoading(false);
-      }
+      },
     );
-    
+
     return () => unsubscribe();
   }, [userId, token, usersInfo]);
 
@@ -93,15 +95,15 @@ const InboxScreen = () => {
       setFilteredConversations(conversations);
       return;
     }
-    
+
     const filtered = conversations.filter(conversation => {
       const otherUser = usersInfo[conversation.otherUserId];
       if (!otherUser) return false;
-      
+
       const name = otherUser.name?.toLowerCase() || '';
       return name.includes(searchText.toLowerCase());
     });
-    
+
     setFilteredConversations(filtered);
   }, [searchText, conversations, usersInfo]);
 
@@ -119,64 +121,67 @@ const InboxScreen = () => {
     setIsSearchMode(false);
     setShowLocationIcon(true);
   };
-  
-  const formatTimestamp = (timestamp) => {
+
+  const formatTimestamp = timestamp => {
     if (!timestamp || !timestamp.toDate) {
       return '';
     }
-    
+
     try {
-      return formatDistanceToNow(timestamp.toDate(), { addSuffix: true });
+      return formatDistanceToNow(timestamp.toDate(), {addSuffix: true});
     } catch (error) {
       console.error('Error formatting timestamp:', error);
       return '';
     }
   };
 
-  const renderItem = useCallback(({ item }) => {
-    const otherUser = usersInfo[item.otherUserId] || {};
-    const unreadCount = item.userInfo?.[userId]?.unreadCount || 0;
-    const lastMessage = item.lastMessage || {};
-    
-    return (
-      <TouchableOpacity
-        onPress={() => 
-          navigation.navigate('Chat', { 
-            conversationId: item.id,
-            userName: otherUser.name || 'Chat',
-            otherUserId: item.otherUserId
-          })
-        }
-        style={styles.messageContainer}>
-        <View style={styles.messageHeader}>
-          <Image
-            source={
-              otherUser.profileImage 
-                ? { uri: otherUser.profileImage } 
-                : require('../../../assets/img/profile.png')
-            }
-            style={styles.profileImage}
-          />
-          <View style={styles.messageHeaderInfo}>
-            <Text style={styles.senderName}>{otherUser.name || 'User'}</Text>
-            <Text style={styles.messageText} numberOfLines={1}>
-              {lastMessage.text || 'Start a conversation...'}
-            </Text>
+  const renderItem = useCallback(
+    ({item}) => {
+      const otherUser = usersInfo[item.otherUserId] || {};
+      const unreadCount = item.userInfo?.[userId]?.unreadCount || 0;
+      const lastMessage = item.lastMessage || {};
+
+      return (
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate('Chat', {
+              conversationId: item.id,
+              userName: otherUser.name || 'Chat',
+              otherUserId: item.otherUserId,
+            })
+          }
+          style={styles.messageContainer}>
+          <View style={styles.messageHeader}>
+            <Image
+              source={
+                otherUser.profileImage
+                  ? {uri: otherUser.profileImage}
+                  : require('../../../assets/img/profile.png')
+              }
+              style={styles.profileImage}
+            />
+            <View style={styles.messageHeaderInfo}>
+              <Text style={styles.senderName}>{otherUser.name || 'User'}</Text>
+              <Text style={styles.messageText} numberOfLines={1}>
+                {lastMessage.text || 'Start a conversation...'}
+              </Text>
+            </View>
           </View>
-        </View>
-        <View style={styles.messageBody}>
-          <Text style={styles.messageTime}>
-            {formatTimestamp(lastMessage.createdAt)}
-          </Text>
-          {unreadCount > 0 ? (
-  <View style={styles.unreadBadge}>
-    <Text style={styles.unreadBadgeText}>{unreadCount}</Text>
-  </View>
-) : null}
-        </View>
-      </TouchableOpacity>
-    );
-  }, [navigation, usersInfo, userId]);
+          <View style={styles.messageBody}>
+            <Text style={styles.messageTime}>
+              {formatTimestamp(lastMessage.createdAt)}
+            </Text>
+            {unreadCount > 0 ? (
+              <View style={styles.unreadBadge}>
+                <Text style={styles.unreadBadgeText}>{unreadCount}</Text>
+              </View>
+            ) : null}
+          </View>
+        </TouchableOpacity>
+      );
+    },
+    [navigation, usersInfo, userId],
+  );
 
   const EmptyComponent = () => (
     <View style={styles.emptyContainer}>
@@ -199,8 +204,8 @@ const InboxScreen = () => {
 
       <ScrollView
         style={{flex: 1, backgroundColor: '#fbfbfb', paddingBottom: mvs(40)}}>
-      <MainHeader title={'Messages'} />
-        
+        <MainHeader title={'Messages'} />
+
         {/* Search Bar */}
         <View style={styles.searchBarContainer}>
           <TouchableOpacity style={styles.icon}>
@@ -242,7 +247,7 @@ const InboxScreen = () => {
               data={filteredConversations}
               keyExtractor={item => item.id}
               renderItem={renderItem}
-              ListEmptyComponent={EmptyComponent}
+              // ListEmptyComponent={EmptyComponent}
               contentContainerStyle={{
                 gap: 15,
                 marginHorizontal: mvs(14),

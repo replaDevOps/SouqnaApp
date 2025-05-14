@@ -13,12 +13,10 @@ import config from '../util/config';
 
 // firebase/firebaseConfig.js
 export const firebaseConfig = {
-  apiKey: "AIzaSyAyD2-xKx69c2QPu9xujn4eXZjeR4mp_vk",
-  authDomain: "souqna-chat.firebaseapp.com",
-  projectId: "souqna-chat",
-  storageBucket: "souqna-chat.firebasestorage.app",
-  messagingSenderId: "318478732377",
-  appId: "1:318478732377:web:d1ccbb99a0a7bfce57f548"
+  apiKey: config.WALEED_FIREBASE,
+  authDomain: 'souqna-chat.firebaseapp.com',
+  projectId: 'souqna-chat',
+  storageBucket: 'souqna-chat.firebasestorage.app',
+  messagingSenderId: '318478732377',
+  appId: '1:318478732377:web:d1ccbb99a0a7bfce57f548',
 };
-
-
