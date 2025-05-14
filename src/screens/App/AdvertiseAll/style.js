@@ -3,52 +3,48 @@ import {mvs} from '../../../util/metrices';
 import {colors} from '../../../util/color';
 
 const styles = StyleSheet.create({
-  container:{
-   backgroundColor:'#fff',
-   flex:1,
+  container: {
+    flex: 1,
+    backgroundColor: colors.white,
+  },
+  headerContainer: {
+    paddingHorizontal: mvs(16),
+    paddingVertical: mvs(10),
+    backgroundColor: '#f9f9f9',
+    marginBottom: mvs(10),
   },
   header: {
     fontSize: mvs(16),
-    fontWeight:'bold',
-    color:colors.grey,
-    marginLeft: mvs(7),
-  },
-  headerContainer: {
-    padding: mvs(10),
-    backgroundColor: '#fbfbfb',
-    marginVertical: mvs(20),
+    fontWeight: 'bold',
+    color: colors.grey,
   },
   content: {
-    // padding: mvs(10),
-    backgroundColor: colors.white,
-   paddingHorizontal:mvs(4),
-    // marginVertical: mvs(10),
+    paddingHorizontal: mvs(16),
+    paddingBottom: mvs(20),
   },
-  // subCategoryItem: {
-  //   padding: mvs(10),
-  //   borderBottomWidth: 1,
-  //   borderBottomColor: colors.grey,
-  // },
   subCategoryItem: {
-   marginBottom: 10,
-   paddingVertical:8,
-    // marginVertical: 6,
-    // backgroundColor: '#f2f2f2',
-    alignItems:'center',
-    flexDirection:'row',
-    borderRadius: 8,
-    borderBottomWidth:1,
-    borderBottomColor:'#f0f0f0',
-    justifyContent:'space-between'   
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#f5f5f5',
+    borderRadius: mvs(12),
+    paddingVertical: mvs(12),
+    paddingHorizontal: mvs(16),
+    marginBottom: mvs(12),
+    shadowColor: colors.black,
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 1, // Android shadow
+  },
+  subCategoryLeft: {
+    flex: 1,
+    justifyContent: 'center',
   },
   subCategoryText: {
-    fontSize: mvs(18),
-    paddingLeft:mvs(4)
-
+    fontSize: mvs(15),
+    color: '#333',
   },
-  titleContainer:{
-    flexDirection:'row',alignItems:'center',
-        paddingLeft:mvs(10)
-  }
 });
+
 export default styles;

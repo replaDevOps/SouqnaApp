@@ -9,7 +9,7 @@ import {ForwardSVG} from '../../../assets/svg';
 
 const AdvertiseAll = () => {
   const route = useRoute();
-  const {category, subcategories, categoryId,categoryImage} = route.params;
+  const {category, subcategories, categoryId, categoryImage} = route.params;
   const navigation = useNavigation();
 
   const handleSubcategoryPress = subcategory => {
@@ -18,7 +18,7 @@ const AdvertiseAll = () => {
       categoryId: categoryId,
       id: subcategory.id,
       name: subcategory.name,
-      category:category,
+      category: category,
       categoryImage: categoryImage,
     });
   };
@@ -30,10 +30,10 @@ const AdvertiseAll = () => {
     <TouchableOpacity
       style={styles.subCategoryItem}
       onPress={() => handleSubcategoryPress(item)}>
-      <View style={styles.titleContainer}>
+      <View style={styles.subCategoryLeft}>
         <Regular style={styles.subCategoryText}>{item.name}</Regular>
       </View>
-      <ForwardSVG width={26} height={26} />
+      <ForwardSVG width={22} height={22} />
     </TouchableOpacity>
   );
 
@@ -47,8 +47,9 @@ const AdvertiseAll = () => {
       <View style={styles.content}>
         <FlatList
           data={subcategories}
-          keyExtractor={item => item.id}
+          keyExtractor={item => item.id.toString()}
           renderItem={renderSubCategoryItem}
+          contentContainerStyle={styles.content}
         />
       </View>
     </SafeAreaView>
