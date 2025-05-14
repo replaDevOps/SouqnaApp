@@ -82,7 +82,7 @@ const LoginScreen = () => {
 
         setTimeout(() => {
           navigation.replace('MainTabs');
-        }, 1500);
+        }, 1000);
       } else {
         showErrorMessage();
       }
