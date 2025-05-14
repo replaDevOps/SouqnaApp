@@ -42,6 +42,7 @@ const SearchScreen = () => {
   const [hasFetchedVerification, setHasFetchedVerification] = useState(false);
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [searchText, setSearchText] = useState('');
 
   const showSnackbar = message => {
     setSnackbarMessage(message);
@@ -215,7 +216,9 @@ const SearchScreen = () => {
   };
 
   const onFocusSearch = () => {
-    setIsSearchMode(true);
+    navigation.navigate('SearchResultsScreen', {
+      searchText,
+    });
   };
 
   const onCancelSearch = () => {
@@ -275,6 +278,8 @@ const SearchScreen = () => {
             onCancelSearch={onCancelSearch}
             onSearch={navigateToSearchResults}
             showLocationIcon={false}
+            searchText={searchText}
+            setSearchText={setSearchText}
           />
         </View>
 

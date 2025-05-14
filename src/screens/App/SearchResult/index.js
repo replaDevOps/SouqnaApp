@@ -1,65 +1,124 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
-  TextInput,
-  TouchableOpacity,
+  ScrollView,
+  StatusBar,
   StyleSheet,
+  Image,
   Text,
+  ActivityIndicator,
+  FlatList,
 } from 'react-native';
+import SearchHeader from '../../../components/Headers/SearchHeader';
 import {useNavigation, useRoute} from '@react-navigation/native';
-import {BackSVG} from '../../../assets/svg';
-import {colors} from '../../../util/color';
 import {mvs} from '../../../util/metrices';
-import { useTranslation } from 'react-i18next';
+import {colors} from '../../../util/color';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import MainHeader from '../../../components/Headers/MainHeader';
+import Bold from '../../../typography/BoldText';
+import {useSelector} from 'react-redux';
+import {fetchProducts} from '../../../api/apiServices';
+import ProductCard from '../../../components/Cards/ProductCard';
 
 const SearchResultsScreen = () => {
-  const [searchText, setSearchText] = useState('');
-  const navigation = useNavigation();
   const route = useRoute();
-  const {t} = useTranslation();
+  const navigation = useNavigation();
+  const initialSearchText = route.params?.searchText || '';
+  const [searchText, setSearchText] = useState(initialSearchText);
+  const [allProducts, setAllProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const {token, role} = useSelector(state => state.user);
 
-  // Get the search text passed from SearchScreen
-  React.useEffect(() => {
-    if (route.params?.searchText) {
-      setSearchText(route.params.searchText);
+  useEffect(() => {
+    loadProducts();
+  }, []);
+
+  useEffect(() => {
+    filterProducts(searchText);
+  }, [searchText]);
+
+  const loadProducts = async () => {
+    try {
+      setLoading(true);
+      const response = await fetchProducts(token, {}, role);
+      console.log('API product response:', response);
+
+      // Adjusting the response to access products inside the 'data' field
+      if (response?.success && Array.isArray(response.data)) {
+        setAllProducts(response.data); // All products
+        setFilteredProducts(response.data); // Filtered products
+      } else {
+        console.warn('No products received or invalid format:', response);
+        setAllProducts([]); // Ensure an empty array if no products
+        setFilteredProducts([]); // Ensure an empty array if no products
+      }
+    } catch (err) {
+      console.error('Error loading products:', err);
+    } finally {
+      setLoading(false);
     }
-  }, [route.params?.searchText]);
-
-  const handleClearSearch = () => {
-    setSearchText('');
   };
 
-  const handleBack = () => {
+  const filterProducts = query => {
+    if (!query) {
+      setFilteredProducts(allProducts);
+      return;
+    }
+    const filtered = allProducts.filter(product =>
+      product.name?.toLowerCase().includes(query.toLowerCase()),
+    );
+    setFilteredProducts(filtered);
+  };
+
+  const handleSearch = query => {
+    console.log('Searching for:', query);
+    // Perform search logic here
+  };
+
+  const handleClose = () => {
     navigation.goBack();
   };
 
-  return (
-    <View style={styles.container}>
-      <View style={styles.headerContainer}>
-        <TouchableOpacity onPress={handleBack} style={styles.backButton}>
-          <BackSVG />
-        </TouchableOpacity>
-
-        <View style={styles.searchBarContainer}>
-          <TextInput
-            style={styles.searchBar}
-            value={searchText}
-            onChangeText={setSearchText}
-            placeholder={t('Searchplaceholder')}
-            placeholderTextColor={colors.grey}
-          />
-          <TouchableOpacity
-            onPress={handleClearSearch}
-            style={styles.clearButton}>
-            <Text style={styles.clearText}>X</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      <View style={styles.resultsContainer}>
-        <Text>{t('resultsFor')}{searchText}</Text>
-      </View>
+  const renderEmptyState = () => (
+    <View style={styles.emptyContainer}>
+      <Image
+        source={require('../../../assets/img/empty.png')}
+        style={styles.emptyImage}
+        resizeMode="contain"
+      />
+      <Bold style={styles.emptyText}>
+        {searchText ? 'No matching products found.' : 'Start Searching...'}
+      </Bold>
     </View>
+  );
+
+  return (
+    <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
+      <StatusBar barStyle="dark-content" translucent backgroundColor="#fff" />
+      <MainHeader title={'Search'} onClose={handleClose} showBackIcon />
+      <SearchHeader
+        onFocusSearch={() => {}}
+        isSearchMode={true}
+        onSearch={handleSearch}
+        showLocationIcon={false}
+        searchText={searchText}
+        setSearchText={setSearchText}
+      />
+      {loading ? (
+        <View style={styles.loader}>
+          <ActivityIndicator size="large" color={colors.primary} />
+        </View>
+      ) : (
+        <FlatList
+          data={filteredProducts}
+          keyExtractor={item => item.id?.toString()}
+          renderItem={({item}) => <ProductCard product={item} />}
+          ListEmptyComponent={renderEmptyState}
+          contentContainerStyle={{paddingBottom: 50, padding: 10}}
+        />
+      )}
+    </SafeAreaView>
   );
 };
 
@@ -106,6 +165,26 @@ const styles = StyleSheet.create({
   },
   resultsContainer: {
     marginTop: mvs(20),
+  },
+  loader: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  emptyContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: mvs(50),
+  },
+  emptyImage: {
+    width: mvs(150),
+    height: mvs(150),
+    marginBottom: mvs(20),
+  },
+  emptyText: {
+    fontSize: mvs(16),
+    color: colors.black,
   },
 });
 
