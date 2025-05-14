@@ -56,3 +56,4 @@ export {default as BackwardSVG} from './backwardSVG';
 export {default as VerifiedSVG} from './verifiedSVG';
 export {default as ChangePassSVG} from './changePassSVG';
 export {default as LanguageSVG} from './languageSVG';
+export {default as CallSVG} from './callSVG';
