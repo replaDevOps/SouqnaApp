@@ -3,7 +3,6 @@ import {
   collection, 
   doc, 
   setDoc, 
-  addDoc, 
   getDoc, 
   getDocs, 
   query, 
@@ -21,7 +20,6 @@ import { db } from '.';
 // Create a new conversation or get existing one
 export const getOrCreateConversation = async (currentUserId, otherUserId, token) => {
   try {
-    // Check if conversation already exists
     const conversationsRef = collection(db, 'conversations');
     const q = query(
       conversationsRef,
@@ -29,6 +27,7 @@ export const getOrCreateConversation = async (currentUserId, otherUserId, token)
     );
     
     const querySnapshot = await getDocs(q);
+    
     let existingConversation = null;
     
     querySnapshot.forEach((doc) => {
@@ -42,7 +41,6 @@ export const getOrCreateConversation = async (currentUserId, otherUserId, token)
       return existingConversation;
     }
     
-    // Create new conversation if it doesn't exist
     const newConversationRef = doc(conversationsRef);
     const newConversation = {
       members: [currentUserId, otherUserId],
@@ -68,7 +66,7 @@ export const getOrCreateConversation = async (currentUserId, otherUserId, token)
     await setDoc(newConversationRef, newConversation);
     return { id: newConversationRef.id, ...newConversation };
   } catch (error) {
-    console.error('Error creating/getting conversation:', error);
+    console.error('[chatService] Error creating/getting conversation:', error);
     throw error;
   }
 };
@@ -82,7 +80,16 @@ export const getUserConversations = (userId, onResult, onError) => {
     orderBy('updatedAt', 'desc')
   );
   
-  return onSnapshot(q, onResult, onError);
+  return onSnapshot(
+    q, 
+    (querySnapshot) => {
+      onResult(querySnapshot);
+    }, 
+    (error) => {
+      console.error('[chatService] getUserConversations error:', error);
+      onError(error);
+    }
+  );
 };
 
 // Send a message in a conversation
@@ -90,7 +97,6 @@ export const sendMessage = async (conversationId, message) => {
   try {
     const batch = writeBatch(db);
     
-    // Add the message to subcollection
     const messagesRef = collection(db, `conversations/${conversationId}/messages`);
     const newMessageRef = doc(messagesRef);
     
@@ -99,9 +105,9 @@ export const sendMessage = async (conversationId, message) => {
       createdAt: serverTimestamp(),
     });
     
-    // Update conversation metadata
     const conversationRef = doc(db, 'conversations', conversationId);
-    batch.update(conversationRef, {
+    
+    const lastMessageUpdate = {
       lastMessage: {
         text: message.text || '📎 Attachment',
         senderId: message.user._id,
@@ -109,26 +115,31 @@ export const sendMessage = async (conversationId, message) => {
       },
       updatedAt: serverTimestamp(),
       [`userInfo.${message.user._id}.lastRead`]: serverTimestamp(),
-    });
+    };
     
-    // Increment unread counter for other users in conversation
+    batch.update(conversationRef, lastMessageUpdate);
+    
     const conversationDoc = await getDoc(conversationRef);
     const conversationData = conversationDoc.data();
     
+    if (!conversationData) {
+      console.error(`[chatService] No conversation data found for ID: ${conversationId}`);
+      throw new Error(`Conversation not found: ${conversationId}`);
+    }
+    
     conversationData.members.forEach(memberId => {
       if (memberId !== message.user._id) {
+        const currentUnreadCount = conversationData.userInfo[memberId]?.unreadCount || 0;
         batch.update(conversationRef, {
-          [`userInfo.${memberId}.unreadCount`]: (conversationData.userInfo[memberId]?.unreadCount || 0) + 1
+          [`userInfo.${memberId}.unreadCount`]: currentUnreadCount + 1
         });
       }
     });
     
-    // Commit the batch
     await batch.commit();
-    
     return newMessageRef.id;
   } catch (error) {
-    console.error('Error sending message:', error);
+    console.error('[chatService] Error sending message:', error);
     throw error;
   }
 };
@@ -139,7 +150,6 @@ export const getMessages = (conversationId, callback, lastVisibleDoc = null, mes
   let q;
   
   if (lastVisibleDoc) {
-    // Make sure we're passing a proper document snapshot
     q = query(
       messagesRef,
       orderBy('createdAt', 'desc'),
@@ -160,8 +170,6 @@ export const getMessages = (conversationId, callback, lastVisibleDoc = null, mes
 export const markConversationAsRead = async (conversationId, userId) => {
   try {
     const conversationRef = doc(db, 'conversations', conversationId);
-    
-    // Create an update object that sets the unread count to 0 for this user
     const updateData = {
       [`userInfo.${userId}.unreadCount`]: 0
     };
@@ -169,7 +177,7 @@ export const markConversationAsRead = async (conversationId, userId) => {
     await updateDoc(conversationRef, updateData);
     return true;
   } catch (error) {
-    console.error('Error marking conversation as read:', error);
+    console.error('[chatService] Error marking conversation as read:', error);
     return false;
   }
 };
@@ -183,11 +191,10 @@ export const getUserInfo = async (userId) => {
     if (userSnap.exists()) {
       return userSnap.data();
     } else {
-      console.log('No such user!');
       return null;
     }
   } catch (error) {
-    console.error('Error getting user info:', error);
+    console.error('[chatService] Error getting user info:', error);
     throw error;
   }
 };

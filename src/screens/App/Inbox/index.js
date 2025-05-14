@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useEffect, useState, useCallback} from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import {
   FlatList,
   Image,
@@ -9,12 +9,12 @@ import {
   View,
   ScrollView,
   StatusBar,
-  ActivityIndicator,
+  Alert,
 } from 'react-native';
-import {useNavigation} from '@react-navigation/native';
-import {useSelector} from 'react-redux';
-import {getUserConversations, getUserInfo} from '../../../firebase/chatService';
-import {formatDistanceToNow} from 'date-fns';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
+import { getUserConversations, getUserInfo } from '../../../firebase/chatService';
+import { formatDistanceToNow } from 'date-fns';
 import SearchSVG from '../../../assets/svg/SearchSVG';
 import {CloseSvg} from '../../../assets/svg';
 import styles from './styles';
@@ -26,8 +26,8 @@ import InboxSkeleton from './InboxSkeleton';
 
 const InboxScreen = () => {
   const navigation = useNavigation();
-  const {token, id: userId, role} = useSelector(state => state.user);
-
+  const { token, id: userId, role } = useSelector(state => state.user);
+  
   const [searchText, setSearchText] = useState('');
   const [conversations, setConversations] = useState([]);
   const [filteredConversations, setFilteredConversations] = useState([]);
@@ -35,58 +35,126 @@ const InboxScreen = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isSearchMode, setIsSearchMode] = useState(false);
   const [showLocationIcon, setShowLocationIcon] = useState(true);
+  
+  // Ref to store the listener unsubscribe function
+  const unsubscribeRef = useRef(null);
 
-  // Load conversations
-  // Load conversations
-  // Load conversations
-  useEffect(() => {
+  // Debug user state
+
+
+  // This will run every time the screen comes into focus
+  useFocusEffect(
+    useCallback(() => {
+      // Set up the listener
+      setupConversationListener();
+      
+      // Clean up when the screen loses focus
+      return () => {
+        if (unsubscribeRef.current) {
+          unsubscribeRef.current();
+          unsubscribeRef.current = null;
+        }
+      };
+    }, [userId, token])
+  );
+
+  // Setup conversation listener function
+  const setupConversationListener = useCallback(() => {
     if (!userId || !token) {
       setIsLoading(false);
       return;
     }
 
-    const unsubscribe = getUserConversations(
-      userId,
-      async querySnapshot => {
-        const conversationsData = [];
+    // Clean up existing listener if any
+    if (unsubscribeRef.current) {
+      unsubscribeRef.current();
+      unsubscribeRef.current = null;
+    }
 
-        for (const doc of querySnapshot.docs) {
-          const conversation = {id: doc.id, ...doc.data()};
+    setIsLoading(true);
 
-          // Find the other user's ID
-          const otherUserId = conversation.members.find(
-            memberId => memberId !== userId,
-          );
-
-          if (otherUserId && !usersInfo[otherUserId]) {
+    try {
+      const unsubscribe = getUserConversations(
+        userId,
+        async (querySnapshot) => {
+          
+          if (querySnapshot.empty) {
+            setConversations([]);
+            setFilteredConversations([]);
+            setIsLoading(false);
+            return;
+          }
+          
+          // First, extract all conversations data
+          const conversationsData = [];
+          querySnapshot.forEach(doc => {
+            const data = doc.data();
+            const otherUserId = data.members.find(memberId => memberId !== userId);
+            
+          
+            
+            conversationsData.push({ 
+              id: doc.id, 
+              ...data,
+              otherUserId
+            });
+          });
+          
+          // Now, collect all the unique user IDs we need to fetch
+          const userIdsToFetch = conversationsData
+            .map(conv => conv.otherUserId)
+            .filter(id => id && !usersInfo[id]);
+          
+          
+          // Fetch all the user info in parallel
+          if (userIdsToFetch.length > 0) {
             try {
-              // Fetch user info if not already in state
-              const userInfo = await getUserInfo(otherUserId);
-              if (userInfo) {
-                setUsersInfo(prev => ({...prev, [otherUserId]: userInfo}));
+              const newUsersInfo = {};
+              
+              // Fetch each user individually to handle errors better
+              for (const id of userIdsToFetch) {
+                try {
+                  const userInfo = await getUserInfo(id);
+                  if (userInfo) {
+                    newUsersInfo[id] = userInfo;
+                  } else {
+                  }
+                } catch (userError) {
+                  console.error(`[InboxScreen] ❌ Error fetching user ${id}:`, userError);
+                }
+              }
+              
+              // Update the state with all the new user info at once
+              if (Object.keys(newUsersInfo).length > 0) {
+                setUsersInfo(prev => {
+                  const combined = { ...prev, ...newUsersInfo };
+                  return combined;
+                });
               }
             } catch (error) {
-              console.error('Error fetching user info:', error);
+              console.error('[InboxScreen] ❌ Error fetching user info:', error);
             }
           }
-
-          conversationsData.push({
-            ...conversation,
-            otherUserId,
-          });
+          
+          // Set conversations state
+          setConversations(conversationsData);
+          setFilteredConversations(conversationsData);
+          setIsLoading(false);
+        },
+        (error) => {
+          console.error('[InboxScreen] ❌ Error getting conversations:', error);
+          Alert.alert('Error', 'Failed to load conversations. Please try again.');
+          setIsLoading(false);
         }
-
-        setConversations(conversationsData);
-        setFilteredConversations(conversationsData);
-        setIsLoading(false);
-      },
-      error => {
-        console.error('Error getting conversations:', error);
-        setIsLoading(false);
-      },
-    );
-
-    return () => unsubscribe();
+      );
+      
+      // Store the unsubscribe function in the ref
+      unsubscribeRef.current = unsubscribe;
+      
+    } catch (error) {
+      console.error('[InboxScreen] ❌ Exception setting up conversation listener:', error);
+      setIsLoading(false);
+    }
   }, [userId, token, usersInfo]);
 
   // Filter conversations based on search text
@@ -95,15 +163,15 @@ const InboxScreen = () => {
       setFilteredConversations(conversations);
       return;
     }
-
+    
     const filtered = conversations.filter(conversation => {
       const otherUser = usersInfo[conversation.otherUserId];
       if (!otherUser) return false;
-
+      
       const name = otherUser.name?.toLowerCase() || '';
       return name.includes(searchText.toLowerCase());
     });
-
+    
     setFilteredConversations(filtered);
   }, [searchText, conversations, usersInfo]);
 
@@ -113,7 +181,6 @@ const InboxScreen = () => {
   };
 
   const onSearch = query => {
-    console.log('Searching for:', query);
   };
 
   const handleClearText = () => {
@@ -121,82 +188,86 @@ const InboxScreen = () => {
     setIsSearchMode(false);
     setShowLocationIcon(true);
   };
-
-  const formatTimestamp = timestamp => {
+  
+  const formatTimestamp = (timestamp) => {
     if (!timestamp || !timestamp.toDate) {
       return '';
     }
-
+    
     try {
-      return formatDistanceToNow(timestamp.toDate(), {addSuffix: true});
+      return formatDistanceToNow(timestamp.toDate(), { addSuffix: true });
     } catch (error) {
-      console.error('Error formatting timestamp:', error);
+      console.error('[InboxScreen] ❌ Error formatting timestamp:', error);
       return '';
     }
   };
 
-  const renderItem = useCallback(
-    ({item}) => {
-      const otherUser = usersInfo[item.otherUserId] || {};
-      const unreadCount = item.userInfo?.[userId]?.unreadCount || 0;
-      const lastMessage = item.lastMessage || {};
+  const refreshInbox = () => {
+    setupConversationListener();
+  };
 
-      return (
-        <TouchableOpacity
-          onPress={() =>
-            navigation.navigate('Chat', {
-              conversationId: item.id,
-              userName: otherUser.name || 'Chat',
-              otherUserId: item.otherUserId,
-            })
-          }
-          style={styles.messageContainer}>
-          <View style={styles.messageHeader}>
-            <Image
-              source={
-                otherUser.profileImage
-                  ? {uri: otherUser.profileImage}
-                  : require('../../../assets/img/profile.png')
-              }
-              style={styles.profileImage}
-            />
-            <View style={styles.messageHeaderInfo}>
-              <Text style={styles.senderName}>{otherUser.name || 'User'}</Text>
-              <Text style={styles.messageText} numberOfLines={1}>
-                {lastMessage.text || 'Start a conversation...'}
-              </Text>
-            </View>
-          </View>
-          <View style={styles.messageBody}>
-            <Text style={styles.messageTime}>
-              {formatTimestamp(lastMessage.createdAt)}
+  const renderItem = useCallback(({ item }) => {
+    const otherUser = usersInfo[item.otherUserId] || {};
+    const unreadCount = item.userInfo?.[userId]?.unreadCount || 0;
+    const lastMessage = item.lastMessage || {};
+    
+    
+    return (
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate('Chat', { 
+            conversationId: item.id,
+            userName: otherUser.name || 'Chat',
+            otherUserId: item.otherUserId
+          });
+        }}
+        style={styles.messageContainer}>
+        <View style={styles.messageHeader}>
+          <Image
+            source={
+              otherUser.profileImage 
+                ? { uri: otherUser.profileImage } 
+                : require('../../../assets/img/profile.png')
+            }
+            style={styles.profileImage}
+          />
+          <View style={styles.messageHeaderInfo}>
+            <Text style={styles.senderName}>{otherUser.name || 'User'}</Text>
+            <Text style={styles.messageText} numberOfLines={1}>
+              {lastMessage.text || 'Start a conversation...'}
             </Text>
-            {unreadCount > 0 ? (
-              <View style={styles.unreadBadge}>
-                <Text style={styles.unreadBadgeText}>{unreadCount}</Text>
-              </View>
-            ) : null}
           </View>
-        </TouchableOpacity>
-      );
-    },
-    [navigation, usersInfo, userId],
-  );
+        </View>
+        <View style={styles.messageBody}>
+          <Text style={styles.messageTime}>
+            {formatTimestamp(lastMessage.createdAt)}
+          </Text>
+          {unreadCount > 0 ? (
+            <View style={styles.unreadBadge}>
+              <Text style={styles.unreadBadgeText}>{unreadCount}</Text>
+            </View>
+          ) : null}
+        </View>
+      </TouchableOpacity>
+    );
+  }, [navigation, usersInfo, userId]);
 
   const EmptyComponent = () => (
     <View style={styles.emptyContainer}>
       <Text style={styles.emptyText}>
         {isLoading ? 'Loading conversations...' : 'No conversations yet'}
       </Text>
-      {/* {!isLoading && (
+      {!isLoading && (
         <TouchableOpacity
           style={styles.startChatButton}
-          onPress={() => navigation.navigate('SearchResultsScreen')}>
-          <Text style={styles.startChatButtonText}>Find People to Chat With</Text>
+          onPress={refreshInbox}>
+          <Text style={styles.startChatButtonText}>Refresh Inbox</Text>
         </TouchableOpacity>
-      )} */}
+      )}
     </View>
   );
+
+  
 
   return (
     <SafeAreaView style={styles.container}>
@@ -205,7 +276,7 @@ const InboxScreen = () => {
       <ScrollView
         style={{flex: 1, backgroundColor: '#fbfbfb', paddingBottom: mvs(40)}}>
         <MainHeader title={'Messages'} />
-
+        
         {/* Search Bar */}
         <View style={styles.searchBarContainer}>
           <TouchableOpacity style={styles.icon}>
@@ -236,6 +307,7 @@ const InboxScreen = () => {
           )}
         </View>
 
+     
         {/* Messages */}
         <View style={styles.messagesWrapper}>
           <Text style={styles.header}>Messages</Text>
@@ -247,7 +319,7 @@ const InboxScreen = () => {
               data={filteredConversations}
               keyExtractor={item => item.id}
               renderItem={renderItem}
-              // ListEmptyComponent={EmptyComponent}
+              ListEmptyComponent={EmptyComponent}
               contentContainerStyle={{
                 gap: 15,
                 marginHorizontal: mvs(14),
