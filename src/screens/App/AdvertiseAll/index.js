@@ -26,6 +26,7 @@ const AdvertiseAll = () => {
   const handleBack = () => {
     navigation.goBack();
   };
+
   const renderSubCategoryItem = ({item}) => (
     <TouchableOpacity
       style={styles.subCategoryItem}

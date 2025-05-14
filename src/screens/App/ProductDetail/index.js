@@ -27,7 +27,7 @@ import {addToCart, getProduct} from '../../../api/apiServices';
 import {Snackbar} from 'react-native-paper';
 import Loader from '../../../components/Loader';
 import {addItem} from '../../../redux/slices/cartSlice';
-import { getOrCreateConversation } from '../../../firebase/chatService';
+import {getOrCreateConversation} from '../../../firebase/chatService';
 
 const {height} = Dimensions.get('window');
 
@@ -36,7 +36,12 @@ const ProductDetail = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [headerTitleVisible, setHeaderTitleVisible] = useState(false); // Track header title visibility
   const dispatch = useDispatch();
-  const {token, role, verificationStatus,id: userId} = useSelector(state => state.user);
+  const {
+    token,
+    role,
+    verificationStatus,
+    id: userId,
+  } = useSelector(state => state.user);
   const route = useRoute();
   const {productId} = route.params;
   const [chatLoading, setChatLoading] = useState(false);
@@ -44,6 +49,7 @@ const ProductDetail = () => {
   const [showAddedSnackbar, setShowAddedSnackbar] = useState(false);
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isReadMore, setIsReadMore] = useState(true);
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -123,12 +129,17 @@ const ProductDetail = () => {
     try {
       const sellerId = product.seller.id;
       const sellerName = product.seller.name;
-      
-      console.log(`Creating/getting conversation between ${userId} and seller ${sellerId}`);
-      
-      // Get or create a conversation between the current user and the seller
-      const conversation = await getOrCreateConversation(userId, sellerId, token);
-      
+
+      console.log(
+        `Creating/getting conversation between ${userId} and seller ${sellerId}`,
+      );
+
+      const conversation = await getOrCreateConversation(
+        userId,
+        sellerId,
+        token,
+      );
+
       if (conversation) {
         // Navigate to the Chat screen with the necessary parameters
         navigation.navigate('Chat', {
@@ -139,12 +150,16 @@ const ProductDetail = () => {
             id: product.id,
             name: product.name,
             price: product.price,
-            image: product.images && product.images.length > 0 
-              ? `https://backend.souqna.net${product.images[0].path}`
-              : null
-          }
+            image:
+              product.images && product.images.length > 0
+                ? `https://backend.souqna.net${product.images[0].path}`
+                : null,
+          },
         });
-        console.log('Successfully navigated to chat with conversation ID:', conversation.id);
+        console.log(
+          'Successfully navigated to chat with conversation ID:',
+          conversation.id,
+        );
       } else {
         console.error('Failed to create conversation');
       }
@@ -260,10 +275,25 @@ const ProductDetail = () => {
             />
             <View style={styles.descriptionContainer}>
               <Bold style={{fontSize: mvs(22)}}>Description</Bold>
-              <Regular style={styles.description}>
+              <Regular
+                style={styles.description}
+                numberOfLines={isReadMore ? 3 : 0}>
                 {product.description}
               </Regular>
+              {product.description?.split(' ').length > 20 && (
+                <Text
+                  style={{
+                    color: colors.primary,
+                    marginTop: 4,
+                    marginRight: 10,
+                    textAlign: 'right',
+                  }}
+                  onPress={() => setIsReadMore(!isReadMore)}>
+                  {isReadMore ? 'Read More' : 'Show Less'}
+                </Text>
+              )}
             </View>
+
             <ProviderInfo provider={product} />
 
             <View style={styles.providerContainer}>
@@ -285,6 +315,7 @@ const ProductDetail = () => {
               loadingChat={chatLoading}
               onBuyPress={handleBuyPress}
               onChatPress={handleChatPress}
+              sellerPhone="971501234567"
             />
           )}
 

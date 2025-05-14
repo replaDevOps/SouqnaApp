@@ -91,6 +91,9 @@ const CreateProduct = () => {
             freeStyleCropEnabled: true,
             cropperToolbarTitle: 'Crop Image',
             cropperCircleOverlay: false,
+            cropperStatusBarColor: '#ffffff',
+            cropperToolbarColor: '#ffffff',
+            cropperToolbarWidgetColor: '#000000',
           });
 
           return {
@@ -288,14 +291,32 @@ const CreateProduct = () => {
                 source={{uri: categoryImage}}
                 style={styles.categoryImage}
               />
-              <View style={{marginLeft: mvs(10)}}>
-                <Text style={styles.categoryTitle}>{category}</Text>
-                <Text style={styles.categorySubtitle}>{name}</Text>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  // justifyContent: 'space-between',
+                }}>
+                <View style={styles.fixedTextBox}>
+                  <Text
+                    style={styles.categoryTitle}
+                    ellipsizeMode="tail"
+                    numberOfLines={1}>
+                    {category}
+                  </Text>
+                  <Text
+                    style={styles.categorySubtitle}
+                    ellipsizeMode="tail"
+                    numberOfLines={1}>
+                    {name}
+                  </Text>
+                </View>
+
+                <TouchableOpacity onPress={handleChange}>
+                  <Text style={styles.changeText}>{t('change')}</Text>
+                </TouchableOpacity>
               </View>
             </View>
-            <TouchableOpacity onPress={handleChange}>
-              <Text style={styles.changeText}>{t('change')}</Text>
-            </TouchableOpacity>
           </View>
 
           <View style={styles.uploadBox}>
