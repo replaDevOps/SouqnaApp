@@ -14,12 +14,12 @@ const styles = StyleSheet.create({
   },
   categoryList: {
     paddingHorizontal: mvs(16),
-    paddingTop: mvs(10),
-    paddingBottom: mvs(24),
+    paddingTop: mvs(18),
+    paddingBottom: mvs(18),
   },
   categoryItem: {
     width: cardWidth,
-    aspectRatio: 1, // Keeps card square
+    aspectRatio: 1.1, // Keeps card square
     marginHorizontal: CARD_MARGIN,
     marginBottom: mvs(16),
     backgroundColor: '#F5F5F5',
@@ -35,8 +35,8 @@ const styles = StyleSheet.create({
   IconContainer: {
     justifyContent: 'center',
     alignItems: 'center',
-    width: mvs(60),
-    height: mvs(60),
+    width: mvs(50),
+    height: mvs(50),
     borderRadius: mvs(12),
     marginBottom: mvs(18),
   },

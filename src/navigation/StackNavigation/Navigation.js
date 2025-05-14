@@ -13,7 +13,7 @@ import AboutScreen from '../../screens/Modal/About';
 import HelpScreen from '../../screens/Modal/HelpandFeedback';
 import SearchResultsScreen from '../../screens/App/SearchResult';
 import ProductDetail from '../../screens/App/ProductDetail';
-import AllCategories from '../../screens/App/SearchAll';
+import AllCategories from '../../screens/App/SearchAllCategories';
 import SubCategoryScreen from '../../screens/App/SubCategory';
 import ChangePassword from '../../screens/App/ChangePassword';
 import AdvertiseAll from '../../screens/App/AdvertiseAll';

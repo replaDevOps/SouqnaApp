@@ -23,16 +23,17 @@ const {height} = Dimensions.get('window');
 const headerHeight = height * 0.28;
 
 export default function ProfileHeader({OnPressLogout}) {
-  const [isSellerOn, setIsSellerOn] = useState(role === '2' || role === 2); // Initialize based on role
+  const {role} = useSelector(state => state.user);
+  const [isSellerOn, setIsSellerOn] = useState(role === '2' || role === 2);
 
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
-  const {role} = useSelector(state => state.user);
+
   const [fadeAnim] = useState(new Animated.Value(1));
   const navigation = useNavigation();
 
   useEffect(() => {
-    setIsSellerOn(role === '2' || role === 2); // Update seller mode on role change
+    setIsSellerOn(role === '2' || role === 2);
   }, [role]);
 
   const toggleSellerMode = () => {
@@ -59,10 +60,10 @@ export default function ProfileHeader({OnPressLogout}) {
 
   return (
     <View style={styles.headerContainer}>
-       <StatusBar
-        translucent={true}
-        backgroundColor="transparent"
-        barStyle="light-content"
+      <StatusBar
+        barStyle="dark-content"
+        backgroundColor="#ffffff" // Make sure this matches your background
+        translucent={false}
       />
       <TouchableOpacity onPress={OnPressLogout} style={styles.logoutButton}>
         <PowerOffSVG width={mvs(25)} height={mvs(25)} fill={colors.white} />
@@ -83,7 +84,7 @@ export default function ProfileHeader({OnPressLogout}) {
             ? t('Seller Account')
             : role === '3' || role === 3
             ? t('Buyer Account')
-            : t('Demo Account')}
+            : t('Guest Account')}
         </Text>
 
         <TouchableOpacity onPress={toggleSellerMode} activeOpacity={0.8}>
@@ -112,7 +113,7 @@ const styles = StyleSheet.create({
   headerContainer: {
     backgroundColor: colors.lightorange,
     height: headerHeight,
-    paddingTop:StatusBar.currentHeight,
+    paddingTop: StatusBar.currentHeight || 40,
     paddingHorizontal: mvs(15),
     flexDirection: 'column',
     justifyContent: 'space-between',

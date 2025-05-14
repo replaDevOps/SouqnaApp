@@ -11,13 +11,15 @@ const SearchHeader = ({
   isSearchMode,
   onSearch,
   showLocationIcon = true,
+  searchText,
+  setSearchText,
 }) => {
-  const [searchText, setSearchText] = useState('');
   const {t} = useTranslation();
 
   const handleClearText = () => {
     setSearchText('');
   };
+
   return (
     <View style={styles.container}>
       <View style={styles.searchBarContainer}>
@@ -27,13 +29,12 @@ const SearchHeader = ({
 
         <TextInput
           style={styles.searchBar}
-          onPress={onFocusSearch}
+          onPressIn={onFocusSearch}
           placeholder={t('placeholder')}
           placeholderTextColor={colors.grey}
           keyboardType="default"
           value={searchText}
           onChangeText={setSearchText}
-          onFocus={onFocusSearch}
           onSubmitEditing={() => {
             if (searchText.trim() !== '') {
               onSearch(searchText);
@@ -45,13 +46,7 @@ const SearchHeader = ({
           <TouchableOpacity
             onPress={handleClearText}
             style={styles.notificationIcon}>
-            <CloseSvg width={13} height={13} />
-          </TouchableOpacity>
-        ) : !isSearchMode && showLocationIcon ? (
-          <TouchableOpacity style={styles.locationIconContainer}>
-            <View style={styles.locationIcon}>
-              <LocationSvg width={18} height={18} />
-            </View>
+            <CloseSvg width={18} height={18} fill={colors.grey} />
           </TouchableOpacity>
         ) : null}
       </View>

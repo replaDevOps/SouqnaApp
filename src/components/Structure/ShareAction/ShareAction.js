@@ -101,9 +101,9 @@ const ShareActions = ({productTitle, productLink, productId}) => {
         <TouchableOpacity onPress={handleCopyLink}>
           <CopyLinkSVG width={30} height={30} style={styles.shareIcon} />
         </TouchableOpacity>
-        <TouchableOpacity onPress={handleShareProduct}>
+        {/* <TouchableOpacity onPress={handleShareProduct}>
           <OpenSVG width={30} height={30} style={styles.shareIcon} />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
     </View>
   );

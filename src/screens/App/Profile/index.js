@@ -103,12 +103,7 @@ const Profile = () => {
   const handleLogout = () => {
     dispatch(logoutUser());
 
-    navigation.dispatch(
-      CommonActions.reset({
-        index: 0,
-        routes: [{name: 'Login'}],
-      }),
-    );
+    navigation.replace('Login');
   };
   const handleChangePassword = () => {
     navigation.navigate('ChangePassword');
@@ -158,6 +153,7 @@ const Profile = () => {
 
   return (
     <ScrollView
+      style={{flex: 1, backgroundColor: '#fff'}}
       contentContainerStyle={styles.Scrollcontainer}
       refreshControl={
         <RefreshControl
@@ -166,8 +162,10 @@ const Profile = () => {
           progressViewOffset={50}
         />
       }>
-      <View />
-      <ProfileHeader OnPressLogout={handleLogout} />
+      <View style={{backgroundColor: '#fff', elevation: 0, shadowOpacity: 0}}>
+        <ProfileHeader OnPressLogout={handleLogout} />
+      </View>
+
       <View style={styles.container}>
         {role === 2 && (
           <VerificationStatus
