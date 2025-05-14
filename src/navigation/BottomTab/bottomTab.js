@@ -93,7 +93,7 @@ const MyTabs = () => {
   }, []);
 
   const renderTabs = () => {
-    if (role == 2) {
+    if (role == 2 && token) {
       // Seller: Home, Inbox, Advertise, Profile
       return (
         <>

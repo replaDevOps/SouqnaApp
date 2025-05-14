@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   TextInput,
@@ -24,6 +24,7 @@ import {UploadSVG, CalendersSVG} from '../../../assets/svg';
 import {colors} from '../../../util/color';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useTranslation} from 'react-i18next';
+import axios from 'axios';
 
 // Radio Button Component
 const RadioButton = ({selected, onPress, label}) => {
@@ -45,7 +46,7 @@ const RadioButton = ({selected, onPress, label}) => {
 const VerificationScreen = () => {
   const navigation = useNavigation();
   const {token} = useSelector(state => state.user);
-  console.log(token);
+  // console.log(token);
   const [loading, setLoading] = useState(false);
   const {t} = useTranslation();
 
@@ -63,13 +64,120 @@ const VerificationScreen = () => {
   const [idFrontSide, setIdFrontSide] = useState(null);
   const [idBackSide, setIdBackSide] = useState(null);
   const [selfie, setSelfie] = useState(null);
-
+  const [originalData, setOriginalData] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
-
+  const [showSubmit, setShowSubmit] = useState(false);
   // States for date pickers
   const [openDob, setOpenDob] = useState(false);
   const [openIssueDate, setOpenIssueDate] = useState(false);
   const [openExpDate, setOpenExpDate] = useState(false);
+  const [verificationData, setVerificationData] = useState(null);
+  const [isVerified, setIsVerified] = useState(false);
+
+  //At first view if user has added verification
+  useEffect(() => {
+    const fetchVerification = async () => {
+      try {
+        const res = await axios.get(
+          'https://backend.souqna.net/api/viewVerification',
+          {
+            headers: {Authorization: `Bearer ${token}`},
+          },
+        );
+        // console.log('API CALLED:', res);
+
+        if (res?.data?.data?.status === 2 && res?.data?.data) {
+          const data = res?.data?.data;
+          console.log('API VERIFICATION DATA: ', res.data);
+          setVerificationData(res.data.data);
+          setIsVerified(true);
+
+          setFormData({
+            fullName: data.fullName || '',
+            dob: data.dob || '',
+            gender: data.gender || 'male',
+            country: data.country || '',
+            address: data.address || '',
+            idNumber: data.idNumber || '',
+            issueDate: data.issueDate || '',
+            expDate: data.expDate || '',
+          });
+          // Pre-fill image placeholders if URLs exist
+          setIdFrontSide(
+            data.idFrontSide
+              ? {
+                  uri: `https://backend.souqna.net/${data.idFrontSide}`,
+                  name: 'idFront.jpg',
+                  type: 'image/jpeg',
+                }
+              : null,
+          );
+
+          setIdBackSide(
+            data.idBackSide
+              ? {
+                  uri: `https://backend.souqna.net/${data.idBackSide}`,
+                  name: 'idBack.jpg',
+                  type: 'image/jpeg',
+                }
+              : null,
+          );
+
+          setSelfie(
+            data.selfie
+              ? {
+                  uri: `https://backend.souqna.net/${data.selfie}`,
+                  name: 'selfie.jpg',
+                  type: 'image/jpeg',
+                }
+              : null,
+          );
+          setOriginalData({
+            formData: {
+              fullName: data.fullName || '',
+              dob: data.dob || '',
+              gender: data.gender || 'male',
+              country: data.country || '',
+              address: data.address || '',
+              idNumber: data.idNumber || '',
+              issueDate: data.issueDate || '',
+              expDate: data.expDate || '',
+            },
+            idFrontSide: data.idFrontSide
+              ? `https://backend.souqna.net/${data.idFrontSide}`
+              : null,
+            idBackSide: data.idBackSide
+              ? `https://backend.souqna.net/${data.idBackSide}`
+              : null,
+            selfie: data.selfie
+              ? `https://backend.souqna.net/${data.selfie}`
+              : null,
+          });
+        } else {
+          setIsVerified(false);
+        }
+      } catch (error) {
+        console.error('Error fetching verification data:', error);
+      }
+    };
+
+    fetchVerification();
+  }, []);
+
+  useEffect(() => {
+    if (!originalData) return;
+
+    const isFormChanged = Object.entries(formData).some(
+      ([key, value]) => value !== originalData.formData[key],
+    );
+
+    const isImageChanged =
+      (idFrontSide?.uri || null) !== originalData.idFrontSide ||
+      (idBackSide?.uri || null) !== originalData.idBackSide ||
+      (selfie?.uri || null) !== originalData.selfie;
+
+    setShowSubmit(isFormChanged || isImageChanged);
+  }, [formData, idFrontSide, idBackSide, selfie, originalData]);
 
   const handleInputChange = (key, value) => {
     setFormData({...formData, [key]: value});
@@ -269,6 +377,7 @@ const VerificationScreen = () => {
           <View style={styles.inputContainer}>
             <Text style={styles.label}>{t('fullName')}</Text>
             <TextInput
+              editable={!isVerified}
               style={styles.input}
               placeholder={t('enterFullName')}
               value={formData.fullName}
@@ -326,6 +435,7 @@ const VerificationScreen = () => {
               <View key={key} style={styles.inputContainer}>
                 <Text style={styles.label}>{t(`${key}`)}</Text>
                 <TextInput
+                  editable={!isVerified}
                   style={styles.input}
                   placeholder={placeholderMap[key]}
                   value={formData[key]}
@@ -437,11 +547,13 @@ const VerificationScreen = () => {
             </View>
           </View>
 
-          <MyButton
-            title={'Submit'}
-            onPress={handleSubmit}
-            disabled={loading}
-          />
+          {showSubmit && (
+            <MyButton
+              title={'Submit'}
+              onPress={handleSubmit}
+              disabled={loading}
+            />
+          )}
 
           {loading && (
             <ActivityIndicator
