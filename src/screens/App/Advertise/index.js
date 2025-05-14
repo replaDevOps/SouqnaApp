@@ -115,7 +115,7 @@ const AdvertiseScreen = () => {
           </Bold>
           {item.hasSubcategories && (
             <View style={{marginTop: mvs(5), alignItems: 'center'}}>
-              <ForwardSVG width={18} height={18} />
+              {/* <ForwardSVG width={18} height={18} /> */}
             </View>
           )}
         </View>
