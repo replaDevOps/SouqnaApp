@@ -1,59 +1,74 @@
 import React from 'react';
-import {View, Text, Image, StyleSheet, TouchableOpacity} from 'react-native';
-import {BASE_URL} from '../../api/apiServices';
+import {View, TouchableOpacity, Image, StyleSheet} from 'react-native';
+import {useSelector} from 'react-redux';
+import Regular from '../../typography/RegularText';
+import {HeartSvg} from '../../assets/svg';
+import {mvs} from '../../util/metrices';
 import {colors} from '../../util/color';
 
-const ProductCard = ({product, onPress}) => {
-  const imageUrl = product?.images?.[0]?.path
-    ? `${BASE_URL}${product.images[0].path}`
-    : null;
+const ProductCard = ({product, onPress, onHeartPress}) => {
+  const {role} = useSelector(state => state.user);
+  const favorites = useSelector(state => state.favorites.favorites);
 
   return (
-    <TouchableOpacity style={styles.card} onPress={() => onPress?.(product)}>
+    <TouchableOpacity style={styles.card} onPress={() => onPress?.(product.id)}>
       <Image
-        source={
-          imageUrl ? {uri: imageUrl} : require('../../assets/img/empty.png')
-        }
+        source={{
+          uri: `https://backend.souqna.net${product?.images?.[0]?.path}`,
+        }}
         style={styles.image}
       />
-      <View style={styles.info}>
-        <Text style={styles.name} numberOfLines={1}>
-          {product.name}
-        </Text>
-        <Text style={styles.price}>${product.price}</Text>
+      <View style={styles.textContainer}>
+        <Regular style={styles.name} numberOfLines={1}>
+          {product?.name}
+        </Regular>
+        <Regular style={styles.price}>
+          ${Number(product?.price || 0).toLocaleString()} - USD
+        </Regular>
       </View>
+      {/* {role !== 2 && (
+        <TouchableOpacity
+          onPress={() => onHeartPress?.(product.id, product)}
+          style={styles.heartIcon}>
+          <HeartSvg filled={isLiked} />
+        </TouchableOpacity>
+      )} */}
     </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
   card: {
-    margin: 10,
+    width: '48%',
+    borderRadius: mvs(10),
     backgroundColor: colors.gray,
-    borderRadius: 10,
-    // elevation: 3,
-    flexDirection: 'row',
-    padding: 10,
-    alignItems: 'center',
+    marginBottom: mvs(18),
+    marginHorizontal: '1%',
+    borderColor: colors.gray,
+    borderWidth: 2,
   },
   image: {
-    width: 60,
-    height: 60,
-    borderRadius: 10,
-    marginRight: 15,
+    width: '100%',
+    height: mvs(120),
+    borderTopLeftRadius: mvs(10),
+    borderTopRightRadius: mvs(10),
   },
-  info: {
-    flex: 1,
+  textContainer: {
+    padding: mvs(10),
   },
   name: {
-    fontSize: 16,
-    fontWeight: '600',
-    marginBottom: 5,
-    color: '#333',
+    fontSize: mvs(14),
+    marginBottom: mvs(5),
   },
   price: {
-    fontSize: 14,
+    fontSize: mvs(12),
     color: '#888',
+  },
+  heartIcon: {
+    position: 'absolute',
+    top: mvs(10),
+    right: mvs(10),
+    zIndex: 1,
   },
 });
 

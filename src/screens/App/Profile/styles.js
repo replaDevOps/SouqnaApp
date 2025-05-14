@@ -4,11 +4,11 @@ import {colors} from '../../../util/color';
 
 const styles = StyleSheet.create({
   Scrollcontainer: {
-    // flex: 1,
-    // paddingBottom: 40,
-    flex: 1,
-    backgroundColor: colors.white,
+    flexGrow: 1, // Better for ScrollView content
+    backgroundColor: '#fff',
+    paddingTop: 0, // Make sure this is not adding space
   },
+
   container: {
     paddingVertical: mvs(45),
   },

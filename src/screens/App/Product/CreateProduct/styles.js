@@ -36,19 +36,39 @@ export const styles = StyleSheet.create({
     height: mvs(60),
     borderRadius: mvs(30),
   },
+  // categoryTitle: {
+  //   fontSize: mvs(18),
+  //   fontWeight: 'bold',
+  // },
+  fixedTextBox: {
+    width: '70%',
+    height: mvs(50),
+    // borderColor: 'red',
+    // borderWidth: 1,
+    justifyContent: 'center',
+    marginLeft: mvs(10),
+    marginRight: mvs(10),
+  },
+
   categoryTitle: {
-    fontSize: mvs(18),
+    fontSize: mvs(16),
+    // color: colors.black,
     fontWeight: 'bold',
   },
+
   categorySubtitle: {
     fontSize: mvs(14),
-    paddingTop: mvs(4),
+    // color: colors.gray,
   },
+
   changeText: {
-    fontSize: mvs(18),
-    fontWeight: 'bold',
+    fontSize: mvs(14),
     color: colors.blue,
+    fontWeight: 'bold',
+    bottom: 10,
+    // flexShrink: 0,
   },
+
   // Condition button styles
   conditionButton: {
     borderWidth: 1,
@@ -151,7 +171,7 @@ export const styles = StyleSheet.create({
   },
   flatListContainer: {
     // alignItems: 'center',
-    marginHorizontal:20,
+    marginHorizontal: 20,
   },
   uploadBox: {
     borderWidth: 1,
@@ -163,12 +183,12 @@ export const styles = StyleSheet.create({
     marginTop: mvs(15),
   },
   iconRow: {
-    paddingHorizontal:mvs(30),
-    paddingVertical:mvs(38),
-    height:mvs(122),
-    borderWidth:1,
-    borderRadius:mvs(7),
-    borderColor:colors.grey,
+    paddingHorizontal: mvs(30),
+    paddingVertical: mvs(38),
+    height: mvs(122),
+    borderWidth: 1,
+    borderRadius: mvs(7),
+    borderColor: colors.grey,
     flexDirection: 'column',
     alignItems: 'center',
     marginBottom: 16,
