@@ -91,6 +91,9 @@ const CreateProduct = () => {
             freeStyleCropEnabled: true,
             cropperToolbarTitle: 'Crop Image',
             cropperCircleOverlay: false,
+            cropperStatusBarColor: '#ffffff',
+            cropperToolbarColor: '#ffffff',
+            cropperToolbarWidgetColor: '#000000',
           });
 
           return {

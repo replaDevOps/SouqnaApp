@@ -10,7 +10,7 @@ const styles = StyleSheet.create({
   headerContainer: {
     paddingHorizontal: mvs(16),
     paddingVertical: mvs(10),
-    backgroundColor: '#f9f9f9',
+    backgroundColor: colors.white,
     marginBottom: mvs(10),
   },
   header: {
@@ -26,16 +26,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#f5f5f5',
+    backgroundColor: colors.gray,
     borderRadius: mvs(12),
-    paddingVertical: mvs(12),
+    paddingVertical: mvs(20),
     paddingHorizontal: mvs(16),
-    marginBottom: mvs(12),
+    marginBottom: mvs(20),
     shadowColor: colors.black,
     shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    elevation: 1, // Android shadow
+    // elevation: 1, // Android shadow
   },
   subCategoryLeft: {
     flex: 1,
