@@ -13,7 +13,8 @@ import {
 } from '../../../redux/slices/favoritesSlice';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useTranslation} from 'react-i18next';
-import { mvs } from '../../../util/metrices';
+import {mvs} from '../../../util/metrices';
+import {BASE_URL_Product} from '../../../api/apiServices';
 
 const FavouriteScreen = () => {
   const navigation = useNavigation();
@@ -59,7 +60,7 @@ const FavouriteScreen = () => {
         navigation.navigate('ProductDetail', {productId: item.id});
       }}>
       <Image
-        source={{uri: `https://backend.souqna.net${item.images?.[0]?.path}`}}
+        source={{uri: `${BASE_URL_Product}${item.images?.[0]?.path}`}}
         style={styles.recommendedImage}
       />
       <View style={styles.recommendedTextContainer}>
@@ -72,13 +73,12 @@ const FavouriteScreen = () => {
         <Regular style={styles.recommendedTitle}>{item.name}</Regular>
         <Regular style={styles.recommendedPrice}>${item.price}</Regular>
       </View>
-      { role!=2 && (
-
-      <TouchableOpacity
-        style={styles.heartIconContainer}
-        onPress={() => handleHeartClick(item.id, item)}>
-        <HeartSvg filled={favorites.some(fav => fav.id === item.id)} />
-      </TouchableOpacity>
+      {role != 2 && (
+        <TouchableOpacity
+          style={styles.heartIconContainer}
+          onPress={() => handleHeartClick(item.id, item)}>
+          <HeartSvg filled={favorites.some(fav => fav.id === item.id)} />
+        </TouchableOpacity>
       )}
     </TouchableOpacity>
   );
@@ -93,10 +93,9 @@ const FavouriteScreen = () => {
           numColumns={2}
           keyExtractor={(item, index) => index.toString()}
           renderItem={renderFavoriteItem}
-           contentContainerStyle={{
-
-        paddingTop:mvs(15),
-        paddingBottom:mvs(60),
+          contentContainerStyle={{
+            paddingTop: mvs(15),
+            paddingBottom: mvs(60),
           }}
         />
       </View>

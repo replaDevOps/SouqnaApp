@@ -21,7 +21,7 @@ import {
   removeFavorite,
 } from '../../../redux/slices/favoritesSlice';
 import VerificationModal from '../../../components/Modals/VerificationModal';
-import {fetchCategories, fetchProducts} from '../../../api/apiServices';
+import API, {fetchCategories, fetchProducts} from '../../../api/apiServices';
 import axios from 'axios';
 import {setVerificationStatus} from '../../../redux/slices/userSlice';
 import LogoHeader from '../../../components/Structure/Search/Header/LogoHeader';
@@ -65,14 +65,11 @@ const SearchScreen = () => {
     }
     const fetchVerificationStatus = async () => {
       try {
-        const response = await axios.get(
-          'https://backend.souqna.net/api/viewVerification',
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+        const response = await API.get('viewVerification', {
+          headers: {
+            Authorization: `Bearer ${token}`,
           },
-        );
+        });
 
         // Only get the verification status from the API response
         const apiStatus = response.data?.data?.status || 0; // Defaults to 0 if status is not available
