@@ -275,9 +275,9 @@ export default function MapScreen() {
     getCurrentLocation();
   };
 
-  return (
-    <SafeAreaView style={styles.container}>
-      <MainHeader title="Map" />
+    return (
+        <SafeAreaView style={styles.container}>
+            <MainHeader showBackIcon={true} title="Map" />
 
       <View style={styles.BottomContainer}>
         {selectedProduct ? (
