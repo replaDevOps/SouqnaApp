@@ -16,18 +16,21 @@ import MapView, {
 } from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import { request, PERMISSIONS, RESULTS } from 'react-native-permissions';
-import { useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import isEqual from 'lodash.isequal';
 
 import MainHeader from '../../../components/Headers/MainHeader';
 import { CurrentLocationSVG } from '../../../assets/svg';
-import { colors } from '../../../util/color';
 import { mvs } from '../../../util/metrices';
+import styles from './styles';
+
+
 
 export default function MapScreen() {
     const route = useRoute();
     const { allProducts } = route.params;
-
+    
+    const navigation = useNavigation();
     const [region, setRegion] = useState(null);
     const [userLocation, setUserLocation] = useState(null);
     const [isLocationLoading, setIsLocationLoading] = useState(false);
@@ -40,6 +43,8 @@ export default function MapScreen() {
     const maxRetries = 3;
 
     const isProductInVisibleRegion = (product, region) => {
+        if (!region) return false;
+        
         const lat = parseFloat(product.lat);
         const lng = parseFloat(product.long);
 
@@ -50,6 +55,19 @@ export default function MapScreen() {
 
         return lat >= latMin && lat <= latMax && lng >= lngMin && lng <= lngMax;
     };
+
+    // Update visible products whenever region or allProducts change
+    useEffect(() => {
+        if (region && allProducts && allProducts.length > 0) {
+            const filtered = allProducts.filter(product =>
+                isProductInVisibleRegion(product, region)
+            );
+            
+            if (!isEqual(filtered, visibleProducts)) {
+                setVisibleProducts(filtered);
+            }
+        }
+    }, [region, allProducts]);
 
     useEffect(() => {
         Geolocation.setRNConfiguration({
@@ -80,6 +98,45 @@ export default function MapScreen() {
                 'Location Permission',
                 'Location permission is required to show your current location on the map.'
             );
+            
+            // Set a default region to show some products initially
+            setDefaultRegion();
+        }
+    };
+    
+    const setDefaultRegion = () => {
+        // Default region - can be centered on a specific city or location
+        // or calculated from the average of product coordinates
+        if (allProducts && allProducts.length > 0) {
+            // Calculate average position from products if available
+            let totalLat = 0;
+            let totalLong = 0;
+            let validProducts = 0;
+            
+            allProducts.forEach(product => {
+                const lat = parseFloat(product.lat);
+                const long = parseFloat(product.long);
+                
+                if (!isNaN(lat) && !isNaN(long)) {
+                    totalLat += lat;
+                    totalLong += long;
+                    validProducts++;
+                }
+            });
+            
+            if (validProducts > 0) {
+                const avgLat = totalLat / validProducts;
+                const avgLong = totalLong / validProducts;
+                
+                const newRegion = {
+                    latitude: avgLat,
+                    longitude: avgLong,
+                    latitudeDelta: 0.5, // Wider view to show more products
+                    longitudeDelta: 0.5,
+                };
+                
+                setRegion(newRegion);
+            }
         }
     };
 
@@ -150,6 +207,8 @@ export default function MapScreen() {
                                                 }
                                             ]
                                         );
+                                        // Set default region if location fails
+                                        setDefaultRegion();
                                     } else {
                                         getCurrentLocation();
                                     }
@@ -176,19 +235,27 @@ export default function MapScreen() {
                                 }
                             ]
                         );
+                        // Set default region if location fails
+                        setDefaultRegion();
                     }
                 } else if (error.code === 1) {
                     Alert.alert(
                         'Location Access Denied',
                         'Please enable location services in your device settings to use this feature.'
                     );
+                    // Set default region if location is denied
+                    setDefaultRegion();
                 } else if (error.code === 2) {
                     Alert.alert(
                         'Location Unavailable',
                         'Your current location is unavailable. You might be in an area with poor GPS reception.'
                     );
+                    // Set default region if location is unavailable
+                    setDefaultRegion();
                 } else {
                     Alert.alert('Error', 'Unable to get your current location.');
+                    // Set default region if there's a general error
+                    setDefaultRegion();
                 }
             },
             {
@@ -200,10 +267,14 @@ export default function MapScreen() {
         );
     };
 
+ const navigateToProductDetails = productId => {
+    navigation.navigate('ProductDetail', {productId});
+    console.log('Product ID: ', productId);
+  };
+
     const handleMarkerPress = (product) => {
         setSelectedProduct(product);
     };
-
 
     const goToMyLocation = () => {
         locationRetryCount.current = 0;
@@ -214,14 +285,15 @@ export default function MapScreen() {
         <SafeAreaView style={styles.container}>
             <MainHeader title="Map" />
 
-            {/* Uncomment if search is needed later */}
             <View style={styles.BottomContainer}>
                 {selectedProduct ?
-                    <View style={styles.productDetailContainer}>
+                    <TouchableOpacity 
+                    onPress={()=> navigateToProductDetails(selectedProduct.id)}
+                    style={styles.productDetailContainer}>
                         <View style={styles.productImageContainer}>
                             {selectedProduct.images && selectedProduct.images.length > 0 ? (
                                 <Image
-                                     source={{uri: `https://backend.souqna.net${selectedProduct.images[0].path}`}}
+                                    source={{uri: `https://backend.souqna.net${selectedProduct.images[0].path}`}}
                                     style={styles.productImage}
                                     resizeMode="cover"
                                 />
@@ -237,10 +309,10 @@ export default function MapScreen() {
                             <View style={styles.priceTagContainer}>
                                 <Text style={styles.priceTag}>{selectedProduct.price} - USD</Text>
                                 {
-                                    selectedProduct.condition !=2 ?
+                                    selectedProduct.condition != 2 ?
                                     <Text style={styles.conditionTag}>New</Text>
                                     :
-                                <Text style={styles.conditionTag}>Used</Text>
+                                    <Text style={styles.conditionTag}>Used</Text>
                                 }
                             </View>
                         </View>
@@ -250,16 +322,14 @@ export default function MapScreen() {
                         >
                             <Text style={styles.closeButtonText}>×</Text>
                         </TouchableOpacity>
-                    </View>
+                    </TouchableOpacity>
                     :
                     <View style={{ alignItems: 'center' }}>
                         <Text style={{ fontSize: mvs(15), fontWeight: '400' }}>In this region:</Text>
-                        <Text style={{ fontSize: mvs(22), fontWeight: 'bold' }}>1- {visibleProducts.length} ads</Text>
+                        <Text style={{ fontSize: mvs(22), fontWeight: 'bold' }}>{visibleProducts.length} ads</Text>
                     </View>
                 }
             </View>
-
-
 
             <View style={styles.mapContainer}>
                 <MapView
@@ -270,19 +340,11 @@ export default function MapScreen() {
                     showsUserLocation
                     showsMyLocationButton={false}
                     onRegionChangeComplete={(newRegion) => {
-                        if (
-                            Math.abs(newRegion.latitude - region?.latitude) > 0.0001 ||
-                            Math.abs(newRegion.longitude - region?.longitude) > 0.0001
+                        if (!region || 
+                            Math.abs(newRegion.latitude - region.latitude) > 0.0001 ||
+                            Math.abs(newRegion.longitude - region.longitude) > 0.0001
                         ) {
                             setRegion(newRegion);
-
-                            const filtered = allProducts.filter(product =>
-                                isProductInVisibleRegion(product, newRegion)
-                            );
-
-                            if (!isEqual(filtered, visibleProducts)) {
-                                setVisibleProducts(filtered);
-                            }
                         }
                     }}
                     onMapReady={() => {
@@ -292,33 +354,36 @@ export default function MapScreen() {
                             mapRef.current.animateToRegion({
                                 ...userLocation,
                                 latitudeDelta: 0.09,
-                                longitulongitudeDelta: 0.09,
+                                longitudeDelta: 0.09,
                             });
+                        } else if (region && mapRef.current) {
+                            // Use current region if user location isn't available
+                            mapRef.current.animateToRegion(region);
+                        } else if (allProducts && allProducts.length > 0) {
+                            // If no region set yet, set default from products
+                            setDefaultRegion();
                         }
                     }}
                 >
-                    {userLocation && (
-                        <Circle
-                            center={userLocation}
-                            radius={300}
-                            fillColor="rgba(0, 150, 255, 0.2)"
-                            strokeColor="rgba(0, 150, 255, 0.5)"
-                        />
-                    )}
-
-                    {visibleProducts.map((product, index) => (
-                        <Marker
-                            key={index}
-                            coordinate={{
-                                latitude: parseFloat(product.lat),
-                                longitude: parseFloat(product.long),
-                            }}
-                            title={product.name || "Product"}
-                            description={product.description || ""}
-                            onPress={() => handleMarkerPress(product)}
-
-                        />
-                    ))}
+                    {visibleProducts.map((product, index) => {
+                        const lat = parseFloat(product.lat);
+                        const long = parseFloat(product.long);
+                        
+                        if (isNaN(lat) || isNaN(long)) return null;
+                        
+                        return (
+                            <Marker
+                                key={`product-${index}`}
+                                coordinate={{
+                                    latitude: lat,
+                                    longitude: long,
+                                }}
+                                title={product.name || "Product"}
+                                description={product.description || ""}
+                                onPress={() => handleMarkerPress(product)}
+                            />
+                        );
+                    })}
                 </MapView>
 
                 <TouchableOpacity
@@ -335,127 +400,3 @@ export default function MapScreen() {
         </SafeAreaView>
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: colors.white,
-    },
-    BottomContainer: {
-        borderTopColor: colors.grey,
-        borderTopWidth: 1,
-        position: 'absolute',
-        padding: mvs(8),
-        bottom: 0,
-        backgroundColor: '#fff',
-        width: '100%',
-        zIndex: 50,
-    },
-    mapContainer: {
-        flex: 1,
-        position: 'relative',
-    },
-    map: {
-        ...StyleSheet.absoluteFillObject,
-    },
-    myLocationButton: {
-        position: 'absolute',
-        Top: mvs(40),
-        right: mvs(7),
-        backgroundColor: colors.white,
-        width: mvs(48),
-        height: mvs(48),
-        borderRadius: mvs(24),
-        justifyContent: 'center',
-        alignItems: 'center',
-        elevation: 5,
-        shadowColor: colors.black,
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.3,
-        shadowRadius: 3,
-    },
-    loadingIndicator: {
-        position: 'absolute',
-        width: mvs(48),
-        height: mvs(48),
-        borderRadius: mvs(24),
-        borderWidth: 2,
-        borderColor: colors.primary,
-        borderTopColor: 'transparent',
-        backgroundColor: 'transparent',
-        transform: [{ rotate: '45deg' }],
-        opacity: 0.7,
-    }, productDetailContainer: {
-        
-        backgroundColor: colors.white,
-        // borderRadius: mvs(10),
-        flexDirection: 'row',
-        paddingVertical: mvs(5),
-        paddingHorizontal: mvs(5),
-       
-       
-    },
-    productImageContainer: {
-        width: mvs(80),
-        height: mvs(80),
-        borderRadius: mvs(8),
-        overflow: 'hidden',
-    },
-    productImage: {
-        width: '100%',
-        height: '100%',
-    },
-    noImagePlaceholder: {
-        backgroundColor: colors.lightGrey,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    productInfo: {
-        flex: 1,
-        marginLeft: mvs(10),
-        justifyContent: 'space-between',
-    },
-    productTitle: {
-        fontSize: mvs(16),
-        fontWeight: 'bold',
-        color: colors.black,
-    },
-    productLocation: {
-        fontSize: mvs(14),
-        color: colors.darkGrey,
-    },
-    priceTagContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-    },
-    priceTag: {
-        fontSize: mvs(18),
-        fontWeight: 'bold',
-        color: colors.primary,
-    },
-    conditionTag: {
-        fontSize: mvs(12),
-        color: colors.darkGrey,
-        backgroundColor: colors.lightGrey,
-        paddingHorizontal: mvs(6),
-        paddingVertical: mvs(2),
-        borderRadius: mvs(4),
-    },
-    closeButton: {
-        position: 'absolute',
-        top: mvs(5),
-        right: mvs(5),
-        width: mvs(24),
-        height: mvs(24),
-        borderRadius: mvs(12),
-        backgroundColor: colors.lightGrey,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    closeButtonText: {
-        fontSize: mvs(16),
-        fontWeight: 'bold',
-        color: colors.darkGrey,
-    }
-});
