@@ -13,7 +13,7 @@ import Regular from '../../../../typography/RegularText';
 import {HeartSvg} from '../../../../assets/svg';
 import Bold from '../../../../typography/BoldText';
 import {useSelector} from 'react-redux';
-import {fetchProducts} from '../../../../api/apiServices';
+import {BASE_URL_Product, fetchProducts} from '../../../../api/apiServices';
 import {useTranslation} from 'react-i18next';
 import {mvs} from '../../../../util/metrices';
 import ProductCardSkeleton from './ProductCardSkeleton';
@@ -76,7 +76,7 @@ const RecommendedSection = ({
         style={styles.recommendedItem}
         onPress={() => navigateToProductDetails(item.id)}>
         <Image
-          source={{uri: `https://backend.souqna.net${item.images?.[0]?.path}`}}
+          source={{uri: `${BASE_URL_Product}${item.images?.[0]?.path}`}}
           style={styles.recommendedImage}
         />
         <View style={styles.recommendedTextContainer}>

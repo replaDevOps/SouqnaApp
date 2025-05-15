@@ -80,7 +80,10 @@ const AddModal = ({visible, onClose, title, message}) => {
 
           <View style={styles.logoAndTitleContainer}>
             {/* <SouqnaLogo width={40} height={40} /> */}
-            <Image source={require('../../assets/img/logo1.png')} style={styles.logo} />
+            <Image
+              source={require('../../assets/img/logo1.png')}
+              style={styles.logo}
+            />
             <Text style={styles.title}>Souqna</Text>
           </View>
 
@@ -124,7 +127,7 @@ const AddModal = ({visible, onClose, title, message}) => {
               <Regular style={styles.closeButtonText}>Register</Regular>
             </TouchableOpacity>
             <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-              <Regular style={styles.closeButtonText}>Login</Regular>
+              <Regular style={styles.LoginButtonText}>Login</Regular>
             </TouchableOpacity>
 
             <Text style={styles.termsText}>
@@ -163,9 +166,9 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
-  logo:{
-   width:45,
-  height:45
+  logo: {
+    width: 45,
+    height: 45,
   },
   modalContainer: {
     backgroundColor: colors.white,
@@ -212,6 +215,8 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     width: '100%',
+    flex: 1,
+    // justifyContent: 'center',
     alignItems: 'center',
     marginBottom: mvs(40),
   },
@@ -222,8 +227,12 @@ const styles = StyleSheet.create({
     borderRadius: mvs(10),
   },
   infoText: {
+    textAlign: 'center',
     marginTop: mvs(15),
     fontSize: mvs(16),
+    marginRight: mvs(20),
+    paddingHorizontal: mvs(10), // prevents text from touching screen edges
+    maxWidth: '80%',
   },
   pagination: {
     flexDirection: 'row',
@@ -254,6 +263,11 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   closeButtonText: {
+    color: colors.white,
+    fontSize: mvs(16),
+    textAlign: 'center',
+  },
+  LoginButtonText: {
     color: colors.green,
     fontSize: mvs(16),
     textAlign: 'center',

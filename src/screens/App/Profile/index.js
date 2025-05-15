@@ -35,6 +35,7 @@ import ProfileHeader from '../../../components/Headers/ProfileHeader';
 import {colors} from '../../../util/color';
 import RNRestart from 'react-native-restart';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import API from '../../../api/apiServices';
 
 const Profile = () => {
   const dispatch = useDispatch();
@@ -49,14 +50,11 @@ const Profile = () => {
     setVerificationLoading(true);
 
     try {
-      const response = await axios.get(
-        'https://backend.souqna.net/api/viewVerification',
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+      const response = await API.get('viewVerification', {
+        headers: {
+          Authorization: `Bearer ${token}`,
         },
-      );
+      });
 
       if (response.data.success) {
         const apiStatus =

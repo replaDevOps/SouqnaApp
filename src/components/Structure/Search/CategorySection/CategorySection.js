@@ -7,15 +7,17 @@ import {HOMESVG} from '../../../../assets/svg';
 import CategorySkeleton from './CategorySkeleton';
 import axios from 'axios';
 import {useSelector} from 'react-redux';
-import {fetchCategories} from '../../../../api/apiServices';
+import API, {
+  BASE_URL_Product,
+  fetchCategories,
+} from '../../../../api/apiServices';
 
 const {categoryIcons} = dummyData;
-const serverURL = 'https://backend.souqna.net';
 
 const CategorySection = ({}) => {
   const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(true);
-  const SERVER_URL = 'https://backend.souqna.net';
+  const SERVER_URL = {BASE_URL_Product};
   const {token} = useSelector(state => state.user);
   const [categories, setCategories] = useState([]);
 
@@ -46,14 +48,11 @@ const CategorySection = ({}) => {
 
   const handleCategoryPress = async (categoryName, categoryId) => {
     try {
-      const res = await axios.get(
-        `${SERVER_URL}/api/getSubCategory/${categoryId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+      const res = await API.get(`getSubCategory/${categoryId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
         },
-      );
+      });
 
       if (res.data.success) {
         const subcategories = res.data.data;
@@ -83,7 +82,9 @@ const CategorySection = ({}) => {
         showsHorizontalScrollIndicator={false}
         keyExtractor={(category, index) => index.toString()}
         renderItem={({item}) => {
-          const imageURL = item.image ? `${serverURL}${item.image}` : null;
+          const imageURL = item.image
+            ? `${BASE_URL_Product}${item.image}`
+            : null;
           const Icon = categoryIcons[item.name] || HOMESVG;
 
           return (

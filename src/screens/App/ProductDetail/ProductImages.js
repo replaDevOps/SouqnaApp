@@ -2,6 +2,7 @@
 import React, {useState} from 'react';
 import {View, Image, Dimensions, ScrollView} from 'react-native';
 import {BlurView} from '@react-native-community/blur'; // Optional if you want true blur (iOS only)
+import {BASE_URL_Product} from '../../../api/apiServices';
 
 const {width, height} = Dimensions.get('window');
 
@@ -26,7 +27,7 @@ const ProductImages = ({images}) => {
         {images.map((img, index) => (
           <Image
             key={index}
-            source={{uri: `https://backend.souqna.net/${img.path}`}}
+            source={{uri: `${BASE_URL_Product}${img.path}`}}
             style={{
               width: width,
               height: height * 0.35,

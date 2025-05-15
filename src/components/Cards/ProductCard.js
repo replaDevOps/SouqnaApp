@@ -5,6 +5,7 @@ import Regular from '../../typography/RegularText';
 import {HeartSvg} from '../../assets/svg';
 import {mvs} from '../../util/metrices';
 import {colors} from '../../util/color';
+import {BASE_URL_Product} from '../../api/apiServices';
 
 const ProductCard = ({product, onPress, onHeartPress}) => {
   const {role} = useSelector(state => state.user);
@@ -14,7 +15,7 @@ const ProductCard = ({product, onPress, onHeartPress}) => {
     <TouchableOpacity style={styles.card} onPress={() => onPress?.(product.id)}>
       <Image
         source={{
-          uri: `https://backend.souqna.net${product?.images?.[0]?.path}`,
+          uri: `${BASE_URL_Product}${product?.images?.[0]?.path}`,
         }}
         style={styles.image}
       />
