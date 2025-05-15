@@ -56,10 +56,9 @@ const LoginScreen = () => {
     try {
       setLoading(true);
       const res = await loginUser(email, password);
-
       if (res.success) {
         const user = res.user;
-        console.log('User : ', user);
+
         dispatch(
           setUser({
             token: user.token,
@@ -84,7 +83,7 @@ const LoginScreen = () => {
           navigation.replace('MainTabs');
         }, 1000);
       } else {
-        showErrorMessage();
+        showErrorMessage(res.message || 'Invalid email or password');
       }
     } catch (error) {
       console.log('Login error:', error);
@@ -94,11 +93,11 @@ const LoginScreen = () => {
     }
   };
 
-  const showErrorMessage = () => {
+  const showErrorMessage = (customMessage = 'Invalid email or password') => {
     if (Platform.OS === 'android') {
-      ToastAndroid.show('Invalid email or password', ToastAndroid.SHORT);
+      ToastAndroid.show(customMessage, ToastAndroid.SHORT);
     } else {
-      Alert.alert('Login Error', 'Invalid email or password');
+      Alert.alert('Login Error', customMessage);
     }
   };
 

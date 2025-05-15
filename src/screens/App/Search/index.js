@@ -282,7 +282,7 @@ const SearchScreen = () => {
           navigation.navigate('Map', {allProducts});
         }}
         style={styles.mapContainer}>
-        <CurrentLocationSVG width={40} height={40} fill={colors.green} />
+        <CurrentLocationSVG width={40} height={40} fill={colors.lightgreen} />
       </TouchableOpacity>
       <ScrollView
         contentContainerStyle={{backgroundColor: '#fbfbfb'}}
