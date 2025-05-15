@@ -16,18 +16,18 @@ import { useSelector } from 'react-redux';
 import { getUserConversations, getUserInfo } from '../../../firebase/chatService';
 import { formatDistanceToNow } from 'date-fns';
 import SearchSVG from '../../../assets/svg/SearchSVG';
-import {CloseSvg} from '../../../assets/svg';
+import { CloseSvg } from '../../../assets/svg';
 import styles from './styles';
-import {colors} from '../../../util/color';
-import {mvs} from '../../../util/metrices';
+import { colors } from '../../../util/color';
+import { mvs } from '../../../util/metrices';
 import MainHeader from '../../../components/Headers/MainHeader';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import InboxSkeleton from './InboxSkeleton';
 
 const InboxScreen = () => {
   const navigation = useNavigation();
   const { token, id: userId, role } = useSelector(state => state.user);
-  
+
   const [searchText, setSearchText] = useState('');
   const [conversations, setConversations] = useState([]);
   const [filteredConversations, setFilteredConversations] = useState([]);
@@ -35,7 +35,7 @@ const InboxScreen = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isSearchMode, setIsSearchMode] = useState(false);
   const [showLocationIcon, setShowLocationIcon] = useState(true);
-  
+
   // Ref to store the listener unsubscribe function
   const unsubscribeRef = useRef(null);
 
@@ -47,7 +47,7 @@ const InboxScreen = () => {
     useCallback(() => {
       // Set up the listener
       setupConversationListener();
-      
+
       // Clean up when the screen loses focus
       return () => {
         if (unsubscribeRef.current) {
@@ -77,40 +77,40 @@ const InboxScreen = () => {
       const unsubscribe = getUserConversations(
         userId,
         async (querySnapshot) => {
-          
+
           if (querySnapshot.empty) {
             setConversations([]);
             setFilteredConversations([]);
             setIsLoading(false);
             return;
           }
-          
+
           // First, extract all conversations data
           const conversationsData = [];
           querySnapshot.forEach(doc => {
             const data = doc.data();
             const otherUserId = data.members.find(memberId => memberId !== userId);
-            
-          
-            
-            conversationsData.push({ 
-              id: doc.id, 
+
+
+
+            conversationsData.push({
+              id: doc.id,
               ...data,
               otherUserId
             });
           });
-          
+
           // Now, collect all the unique user IDs we need to fetch
           const userIdsToFetch = conversationsData
             .map(conv => conv.otherUserId)
             .filter(id => id && !usersInfo[id]);
-          
-          
+
+
           // Fetch all the user info in parallel
           if (userIdsToFetch.length > 0) {
             try {
               const newUsersInfo = {};
-              
+
               // Fetch each user individually to handle errors better
               for (const id of userIdsToFetch) {
                 try {
@@ -123,7 +123,7 @@ const InboxScreen = () => {
                   console.error(`[InboxScreen] ❌ Error fetching user ${id}:`, userError);
                 }
               }
-              
+
               // Update the state with all the new user info at once
               if (Object.keys(newUsersInfo).length > 0) {
                 setUsersInfo(prev => {
@@ -135,7 +135,7 @@ const InboxScreen = () => {
               console.error('[InboxScreen] ❌ Error fetching user info:', error);
             }
           }
-          
+
           // Set conversations state
           setConversations(conversationsData);
           setFilteredConversations(conversationsData);
@@ -147,10 +147,10 @@ const InboxScreen = () => {
           setIsLoading(false);
         }
       );
-      
+
       // Store the unsubscribe function in the ref
       unsubscribeRef.current = unsubscribe;
-      
+
     } catch (error) {
       console.error('[InboxScreen] ❌ Exception setting up conversation listener:', error);
       setIsLoading(false);
@@ -163,15 +163,15 @@ const InboxScreen = () => {
       setFilteredConversations(conversations);
       return;
     }
-    
+
     const filtered = conversations.filter(conversation => {
       const otherUser = usersInfo[conversation.otherUserId];
       if (!otherUser) return false;
-      
+
       const name = otherUser.name?.toLowerCase() || '';
       return name.includes(searchText.toLowerCase());
     });
-    
+
     setFilteredConversations(filtered);
   }, [searchText, conversations, usersInfo]);
 
@@ -188,12 +188,12 @@ const InboxScreen = () => {
     setIsSearchMode(false);
     setShowLocationIcon(true);
   };
-  
+
   const formatTimestamp = (timestamp) => {
     if (!timestamp || !timestamp.toDate) {
       return '';
     }
-    
+
     try {
       return formatDistanceToNow(timestamp.toDate(), { addSuffix: true });
     } catch (error) {
@@ -210,45 +210,53 @@ const InboxScreen = () => {
     const otherUser = usersInfo[item.otherUserId] || {};
     const unreadCount = item.userInfo?.[userId]?.unreadCount || 0;
     const lastMessage = item.lastMessage || {};
-    
-    
+
+
     return (
       <TouchableOpacity
         onPress={() => {
-          navigation.navigate('Chat', { 
+          navigation.navigate('Chat', {
             conversationId: item.id,
             userName: otherUser.name || 'Chat',
             otherUserId: item.otherUserId
           });
         }}
-        style={styles.messageContainer}>
-        <View style={styles.messageHeader}>
-          <Image
-            source={
-              otherUser.profileImage 
-                ? { uri: otherUser.profileImage } 
-                : require('../../../assets/img/profile.png')
-            }
-            style={styles.profileImage}
-          />
-          <View style={styles.messageHeaderInfo}>
+        style={styles.newMessageContainer}
+      >
+        <Image
+          source={
+            otherUser.profileImage
+              ? { uri: otherUser.profileImage }
+              : require('../../../assets/img/profile.png')
+          }
+          style={styles.profileImage}
+        />
+
+        <View style={styles.messageContentWrapper}>
+          <View style={styles.messageTopRow}>
             <Text style={styles.senderName}>{otherUser.name || 'User'}</Text>
+
+            <View style={styles.messageBody}>
+              {unreadCount > 0 ? (
+                <View style={styles.unreadBadge}>
+                  <Text style={styles.unreadBadgeText}>{unreadCount}</Text>
+                </View>
+              ) : (
+                <Text style={styles.messageTime}>
+                  {formatTimestamp(lastMessage.createdAt)}
+                </Text>
+              )}
+            </View>
+          </View>
+
+          <View style={styles.messagePreviewContainer}>
             <Text style={styles.messageText} numberOfLines={1}>
               {lastMessage.text || 'Start a conversation...'}
             </Text>
           </View>
         </View>
-        <View style={styles.messageBody}>
-          <Text style={styles.messageTime}>
-            {formatTimestamp(lastMessage.createdAt)}
-          </Text>
-          {unreadCount > 0 ? (
-            <View style={styles.unreadBadge}>
-              <Text style={styles.unreadBadgeText}>{unreadCount}</Text>
-            </View>
-          ) : null}
-        </View>
       </TouchableOpacity>
+
     );
   }, [navigation, usersInfo, userId]);
 
@@ -267,16 +275,16 @@ const InboxScreen = () => {
     </View>
   );
 
-  
+
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" />
 
       <ScrollView
-        style={{flex: 1, backgroundColor: '#fbfbfb', paddingBottom: mvs(40)}}>
+        style={{ flex: 1, backgroundColor: '#fbfbfb', paddingBottom: mvs(40) }}>
         <MainHeader title={'Messages'} />
-        
+
         {/* Search Bar */}
         <View style={styles.searchBarContainer}>
           <TouchableOpacity style={styles.icon}>
@@ -307,7 +315,7 @@ const InboxScreen = () => {
           )}
         </View>
 
-     
+
         {/* Messages */}
         <View style={styles.messagesWrapper}>
           <Text style={styles.header}>Messages</Text>

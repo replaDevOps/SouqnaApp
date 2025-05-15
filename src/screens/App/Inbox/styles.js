@@ -54,6 +54,36 @@ const styles = StyleSheet.create({
     fontSize: mvs(22),
     fontWeight: '600', // Lighter font weight for smaller screens
   },
+
+  newMessageContainer: {
+  shadowColor: '#000',
+  shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: 0.5,
+  shadowRadius: 4,
+  elevation: 3,
+  backgroundColor: colors.white,
+  flexDirection: 'row',
+  paddingHorizontal: mvs(8),
+  paddingVertical: mvs(8),
+  borderRadius: mvs(8),
+},
+
+messageContentWrapper: {
+  gap: mvs(8),
+  padding: mvs(5),
+  flex: 1,
+},
+
+messageTopRow: {
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+},
+
+messagePreviewContainer: {
+  width: '85%',
+},
+
   messagesWrapper: {
     // marginHorizontal: mvs(14),
     marginBottom: 20,
@@ -86,7 +116,7 @@ const styles = StyleSheet.create({
   },
   senderName: {
     fontWeight: 'bold',
-    fontSize: mvs(16),
+    fontSize: mvs(17),
   },
   messageText: {
     color: colors.grey,
@@ -94,10 +124,9 @@ const styles = StyleSheet.create({
   },
   messageBody: {
     alignItems: 'center',
-    gap: mvs(4),
   },
   messageTime: {
-    fontSize: mvs(12),
+    fontSize: mvs(14),
   },
   unreadBadge: {
     backgroundColor: colors.lightgreen,

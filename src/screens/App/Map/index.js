@@ -283,7 +283,7 @@ export default function MapScreen() {
 
     return (
         <SafeAreaView style={styles.container}>
-            <MainHeader title="Map" />
+            <MainHeader showBackIcon={true} title="Map" />
 
             <View style={styles.BottomContainer}>
                 {selectedProduct ?

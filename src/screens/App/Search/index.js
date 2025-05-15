@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 
-import React, {useCallback, useEffect, useState} from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   RefreshControl,
   ScrollView,
@@ -11,8 +11,8 @@ import {
 import SearchHeader from '../../../components/Headers/SearchHeader';
 import styles from './style';
 import AddModal from '../../../components/Modals/AddModal';
-import {useIsFocused, useNavigation} from '@react-navigation/native';
-import {useDispatch, useSelector} from 'react-redux';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
+import { useDispatch, useSelector } from 'react-redux';
 import CategorySection from '../../../components/Structure/Search/CategorySection/CategorySection';
 import RecommendedSection from '../../../components/Structure/Search/RecommendedSection/RecommendedSection';
 import GalleryContainer from '../../../components/Structure/Search/GallerySection/GallerySection';
@@ -21,14 +21,14 @@ import {
   removeFavorite,
 } from '../../../redux/slices/favoritesSlice';
 import VerificationModal from '../../../components/Modals/VerificationModal';
-import {fetchCategories, fetchProducts} from '../../../api/apiServices';
+import { fetchCategories, fetchProducts } from '../../../api/apiServices';
 import axios from 'axios';
-import {setVerificationStatus} from '../../../redux/slices/userSlice';
+import { setVerificationStatus } from '../../../redux/slices/userSlice';
 import LogoHeader from '../../../components/Structure/Search/Header/LogoHeader';
-import {Snackbar} from 'react-native-paper';
-import {colors} from '../../../util/color';
-import {CurrentLocationSVG} from '../../../assets/svg';
-import {log} from 'console';
+import { Snackbar } from 'react-native-paper';
+import { colors } from '../../../util/color';
+import { CurrentLocationSVG } from '../../../assets/svg';
+import { log } from 'console';
 
 const SearchScreen = () => {
   const [likedItems, setLikedItems] = useState({});
@@ -41,7 +41,7 @@ const SearchScreen = () => {
   const [allRecommendedProducts, setAllRecommendedProducts] = useState([]);
 
   const [isEndOfResults, setIsEndOfResults] = useState(false);
-  const {token, verificationStatus, role} = useSelector(state => state.user);
+  const { token, verificationStatus, role } = useSelector(state => state.user);
   const dispatch = useDispatch();
   const [apiCategories, setApiCategories] = useState([]);
   const [setApiProducts] = useState([]);
@@ -206,7 +206,7 @@ const SearchScreen = () => {
       // If the product is already in the favorites, remove it
       dispatch(removeFavorite(product));
       setLikedItems(prevState => {
-        const updatedState = {...prevState};
+        const updatedState = { ...prevState };
         delete updatedState[id];
         return updatedState;
       });
@@ -241,7 +241,7 @@ const SearchScreen = () => {
   };
 
   const navigateToProductDetails = productId => {
-    navigation.navigate('ProductDetail', {productId});
+    navigation.navigate('ProductDetail', { productId });
     console.log('Product ID: ', productId);
   };
 
@@ -279,13 +279,10 @@ const SearchScreen = () => {
 
       {/* Map */}
       <TouchableOpacity
-        onPress={() => {
-          console.log('[All products]', allProducts);
-
-          navigation.navigate('Map', {allProducts});
-        }}
+        onPress={() => navigation.navigate('Map', {allProducts})
+        }
         style={styles.mapContainer}>
-        <CurrentLocationSVG width={40} height={40} fill={colors.green} />
+        <CurrentLocationSVG width={40} height={40} fill={colors.white} />
       </TouchableOpacity>
       <ScrollView
         contentContainerStyle={{backgroundColor: '#fbfbfb'}}
@@ -321,7 +318,7 @@ const SearchScreen = () => {
         />
       </ScrollView>
 
-      {isModalVisible && !token && <AddModal onClose={onClose} />}
+      { isModalVisible && !token && <AddModal onClose={onClose} /> }
       <VerificationModal
         visible={modalVisible}
         onVerify={handleVerifyProfile}
@@ -338,7 +335,7 @@ const SearchScreen = () => {
         }}>
         {snackbarMessage}
       </Snackbar>
-    </View>
+    </View >
   );
 };
 
