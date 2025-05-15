@@ -39,6 +39,7 @@ const Register = () => {
   const [passwordError, setPasswordError] = useState('');
   const [isSubscribed, setIsSubscribed] = useState(false);
   const profileNameOpacity = useRef(new Animated.Value(0)).current;
+  const [sellerType, setSellerType] = useState('');
   // const dispatch = useDispatch();
   const navigation = useNavigation();
 
@@ -161,6 +162,14 @@ const Register = () => {
 
       {selectedOption === 'Seller' && (
         <Animated.View style={{opacity: profileNameOpacity}}>
+          <RadioGroup
+            options={[
+              {value: 'Private', label: 'Private'},
+              {value: 'Company', label: 'Company'},
+            ]}
+            selectedOption={sellerType}
+            onSelect={setSellerType}
+          />
           <PrimaryPasswordInput
             value={profilename}
             onChangeText={setProfilename}
