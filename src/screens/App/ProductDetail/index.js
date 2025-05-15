@@ -23,7 +23,11 @@ import {colors} from '../../../util/color';
 import {MarkerSVG} from '../../../assets/svg';
 import ShareActions from '../../../components/Structure/ShareAction/ShareAction';
 import ProductImages from './ProductImages';
-import {addToCart, getProduct} from '../../../api/apiServices';
+import {
+  addToCart,
+  BASE_URL_Product,
+  getProduct,
+} from '../../../api/apiServices';
 import {Snackbar} from 'react-native-paper';
 import Loader from '../../../components/Loader';
 import {addItem} from '../../../redux/slices/cartSlice';
@@ -152,7 +156,7 @@ const ProductDetail = () => {
             price: product.price,
             image:
               product.images && product.images.length > 0
-                ? `https://backend.souqna.net${product.images[0].path}`
+                ? `${BASE_URL_Product}${product.images[0].path}`
                 : null,
           },
         });
@@ -180,7 +184,7 @@ const ProductDetail = () => {
         id: product.id,
         name: product.name,
         price: product.price,
-        image: `https://backend.souqna.net${product.images?.[0]?.path}`,
+        image: `${BASE_URL_Product}${product.images?.[0]?.path}`,
         quantity: 1,
         stock: product.stock,
       }),
@@ -189,7 +193,7 @@ const ProductDetail = () => {
       id: product.id,
       name: product.name,
       price: product.price,
-      image: `https://backend.souqna.net${product.images?.[0]?.path}`,
+      image: `${BASE_URL_Product}${product.images?.[0]?.path}`,
       quantity: 1,
       stock: product.stock,
     });

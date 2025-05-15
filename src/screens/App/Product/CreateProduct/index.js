@@ -27,6 +27,7 @@ import {UploadSVG} from '../../../../assets/svg';
 import GooglePlacesSuggestion from '../../../../components/GooglePlacesSuggestion';
 import {useTranslation} from 'react-i18next';
 import PriceInputWithDropdown from '../../../../components/atoms/InputFields/PriceInputWithCurrency';
+import API from '../../../../api/apiServices';
 
 const CreateProduct = () => {
   const route = useRoute();
@@ -173,16 +174,12 @@ const CreateProduct = () => {
 
     try {
       setLoading(true);
-      const response = await axios.post(
-        'https://backend.souqna.net/api/createProduct',
-        data,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-            Authorization: `Bearer ${token}`,
-          },
+      const response = await API.post('createProduct', data, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${token}`,
         },
-      );
+      });
 
       console.log('✅ Response:', response.data);
 

@@ -12,7 +12,7 @@ import {
   Animated,
 } from 'react-native';
 import {useSelector} from 'react-redux';
-import {fetchProducts} from '../../../../api/apiServices';
+import {BASE_URL_Product, fetchProducts} from '../../../../api/apiServices';
 import Bold from '../../../../typography/BoldText';
 import {colors} from '../../../../util/color';
 import {mvs} from '../../../../util/metrices';
@@ -124,7 +124,7 @@ const GalleryContainer = ({
   const renderProduct = useCallback(
     ({item}) => {
       const productImage = item.images?.[0]?.path
-        ? `https://backend.souqna.net${item.images[0].path}`
+        ? `${BASE_URL_Product}${item.images[0].path}`
         : null;
 
       return (

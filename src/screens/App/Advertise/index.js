@@ -11,8 +11,8 @@ import {useTranslation} from 'react-i18next';
 import {mvs} from '../../../util/metrices';
 import Bold from '../../../typography/BoldText';
 import {ForwardSVG} from '../../../assets/svg';
+import API, {BASE_URL_Product} from '../../../api/apiServices';
 
-const SERVER_URL = 'https://backend.souqna.net';
 const AdvertiseScreen = () => {
   // const {categories, categoryIcons} = dummyData;
   const [categories, setCategories] = useState([]);
@@ -22,7 +22,7 @@ const AdvertiseScreen = () => {
 
   const fetchCategories = async () => {
     try {
-      const res = await axios.get(`${SERVER_URL}/api/viewCategories`, {
+      const res = await API.get(`viewCategories`, {
         headers: {
           Authorization: {token},
         },
@@ -32,14 +32,11 @@ const AdvertiseScreen = () => {
         const categoriesWithSubs = await Promise.all(
           res.data.data.map(async category => {
             try {
-              const subRes = await axios.get(
-                `${SERVER_URL}/api/getSubCategory/${category.id}`,
-                {
-                  headers: {
-                    Authorization: `Bearer ${token}`,
-                  },
+              const subRes = await API.get(`getSubCategory/${category.id}`, {
+                headers: {
+                  Authorization: `Bearer ${token}`,
                 },
-              );
+              });
               return {
                 ...category,
                 hasSubcategories: subRes.data.data.length > 0,
@@ -65,14 +62,11 @@ const AdvertiseScreen = () => {
 
   const handleCategoryPress = async (categoryName, categoryId, image) => {
     try {
-      const res = await axios.get(
-        `${SERVER_URL}/api/getSubCategory/${categoryId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+      const res = await API.get(`getSubCategory/${categoryId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
         },
-      );
+      });
 
       if (res.data.success) {
         const subcategories = res.data.data;
@@ -91,7 +85,7 @@ const AdvertiseScreen = () => {
   };
 
   const renderCategoryItem = ({item}) => {
-    const imageURL = item.image ? `${SERVER_URL}${item.image}` : null;
+    const imageURL = item.image ? `${BASE_URL_Product}${item.image}` : null;
     return (
       <TouchableOpacity
         onPress={() => handleCategoryPress(item.name, item.id, imageURL)}

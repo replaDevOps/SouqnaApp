@@ -18,7 +18,7 @@ import DatePicker from 'react-native-date-picker';
 import styles from './styles';
 import Regular from '../../../typography/RegularText';
 import {MyButton} from '../../../components/atoms/InputFields/MyButton';
-import API from '../../../api/apiServices';
+import API, {BASE_URL} from '../../../api/apiServices';
 import MainHeader from '../../../components/Headers/MainHeader';
 import {UploadSVG, CalendersSVG} from '../../../assets/svg';
 import {colors} from '../../../util/color';
@@ -78,12 +78,9 @@ const VerificationScreen = () => {
   useEffect(() => {
     const fetchVerification = async () => {
       try {
-        const res = await axios.get(
-          'https://backend.souqna.net/api/viewVerification',
-          {
-            headers: {Authorization: `Bearer ${token}`},
-          },
-        );
+        const res = await API.get('viewVerification', {
+          headers: {Authorization: `Bearer ${token}`},
+        });
         // console.log('API CALLED:', res);
 
         if (res?.data?.data?.status === 2 && res?.data?.data) {
@@ -106,7 +103,7 @@ const VerificationScreen = () => {
           setIdFrontSide(
             data.idFrontSide
               ? {
-                  uri: `https://backend.souqna.net/${data.idFrontSide}`,
+                  uri: `${BASE_URL}${data.idFrontSide}`,
                   name: 'idFront.jpg',
                   type: 'image/jpeg',
                 }
@@ -116,7 +113,7 @@ const VerificationScreen = () => {
           setIdBackSide(
             data.idBackSide
               ? {
-                  uri: `https://backend.souqna.net/${data.idBackSide}`,
+                  uri: `${BASE_URL}${data.idBackSide}`,
                   name: 'idBack.jpg',
                   type: 'image/jpeg',
                 }
@@ -126,7 +123,7 @@ const VerificationScreen = () => {
           setSelfie(
             data.selfie
               ? {
-                  uri: `https://backend.souqna.net/${data.selfie}`,
+                  uri: `${BASE_URL}${data.selfie}`,
                   name: 'selfie.jpg',
                   type: 'image/jpeg',
                 }
@@ -144,14 +141,12 @@ const VerificationScreen = () => {
               expDate: data.expDate || '',
             },
             idFrontSide: data.idFrontSide
-              ? `https://backend.souqna.net/${data.idFrontSide}`
+              ? `${BASE_URL}${data.idFrontSide}`
               : null,
             idBackSide: data.idBackSide
-              ? `https://backend.souqna.net/${data.idBackSide}`
+              ? `${BASE_URL}${data.idBackSide}`
               : null,
-            selfie: data.selfie
-              ? `https://backend.souqna.net/${data.selfie}`
-              : null,
+            selfie: data.selfie ? `${BASE_URL}${data.selfie}` : null,
           });
         } else {
           setIsVerified(false);
