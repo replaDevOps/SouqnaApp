@@ -211,8 +211,6 @@ export default function CartScreen() {
             onRefresh={onRefresh} // Trigger refresh on pull
           />
         }>
-        {/* <Text style={styles.title}>{t('orderDetails')}</Text> */}
-
         {cartData.length === 0 ? (
           <View style={styles.emptyCartContainer}>
             <Image

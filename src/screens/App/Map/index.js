@@ -7,6 +7,7 @@ import {
   Platform,
   Alert,
   Image,
+  FlatList,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import MapView, {PROVIDER_GOOGLE, Marker, Circle} from 'react-native-maps';
@@ -19,6 +20,8 @@ import MainHeader from '../../../components/Headers/MainHeader';
 import {CurrentLocationSVG} from '../../../assets/svg';
 import {mvs} from '../../../util/metrices';
 import styles from './styles';
+import {useSelector} from 'react-redux';
+import { colors } from '../../../util/color';
 
 export default function MapScreen() {
   const route = useRoute();
@@ -30,11 +33,14 @@ export default function MapScreen() {
   const [isLocationLoading, setIsLocationLoading] = useState(false);
   const [visibleProducts, setVisibleProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [activeCategory, setActiveCategory] = useState(null);
 
   const mapRef = useRef(null);
   const locationRetryCount = useRef(0);
   const initialMapLoadedRef = useRef(false);
   const maxRetries = 3;
+
+  const categories = useSelector(state => state.category.categories);
 
   const isProductInVisibleRegion = (product, region) => {
     if (!region) return false;
@@ -261,6 +267,16 @@ export default function MapScreen() {
     );
   };
 
+const formatPrice = (price) => {
+  if (price >= 1000000) {
+    return (price / 1000000).toFixed(1).replace(/\.0$/, '') + 'm'; // 1.2m
+  } else if (price >= 1000) {
+    return (price / 1000).toFixed(1).replace(/\.0$/, '') + 'k'; // 1.5k
+  } else {
+    return price.toString();
+  }
+};
+
   const navigateToProductDetails = productId => {
     navigation.navigate('ProductDetail', {productId});
     console.log('Product ID: ', productId);
@@ -275,9 +291,49 @@ export default function MapScreen() {
     getCurrentLocation();
   };
 
-    return (
-        <SafeAreaView style={styles.container}>
-            <MainHeader showBackIcon={true} title="Map" />
+  console.log('{catego}', categories);
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <View>
+        <MainHeader showBackIcon={true} title="Map" />
+        <View style={styles.categoryListContainer}>
+          <FlatList
+            data={categories}
+            horizontal
+            keyExtractor={item => item.id}
+            renderItem={({item}) => {
+              const isActive = item.name === activeCategory; // <-- Define this!
+
+              return (
+                <TouchableOpacity
+                  onPress={() => setActiveCategory(item.name)}
+                  style={styles.categoryItem}>
+                  <Text
+                    style={[
+                      styles.categoryText,
+                      // isActive && {color: '#adbd6e', fontWeight: 'bold'},
+                    ]}>
+                    {item.name}
+                  </Text>
+                  {/* Only show this view when item is active */}
+                  {isActive && (
+                    <View
+                      style={{
+                        backgroundColor: '#adbd6e',
+                        height: 5,
+                        width: '90%',
+                        marginVertical: 3,
+                        borderRadius: 5,
+                      }}
+                    />
+                  )}{' '}
+                </TouchableOpacity>
+              );
+            }}
+          />
+        </View>
+      </View>
 
       <View style={styles.BottomContainer}>
         {selectedProduct ? (
@@ -385,7 +441,19 @@ export default function MapScreen() {
                 title={product.name || 'Product'}
                 description={product.description || ''}
                 onPress={() => handleMarkerPress(product)}
-              />
+              >
+                <View style={{backgroundColor:colors.gray,borderRadius:4,padding:1,width:35,height:35,borderWidth:1,borderColor:'#ccc'}}>
+
+                <Text style={{fontSize:12,fontWeight:'bold',color:'#000',textAlign:'center'}}>
+                $
+                  {/* {product.price} */}
+                </Text>
+                <Text style={{fontSize:12,fontWeight:'bold',color:'#000',textAlign:'center'}}>
+                  {formatPrice(product.price)}
+                  {/* {product.price} */}
+                </Text>
+                </View>
+              </Marker>
             );
           })}
         </MapView>
