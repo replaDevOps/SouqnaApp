@@ -43,9 +43,10 @@ const styles = StyleSheet.create({
   },
   radioButtonContainer: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     justifyContent: 'space-between',
-    marginTop: mvs(15),
-    marginBottom: mvs(10),
+    marginVertical: mvs(10),
+    // marginBottom: mvs(10),
     gap: 10,
   },
   radioButton: {
@@ -54,7 +55,7 @@ const styles = StyleSheet.create({
     borderWidth: mvs(1),
     borderRadius: mvs(8),
     paddingVertical: mvs(4),
-    paddingHorizontal: mvs(30),
+    paddingHorizontal: mvs(20),
   },
   selectedRadioButton: {
     borderColor: colors.green,
