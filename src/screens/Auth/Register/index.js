@@ -34,6 +34,8 @@ const Register = () => {
   const [password, setPassword] = useState('');
   const [securePassword, setSecurePassword] = useState(true);
   const [selectedOption, setSelectedOption] = useState('');
+  const [isSeller, setIsSeller] = useState(false);
+  const [isBuyer, setIsBuyer] = useState(false);
   const [profilename, setProfilename] = useState('');
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
@@ -45,6 +47,11 @@ const Register = () => {
 
   const handleRegister = async () => {
     console.log('Register button pressed');
+
+    if (!profilename.trim()) {
+      alert('Please enter your name.');
+      return;
+    }
     if (!isEmailValid(email)) {
       setEmailError('Please enter a valid email.');
       return;
@@ -58,21 +65,35 @@ const Register = () => {
     } else {
       setPasswordError('');
     }
-
-    if (selectedOption === 'Seller' && !profilename) {
-      alert('Please provide a profile name for your Seller account');
+    if ((isSeller || (isSeller && isBuyer)) && !sellerType) {
+      alert('Please select a seller type.');
+      return;
+    }
+    if (!isSeller && !isBuyer) {
+      alert('Please select a role.');
       return;
     }
 
     const storedFcmToken = await AsyncStorage.getItem('fcmToken');
     console.log('Stored FCM Token: ', storedFcmToken);
+    let role = 0;
+    if (isSeller && isBuyer) {
+      role = 4;
+    } else if (isSeller) {
+      role = 2;
+    } else if (isBuyer) {
+      role = 3;
+    }
 
     const payload = {
-      name: selectedOption === 'Seller' ? profilename : 'Buyer',
+      name: profilename.trim(),
       email,
       password,
-      role: selectedOption === 'Seller' ? 2 : 3, // 2=Seller, 3=Buyer
+      role,
       fcm: storedFcmToken,
+      ...(isSeller && {
+        sellerType: sellerType === 'Company' ? 1 : 2,
+      }),
     };
 
     console.log('Payload: ', payload); // Log the payload being sent to the API
@@ -150,34 +171,56 @@ const Register = () => {
         <Bold style={styles.title}>Souqna</Bold>
       </View>
       <Bold style={styles.howText}>How do you want to use Souqna?</Bold>
-
       <RadioGroup
         options={[
           {value: 'Seller', label: 'Seller'},
           {value: 'Buyer', label: 'Buyer'},
+          {value: 'Both', label: 'Both'},
         ]}
-        selectedOption={selectedOption}
-        onSelect={setSelectedOption}
+        selectedOption={
+          isSeller && isBuyer
+            ? 'Both'
+            : isSeller
+            ? 'Seller'
+            : isBuyer
+            ? 'Buyer'
+            : ''
+        }
+        onSelect={value => {
+          console.log('Selected Role:', value);
+          if (value === 'Seller') {
+            setIsSeller(true);
+            setIsBuyer(false);
+          } else if (value === 'Buyer') {
+            setIsBuyer(true);
+            setIsSeller(false);
+          } else if (value === 'Both') {
+            setIsSeller(true);
+            setIsBuyer(true);
+          }
+        }}
       />
-
-      {selectedOption === 'Seller' && (
-        <Animated.View style={{opacity: profileNameOpacity}}>
+      {isSeller && (
+        <View style={{marginTop: 16}}>
           <RadioGroup
             options={[
               {value: 'Private', label: 'Private'},
               {value: 'Company', label: 'Company'},
             ]}
             selectedOption={sellerType}
-            onSelect={setSellerType}
+            onSelect={value => {
+              console.log('Selected seller type:', value);
+              setSellerType(value);
+            }}
           />
-          <PrimaryPasswordInput
-            value={profilename}
-            onChangeText={setProfilename}
-            placeholder="Profilename"
-          />
-        </Animated.View>
+        </View>
       )}
 
+      <PrimaryPasswordInput
+        value={profilename}
+        onChangeText={setProfilename}
+        placeholder="Name"
+      />
       <PrimaryPasswordInput
         value={email}
         onChangeText={setEmail}
@@ -185,7 +228,6 @@ const Register = () => {
         error={emailError}
         clearText={handleClearEmail}
       />
-
       <View style={styles.passwordContainer}>
         <PrimaryPasswordInput
           value={password}
@@ -196,7 +238,6 @@ const Register = () => {
           error={passwordError}
         />
       </View>
-
       <View style={styles.switchContainer}>
         <CustomSwitch
           value={isSubscribed}
@@ -209,7 +250,6 @@ const Register = () => {
           of companies - you can unsubscribe at any time.
         </Regular>
       </View>
-
       <View style={styles.buttonContainer}>
         <MyButton
           title="Register For Free"
