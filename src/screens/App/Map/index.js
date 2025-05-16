@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect, useRef, useCallback, useMemo} from 'react';
 import {
   View,
   Text,
@@ -10,18 +10,18 @@ import {
   FlatList,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import MapView, {PROVIDER_GOOGLE, Marker, Circle} from 'react-native-maps';
+import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import {request, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import isEqual from 'lodash.isequal';
 
 import MainHeader from '../../../components/Headers/MainHeader';
-import {CurrentLocationSVG} from '../../../assets/svg';
+import {BarsSVG, CurrentLocationSVG} from '../../../assets/svg';
 import {mvs} from '../../../util/metrices';
 import styles from './styles';
 import {useSelector} from 'react-redux';
-import { colors } from '../../../util/color';
+import {colors} from '../../../util/color';
 
 export default function MapScreen() {
   const route = useRoute();
@@ -31,9 +31,15 @@ export default function MapScreen() {
   const [region, setRegion] = useState(null);
   const [userLocation, setUserLocation] = useState(null);
   const [isLocationLoading, setIsLocationLoading] = useState(false);
-  const [visibleProducts, setVisibleProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [activeCategory, setActiveCategory] = useState(null);
+  const [dropdownVisible, setDropdownVisible] = useState(false);
+
+  // Memoize the region calculation to avoid unnecessary re-renders
+  const currentRegionRef = useRef(null);
+
+  // Add this flag to track if initial location has been requested
+  const initialLocationRequestedRef = useRef(false);
 
   const mapRef = useRef(null);
   const locationRetryCount = useRef(0);
@@ -42,11 +48,14 @@ export default function MapScreen() {
 
   const categories = useSelector(state => state.category.categories);
 
-  const isProductInVisibleRegion = (product, region) => {
+  const isProductInVisibleRegion = useCallback((product, region) => {
     if (!region) return false;
 
     const lat = parseFloat(product.lat);
     const lng = parseFloat(product.long);
+
+    // Skip invalid coordinates
+    if (isNaN(lat) || isNaN(lng)) return false;
 
     const latMin = region.latitude - region.latitudeDelta / 2;
     const latMax = region.latitude + region.latitudeDelta / 2;
@@ -54,57 +63,28 @@ export default function MapScreen() {
     const lngMax = region.longitude + region.longitudeDelta / 2;
 
     return lat >= latMin && lat <= latMax && lng >= lngMin && lng <= lngMax;
-  };
-
-  // Update visible products whenever region or allProducts change
-  useEffect(() => {
-    if (region && allProducts && allProducts.length > 0) {
-      const filtered = allProducts.filter(product =>
-        isProductInVisibleRegion(product, region),
-      );
-
-      if (!isEqual(filtered, visibleProducts)) {
-        setVisibleProducts(filtered);
-      }
-    }
-  }, [region, allProducts]);
-
-  useEffect(() => {
-    Geolocation.setRNConfiguration({
-      skipPermissionRequests: false,
-      authorizationLevel: 'whenInUse',
-      locationProvider: 'auto',
-    });
-
-    requestLocationPermission();
-
-    return () => {
-      initialMapLoadedRef.current = false;
-    };
   }, []);
 
-  const requestLocationPermission = async () => {
-    const permission =
-      Platform.OS === 'ios'
-        ? PERMISSIONS.IOS.LOCATION_WHEN_IN_USE
-        : PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION;
+  // Calculate visible products with useMemo to prevent unnecessary recalculations
+  const visibleProducts = useMemo(() => {
+    if (!region || !allProducts || allProducts.length === 0) return [];
 
-    const result = await request(permission);
+    // First filter by region
+    let filtered = allProducts.filter(product =>
+      isProductInVisibleRegion(product, region),
+    );
 
-    if (result === RESULTS.GRANTED) {
-      getCurrentLocation();
-    } else {
-      Alert.alert(
-        'Location Permission',
-        'Location permission is required to show your current location on the map.',
+    // Then apply category filter if a category is selected
+    if (activeCategory) {
+      filtered = filtered.filter(
+        product => product.category && product.category.name === activeCategory,
       );
-
-      // Set a default region to show some products initially
-      setDefaultRegion();
     }
-  };
 
-  const setDefaultRegion = () => {
+    return filtered;
+  }, [region, allProducts, activeCategory, isProductInVisibleRegion]);
+
+  const setDefaultRegion = useCallback(() => {
     // Default region - can be centered on a specific city or location
     // or calculated from the average of product coordinates
     if (allProducts && allProducts.length > 0) {
@@ -136,11 +116,12 @@ export default function MapScreen() {
         };
 
         setRegion(newRegion);
+        currentRegionRef.current = newRegion;
       }
     }
-  };
+  }, [allProducts]);
 
-  const getCurrentLocation = () => {
+  const getCurrentLocation = useCallback(() => {
     if (isLocationLoading) return;
 
     setIsLocationLoading(true);
@@ -160,6 +141,7 @@ export default function MapScreen() {
 
         setUserLocation({latitude, longitude});
         setRegion(newRegion);
+        currentRegionRef.current = newRegion;
 
         if (mapRef.current) {
           mapRef.current.animateToRegion(newRegion);
@@ -187,6 +169,7 @@ export default function MapScreen() {
 
                   setUserLocation({latitude, longitude});
                   setRegion(newRegion);
+                  currentRegionRef.current = newRegion;
 
                   if (mapRef.current) {
                     mapRef.current.animateToRegion(newRegion);
@@ -265,21 +248,65 @@ export default function MapScreen() {
         forceRequestLocation: true,
       },
     );
-  };
+  }, [isLocationLoading, setDefaultRegion]);
 
-const formatPrice = (price) => {
-  if (price >= 1000000) {
-    return (price / 1000000).toFixed(1).replace(/\.0$/, '') + 'm'; // 1.2m
-  } else if (price >= 1000) {
-    return (price / 1000).toFixed(1).replace(/\.0$/, '') + 'k'; // 1.5k
-  } else {
-    return price.toString();
-  }
-};
+  const requestLocationPermission = useCallback(async () => {
+    // Prevent multiple location requests on initial load
+    if (initialLocationRequestedRef.current) return;
+    initialLocationRequestedRef.current = true;
+
+    const permission =
+      Platform.OS === 'ios'
+        ? PERMISSIONS.IOS.LOCATION_WHEN_IN_USE
+        : PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION;
+
+    const result = await request(permission);
+
+    if (result === RESULTS.GRANTED) {
+      getCurrentLocation();
+    } else {
+      Alert.alert(
+        'Location Permission',
+        'Location permission is required to show your current location on the map.',
+      );
+
+      // Set a default region to show some products initially
+      setDefaultRegion();
+    }
+  }, [getCurrentLocation, setDefaultRegion]);
+
+  useEffect(() => {
+    Geolocation.setRNConfiguration({
+      skipPermissionRequests: false,
+      authorizationLevel: 'whenInUse',
+      locationProvider: 'auto',
+    });
+
+    // Request location permission once on component mount
+    requestLocationPermission();
+
+    return () => {
+      initialMapLoadedRef.current = false;
+      initialLocationRequestedRef.current = false; // Reset on unmount
+    };
+  }, []); // Empty dependency array to ensure it only runs once on mount
+
+  const formatPrice = price => {
+    if (price >= 1000000) {
+      return (price / 1000000).toFixed(1).replace(/\.0$/, '') + 'm'; // 1.2m
+    } else if (price >= 1000) {
+      return (price / 1000).toFixed(1).replace(/\.0$/, '') + 'k'; // 1.5k
+    } else {
+      return price.toString();
+    }
+  };
 
   const navigateToProductDetails = productId => {
     navigation.navigate('ProductDetail', {productId});
-    console.log('Product ID: ', productId);
+  };
+
+  const toggleDropdown = () => {
+    setDropdownVisible(!dropdownVisible);
   };
 
   const handleMarkerPress = product => {
@@ -291,49 +318,139 @@ const formatPrice = (price) => {
     getCurrentLocation();
   };
 
-  console.log('{catego}', categories);
+  const RadioButton = ({selected}) => {
+    return (
+      <View
+        style={{
+          height: 20,
+          width: 20,
+          borderRadius: 10,
+          borderWidth: 2,
+          borderColor: colors.lightgreen,
+          alignItems: 'center',
+          justifyContent: 'center',
+          marginRight: 10,
+        }}>
+        {selected ? (
+          <View
+            style={{
+              height: 10,
+              width: 10,
+              borderRadius: 5,
+              backgroundColor: colors.lightgreen,
+            }}
+          />
+        ) : null}
+      </View>
+    );
+  };
+
+  // Memoize marker components to prevent unnecessary re-renders
+  const markerComponents = useMemo(() => {
+    return visibleProducts.map(product => {
+      const lat = parseFloat(product.lat);
+      const long = parseFloat(product.long);
+
+      if (isNaN(lat) || isNaN(long)) return null;
+
+      return (
+        <Marker
+          key={`product-${product.id}`} // Use stable product ID as key
+          coordinate={{
+            latitude: lat,
+            longitude: long,
+          }}
+          title={product.name || 'Product'}
+          description={product.description || ''}
+          onPress={() => handleMarkerPress(product)}>
+          <View
+            style={{
+              backgroundColor: colors.lightgreen,
+              borderRadius: 4,
+              padding: 1,
+              width: 35,
+              height: 35,
+              borderWidth: 1,
+              borderColor: '#ccc',
+            }}>
+            <Text
+              style={{
+                fontSize: 12,
+                fontWeight: 'bold',
+                color: '#fff',
+                textAlign: 'center',
+              }}>
+              {formatPrice(product.price)}
+            </Text>
+          </View>
+        </Marker>
+      );
+    });
+  }, [visibleProducts]);
+
+  // Use a debounced region change handler
+  const handleRegionChangeComplete = useCallback(newRegion => {
+    // Only update region if it significantly changed
+    if (
+      !currentRegionRef.current ||
+      Math.abs(newRegion.latitude - currentRegionRef.current.latitude) >
+        0.001 ||
+      Math.abs(newRegion.longitude - currentRegionRef.current.longitude) >
+        0.001 ||
+      Math.abs(
+        newRegion.latitudeDelta - currentRegionRef.current.latitudeDelta,
+      ) > 0.001 ||
+      Math.abs(
+        newRegion.longitudeDelta - currentRegionRef.current.longitudeDelta,
+      ) > 0.001
+    ) {
+      currentRegionRef.current = newRegion;
+      setRegion(newRegion);
+    }
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
-      <View>
-        <MainHeader showBackIcon={true} title="Map" />
-        <View style={styles.categoryListContainer}>
-          <FlatList
-            data={categories}
-            horizontal
-            keyExtractor={item => item.id}
-            renderItem={({item}) => {
-              const isActive = item.name === activeCategory; // <-- Define this!
+      <MainHeader showBackIcon={true} title="Map" />
 
-              return (
-                <TouchableOpacity
-                  onPress={() => setActiveCategory(item.name)}
-                  style={styles.categoryItem}>
-                  <Text
-                    style={[
-                      styles.categoryText,
-                      // isActive && {color: '#adbd6e', fontWeight: 'bold'},
-                    ]}>
-                    {item.name}
-                  </Text>
-                  {/* Only show this view when item is active */}
-                  {isActive && (
-                    <View
-                      style={{
-                        backgroundColor: '#adbd6e',
-                        height: 5,
-                        width: '90%',
-                        marginVertical: 3,
-                        borderRadius: 5,
-                      }}
-                    />
-                  )}{' '}
-                </TouchableOpacity>
-              );
-            }}
-          />
-        </View>
+      <View style={styles.categoryListContainer}>
+        <TouchableOpacity
+          onPress={toggleDropdown}
+          style={styles.dropdownButton}>
+          <BarsSVG width={24} height={24} />
+          <Text style={{fontSize: mvs(18), fontWeight: 'bold'}}>
+            {' '}
+            Categories
+          </Text>
+        </TouchableOpacity>
       </View>
+
+      {dropdownVisible && (
+        <View style={styles.simpleDropdownContainer}>
+          <TouchableOpacity
+            style={styles.dropdownItem}
+            onPress={() => {
+              setActiveCategory(null);
+              setDropdownVisible(false);
+            }}>
+            <RadioButton selected={activeCategory === null} />
+            <Text style={styles.dropdownText}>All Categories</Text>
+          </TouchableOpacity>
+
+          {categories.map(category => (
+            <TouchableOpacity
+              key={category.id}
+              style={styles.dropdownItem}
+              onPress={() => {
+                setActiveCategory(category.name);
+                setDropdownVisible(false);
+              }}>
+              <RadioButton selected={activeCategory === category.name} />
+              <Text style={styles.dropdownText}>{category.name}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      )}
 
       <View style={styles.BottomContainer}>
         {selectedProduct ? (
@@ -399,63 +516,28 @@ const formatPrice = (price) => {
           region={region}
           showsUserLocation
           showsMyLocationButton={false}
-          onRegionChangeComplete={newRegion => {
-            if (
-              !region ||
-              Math.abs(newRegion.latitude - region.latitude) > 0.0001 ||
-              Math.abs(newRegion.longitude - region.longitude) > 0.0001
-            ) {
-              setRegion(newRegion);
-            }
-          }}
+          onRegionChangeComplete={handleRegionChangeComplete}
           onMapReady={() => {
-            initialMapLoadedRef.current = true;
+            // Only set initialMapLoadedRef to true if it wasn't already set
+            if (!initialMapLoadedRef.current) {
+              initialMapLoadedRef.current = true;
 
-            if (userLocation && mapRef.current) {
-              mapRef.current.animateToRegion({
-                ...userLocation,
-                latitudeDelta: 0.09,
-                longitudeDelta: 0.09,
-              });
-            } else if (region && mapRef.current) {
-              // Use current region if user location isn't available
-              mapRef.current.animateToRegion(region);
-            } else if (allProducts && allProducts.length > 0) {
-              // If no region set yet, set default from products
-              setDefaultRegion();
+              if (userLocation && mapRef.current) {
+                mapRef.current.animateToRegion({
+                  ...userLocation,
+                  latitudeDelta: 0.09,
+                  longitudeDelta: 0.09,
+                });
+              } else if (region && mapRef.current) {
+                // Use current region if user location isn't available
+                mapRef.current.animateToRegion(region);
+              } else if (allProducts && allProducts.length > 0 && !region) {
+                // Only set default region if no region is set yet
+                setDefaultRegion();
+              }
             }
           }}>
-          {visibleProducts.map((product, index) => {
-            const lat = parseFloat(product.lat);
-            const long = parseFloat(product.long);
-
-            if (isNaN(lat) || isNaN(long)) return null;
-
-            return (
-              <Marker
-                key={`product-${index}`}
-                coordinate={{
-                  latitude: lat,
-                  longitude: long,
-                }}
-                title={product.name || 'Product'}
-                description={product.description || ''}
-                onPress={() => handleMarkerPress(product)}
-              >
-                <View style={{backgroundColor:colors.gray,borderRadius:4,padding:1,width:35,height:35,borderWidth:1,borderColor:'#ccc'}}>
-
-                <Text style={{fontSize:12,fontWeight:'bold',color:'#000',textAlign:'center'}}>
-                $
-                  {/* {product.price} */}
-                </Text>
-                <Text style={{fontSize:12,fontWeight:'bold',color:'#000',textAlign:'center'}}>
-                  {formatPrice(product.price)}
-                  {/* {product.price} */}
-                </Text>
-                </View>
-              </Marker>
-            );
-          })}
+          {markerComponents}
         </MapView>
 
         <TouchableOpacity
