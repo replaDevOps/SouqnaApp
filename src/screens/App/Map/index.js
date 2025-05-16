@@ -58,18 +58,21 @@ export default function MapScreen() {
     return lat >= latMin && lat <= latMax && lng >= lngMin && lng <= lngMax;
   };
 
-  // Update visible products whenever region or allProducts change
   useEffect(() => {
     if (region && allProducts && allProducts.length > 0) {
-      const filtered = allProducts.filter(product =>
+      // First filter by region
+      let filtered = allProducts.filter(product =>
         isProductInVisibleRegion(product, region),
       );
-
+      // Then apply category filter if a category is selected
+      if (activeCategory) {
+        filtered = filterProductsByCategory(filtered, activeCategory);
+      }
       if (!isEqual(filtered, visibleProducts)) {
         setVisibleProducts(filtered);
       }
     }
-  }, [region, allProducts, visibleProducts]);
+  }, [region, allProducts, activeCategory]); // Add activeCategory as dependency
 
   const setDefaultRegion = useCallback(() => {
     // Default region - can be centered on a specific city or location
@@ -255,6 +258,18 @@ export default function MapScreen() {
     }
   }, [getCurrentLocation, setDefaultRegion]);
 
+  const filterProductsByCategory = (products, categoryName) => {
+    if (!categoryName || categoryName === 'All') {
+      // If no category is selected or "All" is selected, show all products
+      return products;
+    } else {
+      // Filter products by the selected category name
+      return products.filter(
+        product => product.category && product.category.name === categoryName,
+      );
+    }
+  };
+
   useEffect(() => {
     Geolocation.setRNConfiguration({
       skipPermissionRequests: false,
@@ -296,6 +311,9 @@ export default function MapScreen() {
     locationRetryCount.current = 0;
     getCurrentLocation();
   };
+
+  const allCategoriesOption = {id: 'all', name: 'All'};
+  const categoriesWithAll = [allCategoriesOption, ...categories];
 
   const RadioButton = ({selected}) => {
     return (

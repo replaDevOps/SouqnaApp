@@ -156,8 +156,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: mvs(8),
     paddingTop: mvs(6),
     paddingBottom: mvs(6),
-    backgroundColor: '#fff',
-    flexDirection: 'row',
   },
 
   categoryItem: {
@@ -205,8 +203,6 @@ const styles = StyleSheet.create({
   // Keep these existing styles
   dropdownButton: {
     padding: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   dropdownItem: {
     flexDirection: 'row',
