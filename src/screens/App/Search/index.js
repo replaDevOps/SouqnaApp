@@ -279,7 +279,7 @@ const SearchScreen = () => {
         onPress={() => navigation.navigate('Map', {allProducts})
         }
         style={styles.mapContainer}>
-        <CurrentLocationSVG width={40} height={40} fill={colors.lightgreen} />
+        <CurrentLocationSVG width={40} height={40} fill={colors.white} />
       </TouchableOpacity>
       <ScrollView
         contentContainerStyle={{backgroundColor: '#fbfbfb'}}

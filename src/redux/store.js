@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {persistStore, persistReducer} from 'redux-persist';
 import favoritesReducer from './slices/favoritesSlice';
 import cartReducer from './slices/cartSlice';
+import categoryReducer from './slices/categorySlice';
 
 const persistConfig = {
   key: 'root',
@@ -26,6 +27,7 @@ const store = configureStore({
     user: persistedUserReducer,
     favorites: persistedFavoritesReducer,
     cart: persistedCartReducer,
+    category: categoryReducer,
   },
 });
 

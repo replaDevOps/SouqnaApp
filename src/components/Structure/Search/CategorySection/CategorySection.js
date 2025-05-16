@@ -6,20 +6,22 @@ import dummyData from '../../../../util/dummyData';
 import {HOMESVG} from '../../../../assets/svg';
 import CategorySkeleton from './CategorySkeleton';
 import axios from 'axios';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import API, {
   BASE_URL_Product,
   fetchCategories,
 } from '../../../../api/apiServices';
+import {setCategories} from '../../../../redux/slices/categorySlice';
 
 const {categoryIcons} = dummyData;
 
 const CategorySection = ({}) => {
+  const dispatch = useDispatch();
   const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(true);
+  const categories = useSelector(state => state.category.categories);
   const SERVER_URL = {BASE_URL_Product};
   const {token} = useSelector(state => state.user);
-  const [categories, setCategories] = useState([]);
 
   // Simulate loading time
   useEffect(() => {
@@ -35,7 +37,7 @@ const CategorySection = ({}) => {
       setIsLoading(true);
       const res = await fetchCategories(token);
       if (res?.success) {
-        setCategories(res.data);
+        dispatch(setCategories(res.data));
         console.log('Setting Catewgories : ', res.data);
       } else {
         console.warn('Failed to fetch categories');
@@ -43,7 +45,11 @@ const CategorySection = ({}) => {
       setIsLoading(false);
     };
 
-    loadCategories();
+    if (!categories || categories.length === 0) {
+      loadCategories();
+    } else {
+      setIsLoading(false);
+    }
   }, [token]);
 
   const handleCategoryPress = async (categoryName, categoryId) => {
