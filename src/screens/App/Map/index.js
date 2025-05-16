@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect, useRef, useCallback} from 'react';
 import {
   View,
   Text,
@@ -8,6 +8,7 @@ import {
   Alert,
   Image,
   FlatList,
+  Modal,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import MapView, {PROVIDER_GOOGLE, Marker, Circle} from 'react-native-maps';
@@ -17,11 +18,11 @@ import {useNavigation, useRoute} from '@react-navigation/native';
 import isEqual from 'lodash.isequal';
 
 import MainHeader from '../../../components/Headers/MainHeader';
-import {CurrentLocationSVG} from '../../../assets/svg';
+import {CurrentLocationSVG, NoneSVG} from '../../../assets/svg';
 import {mvs} from '../../../util/metrices';
 import styles from './styles';
 import {useSelector} from 'react-redux';
-import { colors } from '../../../util/color';
+import {colors} from '../../../util/color';
 
 export default function MapScreen() {
   const route = useRoute();
@@ -34,6 +35,7 @@ export default function MapScreen() {
   const [visibleProducts, setVisibleProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [activeCategory, setActiveCategory] = useState(null);
+  const [dropdownVisible, setDropdownVisible] = useState(false);
 
   const mapRef = useRef(null);
   const locationRetryCount = useRef(0);
@@ -67,44 +69,9 @@ export default function MapScreen() {
         setVisibleProducts(filtered);
       }
     }
-  }, [region, allProducts]);
+  }, [region, allProducts, visibleProducts]);
 
-  useEffect(() => {
-    Geolocation.setRNConfiguration({
-      skipPermissionRequests: false,
-      authorizationLevel: 'whenInUse',
-      locationProvider: 'auto',
-    });
-
-    requestLocationPermission();
-
-    return () => {
-      initialMapLoadedRef.current = false;
-    };
-  }, []);
-
-  const requestLocationPermission = async () => {
-    const permission =
-      Platform.OS === 'ios'
-        ? PERMISSIONS.IOS.LOCATION_WHEN_IN_USE
-        : PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION;
-
-    const result = await request(permission);
-
-    if (result === RESULTS.GRANTED) {
-      getCurrentLocation();
-    } else {
-      Alert.alert(
-        'Location Permission',
-        'Location permission is required to show your current location on the map.',
-      );
-
-      // Set a default region to show some products initially
-      setDefaultRegion();
-    }
-  };
-
-  const setDefaultRegion = () => {
+  const setDefaultRegion = useCallback(() => {
     // Default region - can be centered on a specific city or location
     // or calculated from the average of product coordinates
     if (allProducts && allProducts.length > 0) {
@@ -138,9 +105,9 @@ export default function MapScreen() {
         setRegion(newRegion);
       }
     }
-  };
+  }, [allProducts]);
 
-  const getCurrentLocation = () => {
+  const getCurrentLocation = useCallback(() => {
     if (isLocationLoading) return;
 
     setIsLocationLoading(true);
@@ -265,21 +232,60 @@ export default function MapScreen() {
         forceRequestLocation: true,
       },
     );
-  };
+  }, [isLocationLoading, setDefaultRegion]);
 
-const formatPrice = (price) => {
-  if (price >= 1000000) {
-    return (price / 1000000).toFixed(1).replace(/\.0$/, '') + 'm'; // 1.2m
-  } else if (price >= 1000) {
-    return (price / 1000).toFixed(1).replace(/\.0$/, '') + 'k'; // 1.5k
-  } else {
-    return price.toString();
-  }
-};
+  const requestLocationPermission = useCallback(async () => {
+    const permission =
+      Platform.OS === 'ios'
+        ? PERMISSIONS.IOS.LOCATION_WHEN_IN_USE
+        : PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION;
+
+    const result = await request(permission);
+
+    if (result === RESULTS.GRANTED) {
+      getCurrentLocation();
+    } else {
+      Alert.alert(
+        'Location Permission',
+        'Location permission is required to show your current location on the map.',
+      );
+
+      // Set a default region to show some products initially
+      setDefaultRegion();
+    }
+  }, [getCurrentLocation, setDefaultRegion]);
+
+  useEffect(() => {
+    Geolocation.setRNConfiguration({
+      skipPermissionRequests: false,
+      authorizationLevel: 'whenInUse',
+      locationProvider: 'auto',
+    });
+
+    requestLocationPermission();
+
+    return () => {
+      initialMapLoadedRef.current = false;
+    };
+  }, [requestLocationPermission]);
+
+  const formatPrice = price => {
+    if (price >= 1000000) {
+      return (price / 1000000).toFixed(1).replace(/\.0$/, '') + 'm'; // 1.2m
+    } else if (price >= 1000) {
+      return (price / 1000).toFixed(1).replace(/\.0$/, '') + 'k'; // 1.5k
+    } else {
+      return price.toString();
+    }
+  };
 
   const navigateToProductDetails = productId => {
     navigation.navigate('ProductDetail', {productId});
     console.log('Product ID: ', productId);
+  };
+
+  const toggleDropdown = () => {
+    setDropdownVisible(!dropdownVisible);
   };
 
   const handleMarkerPress = product => {
@@ -291,49 +297,74 @@ const formatPrice = (price) => {
     getCurrentLocation();
   };
 
+  const RadioButton = ({selected}) => {
+    return (
+      <View
+        style={{
+          height: 20,
+          width: 20,
+          borderRadius: 10,
+          borderWidth: 2,
+          borderColor: colors.lightgreen,
+          alignItems: 'center',
+          justifyContent: 'center',
+          marginRight: 10,
+        }}>
+        {selected ? (
+          <View
+            style={{
+              height: 10,
+              width: 10,
+              borderRadius: 5,
+              backgroundColor: colors.lightgreen,
+            }}
+          />
+        ) : null}
+      </View>
+    );
+  };
+
   console.log('{catego}', categories);
 
   return (
     <SafeAreaView style={styles.container}>
-      <View>
-        <MainHeader showBackIcon={true} title="Map" />
-        <View style={styles.categoryListContainer}>
-          <FlatList
-            data={categories}
-            horizontal
-            keyExtractor={item => item.id}
-            renderItem={({item}) => {
-              const isActive = item.name === activeCategory; // <-- Define this!
-
-              return (
-                <TouchableOpacity
-                  onPress={() => setActiveCategory(item.name)}
-                  style={styles.categoryItem}>
-                  <Text
-                    style={[
-                      styles.categoryText,
-                      // isActive && {color: '#adbd6e', fontWeight: 'bold'},
-                    ]}>
-                    {item.name}
-                  </Text>
-                  {/* Only show this view when item is active */}
-                  {isActive && (
-                    <View
-                      style={{
-                        backgroundColor: '#adbd6e',
-                        height: 5,
-                        width: '90%',
-                        marginVertical: 3,
-                        borderRadius: 5,
-                      }}
-                    />
-                  )}{' '}
-                </TouchableOpacity>
-              );
-            }}
-          />
-        </View>
+      <MainHeader showBackIcon={true} title="Map" />
+      {/* Replace the category dropdown button and modal with this code */}
+      <View style={styles.categoryListContainer}>
+        <TouchableOpacity
+          onPress={toggleDropdown}
+          style={styles.dropdownButton}>
+          <NoneSVG width={25} height={25} fill={colors.black} />
+        </TouchableOpacity>
       </View>
+
+      {/* Simple dropdown (replace modal) */}
+      {dropdownVisible && (
+        <View style={styles.simpleDropdownContainer}>
+          <TouchableOpacity
+            style={styles.dropdownItem}
+            onPress={() => {
+              setActiveCategory(null);
+              setDropdownVisible(false);
+            }}>
+            <RadioButton selected={activeCategory === null} />
+            <Text style={styles.dropdownText}>All Categories</Text>
+          </TouchableOpacity>
+
+          {categories.map(category => (
+            <TouchableOpacity
+              key={category.id}
+              style={styles.dropdownItem}
+              onPress={() => {
+                setActiveCategory(category.name);
+                setDropdownVisible(false);
+              }}>
+              <RadioButton selected={activeCategory === category.name} />
+              <Text style={styles.dropdownText}>{category.name}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      )}
 
       <View style={styles.BottomContainer}>
         {selectedProduct ? (
@@ -440,18 +471,36 @@ const formatPrice = (price) => {
                 }}
                 title={product.name || 'Product'}
                 description={product.description || ''}
-                onPress={() => handleMarkerPress(product)}
-              >
-                <View style={{backgroundColor:colors.gray,borderRadius:4,padding:1,width:35,height:35,borderWidth:1,borderColor:'#ccc'}}>
-
-                <Text style={{fontSize:12,fontWeight:'bold',color:'#000',textAlign:'center'}}>
-                $
-                  {/* {product.price} */}
-                </Text>
-                <Text style={{fontSize:12,fontWeight:'bold',color:'#000',textAlign:'center'}}>
-                  {formatPrice(product.price)}
-                  {/* {product.price} */}
-                </Text>
+                onPress={() => handleMarkerPress(product)}>
+                <View
+                  style={{
+                    backgroundColor: colors.lightgreen,
+                    borderRadius: 4,
+                    padding: 1,
+                    width: 35,
+                    height: 35,
+                    borderWidth: 1,
+                    borderColor: '#ccc',
+                  }}>
+                  <Text
+                    style={{
+                      fontSize: 12,
+                      fontWeight: 'bold',
+                      color: '#fff',
+                      textAlign: 'center',
+                    }}>
+                    ${/* {product.price} */}
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 12,
+                      fontWeight: 'bold',
+                      color: '#fff',
+                      textAlign: 'center',
+                    }}>
+                    {formatPrice(product.price)}
+                    {/* {product.price} */}
+                  </Text>
                 </View>
               </Marker>
             );
