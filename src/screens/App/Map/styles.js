@@ -152,11 +152,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#666',
   },
-  categoryListContainer: {
-    paddingHorizontal: mvs(8),
-    paddingTop: mvs(6),
-    paddingBottom: mvs(6),
-  },
+  categoryListContainer: {},
 
   categoryItem: {
     alignItems: 'center',
@@ -202,7 +198,17 @@ const styles = StyleSheet.create({
 
   // Keep these existing styles
   dropdownButton: {
-    padding: 8,
+    padding: 14,
+    left: 0,
+    marginTop: mvs(3),
+    position: 'absolute',
+    zIndex: 80,
+    width: '35%',
+    backgroundColor: colors.lightorange,
+    borderRadius: mvs(8),
+    flexDirection: 'row',
+    gap: 5,
+    alignItems: 'center',
   },
   dropdownItem: {
     flexDirection: 'row',
