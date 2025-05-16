@@ -28,19 +28,20 @@ const styles = StyleSheet.create({
     },
     myLocationButton: {
         position: 'absolute',
-        Top: mvs(40),
-        right: mvs(7),
+        bottom: mvs(110),
+        right: mvs(18),
         backgroundColor: colors.white,
-        width: mvs(48),
-        height: mvs(48),
-        borderRadius: mvs(24),
+        width: mvs(60),
+        height: mvs(60),
+        borderRadius: mvs(30),
         justifyContent: 'center',
         alignItems: 'center',
-        elevation: 5,
+        elevation: 2,
         shadowColor: colors.black,
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.3,
         shadowRadius: 3,
+        zIndex:60
     },
     loadingIndicator: {
         position: 'absolute',
@@ -154,6 +155,36 @@ const styles = StyleSheet.create({
         fontSize: 12,
         color: '#666',
     },
+    categoryListContainer: {
+  paddingHorizontal: mvs(8),
+  paddingTop: mvs(6),
+  paddingBottom: mvs(6),
+  backgroundColor: '#fff',
+},
+
+categoryItem: {
+    alignItems:'center',
+  paddingTop: 8,
+//   marginVertical: 6,
+  backgroundColor: '#ffffff',
+//   borderRadius: 8,
+borderEndWidth:1,
+borderColor:colors.grey,
+  elevation: 1,
+  shadowColor: '#000',
+  shadowOpacity: 0.1,
+  shadowOffset: {width: 0, height: 1},
+  shadowRadius: 2,
+},
+
+categoryText: {
+    
+  paddingHorizontal: 12,
+    textAlign:'center',
+  fontSize: 18,
+  fontWeight: 'bold',
+  color:'#333'
+},
 });
 
 export default styles;
