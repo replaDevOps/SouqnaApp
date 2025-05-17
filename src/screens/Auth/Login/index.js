@@ -68,6 +68,7 @@ const LoginScreen = () => {
             name: user.name,
             email: user.email,
             role: user.role,
+            password: password,
           }),
         );
         if (user.role === 3) {

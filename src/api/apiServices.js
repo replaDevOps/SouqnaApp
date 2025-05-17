@@ -22,6 +22,57 @@ export const fetchCategories = async token => {
   }
 };
 
+export const switchUserRole = async (token, currentRole, sellerType = null) => {
+  try {
+    // Determine which endpoint to use based on current role
+    let endpoint = '';
+    let requestData = {};
+    
+    if (currentRole === '2' || currentRole === 2) {
+      // Switching from seller to buyer
+      endpoint = 'switchToBuyer';
+      requestData = {
+        role: 4, // As specified in requirements
+      };
+    } else if (currentRole === '3' || currentRole === 3) {
+      // Switching from buyer to seller
+      endpoint = 'switchToSeller';
+      requestData = {
+        role: 4, // As specified in requirements
+        sellerType: sellerType,
+      };
+    } else {
+      return {
+        success: false,
+        error: 'Invalid current role'
+      };
+    }
+
+    // Make the API call
+    const response = await API.post(endpoint, requestData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    console.log(`Switch role response (${endpoint}):`, response.data);
+    return response.data;
+  } catch (error) {
+    console.error(
+      'Error switching user role:',
+      error?.response?.data || error.message
+    );
+    
+    // Return error information in a structured format
+    return {
+      success: false,
+      error: error?.response?.data?.message || error.message,
+      status: error?.response?.status
+    };
+  }
+};
+
 export const fetchProducts = async (token, filters = {}, role) => {
   const isLoggedIn = !!token;
 
