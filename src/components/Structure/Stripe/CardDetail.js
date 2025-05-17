@@ -1,98 +1,132 @@
-// components/modals/CardDetailsModal.js
-
 import React, {useState} from 'react';
 import {
-  Modal,
   View,
   Text,
   TextInput,
   TouchableOpacity,
   StyleSheet,
+  SafeAreaView,
+  Alert,
+  ActivityIndicator,
 } from 'react-native';
+import {useNavigation, useRoute} from '@react-navigation/native';
+import {useSelector} from 'react-redux';
+import {submitCardDetails} from '../../../api/apiServices';
 
-const CardDetailsModal = ({visible, onClose, onSubmit}) => {
-  const [cardNumber, setCardNumber] = useState('');
-  const [cardName, setCardName] = useState('');
-  const [expiryMonth, setExpiryMonth] = useState('');
-  const [expiryYear, setExpiryYear] = useState('');
-  const [cvc, setCvc] = useState('');
+const CardDetailsScreen = () => {
+  const navigation = useNavigation();
+  const route = useRoute();
+  const onSubmit = route.params?.onSubmit;
+  const {token} = useSelector(state => state.user);
+  const [loading, setLoading] = useState(false);
 
-  const handleSave = () => {
-    onSubmit({
+  const [cardNumber, setCardNumber] = useState('4242 4242 4242 4242');
+  const [cardName, setCardName] = useState('Jhon');
+  const [expiryMonth, setExpiryMonth] = useState('12');
+  const [expiryYear, setExpiryYear] = useState('2025');
+  const [cvc, setCvc] = useState('1234');
+
+  const handleSave = async () => {
+    if (!cardNumber || !cardName || !expiryMonth || !expiryYear || !cvc) {
+      Alert.alert('Validation Error', 'Please fill all fields');
+      return;
+    }
+
+    const cardData = {
       cardNumber,
       cardName,
       expiryMonth: parseInt(expiryMonth),
       expiryYear: parseInt(expiryYear),
       cvc: parseInt(cvc),
-    });
-    onClose();
+    };
+
+    try {
+      setLoading(true);
+      const response = await submitCardDetails(cardData, token);
+      if (onSubmit) onSubmit(response); // Optional callback
+      Alert.alert('Success', 'Card saved successfully!');
+      navigation.goBack();
+    } catch (error) {
+      Alert.alert(
+        'Error',
+        error.response?.data?.message || 'Failed to save card',
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <Modal visible={visible} animationType="slide" transparent>
-      <View style={styles.modalContainer}>
-        <View style={styles.cardBox}>
-          <Text style={styles.title}>Enter Card Details</Text>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.cardBox}>
+        <Text style={styles.title}>Enter Stripe Card Details</Text>
 
+        <TextInput
+          placeholder="Card Number"
+          value={cardNumber}
+          onChangeText={setCardNumber}
+          keyboardType="numeric"
+          style={styles.input}
+        />
+        <TextInput
+          placeholder="Cardholder Name"
+          value={cardName}
+          onChangeText={setCardName}
+          style={styles.input}
+        />
+        <View style={styles.row}>
           <TextInput
-            placeholder="Card Number"
-            value={cardNumber}
-            onChangeText={setCardNumber}
+            placeholder="MM"
+            value={expiryMonth}
+            onChangeText={setExpiryMonth}
             keyboardType="numeric"
-            style={styles.input}
+            style={[styles.input, {flex: 1, marginRight: 8}]}
           />
           <TextInput
-            placeholder="Cardholder Name"
-            value={cardName}
-            onChangeText={setCardName}
-            style={styles.input}
-          />
-          <View style={styles.row}>
-            <TextInput
-              placeholder="MM"
-              value={expiryMonth}
-              onChangeText={setExpiryMonth}
-              keyboardType="numeric"
-              style={[styles.input, {flex: 1, marginRight: 8}]}
-            />
-            <TextInput
-              placeholder="YYYY"
-              value={expiryYear}
-              onChangeText={setExpiryYear}
-              keyboardType="numeric"
-              style={[styles.input, {flex: 1}]}
-            />
-          </View>
-          <TextInput
-            placeholder="CVC"
-            value={cvc}
-            onChangeText={setCvc}
+            placeholder="YYYY"
+            value={expiryYear}
+            onChangeText={setExpiryYear}
             keyboardType="numeric"
-            style={styles.input}
+            style={[styles.input, {flex: 1}]}
           />
+        </View>
+        <TextInput
+          placeholder="CVC"
+          value={cvc}
+          onChangeText={setCvc}
+          keyboardType="numeric"
+          style={styles.input}
+        />
 
-          <View style={styles.buttonRow}>
-            <TouchableOpacity onPress={onClose} style={styles.cancelBtn}>
-              <Text style={styles.btnText}>Cancel</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={handleSave} style={styles.saveBtn}>
-              <Text style={styles.btnText}>Save</Text>
-            </TouchableOpacity>
-          </View>
+        {loading && <ActivityIndicator style={{marginVertical: 10}} />}
+
+        <View style={styles.buttonRow}>
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            style={styles.cancelBtn}>
+            <Text style={styles.btnText}>Cancel</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={handleSave} style={styles.saveBtn}>
+            <Text style={styles.btnText}>Save</Text>
+          </TouchableOpacity>
         </View>
       </View>
-    </Modal>
+    </SafeAreaView>
   );
 };
 
-export default CardDetailsModal;
+export default CardDetailsScreen;
 
 const styles = StyleSheet.create({
-  modalContainer: {
+  container: {
     flex: 1,
-    justifyContent: 'flex-end',
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    // padding: 20,
+    padding: 20,
+    backgroundColor: '#adbd6e',
+    justifyContent: 'center',
+    borderTopLeftRadius: 40,
+    borderTopRightRadius: 40,
+    borderBottomLeftRadius: 40,
+    borderBottomRightRadius: 40,
   },
   cardBox: {
     backgroundColor: 'white',
@@ -100,6 +134,9 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderTopLeftRadius: 40,
     borderTopRightRadius: 40,
+    borderBottomLeftRadius: 40,
+    borderBottomRightRadius: 40,
+    elevation: 0,
   },
   title: {
     fontWeight: 'bold',
@@ -114,12 +151,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 8,
     marginBottom: 12,
+    backgroundColor: '#fff',
   },
   row: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
   },
-
   buttonRow: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
@@ -133,7 +169,7 @@ const styles = StyleSheet.create({
   },
   saveBtn: {
     padding: 10,
-    backgroundColor: '#007BFF',
+    backgroundColor: '#adbd6e',
     borderRadius: 6,
   },
   btnText: {

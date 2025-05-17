@@ -81,7 +81,7 @@ const LoginScreen = () => {
         console.log('Login successful:', user);
 
         setTimeout(() => {
-          navigation.replace('MainTabs');
+          navigation.navigate('PlanScreen');
         }, 1000);
       } else {
         showErrorMessage(res.message || 'Invalid email or password');

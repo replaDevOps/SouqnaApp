@@ -44,8 +44,8 @@ const Register = () => {
   const [isSubscribed, setIsSubscribed] = useState(false);
   const profileNameOpacity = useRef(new Animated.Value(0)).current;
   const [sellerType, setSellerType] = useState('');
-  const [showCardModal, setShowCardModal] = useState(false);
-  const [cardDetails, setCardDetails] = useState(null);
+  // const [showCardModal, setShowCardModal] = useState(false);
+  // const [cardDetails, setCardDetails] = useState(null);
 
   // const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -78,10 +78,10 @@ const Register = () => {
       alert('Please select a role.');
       return;
     }
-    if (isSeller && sellerType === 'Company' && !cardDetails) {
-      setShowCardModal(true);
-      return;
-    }
+    // if (isSeller && sellerType === 'Company' && !cardDetails) {
+    //   setShowCardModal(true);
+    //   return;
+    // }
     const storedFcmToken = await AsyncStorage.getItem('fcmToken');
     console.log('Stored FCM Token: ', storedFcmToken);
     let role = 0;
@@ -107,9 +107,9 @@ const Register = () => {
     console.log('Payload: ', payload); // Log the payload being sent to the API
 
     try {
-      if (sellerType === 'Company') {
-        setShowCardModal(true); // Show modal if company selected
-      }
+      // if (sellerType === 'Company') {
+      //   setShowCardModal(true); // Show modal if company selected
+      // }
       const response = await API.post('register', payload);
       console.log('API Response:', response.data);
 
@@ -284,14 +284,14 @@ const Register = () => {
           .
         </Regular>
       </View>
-      <CardDetailsModal
+      {/* <CardDetailsModal
         visible={showCardModal}
         onClose={() => setShowCardModal(false)}
         onSubmit={details => {
           console.log('Collected card details: ', details);
           setCardDetails(details);
         }}
-      />
+      /> */}
     </KeyboardAvoidingView>
   );
 };
