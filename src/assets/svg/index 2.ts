@@ -57,4 +57,6 @@ export {default as PowerOffSVG} from './powerOff';
 export {default as OnSVG} from './OnSVG';
 export {default as OffSVG} from './offSVG';
 export {default as BackwardSVG} from './backwardSVG';
-export {default as CurrentLocationSVG } from './currantLocationSVG';
+export {default as CurrentLocationSVG} from './currantLocationSVG';
+export {default as NoneSVG} from './noneSVG';
+export {default as BarsSVG} from './barsSVG';
