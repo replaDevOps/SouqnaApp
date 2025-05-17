@@ -187,24 +187,23 @@ const Profile = () => {
               {renderDirectionalIcon()}
             </TouchableOpacity>
 
-            {role === 2 ||
-              (role === 4 && (
-                <TouchableOpacity
-                  style={styles.menuItemContainer}
-                  onPress={() => navigation.navigate('Verification')}>
-                  <View style={styles.leftRow}>
-                    <View style={styles.iconWrapper}>
-                      <VerifiedSVG width={22} height={22} />
-                    </View>
-                    <Regular style={styles.menuText}>
-                      {verificationStatus === 'verified'
-                        ? t('updateProfile')
-                        : t('getVerified')}
-                    </Regular>
+            {role === 2 && (
+              <TouchableOpacity
+                style={styles.menuItemContainer}
+                onPress={() => navigation.navigate('Verification')}>
+                <View style={styles.leftRow}>
+                  <View style={styles.iconWrapper}>
+                    <VerifiedSVG width={22} height={22} />
                   </View>
-                  {renderDirectionalIcon()}
-                </TouchableOpacity>
-              ))}
+                  <Regular style={styles.menuText}>
+                    {verificationStatus === 'verified'
+                      ? t('updateProfile')
+                      : t('getVerified')}
+                  </Regular>
+                </View>
+                {renderDirectionalIcon()}
+              </TouchableOpacity>
+            )}
 
             <TouchableOpacity
               style={styles.menuItemContainer}
