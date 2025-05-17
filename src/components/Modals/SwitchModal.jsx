@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
         width: mvs(20),
         borderRadius: mvs(10),
         borderWidth: 2,
-        borderColor: colors.lightorange,
+        borderColor: colors.lightgreen,
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -206,7 +206,7 @@ const styles = StyleSheet.create({
         height: mvs(10),
         width: mvs(10),
         borderRadius: mvs(5),
-        backgroundColor: colors.lightorange,
+        backgroundColor: colors.lightgreen,
     },
     radioLabel: {
         marginLeft: mvs(8),
@@ -253,7 +253,7 @@ const styles = StyleSheet.create({
         borderColor: colors.gray,
     },
     submitButton: {
-        backgroundColor: colors.lightorange,
+        backgroundColor: colors.lightgreen,
     },
     cancelButtonText: {
         color: colors.black,

@@ -187,7 +187,7 @@ const Profile = () => {
               {renderDirectionalIcon()}
             </TouchableOpacity>
 
-            {role === 2 && (
+            {role === 2 || role ===4 ?  (
               <TouchableOpacity
                 style={styles.menuItemContainer}
                 onPress={() => navigation.navigate('Verification')}>
@@ -203,7 +203,7 @@ const Profile = () => {
                 </View>
                 {renderDirectionalIcon()}
               </TouchableOpacity>
-            )}
+            ):''}
 
             <TouchableOpacity
               style={styles.menuItemContainer}

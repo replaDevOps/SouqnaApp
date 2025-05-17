@@ -52,7 +52,8 @@ const MyTabs = () => {
   const handleLoginSuccess = () => {
     setIsModalVisible(false);
   };
-console.log('{Actual Role }',actualRole)
+console.log('{Role }',actualRole)
+console.log('{Actual Role }',role)
   
   useEffect(() => {
     const getNotifications = async () => {
