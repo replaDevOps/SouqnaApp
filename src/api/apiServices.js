@@ -27,7 +27,7 @@ export const switchUserRole = async (token, currentRole, sellerType = null) => {
     // Determine which endpoint to use based on current role
     let endpoint = '';
     let requestData = {};
-    
+
     if (currentRole === '2' || currentRole === 2) {
       // Switching from seller to buyer
       endpoint = 'switchToBuyer';
@@ -44,7 +44,7 @@ export const switchUserRole = async (token, currentRole, sellerType = null) => {
     } else {
       return {
         success: false,
-        error: 'Invalid current role'
+        error: 'Invalid current role',
       };
     }
 
@@ -52,8 +52,8 @@ export const switchUserRole = async (token, currentRole, sellerType = null) => {
     const response = await API.post(endpoint, requestData, {
       headers: {
         Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      }
+        'Content-Type': 'application/json',
+      },
     });
 
     console.log(`Switch role response (${endpoint}):`, response.data);
@@ -61,14 +61,14 @@ export const switchUserRole = async (token, currentRole, sellerType = null) => {
   } catch (error) {
     console.error(
       'Error switching user role:',
-      error?.response?.data || error.message
+      error?.response?.data || error.message,
     );
-    
+
     // Return error information in a structured format
     return {
       success: false,
       error: error?.response?.data?.message || error.message,
-      status: error?.response?.status
+      status: error?.response?.status,
     };
   }
 };
@@ -302,6 +302,24 @@ export const fetchNotifications = async (token, role) => {
       error?.response?.data || error.message,
     );
     return null;
+  }
+};
+
+export const submitCardDetails = async (cardData, token) => {
+  try {
+    const response = await API.post('subscription', cardData, {
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token && {Authorization: `Bearer ${token}`}),
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error(
+      'Error submitting card details:',
+      error.response?.data || error.message,
+    );
+    throw error;
   }
 };
 

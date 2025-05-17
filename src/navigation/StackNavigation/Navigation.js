@@ -27,6 +27,8 @@ import InboxScreen from '../../screens/App/Inbox';
 import CheckoutScreen from '../../screens/Checkout';
 import BuyerNotification from '../../screens/App/BuyerNotification';
 import MapScreen from '../../screens/App/Map';
+import CardDetailsScreen from '../../components/Structure/Stripe/CardDetail';
+import PlanScreen from '../../components/Structure/Stripe/Plan';
 
 const Stack = createStackNavigator();
 
@@ -74,6 +76,8 @@ const AppNavigator = () => {
         <Stack.Screen name="Checkout" component={CheckoutScreen} />
         <Stack.Screen name="BuyerNotification" component={BuyerNotification} />
         <Stack.Screen name="Map" component={MapScreen} />
+        <Stack.Screen name="CardDetailsScreen" component={CardDetailsScreen} />
+        <Stack.Screen name="PlanScreen" component={PlanScreen} />
       </Stack.Navigator>
     </View>
   );
