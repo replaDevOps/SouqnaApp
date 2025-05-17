@@ -10,6 +10,7 @@ const initialState = {
   email: '',
   verificationStatus: null,
   role: '',
+  password: '',
 };
 
 const userSlice = createSlice({
@@ -28,6 +29,7 @@ const userSlice = createSlice({
       name: '',
       email: '',
       role: '',
+      password: '',
     }),
     setVerificationStatus: (state, action) => {
       state.verificationStatus = action.payload;

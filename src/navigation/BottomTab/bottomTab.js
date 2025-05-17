@@ -2,7 +2,7 @@
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {
   CartSVG,
   ChatSVG,
@@ -25,6 +25,7 @@ import Chat from '../../screens/App/Chat';
 import Notification from '../../screens/App/Notification/index';
 import InboxScreen from '../../screens/App/Inbox';
 import {fetchNotifications} from '../../api/apiServices';
+import { setRole } from '../../redux/slices/userSlice';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -35,6 +36,9 @@ const MyTabs = () => {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
 
+
+  const dispatch = useDispatch();
+
   useEffect(() => {
     console.log('TOKEN: ', token);
   }, [token]);
@@ -43,6 +47,7 @@ const MyTabs = () => {
     setIsModalVisible(false);
   };
 
+  
   useEffect(() => {
     const getNotifications = async () => {
       setLoading(true);
@@ -66,12 +71,17 @@ const MyTabs = () => {
       navigation.navigate(route.name);
     }
   };
-
+  
+  useEffect(() => {
+     if (role === 4) {
+       dispatch(setRole(2));
+     }
+   }, [role]);
   const getIconComponent = React.useCallback((routeName, focused) => {
     const activeColor = 'rgba(70, 80, 45, 1)';
     const inactiveColor = colors.grey;
     const color = focused ? activeColor : inactiveColor;
-
+    
     switch (routeName) {
       case 'Home':
         return <HOMESVG color={color} />;
