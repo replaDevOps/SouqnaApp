@@ -13,6 +13,7 @@ import React, { useState } from 'react';
 import { colors } from '../../util/color';
 import { mvs } from '../../util/metrices';
 import { t } from 'i18next';
+import { useSelector } from 'react-redux';
 
 // RadioGroup component for seller type selection
 const RadioGroup = ({ options, selectedOption, onSelect }) => {
@@ -46,6 +47,7 @@ export default function SwitchModal({
     const [error, setError] = useState('');
     const [NewPassword, setNewPassword] = useState('');
     const currentRole = role;
+    const { actualRole } = useSelector(state => state.user);
 
     const handleSubmit = () => {
        if(password===NewPassword){
@@ -60,15 +62,16 @@ export default function SwitchModal({
     
            // Reset state
            setError('');
+           setNewPassword('');
        }else{
         setError('Passwords do not match');
        }
 
     };
-console.log("{Passord saved}",password);
 
-    // If role is 4, don't show the modal (as per requirements)
-    if (role === '4' || role === 4) {
+   // If actualRole is 4, don't show the modal
+    // This prevents role 4 users from seeing the modal when they toggle between views
+    if (actualRole === '4' || actualRole === 4) {
         return null;
     }
 

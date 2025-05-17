@@ -24,12 +24,11 @@ import { switchUserRole } from '../../api/apiServices'; // Updated to match the 
 const {height} = Dimensions.get('window');
 const headerHeight = height * 0.28;
 
-export default function ProfileHeader({OnPressLogout}) {
-  const {token, role, password} = useSelector(state => state.user);
+export default function ProfileHeader({ OnPressLogout }) {
+  const { token, role, password, actualRole } = useSelector(state => state.user);
   const [isSellerOn, setIsSellerOn] = useState(role === '2' || role === 2);
   const [modalVisible, setModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
 
@@ -38,19 +37,18 @@ export default function ProfileHeader({OnPressLogout}) {
   const navigation = useNavigation();
 
   useEffect(() => {
-    // If user is seller (2) or in dual mode (4) and isSellerOn is true, set isSellerOn to true
-    // Otherwise set it to false
-    if (role === '2' || role === 2 || (role === '4' || role === 4) && isSellerOn) {
+    // Update seller toggle state when role changes
+    if (role === '2' || role === 2 || ((role === '4' || role === 4) && isSellerOn)) {
       setIsSellerOn(true);
     } else {
       setIsSellerOn(false);
     }
-  }, [role]);
+  }, [role, isSellerOn]);
 
   const toggleSellerMode = () => {
-    // If role is 4 (both seller and buyer), directly switch between seller (2) and buyer (3)
-    if (role === '4' || role === 4) {
-      // Toggle between seller and buyer roles
+    // Check if user has dual mode access (actualRole is 4)
+    if (actualRole === '4' || actualRole === 4) {
+      // For dual mode users, directly toggle between seller and buyer views
       const newRole = isSellerOn ? '3' : '2';
       dispatch(setRole(newRole));
       setIsSellerOn(!isSellerOn);
@@ -63,7 +61,7 @@ export default function ProfileHeader({OnPressLogout}) {
       setSnackbarMessage(message);
       setSnackbarVisible(true);
     } else {
-      // Show modal for role 2 (seller) or 3 (buyer)
+      // For non-dual users, show verification modal
       setModalVisible(true);
     }
   };
@@ -99,8 +97,8 @@ export default function ProfileHeader({OnPressLogout}) {
   };
 
   const updateRole = () => {
-    // Determine the new role based on current role - Always set to role 4 per your API logic
-    const newRole = '4';
+    // Update to role 4 when upgrading from 2 or 3
+    dispatch(setActualRole('4'));
     
     // Set message based on the previous role
     const message = (role === '2' || role === 2) 
@@ -111,11 +109,8 @@ export default function ProfileHeader({OnPressLogout}) {
     setSnackbarMessage(message);
     setSnackbarVisible(true);
     
-    // Update the role in Redux store
-    dispatch(setRole(newRole));
-    
     // Update local state for the toggle button
-    setIsSellerOn(false); // Reset since we're now role 4
+    setIsSellerOn(role === '3' || role === 3);  // Reset since we're now role 4
 
     // Fade-out animation
     Animated.timing(fadeAnim, {
