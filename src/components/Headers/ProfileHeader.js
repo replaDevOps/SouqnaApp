@@ -19,7 +19,7 @@ import {setRole} from '../../redux/slices/userSlice';
 import {Snackbar} from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
 import SwitchModal from '../Modals/SwitchModal';
-import { switchUserRole } from '../../api/apiServices'; // Updated to match the import from your document
+import {switchUserRole} from '../../api/apiServices'; // Updated to match the import from your document
 
 const {height} = Dimensions.get('window');
 const headerHeight = height * 0.28;
@@ -40,7 +40,11 @@ export default function ProfileHeader({OnPressLogout}) {
   useEffect(() => {
     // If user is seller (2) or in dual mode (4) and isSellerOn is true, set isSellerOn to true
     // Otherwise set it to false
-    if (role === '2' || role === 2 || (role === '4' || role === 4) && isSellerOn) {
+    if (
+      role === '2' ||
+      role === 2 ||
+      ((role === '4' || role === 4) && isSellerOn)
+    ) {
       setIsSellerOn(true);
     } else {
       setIsSellerOn(false);
@@ -54,12 +58,12 @@ export default function ProfileHeader({OnPressLogout}) {
       const newRole = isSellerOn ? '3' : '2';
       dispatch(setRole(newRole));
       setIsSellerOn(!isSellerOn);
-      
+
       // Show appropriate message
-      const message = isSellerOn 
-        ? t('Switched to Buyer Account') 
+      const message = isSellerOn
+        ? t('Switched to Buyer Account')
         : t('Switched to Seller Account');
-      
+
       setSnackbarMessage(message);
       setSnackbarVisible(true);
     } else {
@@ -75,10 +79,10 @@ export default function ProfileHeader({OnPressLogout}) {
   const handleModalSubmit = async (token, currentRole, sellerType = null) => {
     try {
       setIsLoading(true);
-      
+
       // Call the API function to switch roles
       const response = await switchUserRole(token, currentRole, sellerType);
-      
+
       // Check if the response indicates success
       if (response && !response.success === false) {
         // Close modal and update role
@@ -101,19 +105,20 @@ export default function ProfileHeader({OnPressLogout}) {
   const updateRole = () => {
     // Determine the new role based on current role - Always set to role 4 per your API logic
     const newRole = '4';
-    
+
     // Set message based on the previous role
-    const message = (role === '2' || role === 2) 
-      ? t('Switched to Buyer Account') 
-      : t('Switched to Seller Account');
-    
+    const message =
+      role === '2' || role === 2
+        ? t('Switched to Buyer Account')
+        : t('Switched to Seller Account');
+
     // Update snackbar message and show it
     setSnackbarMessage(message);
     setSnackbarVisible(true);
-    
+
     // Update the role in Redux store
     dispatch(setRole(newRole));
-    
+
     // Update local state for the toggle button
     setIsSellerOn(false); // Reset since we're now role 4
 
@@ -124,7 +129,7 @@ export default function ProfileHeader({OnPressLogout}) {
       useNativeDriver: true,
     }).start();
   };
-  
+
   return (
     <View style={styles.headerContainer}>
       <StatusBar
@@ -149,9 +154,9 @@ export default function ProfileHeader({OnPressLogout}) {
             ? t('Seller Account')
             : role === '3' || role === 3
             ? t('Buyer Account')
-            : isSellerOn 
-              ? t('Seller Account') 
-              : t('Buyer Account')}
+            : isSellerOn
+            ? t('Seller Account')
+            : t('Buyer Account')}
         </Text>
 
         <TouchableOpacity onPress={toggleSellerMode} activeOpacity={0.8}>
@@ -162,7 +167,7 @@ export default function ProfileHeader({OnPressLogout}) {
           )}
         </TouchableOpacity>
       </View>
-      
+
       {/* Snackbar for showing role change messages */}
       <Snackbar
         visible={snackbarVisible}
@@ -174,7 +179,7 @@ export default function ProfileHeader({OnPressLogout}) {
         }}>
         {snackbarMessage}
       </Snackbar>
-      
+
       {/* Modal for role switching - pass token and password props */}
       <SwitchModal
         visible={modalVisible}
