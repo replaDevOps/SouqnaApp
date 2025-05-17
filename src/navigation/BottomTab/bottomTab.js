@@ -31,13 +31,19 @@ const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
 const MyTabs = () => {
-  const {token, role} = useSelector(state => state.user); // Token will indicate if the user is logged in
+  const {token, role,actualRole} = useSelector(state => state.user); // Token will indicate if the user is logged in
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
 
+ // Update isSeller state when role changes
+  useEffect(() => {
+    setIsSeller(role === '2' || role === 2);
+  }, [role]);
 
   const dispatch = useDispatch();
+// Track if we're in seller mode (needed for role 4 users)
+  const [isSeller, setIsSeller] = useState(role === '2' || role === 2);
 
   useEffect(() => {
     console.log('TOKEN: ', token);
@@ -46,7 +52,7 @@ const MyTabs = () => {
   const handleLoginSuccess = () => {
     setIsModalVisible(false);
   };
-
+console.log('{Actual Role }',actualRole)
   
   useEffect(() => {
     const getNotifications = async () => {
@@ -71,12 +77,12 @@ const MyTabs = () => {
       navigation.navigate(route.name);
     }
   };
-  
   useEffect(() => {
      if (role === 4) {
        dispatch(setRole(2));
      }
    }, [role]);
+
   const getIconComponent = React.useCallback((routeName, focused) => {
     const activeColor = 'rgba(70, 80, 45, 1)';
     const inactiveColor = colors.grey;
@@ -103,8 +109,8 @@ const MyTabs = () => {
   }, []);
 
   const renderTabs = () => {
-    if (role == 2 && token) {
-      // Seller: Home, Inbox, Advertise, Profile
+   if ((role == 2 || (actualRole == 4 && isSeller)) && token) {
+        // Seller: Home, Inbox, Advertise, Profile
       return (
         <>
           <Tab.Screen name="Home" component={SearchScreen} />
@@ -138,7 +144,7 @@ const MyTabs = () => {
           />
         </>
       );
-    } else if (role == 3) {
+    } else if (role == 3 || (actualRole == 4 && !isSeller)) {
       // Buyer: Home, Inbox, Favourites, Cart, Profile
       return (
         <>
