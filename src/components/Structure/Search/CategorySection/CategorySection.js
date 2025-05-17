@@ -83,7 +83,8 @@ const CategorySection = ({}) => {
   return (
     <View style={styles.categoryContainer}>
       <FlatList
-        data={categories}
+        // data={categories}
+        data={categories.filter(item => item.status === 1)}
         horizontal
         showsHorizontalScrollIndicator={false}
         keyExtractor={(category, index) => index.toString()}
