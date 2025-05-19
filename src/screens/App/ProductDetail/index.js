@@ -237,7 +237,7 @@ const ProductDetail = () => {
           <ScrollView
             showsVerticalScrollIndicator={false}
             contentContainerStyle={
-              role !== 2 || role == null ? {paddingBottom: mvs(80)} : null
+              role !== '2' || role == null ? {paddingBottom: mvs(80)} : null
             }
             onScroll={onScroll}
             scrollEventThrottle={16}>
@@ -313,7 +313,7 @@ const ProductDetail = () => {
               productId={product.id}
             />
           </ScrollView>
-          {(role !== 2 || role === null) && (
+          {(role !== '2' || role === null) && (
             <ProductFooter
               loadingBuy={addingToCart}
               loadingChat={chatLoading}

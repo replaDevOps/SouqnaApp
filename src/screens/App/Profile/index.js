@@ -164,12 +164,8 @@ const Profile = () => {
       </View>
 
       <View style={styles.container}>
-        {activeRole === '2' && (
-          <VerificationStatus
-            status={localStatus}
-            // loading={verificationLoading}
-          />
-        )}
+        {activeRole === '2' ||
+          (activeRole === 2 && <VerificationStatus status={localStatus} />)}
 
         <View style={styles.content}>
           <Regular style={styles.regularText}>{t('general')}</Regular>
@@ -186,7 +182,7 @@ const Profile = () => {
               {renderDirectionalIcon()}
             </TouchableOpacity>
 
-            {(activeRole === '2' || activeRole === 2) && actualRole === 4 ? (
+            {activeRole === '2' || activeRole === 2 ? (
               <TouchableOpacity
                 style={styles.menuItemContainer}
                 onPress={() => navigation.navigate('Verification')}>
