@@ -1,114 +1,227 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Text,
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  Image,
   ScrollView,
-  SafeAreaView,
+  ActivityIndicator,
+  Alert,
+  Image,
 } from 'react-native';
 import DownloadIconSvg from '../../../assets/svg/downloadSvg';
-import { CardSVG, SearchSVG } from '../../../assets/svg';
+import {CardSVG} from '../../../assets/svg';
 import DownArrowSvg from '../../../assets/svg/down-arrow-svg';
 import MasterSVG from '../../../assets/svg/masterSVG';
-import { colors } from '../../../util/color';
-import VisaSVG from '../../../assets/svg/VisaSVG';
+import {colors} from '../../../util/color';
+import VisaSVG from '../../../assets/svg/visaSVG';
+import MainHeader from '../../../components/Headers/MainHeader';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import {useNavigation} from '@react-navigation/native';
+import {useSelector} from 'react-redux';
+import {submitCardDetails} from '../../../api/apiServices';
 
 const cardUI = () => {
+  const navigation = useNavigation();
+  const {token} = useSelector(state => state.user);
+
+  // State for form fields
+  const [cardNumber, setCardNumber] = useState('4242 4242 4242 4242');
+  const [cardName, setCardName] = useState('Jhon');
+  const [expiry, setExpiry] = useState('12/25'); // MM/YY format
+  const [cvc, setCvc] = useState('');
   const [saveInfo, setSaveInfo] = useState(false);
-  
+  const [loading, setLoading] = useState(false);
+
+  // Parse expiry MM/YY to month and year numbers
+  const parseExpiry = expiryStr => {
+    const [mm, yy] = expiryStr.split('/');
+    if (!mm || !yy) return {month: null, year: null};
+    return {month: parseInt(mm.trim()), year: 2000 + parseInt(yy.trim())};
+  };
+
+  const handleSave = async () => {
+    // Validation
+    if (
+      !cardNumber.trim() ||
+      !cardName.trim() ||
+      !expiry.trim() ||
+      !cvc.trim()
+    ) {
+      Alert.alert('Validation Error', 'Please fill all fields');
+      return;
+    }
+
+    // Validate expiry format MM/YY
+    const {month, year} = parseExpiry(expiry);
+    if (
+      !month ||
+      !year ||
+      month < 1 ||
+      month > 12 ||
+      year < new Date().getFullYear()
+    ) {
+      Alert.alert('Validation Error', 'Expiry date is invalid');
+      return;
+    }
+    // Prepare data payload
+    const cardData = {
+      cardNumber: cardNumber.trim(),
+      cardName: cardName.trim(),
+      expiryMonth: month,
+      expiryYear: year,
+      cvc: parseInt(cvc),
+    };
+
+    try {
+      setLoading(true);
+      const response = submitCardDetails(cardData, token);
+      Alert.alert('Success', 'Card saved successfully!');
+      navigation.navigate('MainTabs');
+    } catch (error) {
+      Alert.alert(
+        'Error',
+        error.response?.data?.message || 'Failed to save card',
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Format card number with spaces automatically (optional)
+  const formatCardNumber = text => {
+    // Remove non-digits
+    const cleaned = text.replace(/\D+/g, '');
+    // Group in 4 digits separated by space
+    const formatted = cleaned.match(/.{1,4}/g)?.join(' ') || '';
+    setCardNumber(formatted);
+  };
+
+  // Format expiry MM/YY automatically (optional)
+  const formatExpiry = text => {
+    // Remove non-digits and slash
+    const cleaned = text.replace(/[^\d]/g, '');
+    if (cleaned.length === 0) {
+      setExpiry('');
+      return;
+    }
+    if (cleaned.length <= 2) {
+      setExpiry(cleaned);
+    } else {
+      setExpiry(cleaned.slice(0, 2) + '/' + cleaned.slice(2, 4));
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
+      <MainHeader title={'Card Details'} showBackIcon={true} />
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
-  <View style={styles.contentContainer}>
-        <Text style={styles.header}>Payment method</Text>
-        
-        <View style={styles.paymentOption}>
-          <View style={styles.radioRow}>
-            <View style={styles.radioButton}>
-              <View style={styles.radioInner} />
-            </View>
-            <CardSVG width={24} height={24} />
-            <Text style={styles.optionText}>Card</Text>
-          </View>
-          
-          <Text style={styles.sectionTitle}>Card information</Text>
-          <View style={styles.cardNumberContainer}>
-            <TextInput
-              style={styles.cardNumberInput}
-              placeholder="1234 1234 1234 1234"
-              keyboardType="numeric"
-              maxLength={19}
+        <View style={styles.contentContainer}>
+          <View style={{alignItems: 'center', marginVertical: 20}}>
+            <Image
+              source={require('../../../assets/img/logo1.png')}
+              style={{width: 120, height: 120, resizeMode: 'cover'}}
             />
-            <View style={styles.cardBrands}>
-              {/* <Image source={require('./assets/visa.png')} style={styles.cardBrand} />
-              <Image source={require('./assets/mastercard.png')} style={styles.cardBrand} />
-              <Image source={require('./assets/amex.png')} style={styles.cardBrand} />
-              <Image source={require('./assets/jcb.png')} style={styles.cardBrand} /> */}
-            <VisaSVG  width={30} height={20} style={styles.cardBrand} />
-            <MasterSVG  width={30} height={20} style={styles.cardBrand}/>
-            </View>
           </View>
-          
-          <View style={styles.expiryAndCvcContainer}>
-            <TextInput
-              style={[styles.expiryInput, styles.halfInput]}
-              placeholder="MM / YY"
-              keyboardType="numeric"
-              maxLength={5}
-            />
-            <View style={styles.cvcContainer}>
-              <TextInput
-                style={styles.cvcInput}
-                placeholder="CVC"
-                keyboardType="numeric"
-                maxLength={4}
-              />
-              <TouchableOpacity style={styles.cvcHelpIcon}>
-                <DownloadIconSvg width={20} height={20} />
-              </TouchableOpacity>
-            </View>
-          </View>
-          
-          <Text style={styles.sectionTitle}>Cardholder name</Text>
-          <TextInput
-            style={styles.fullInput}
-            placeholder="Full name on card"
-          />
-          
-          <Text style={styles.sectionTitle}>Country or region</Text>
-          <TouchableOpacity style={styles.countrySelector}>
-            <Text>Pakistan</Text>
-            <DownArrowSvg width={30} height={20} fill={colors.black}/>
-          </TouchableOpacity>
-        </View>
-        
-        <View style={styles.checkboxContainer}>
-          <TouchableOpacity 
-            style={styles.checkbox} 
-            onPress={() => setSaveInfo(!saveInfo)}
-          >
-            {saveInfo && (
-              <View style={styles.checkmarkContainer}>
-                <Text>✔</Text>
+          <Text style={styles.header}>Payment method</Text>
+
+          <View style={styles.paymentOption}>
+            <View style={styles.radioRow}>
+              <View style={styles.radioButton}>
+                <View style={styles.radioInner} />
               </View>
-            )}
-          </TouchableOpacity>
-          <View style={styles.checkboxTextContainer}>
-            <Text style={styles.checkboxTitle}>
-              Yes, I agree with terms and conditions
-            </Text>
-            {/* <Text style={styles.checkboxSubtitle}>
+              <CardSVG width={24} height={24} />
+              <Text style={styles.optionText}>Card</Text>
+            </View>
+
+            <Text style={styles.sectionTitle}>Card information</Text>
+            <View style={styles.cardNumberContainer}>
+              <TextInput
+                style={styles.cardNumberInput}
+                placeholder="1234 1234 1234 1234"
+                keyboardType="numeric"
+                maxLength={19}
+                value={cardNumber}
+                onChangeText={formatCardNumber}
+              />
+              <View style={styles.cardBrands}>
+                <VisaSVG width={30} height={20} style={styles.cardBrand} />
+                <MasterSVG width={30} height={20} style={styles.cardBrand} />
+              </View>
+            </View>
+
+            <View style={styles.expiryAndCvcContainer}>
+              <TextInput
+                style={[styles.expiryInput, styles.halfInput]}
+                placeholder="MM/YY"
+                keyboardType="numeric"
+                maxLength={5}
+                value={expiry}
+                onChangeText={formatExpiry}
+              />
+              <View style={styles.cvcContainer}>
+                <TextInput
+                  style={styles.cvcInput}
+                  placeholder="CVC"
+                  keyboardType="numeric"
+                  maxLength={4}
+                  value={cvc}
+                  onChangeText={setCvc}
+                />
+                <TouchableOpacity style={styles.cvcHelpIcon}>
+                  <DownloadIconSvg width={20} height={20} />
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            <Text style={styles.sectionTitle}>Cardholder name</Text>
+            <TextInput
+              style={styles.fullInput}
+              placeholder="Full name on card"
+              value={cardName}
+              onChangeText={setCardName}
+            />
+
+            <Text style={styles.sectionTitle}>Country or region</Text>
+            <TouchableOpacity style={styles.countrySelector}>
+              <Text>Pakistan</Text>
+              <DownArrowSvg width={30} height={20} fill={colors.black} />
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.checkboxContainer}>
+            <TouchableOpacity
+              style={styles.checkbox}
+              onPress={() => setSaveInfo(!saveInfo)}>
+              {saveInfo && (
+                <View style={styles.checkmarkContainer}>
+                  <Text>✔</Text>
+                </View>
+              )}
+            </TouchableOpacity>
+            <View style={styles.checkboxTextContainer}>
+              <Text style={styles.checkboxTitle}>
+                Yes, I agree with terms and conditions
+              </Text>
+              {/* <Text style={styles.checkboxSubtitle}>
               Pay faster on Blackbox and everywhere Link is accepted.
             </Text> */}
+            </View>
           </View>
-        </View>
-        
-        <TouchableOpacity style={styles.startTrialButton}>
-          <Text style={styles.startTrialText}>Start trial</Text>
-        </TouchableOpacity>
+          {loading && (
+            <ActivityIndicator
+              size="large"
+              color={colors.primary}
+              style={{marginBottom: 20}}
+            />
+          )}
+
+          <TouchableOpacity
+            style={styles.startTrialButton}
+            onPress={handleSave}>
+            <Text style={styles.startTrialText}>Save</Text>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -118,10 +231,10 @@ const cardUI = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent:'center',
-    flexDirection:'column',
+    justifyContent: 'center',
+    flexDirection: 'column',
     backgroundColor: colors.white,
-    padding: 16,
+    // padding: 16,
   },
   header: {
     fontSize: 20,
@@ -265,7 +378,7 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   startTrialButton: {
-    backgroundColor: '#20C997',
+    backgroundColor: '#adbd6e',
     borderRadius: 4,
     padding: 16,
     alignItems: 'center',
@@ -277,13 +390,14 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   scrollViewContent: {
-  flexGrow: 1,
-  justifyContent: 'center',
-},
-contentContainer: {
-//   padding: 16,
-  width: '100%',
-},
+    // flexGrow: 1,
+    justifyContent: 'center',
+    padding: 20,
+  },
+  contentContainer: {
+    //   padding: 16,
+    width: '100%',
+  },
 });
 
 export default cardUI;

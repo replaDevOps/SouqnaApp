@@ -1,11 +1,13 @@
-import { View, Text, StyleSheet } from 'react-native'
-import React from 'react'
-import { colors } from '../../../util/color';
+import {View, Text, StyleSheet} from 'react-native';
+import React from 'react';
+import {colors} from '../../../util/color';
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-
+  container: {},
+  scrollContent: {
+    // flex: 1,
+    // marginTop: 30,
+    paddingBottom: 40,
     backgroundColor: '#fff',
   },
   header: {
@@ -57,6 +59,7 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: colors.lightgreen,
+    marginTop: 10,
     padding: 10,
     borderRadius: 5,
     alignItems: 'center',
@@ -67,5 +70,4 @@ const styles = StyleSheet.create({
   },
 });
 
-
-export default styles
+export default styles;
