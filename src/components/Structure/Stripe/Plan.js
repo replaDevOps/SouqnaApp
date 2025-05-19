@@ -22,19 +22,6 @@ const PlanScreen = () => {
         : 'You selected the Premium Plan ($20/month with 3-month free trial).',
     );
     navigation.navigate('CardDetailsScreen');
-
-    // Example: Submit to API here
-    // fetch('https://your-api-url.com/api/choose-plan', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //     Authorization: `Bearer YOUR_TOKEN_HERE`,
-    //   },
-    //   body: JSON.stringify({ plan: selectedPlan }),
-    // })
-    //   .then(res => res.json())
-    //   .then(data => console.log('Plan submitted:', data))
-    //   .catch(err => console.error('Error submitting plan:', err));
   };
 
   return (

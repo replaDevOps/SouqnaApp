@@ -15,15 +15,15 @@ import {OffSVG, PowerOffSVG, SouqnaLogo} from '../../assets/svg';
 import OnSVG from '../../assets/svg/OnSVG';
 import {t} from 'i18next';
 import {useDispatch, useSelector} from 'react-redux';
-import {setRole} from '../../redux/slices/userSlice';
+import {setActualRole, setRole} from '../../redux/slices/userSlice';
 import {Snackbar} from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
 import SwitchModal from '../Modals/SwitchModal';
-import { switchUserRole } from '../../api/apiServices'; // Updated to match the import from your document
+import {switchUserRole} from '../../api/apiServices'; // Updated to match the import from your document
 const {height} = Dimensions.get('window');
 const headerHeight = height * 0.28;
-export default function ProfileHeader({ OnPressLogout }) {
-  const { token, role, password, actualRole } = useSelector(state => state.user);
+export default function ProfileHeader({OnPressLogout}) {
+  const {token, role, password, actualRole} = useSelector(state => state.user);
   const [isSellerOn, setIsSellerOn] = useState(role === '2' || role === 2);
   const [modalVisible, setModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -34,7 +34,11 @@ export default function ProfileHeader({ OnPressLogout }) {
   const navigation = useNavigation();
   useEffect(() => {
     // Update seller toggle state when role changes
-    if (role === '2' || role === 2 || ((role === '4' || role === 4) && isSellerOn)) {
+    if (
+      role === '2' ||
+      role === 2 ||
+      ((role === '4' || role === 4) && isSellerOn)
+    ) {
       setIsSellerOn(true);
     } else {
       setIsSellerOn(false);
@@ -86,16 +90,18 @@ export default function ProfileHeader({ OnPressLogout }) {
   };
   const updateRole = () => {
     // Update to role 4 when upgrading from 2 or 3
+
     dispatch(setActualRole('4'));
     // Set message based on the previous role
-    const message = (role === '2' || role === 2)
-      ? t('Switched to Buyer Account')
-      : t('Switched to Seller Account');
+    const message =
+      role === '2' || role === 2
+        ? t('Switched to Buyer Account')
+        : t('Switched to Seller Account');
     // Update snackbar message and show it
     setSnackbarMessage(message);
     setSnackbarVisible(true);
     // Update local state for the toggle button
-    setIsSellerOn(role === '3' || role === 3);  // Reset since we're now role 4
+    setIsSellerOn(role === '3' || role === 3); // Reset since we're now role 4
     // Fade-out animation
     Animated.timing(fadeAnim, {
       toValue: 0,
@@ -126,8 +132,8 @@ export default function ProfileHeader({ OnPressLogout }) {
             : role === '3' || role === 3
             ? t('Buyer Account')
             : isSellerOn
-              ? t('Seller Account')
-              : t('Buyer Account')}
+            ? t('Seller Account')
+            : t('Buyer Account')}
         </Text>
         <TouchableOpacity onPress={toggleSellerMode} activeOpacity={0.8}>
           {isSellerOn ? (
