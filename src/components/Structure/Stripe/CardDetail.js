@@ -24,7 +24,7 @@ const CardDetailsScreen = () => {
   const [cardName, setCardName] = useState('Jhon');
   const [expiryMonth, setExpiryMonth] = useState('12');
   const [expiryYear, setExpiryYear] = useState('2025');
-  const [cvc, setCvc] = useState('1234');
+  const [cvc, setCvc] = useState('');
 
   const handleSave = async () => {
     if (!cardNumber || !cardName || !expiryMonth || !expiryYear || !cvc) {
@@ -45,7 +45,7 @@ const CardDetailsScreen = () => {
       const response = await submitCardDetails(cardData, token);
       if (onSubmit) onSubmit(response); // Optional callback
       Alert.alert('Success', 'Card saved successfully!');
-      navigation.goBack();
+      navigation.navigate('MainTabs');
     } catch (error) {
       Alert.alert(
         'Error',
