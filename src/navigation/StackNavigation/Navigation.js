@@ -29,6 +29,7 @@ import BuyerNotification from '../../screens/App/BuyerNotification';
 import MapScreen from '../../screens/App/Map';
 import CardDetailsScreen from '../../components/Structure/Stripe/CardDetail';
 import PlanScreen from '../../components/Structure/Stripe/Plan';
+import PlansScreen from '../../screens/App/Plans';
 
 const Stack = createStackNavigator();
 
@@ -78,6 +79,7 @@ const AppNavigator = () => {
         <Stack.Screen name="Map" component={MapScreen} />
         <Stack.Screen name="CardDetailsScreen" component={CardDetailsScreen} />
         <Stack.Screen name="PlanScreen" component={PlanScreen} />
+        <Stack.Screen name="Plans" component={PlansScreen} />
       </Stack.Navigator>
     </View>
   );
