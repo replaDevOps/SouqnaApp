@@ -167,7 +167,7 @@ const Profile = () => {
         {activeRole === '2' && (
           <VerificationStatus
             status={localStatus}
-            loading={verificationLoading}
+            // loading={verificationLoading}
           />
         )}
 
