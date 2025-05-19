@@ -145,43 +145,42 @@ const Chat = () => {
     };
   }, [conversationId, userId, token]);
 
-  // If productInfo was passed, send a product info message at the start of a new conversation
   useEffect(() => {
-    const sendProductInfoMessage = async () => {
-      // Check if this is likely a new conversation (no messages)
-      if (productInfo && messages.length === 0 && !isLoading) {
-        try {
-          const productMessage = {
-            _id: new Date().getTime().toString(),
-            createdAt: new Date(),
-            user: {
-              _id: userId,
-              name: currentUserName || 'User',
-            },
-            text: `I'm interested in: ${productInfo.name}`,
-            product: productInfo,
-          };
+  const sendProductInfoMessage = async () => {
+    // Send product info message whenever the chat is opened with product info
+    // Remove the condition checking for messages.length === 0
+    if (productInfo && !isLoading) {
+      try {
+        const productMessage = {
+          _id: new Date().getTime().toString(),
+          createdAt: new Date(),
+          user: {
+            _id: userId,
+            name: currentUserName || 'User',
+          },
+          text: `I'm interested in: ${productInfo.name}`,
+          product: productInfo,
+        };
 
-          await sendMessage(conversationId, productMessage);
-          console.log('Product info message sent');
-        } catch (error) {
-          console.error('Error sending product info message:', error);
-        }
+        await sendMessage(conversationId, productMessage);
+        console.log('Product info message sent');
+      } catch (error) {
+        console.error('Error sending product info message:', error);
       }
-    };
+    }
+  };
 
-    // Small delay to ensure the messages have been loaded
-    const timer = setTimeout(sendProductInfoMessage, 1000);
-    return () => clearTimeout(timer);
-  }, [
-    productInfo,
-    messages.length,
-    isLoading,
-    conversationId,
-    userId,
-    currentUserName,
-  ]);
-
+  // Small delay to ensure the messages have been loaded
+  const timer = setTimeout(sendProductInfoMessage, 1000);
+  return () => clearTimeout(timer);
+}, [
+  productInfo,
+  isLoading,
+  conversationId,
+  userId,
+  currentUserName,
+  // Remove messages.length from dependencies
+]);
   // Remove loadEarlierMessages function as we're loading all messages at once
 
   const onSend = useCallback(
@@ -304,26 +303,26 @@ const Chat = () => {
   };
 
   const renderBubble = props => (
-    <Bubble
-      {...props}
-      wrapperStyle={{
-        right: {
-          backgroundColor: '#ADBD6E',
-          padding: mvs(10),
-          marginRight: mvs(0),
-        },
-        left: {
-          backgroundColor: '#F0F0F0',
-          padding: mvs(10),
-          marginLeft: mvs(0),
-        },
-      }}
-      textStyle={{
-        right: {color: '#fff'},
-        left: {color: '#000'},
-      }}
-    />
-  );
+  <Bubble
+    {...props}
+    wrapperStyle={{
+      right: {
+        backgroundColor: '#ADBD6E',
+        padding: mvs(2),
+        marginRight: mvs(0),
+      },
+      left: {
+        backgroundColor: '#F0F0F0',
+        padding: mvs(2),
+        marginLeft: mvs(4),
+      },
+    }}
+    textStyle={{
+      right: {color: '#fff',fontSize:17},
+      left: {color: '#000',fontSize:17},
+    }}
+  />
+);
 
   const renderMessageImage = props => {
     return (
@@ -441,14 +440,15 @@ const Chat = () => {
             placeholder="Type a message..."
             alwaysShowSend
             showUserAvatar={false}
-            renderAvatar={()=>null} // Hide avatars
+            renderAvatar={null} // Hide avatars
             renderAvatarOnTop={false} // Hide avatars
             renderUsernameOnMessage={false} // Hide usernames
             scrollToBottom
+            scrollToBottomStyle={{backgroundColor:colors.gray}}
             isTyping={false} // Disable typing indicator
             renderBubble={renderBubble}
             renderSend={renderSend}
-            renderActions={renderActions}
+            // renderActions={renderActions}
             renderInputToolbar={renderInputToolbar}
             renderComposer={renderComposer}
             renderCustomView={renderCustomView}

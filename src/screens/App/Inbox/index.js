@@ -286,7 +286,7 @@ const InboxScreen = () => {
         <MainHeader title={'Messages'} />
 
         {/* Search Bar */}
-        <View style={styles.searchBarContainer}>
+        {/* <View style={styles.searchBarContainer}>
           <TouchableOpacity style={styles.icon}>
             <SearchSVG width={22} height={22} fill={colors.grey} />
           </TouchableOpacity>
@@ -313,7 +313,7 @@ const InboxScreen = () => {
               <CloseSvg width={13} height={13} />
             </TouchableOpacity>
           )}
-        </View>
+        </View> */}
 
 
         {/* Messages */}
