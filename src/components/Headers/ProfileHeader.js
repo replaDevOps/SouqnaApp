@@ -22,7 +22,8 @@ import SwitchModal from '../Modals/SwitchModal';
 import {switchUserRole} from '../../api/apiServices'; // Updated to match the import from your document
 const {height} = Dimensions.get('window');
 const headerHeight = height * 0.28;
-export default function ProfileHeader({OnPressLogout}) {
+
+export default function ProfileHeader({OnPressLogout, onRoleSwitch}) {
   const {
     token,
     role: activeRole,
@@ -39,11 +40,18 @@ export default function ProfileHeader({OnPressLogout}) {
   const dispatch = useDispatch();
   const [fadeAnim] = useState(new Animated.Value(1));
   const navigation = useNavigation();
+  console.log('{Role Switch}', onRoleSwitch);
+  
   useEffect(() => {
     setIsSellerOn(activeRole === '2' || activeRole === 2);
   }, [activeRole]);
 
   const toggleSellerMode = () => {
+    // First, trigger the skeleton loading via parent component
+    if (onRoleSwitch) {
+      onRoleSwitch();
+    }
+
     if (actualRole === '4' || actualRole === 4) {
       let newRole;
       let newSellerState;
@@ -99,7 +107,10 @@ export default function ProfileHeader({OnPressLogout}) {
   };
   const updateRole = () => {
     // Update to role 4 when upgrading from 2 or 3
-
+    // Trigger the skeleton loading via parent component when updating role
+    if (onRoleSwitch) {
+      onRoleSwitch();
+    }
     dispatch(setActualRole('4'));
     // Set message based on the previous role
     const message =
@@ -118,6 +129,9 @@ export default function ProfileHeader({OnPressLogout}) {
       useNativeDriver: true,
     }).start();
   };
+
+  
+
   return (
     <View style={styles.headerContainer}>
       <StatusBar
@@ -176,6 +190,7 @@ export default function ProfileHeader({OnPressLogout}) {
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   headerContainer: {
     backgroundColor: colors.lightorange,

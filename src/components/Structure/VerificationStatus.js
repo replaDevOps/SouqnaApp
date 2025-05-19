@@ -12,25 +12,6 @@ const VerificationStatus = ({status, loading}) => {
     return status >= stepNumber;
   };
 
-  const getStepCircleStyle = stepNumber => {
-    return {
-      ...styles.stepCircleBase,
-      backgroundColor: isStepCompleted(stepNumber)
-        ? colors.lightgreen
-        : colors.white,
-      borderColor: isStepCompleted(stepNumber) ? colors.green : 'gray',
-    };
-  };
-
-  const getLineStyle = stepNumber => {
-    return {
-      ...styles.lineBase,
-      backgroundColor: isStepCompleted(stepNumber)
-        ? colors.lightgreen
-        : colors.grey,
-    };
-  };
-
   if (loading) {
     return <Loader width={mvs(22)} heigh={mvs(22)} />;
   }
@@ -63,27 +44,13 @@ const VerificationStatus = ({status, loading}) => {
       </View>
     );
   }
+ 
 
   return (
     <View style={styles.progressContainer}>
-      <View style={styles.labelsContainer}>
-        <Text style={styles.labelVerified}>{t('unverified')}</Text>
-        <Text style={styles.labelInProgress}>{t('inProgress')}</Text>
-        <Text style={styles.labelVerified}>{t('verified')}</Text>
-      </View>
-
-      <View style={styles.trackerContainer}>
-        <View style={getStepCircleStyle(0)}>
-          <Text style={styles.circleText}>1</Text>
-        </View>
-        <View style={getLineStyle(1)} />
-        <View style={styles.inProgressCircle}>
-          <Text style={styles.inProgressCircleText}>2</Text>
-        </View>
-        <View style={getLineStyle(2)} />
-        <View style={getStepCircleStyle(2)}>
-          <Text style={styles.circleTextBlack}>3</Text>
-        </View>
+       <View style={styles.InprogressContainer}>
+        <View style={styles.orangeDot}/>
+        <Text style={styles.InprogressText}>{t('inProgress')}</Text>
       </View>
     </View>
   );
@@ -136,9 +103,32 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '500',
   },
+  InprogressContainer: {
+    backgroundColor: colors.lightorange,
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: 15,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignSelf: 'center',
+    marginBottom: 20,
+  },
+  orangeDot: {
+    height: 8,
+    width: 8,
+    marginRight: 5,
+    borderRadius: 4,
+    backgroundColor: colors.orange,
+  },
+  InprogressText: {
+    color: colors.orange,
+    fontSize: 14,
+    fontWeight: '500',
+  },
   progressContainer: {
     paddingHorizontal: 10,
-    marginBottom: 30,
+    // marginBottom: 30,
   },
   labelsContainer: {
     flexDirection: 'row',

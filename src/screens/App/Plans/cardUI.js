@@ -14,7 +14,9 @@ import { CardSVG, SearchSVG } from '../../../assets/svg';
 import DownArrowSvg from '../../../assets/svg/down-arrow-svg';
 import MasterSVG from '../../../assets/svg/masterSVG';
 import { colors } from '../../../util/color';
-import VisaSVG from '../../../assets/svg/VisaSVG';
+import VisaSVG from '../../../assets/svg/visaSVG';
+// import VisaSVG from '../../../assets/svg/VisaSVG';
+
 
 const cardUI = () => {
   const [saveInfo, setSaveInfo] = useState(false);

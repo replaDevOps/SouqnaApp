@@ -35,6 +35,7 @@ import {colors} from '../../../util/color';
 import RNRestart from 'react-native-restart';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import API from '../../../api/apiServices';
+import ProfileSkeleton from './ProfileSkeleton';
 
 const Profile = () => {
   const dispatch = useDispatch();
@@ -48,6 +49,8 @@ const Profile = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [verificationLoading, setVerificationLoading] = useState(true);
   const [localStatus, setLocalStatus] = useState(null);
+  const [isRoleSwitching, setIsRoleSwitching] = useState(false);
+
   const isFocused = useIsFocused();
   const fetchVerificationStatus = async () => {
     if (!token) return;
@@ -87,6 +90,14 @@ const Profile = () => {
       }
     }, [activeRole]),
   );
+
+   // Function to handle role switching
+  const handleRoleSwitching = () => {
+    setIsRoleSwitching(true);
+    setTimeout(() => {
+      setIsRoleSwitching(false);
+    }, 1500); // Show skeleton for 1.5 seconds
+  };
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -148,6 +159,8 @@ const Profile = () => {
     return <ForwardSVG width={24} height={24} fill={colors.green} />;
   };
 
+  
+
   return (
     <ScrollView
       style={{flex: 1, backgroundColor: '#fff'}}
@@ -160,7 +173,7 @@ const Profile = () => {
         />
       }>
       <View style={{backgroundColor: '#fff', elevation: 0, shadowOpacity: 0}}>
-        <ProfileHeader OnPressLogout={handleLogout} />
+        <ProfileHeader OnPressLogout={handleLogout} onRoleSwitch={handleRoleSwitching}  />
       </View>
 
       <View style={styles.container}>
@@ -170,7 +183,10 @@ const Profile = () => {
             // loading={verificationLoading}
           />
         )}
-
+         {
+          isRoleSwitching ?(
+            <ProfileSkeleton />
+          ):
         <View style={styles.content}>
           <Regular style={styles.regularText}>{t('general')}</Regular>
           <View style={styles.menuContainer}>
@@ -259,6 +275,7 @@ const Profile = () => {
             </TouchableOpacity>
           </View>
         </View>
+         }
       </View>
     </ScrollView>
   );
