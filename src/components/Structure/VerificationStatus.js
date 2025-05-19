@@ -5,16 +5,13 @@ import {useTranslation} from 'react-i18next';
 import Loader from '../Loader';
 import {mvs} from '../../util/metrices';
 
-const VerificationStatus = ({status, loading}) => {
+const VerificationStatus = ({status}) => {
   const {t} = useTranslation();
 
   const isStepCompleted = stepNumber => {
     return status >= stepNumber;
   };
 
-  if (loading) {
-    return <Loader width={mvs(22)} heigh={mvs(22)} />;
-  }
   if (status === null) {
     return <ActivityIndicator size="small" color={colors.green} />;
   }

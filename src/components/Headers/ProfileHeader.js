@@ -19,20 +19,12 @@ import {setActualRole, setRole} from '../../redux/slices/userSlice';
 import {Snackbar} from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
 import SwitchModal from '../Modals/SwitchModal';
-import {switchUserRole} from '../../api/apiServices'; // Updated to match the import from your document
+import { switchUserRole } from '../../api/apiServices'; // Updated to match the import from your document
 const {height} = Dimensions.get('window');
 const headerHeight = height * 0.28;
-
-export default function ProfileHeader({OnPressLogout, onRoleSwitch}) {
-  const {
-    token,
-    role: activeRole,
-    password,
-    actualRole,
-  } = useSelector(state => state.user);
-  const [isSellerOn, setIsSellerOn] = useState(
-    activeRole === '2' || activeRole === 2,
-  );
+export default function ProfileHeader({ OnPressLogout }) {
+  const { token, role, password, actualRole } = useSelector(state => state.user);
+  const [isSellerOn, setIsSellerOn] = useState(role === '2' || role === 2);
   const [modalVisible, setModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [snackbarVisible, setSnackbarVisible] = useState(false);
@@ -40,45 +32,32 @@ export default function ProfileHeader({OnPressLogout, onRoleSwitch}) {
   const dispatch = useDispatch();
   const [fadeAnim] = useState(new Animated.Value(1));
   const navigation = useNavigation();
-  console.log('{Role Switch}', onRoleSwitch);
-  
   useEffect(() => {
-    setIsSellerOn(activeRole === '2' || activeRole === 2);
-  }, [activeRole]);
-
-  const toggleSellerMode = () => {
-    // First, trigger the skeleton loading via parent component
-    if (onRoleSwitch) {
-      onRoleSwitch();
+    // Update seller toggle state when role changes
+    if (role === '2' || role === 2 || ((role === '4' || role === 4) && isSellerOn)) {
+      setIsSellerOn(true);
+    } else {
+      setIsSellerOn(false);
     }
-
+  }, [role, isSellerOn]);
+  const toggleSellerMode = () => {
+    // Check if user has dual mode access (actualRole is 4)
     if (actualRole === '4' || actualRole === 4) {
-      let newRole;
-      let newSellerState;
-
-      if (isSellerOn) {
-        // If currently seller and toggling -> switch to buyer (role 3)
-        newRole = '3';
-        newSellerState = false;
-      } else {
-        // If currently buyer and toggling back -> switch to seller (role 2)
-        newRole = '2';
-        newSellerState = true;
-      }
-
+      // For dual mode users, directly toggle between seller and buyer views
+      const newRole = isSellerOn ? '3' : '2';
       dispatch(setRole(newRole));
-      setIsSellerOn(newSellerState);
-
-      const message = newSellerState
-        ? t('Switched to Seller Account')
-        : t('Switched to Buyer Account');
+      setIsSellerOn(!isSellerOn);
+      // Show appropriate message
+      const message = isSellerOn
+        ? t('Switched to Buyer Account')
+        : t('Switched to Seller Account');
       setSnackbarMessage(message);
       setSnackbarVisible(true);
     } else {
+      // For non-dual users, show verification modal
       setModalVisible(true);
     }
   };
-
   const handleModalClose = () => {
     setModalVisible(false);
   };
@@ -107,21 +86,16 @@ export default function ProfileHeader({OnPressLogout, onRoleSwitch}) {
   };
   const updateRole = () => {
     // Update to role 4 when upgrading from 2 or 3
-    // Trigger the skeleton loading via parent component when updating role
-    if (onRoleSwitch) {
-      onRoleSwitch();
-    }
     dispatch(setActualRole('4'));
     // Set message based on the previous role
-    const message =
-      activeRole === '2' || activeRole === 2
-        ? t('Switched to Buyer Account')
-        : t('Switched to Seller Account');
+    const message = (role === '2' || role === 2)
+      ? t('Switched to Buyer Account')
+      : t('Switched to Seller Account');
     // Update snackbar message and show it
     setSnackbarMessage(message);
     setSnackbarVisible(true);
     // Update local state for the toggle button
-    setIsSellerOn(activeRole === '3' || activeRole === 3); // Reset since we're now role 4
+    setIsSellerOn(role === '3' || role === 3);  // Reset since we're now role 4
     // Fade-out animation
     Animated.timing(fadeAnim, {
       toValue: 0,
@@ -129,9 +103,6 @@ export default function ProfileHeader({OnPressLogout, onRoleSwitch}) {
       useNativeDriver: true,
     }).start();
   };
-
-  
-
   return (
     <View style={styles.headerContainer}>
       <StatusBar
@@ -150,13 +121,13 @@ export default function ProfileHeader({OnPressLogout, onRoleSwitch}) {
       </View>
       <View style={styles.sellerContainer}>
         <Text style={styles.sellerText}>
-          {activeRole === '2' || activeRole === 2
+          {role === '2' || role === 2
             ? t('Seller Account')
-            : activeRole === '3' || activeRole === 3
+            : role === '3' || role === 3
             ? t('Buyer Account')
             : isSellerOn
-            ? t('Seller Account')
-            : t('Buyer Account')}
+              ? t('Seller Account')
+              : t('Buyer Account')}
         </Text>
         <TouchableOpacity onPress={toggleSellerMode} activeOpacity={0.8}>
           {isSellerOn ? (
@@ -181,7 +152,7 @@ export default function ProfileHeader({OnPressLogout, onRoleSwitch}) {
       <SwitchModal
         visible={modalVisible}
         onClose={handleModalClose}
-        role={activeRole}
+        role={role}
         token={token}
         password={password}
         onSubmit={handleModalSubmit}
@@ -190,7 +161,6 @@ export default function ProfileHeader({OnPressLogout, onRoleSwitch}) {
     </View>
   );
 }
-
 const styles = StyleSheet.create({
   headerContainer: {
     backgroundColor: colors.lightorange,
@@ -246,11 +216,3 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
   },
 });
-console.log('ProfileHeader component rendered');
-console.log('Active role:', activeRole);
-console.log('Actual role:', actualRole);
-console.log('Is seller on:', isSellerOn);
-console.log('Modal visible:', modalVisible);
-console.log('Is loading:', isLoading);
-console.log('Snackbar visible:', snackbarVisible);
-console.log('Snackbar message:', snackbarMessage);

@@ -24,6 +24,7 @@ import {UploadSVG, CalendersSVG} from '../../../assets/svg';
 import {colors} from '../../../util/color';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useTranslation} from 'react-i18next';
+import DropDownPicker from 'react-native-dropdown-picker';
 
 // Radio Button Component
 const RadioButton = ({selected, onPress, label}) => {
@@ -74,6 +75,18 @@ const VerificationScreen = () => {
   const [verificationData, setVerificationData] = useState(null);
   const [isVerified, setIsVerified] = useState(false);
   const [idType, setIdType] = useState('idCard'); // 'idCard' or 'drivingLicense'
+  // Dropdown state
+  const [countryOpen, setCountryOpen] = useState(false);
+  const [countryItems, setCountryItems] = useState([
+    {
+      label: '🇹🇷    Turkey',
+      value: 'Turkey',
+    },
+    {
+      label: '🇸🇾    Syria',
+      value: 'Syria',
+    },
+  ]);
 
   //At first view if user has added verification
   useEffect(() => {
@@ -241,9 +254,22 @@ const VerificationScreen = () => {
     );
   };
 
+  // useEffect(() => {
+  //   let timeout;
+  //   if (loading) {
+  //     timeout = setTimeout(() => {
+  //       ToastAndroid.show(
+  //         'Still submitting, please wait...',
+  //         ToastAndroid.SHORT,
+  //       );
+  //     }, 10000); // 10 seconds
+  //   }
+  //   return () => clearTimeout(timeout);
+  // }, [loading]);
+
   const handleSubmit = async () => {
     console.log('Submit button pressed ✅');
-
+    // if (loading) return;
     const {
       fullName,
       dob,
@@ -312,7 +338,7 @@ const VerificationScreen = () => {
         error.response?.data?.message ||
         error.message ||
         'An error occurred during verification.';
-      ToastAndroid.show(message, ToastAndroid.LONG);
+      ToastAndroid.show(message, ToastAndroid.SHORT);
     } finally {
       setLoading(false);
     }
@@ -422,16 +448,41 @@ const VerificationScreen = () => {
               />
             </View>
           </View>
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Country</Text>
+            <DropDownPicker
+              open={countryOpen}
+              value={formData.country}
+              items={countryItems}
+              setOpen={setCountryOpen}
+              setValue={val => handleInputChange('country', val())}
+              setItems={setCountryItems}
+              placeholder="Select Country"
+              zIndex={3000}
+              zIndexInverse={1000}
+              style={{
+                marginTop: 10,
+                borderWidth: 1,
+                borderColor: '#ccc', // Match with your input borderColor
+                borderRadius: 8,
+              }}
+              dropDownContainerStyle={{
+                marginTop: 10,
+                borderWidth: 1,
+                borderColor: '#ccc', // Optional: match dropdown container too
+              }}
+            />
+          </View>
 
           {/* Remaining text inputs */}
-          {['country', 'address'].map(key => {
+          {['address'].map(key => {
             const labelMap = {
-              country: 'Country',
+              // country: 'Country',
               address: 'Address',
               // idNumber: 'ID Number',
             };
             const placeholderMap = {
-              country: 'Enter Country',
+              // country: 'Enter Country',
               address: 'Enter Address',
               // idNumber: 'Enter ID Number',
             };
