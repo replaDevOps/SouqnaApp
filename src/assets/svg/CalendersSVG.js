@@ -13,25 +13,25 @@ const CalendersSVG = (props) => (
       fillRule="evenodd"
       clipRule="evenodd"
       d="M7 2C7.55228 2 8 2.44772 8 3V5C8 5.55228 7.55228 6 7 6C6.44772 6 6 5.55228 6 5V3C6 2.44772 6.44772 2 7 2Z"
-      fill="#4296FF"
+      fill="#abdb6e"
     />
     <Path
       fillRule="evenodd"
       clipRule="evenodd"
       d="M17 2C17.5523 2 18 2.44772 18 3V5C18 5.55228 17.5523 6 17 6C16.4477 6 16 5.55228 16 5V3C16 2.44772 16.4477 2 17 2Z"
-      fill="#4296FF"
+      fill="#abdb6e"
     />
     <Path
       fillRule="evenodd"
       clipRule="evenodd"
       d="M7 13C7 12.4477 7.44772 12 8 12H16C16.5523 12 17 12.4477 17 13C17 13.5523 16.5523 14 16 14H8C7.44772 14 7 13.5523 7 13Z"
-      fill="#4296FF"
+      fill="#abdb6e"
     />
     <Path
       fillRule="evenodd"
       clipRule="evenodd"
       d="M7 17C7 16.4477 7.44772 16 8 16H12C12.5523 16 13 16.4477 13 17C13 17.5523 12.5523 18 12 18H8C7.44772 18 7 17.5523 7 17Z"
-      fill="#4296FF"
+      fill="#abdb6e"
     />
     <Path
       fillRule="evenodd"

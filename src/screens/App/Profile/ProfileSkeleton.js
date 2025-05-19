@@ -8,7 +8,7 @@ class ProfileSkeleton extends React.Component {
     super(props);
     this.animatedValue = new Animated.Value(0);
   }
-
+//new skelton 
   componentDidMount() {
     this.startAnimation();
   }
