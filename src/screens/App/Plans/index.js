@@ -2,16 +2,24 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image } from 'react-native';
 import { useSelector } from 'react-redux';
 import { colors } from '../../../util/color';
+import { useNavigation } from '@react-navigation/native';
 
 const PlansScreen = () => {
+    const navigation = useNavigation();
 //   const {roleType} = useSelector(state => state.user);
 const [sellertype,setSellertype] = useState('2')
   return (
     <ScrollView style={styles.container}>
 <View style={{marginVertical: 50,
-    paddingHorizontal: 20,alignItems: 'center'}}>
-    
+    paddingHorizontal: 20}}>
+   <TouchableOpacity onPress={()=> navigation.replace('MainTabs')} style={{alignItems:'flex-end'}}>
+
+    <Text style={{fontSize:18,fontWeight:'bold',color:colors.grey}}>Skip</Text>
+   </TouchableOpacity>
+   <View style={{alignItems: 'center'}}>
+
         <Image source={require('../../../assets/img/logo1.png')} style={{width:120,height:120,resizeMode:"cover"}}/>
+   </View>
       <Text style={styles.header}>Choose Your Plan</Text>
       <Text style={styles.subHeader}>Find the perfect plan for your selling needs</Text>
 
@@ -98,7 +106,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     
-    // backgroundColor: '#f8f9fa',
+    backgroundColor: '#fff',
   },
   header: {
     fontSize: 28,
@@ -118,11 +126,11 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
   },
   card: {
-    backgroundColor: '#ffffff',
+    backgroundColor: 'rgba(179, 176, 176, 0.09)',
     borderRadius: 10,
     padding: 20,
     margin: 10,
-    elevation: 3,
+    // elevation: 3,
     flex: 1,
     minWidth: '45%',
   },
