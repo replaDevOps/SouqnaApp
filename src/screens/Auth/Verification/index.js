@@ -633,7 +633,7 @@ const VerificationScreen = () => {
               <ActivityIndicator size="large" color={colors.green} />
             ) : (
               <Text style={{color: '#fff', fontWeight: 'bold'}}>
-                {t('submit')}
+                {'Submit Verification'}
               </Text>
             )}
           </MyButton>

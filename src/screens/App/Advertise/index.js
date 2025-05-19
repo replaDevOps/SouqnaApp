@@ -1,5 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import {FlatList, Image, StatusBar, TouchableOpacity, View} from 'react-native';
+import {
+  ActivityIndicator,
+  FlatList,
+  Image,
+  StatusBar,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import styles from './style';
 import MainHeader from '../../../components/Headers/MainHeader';
 import {useNavigation} from '@react-navigation/native';
@@ -15,12 +22,14 @@ import API, {BASE_URL_Product} from '../../../api/apiServices';
 
 const AdvertiseScreen = () => {
   // const {categories, categoryIcons} = dummyData;
+  const [loading, setLoading] = useState(true);
   const [categories, setCategories] = useState([]);
   const {token} = useSelector(state => state.user);
   const navigation = useNavigation();
   const {t} = useTranslation();
 
   const fetchCategories = async () => {
+    setLoading(true);
     try {
       const res = await API.get(`viewCategories`, {
         headers: {
@@ -53,6 +62,8 @@ const AdvertiseScreen = () => {
       }
     } catch (error) {
       console.error('Error fetching categories:', error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -125,14 +136,19 @@ const AdvertiseScreen = () => {
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" />
       <MainHeader title={t('postAd')} />
-
-      <FlatList
-        data={filteredCategories}
-        numColumns={2}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={renderCategoryItem}
-        contentContainerStyle={styles.categoryList}
-      />
+      {loading ? (
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <ActivityIndicator size="large" color="#adbd6e" />
+        </View>
+      ) : (
+        <FlatList
+          data={filteredCategories}
+          numColumns={2}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={renderCategoryItem}
+          contentContainerStyle={styles.categoryList}
+        />
+      )}
     </SafeAreaView>
   );
 };
