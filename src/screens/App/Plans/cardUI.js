@@ -14,8 +14,9 @@ import DownloadIconSvg from '../../../assets/svg/downloadSvg';
 import {CardSVG} from '../../../assets/svg';
 import DownArrowSvg from '../../../assets/svg/down-arrow-svg';
 import MasterSVG from '../../../assets/svg/masterSVG';
-import {colors} from '../../../util/color';
+import { colors } from '../../../util/color';
 import VisaSVG from '../../../assets/svg/visaSVG';
+// import VisaSVG from '../../../assets/svg/
 import MainHeader from '../../../components/Headers/MainHeader';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useNavigation} from '@react-navigation/native';

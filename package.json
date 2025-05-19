@@ -55,6 +55,7 @@
     "react-native-svg": "^15.11.2",
     "react-native-textinput-effects": "^0.6.3",
     "react-native-vector-icons": "^10.2.0",
+    "react-native-webview": "^11.26.1",
     "react-redux": "^9.2.0",
     "redux-persist": "^6.0.0",
     "yup": "^1.6.1"
