@@ -236,7 +236,7 @@ const Profile = () => {
 
             <TouchableOpacity
               style={styles.menuItemContainer}
-              onPress={()=> navigation.navigate('Plans')}>
+              onPress={() => navigation.navigate('Plans')}>
               <View style={styles.leftRow}>
                 <View style={styles.iconWrapper}>
                   <ChangePassSVG width={22} height={22} />
@@ -248,7 +248,7 @@ const Profile = () => {
 
             <TouchableOpacity
               style={styles.menuItemContainer}
-              onPress={()=> navigation.navigate('Card')}>
+              onPress={() => navigation.navigate('Card')}>
               <View style={styles.leftRow}>
                 <View style={styles.iconWrapper}>
                   <ChangePassSVG width={22} height={22} />
