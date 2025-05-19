@@ -69,6 +69,7 @@ const LoginScreen = () => {
             email: user.email,
             role: user.role,
             password: password,
+            sellerType: user.sellerType,
           }),
         );
         if (user.role === 3) {
@@ -81,7 +82,8 @@ const LoginScreen = () => {
         console.log('Login successful:', user);
 
         setTimeout(() => {
-          navigation.navigate('PlanScreen');
+          const destination = user.sellerType === 1 ? 'PlanScreen' : 'MainTabs';
+          navigation.navigate(destination);
         }, 1000);
       } else {
         showErrorMessage(res.message || 'Invalid email or password');
