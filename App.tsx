@@ -6,7 +6,7 @@ import {Provider} from 'react-redux';
 import {PersistGate} from 'redux-persist/integration/react';
 import {NavigationContainer} from '@react-navigation/native';
 import AppNavigator from './src/navigation/StackNavigation/Navigation';
-import {LogBox, I18nManager, PermissionsAndroid} from 'react-native';
+import {LogBox, I18nManager, PermissionsAndroid, View} from 'react-native';
 import {persistor, store} from './src/redux/store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import i18n from './src/i18n/i18n';
@@ -89,9 +89,11 @@ const App = () => {
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <GestureHandlerRootView style={{flex: 1}}>
-          <NavigationContainer linking={linking}>
-            <AppNavigator />
-          </NavigationContainer>
+          <View style={{flex: 1, backgroundColor: '#fff'}}>
+            <NavigationContainer linking={linking}>
+              <AppNavigator />
+            </NavigationContainer>
+          </View>
         </GestureHandlerRootView>
       </PersistGate>
     </Provider>

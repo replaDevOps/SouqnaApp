@@ -143,9 +143,9 @@ const Profile = () => {
 
   const renderDirectionalIcon = () => {
     if (I18nManager.isRTL) {
-      return <BackwardSVG width={20} height={20} fill={colors.green} />;
+      return <BackwardSVG width={24} height={24} stroke={colors.green} />;
     }
-    return <ForwardSVG width={30} height={30} fill={colors.green} />;
+    return <ForwardSVG width={24} height={24} fill={colors.green} />;
   };
 
   return (
@@ -258,39 +258,6 @@ const Profile = () => {
               {renderDirectionalIcon()}
             </TouchableOpacity>
           </View>
-          {/* <Regular style={styles.regularText}>{t('favourites')}</Regular>
-
-          <View style={styles.menuContainer}>
-            <TouchableOpacity style={styles.menuItemContainer}>
-              <View style={styles.leftRow}>
-                <View style={styles.iconWrapper}>
-                  <ProfileSVG width={22} height={22} fill={colors.green} />
-                </View>
-                <Regular style={styles.menuText}>{t('myAccount')}</Regular>
-              </View>
-              {renderDirectionalIcon()}
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.menuItemContainer}>
-              <View style={styles.leftRow}>
-                <View style={styles.iconWrapper}>
-                  <ProfileSVG width={22} height={22} fill={colors.green} />
-                </View>
-                <Regular style={styles.menuText}>{t('myAccount')}</Regular>
-              </View>
-              {renderDirectionalIcon()}
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.menuItemContainer}>
-              <View style={styles.leftRow}>
-                <View style={styles.iconWrapper}>
-                  <ProfileSVG width={22} height={22} fill={colors.green} />
-                </View>
-                <Regular style={styles.menuText}>{t('myAccount')}</Regular>
-              </View>
-              {renderDirectionalIcon()}
-            </TouchableOpacity>
-          </View> */}
         </View>
       </View>
     </ScrollView>
