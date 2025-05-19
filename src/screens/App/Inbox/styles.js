@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
 },
 
 messageContentWrapper: {
-  gap: mvs(8),
+  gap: mvs(3),
   padding: mvs(5),
   flex: 1,
 },
