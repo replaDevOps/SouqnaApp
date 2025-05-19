@@ -43,12 +43,11 @@ const Profile = () => {
     token,
     verificationStatus,
     role: activeRole,
-    actualRole,
   } = useSelector(state => state.user);
   const [refreshing, setRefreshing] = useState(false);
   const [verificationLoading, setVerificationLoading] = useState(true);
   const [localStatus, setLocalStatus] = useState(null);
-  const isFocused = useIsFocused();
+
   const fetchVerificationStatus = async () => {
     if (!token) return;
     setVerificationLoading(true);
@@ -61,12 +60,22 @@ const Profile = () => {
       });
 
       if (response.data.success) {
-        const apiStatus =
-          response.data?.data?.status ?? response.data?.data ?? 'unverified';
-        dispatch(setVerificationStatus(apiStatus));
-        setLocalStatus(apiStatus);
-
-        console.log('Fetched verification status: ', apiStatus);
+        const numericStatus =
+          Number(response.data?.data?.status) ??
+          response.data?.data ??
+          'unverified';
+        dispatch(
+          setVerificationStatus(
+            numericStatus === 2
+              ? 'verified'
+              : numericStatus === 3
+              ? 'rejected'
+              : numericStatus === 1
+              ? 'inProgress'
+              : 'unverified',
+          ),
+        );
+        setLocalStatus(numericStatus);
       } else {
         setLocalStatus(0);
       }
@@ -164,8 +173,7 @@ const Profile = () => {
       </View>
 
       <View style={styles.container}>
-        {activeRole === '2' ||
-          (activeRole === 2 && <VerificationStatus status={localStatus} />)}
+        {activeRole === '2' || (activeRole === 2 && <VerificationStatus />)}
 
         <View style={styles.content}>
           <Regular style={styles.regularText}>{t('general')}</Regular>
