@@ -23,8 +23,15 @@ import {switchUserRole} from '../../api/apiServices'; // Updated to match the im
 const {height} = Dimensions.get('window');
 const headerHeight = height * 0.28;
 export default function ProfileHeader({OnPressLogout}) {
-  const {token, role, password, actualRole} = useSelector(state => state.user);
-  const [isSellerOn, setIsSellerOn] = useState(role === '2' || role === 2);
+  const {
+    token,
+    role: activeRole,
+    password,
+    actualRole,
+  } = useSelector(state => state.user);
+  const [isSellerOn, setIsSellerOn] = useState(
+    activeRole === '2' || activeRole === 2,
+  );
   const [modalVisible, setModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [snackbarVisible, setSnackbarVisible] = useState(false);
@@ -33,35 +40,37 @@ export default function ProfileHeader({OnPressLogout}) {
   const [fadeAnim] = useState(new Animated.Value(1));
   const navigation = useNavigation();
   useEffect(() => {
-    // Update seller toggle state when role changes
-    if (
-      role === '2' ||
-      role === 2 ||
-      ((role === '4' || role === 4) && isSellerOn)
-    ) {
-      setIsSellerOn(true);
-    } else {
-      setIsSellerOn(false);
-    }
-  }, [role, isSellerOn]);
+    setIsSellerOn(activeRole === '2' || activeRole === 2);
+  }, [activeRole]);
+
   const toggleSellerMode = () => {
-    // Check if user has dual mode access (actualRole is 4)
     if (actualRole === '4' || actualRole === 4) {
-      // For dual mode users, directly toggle between seller and buyer views
-      const newRole = isSellerOn ? '3' : '2';
+      let newRole;
+      let newSellerState;
+
+      if (isSellerOn) {
+        // If currently seller and toggling -> switch to buyer (role 3)
+        newRole = '3';
+        newSellerState = false;
+      } else {
+        // If currently buyer and toggling back -> switch to seller (role 2)
+        newRole = '2';
+        newSellerState = true;
+      }
+
       dispatch(setRole(newRole));
-      setIsSellerOn(!isSellerOn);
-      // Show appropriate message
-      const message = isSellerOn
-        ? t('Switched to Buyer Account')
-        : t('Switched to Seller Account');
+      setIsSellerOn(newSellerState);
+
+      const message = newSellerState
+        ? t('Switched to Seller Account')
+        : t('Switched to Buyer Account');
       setSnackbarMessage(message);
       setSnackbarVisible(true);
     } else {
-      // For non-dual users, show verification modal
       setModalVisible(true);
     }
   };
+
   const handleModalClose = () => {
     setModalVisible(false);
   };
@@ -94,14 +103,14 @@ export default function ProfileHeader({OnPressLogout}) {
     dispatch(setActualRole('4'));
     // Set message based on the previous role
     const message =
-      role === '2' || role === 2
+      activeRole === '2' || activeRole === 2
         ? t('Switched to Buyer Account')
         : t('Switched to Seller Account');
     // Update snackbar message and show it
     setSnackbarMessage(message);
     setSnackbarVisible(true);
     // Update local state for the toggle button
-    setIsSellerOn(role === '3' || role === 3); // Reset since we're now role 4
+    setIsSellerOn(activeRole === '3' || activeRole === 3); // Reset since we're now role 4
     // Fade-out animation
     Animated.timing(fadeAnim, {
       toValue: 0,
@@ -127,9 +136,9 @@ export default function ProfileHeader({OnPressLogout}) {
       </View>
       <View style={styles.sellerContainer}>
         <Text style={styles.sellerText}>
-          {role === '2' || role === 2
+          {activeRole === '2' || activeRole === 2
             ? t('Seller Account')
-            : role === '3' || role === 3
+            : activeRole === '3' || activeRole === 3
             ? t('Buyer Account')
             : isSellerOn
             ? t('Seller Account')
@@ -158,7 +167,7 @@ export default function ProfileHeader({OnPressLogout}) {
       <SwitchModal
         visible={modalVisible}
         onClose={handleModalClose}
-        role={role}
+        role={activeRole}
         token={token}
         password={password}
         onSubmit={handleModalSubmit}

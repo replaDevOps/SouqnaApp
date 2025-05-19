@@ -19,31 +19,35 @@ import FavouriteScreen from '../../screens/App/Favourite';
 import CartScreen from '../../screens/App/Cart';
 import AdvertiseScreen from '../../screens/App/Advertise';
 import AddModal from '../../components/Modals/AddModal';
-import {createStackNavigator} from '@react-navigation/stack';
 import PlusSvg from '../../assets/svg/plussvg';
 import Chat from '../../screens/App/Chat';
 import Notification from '../../screens/App/Notification/index';
 import InboxScreen from '../../screens/App/Inbox';
 import {fetchNotifications} from '../../api/apiServices';
-import { setRole } from '../../redux/slices/userSlice';
+import {setRole} from '../../redux/slices/userSlice';
 
 const Tab = createBottomTabNavigator();
-const Stack = createStackNavigator();
 
 const MyTabs = () => {
-  const {token, role,actualRole} = useSelector(state => state.user); // Token will indicate if the user is logged in
+  const {
+    token,
+    role: activeRole,
+    actualRole,
+  } = useSelector(state => state.user); // Token will indicate if the user is logged in
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
 
- // Update isSeller state when role changes
+  // Update isSeller state when role changes
   useEffect(() => {
-    setIsSeller(role === '2' || role === 2);
-  }, [role]);
+    setIsSeller(activeRole === '2' || activeRole === 2);
+  }, [activeRole]);
 
   const dispatch = useDispatch();
-// Track if we're in seller mode (needed for role 4 users)
-  const [isSeller, setIsSeller] = useState(role === '2' || role === 2);
+  // Track if we're in seller mode (needed for role 4 users)
+  const [isSeller, setIsSeller] = useState(
+    activeRole === '2' || activeRole === 2,
+  );
 
   useEffect(() => {
     console.log('TOKEN: ', token);
@@ -52,13 +56,13 @@ const MyTabs = () => {
   const handleLoginSuccess = () => {
     setIsModalVisible(false);
   };
-console.log('{Role }',actualRole)
-console.log('{Actual Role }',role)
-  
+  console.log('{Actual Role }', actualRole);
+  console.log('{Active Role }', activeRole);
+
   useEffect(() => {
     const getNotifications = async () => {
       setLoading(true);
-      const res = await fetchNotifications(token, role);
+      const res = await fetchNotifications(token, activeRole);
       if (res?.status === true && Array.isArray(res?.data)) {
         setNotifications(res.data);
       } else {
@@ -68,7 +72,7 @@ console.log('{Actual Role }',role)
     };
 
     getNotifications();
-  }, [token, role]);
+  }, [token, activeRole]);
 
   const handleTabPress = (e, route, navigation) => {
     if (!token) {
@@ -79,16 +83,16 @@ console.log('{Actual Role }',role)
     }
   };
   useEffect(() => {
-     if (role === 4) {
-       dispatch(setRole(2));
-     }
-   }, [role]);
+    if (activeRole === 4) {
+      dispatch(setRole(2));
+    }
+  }, [activeRole]);
 
   const getIconComponent = React.useCallback((routeName, focused) => {
     const activeColor = 'rgba(70, 80, 45, 1)';
     const inactiveColor = colors.grey;
     const color = focused ? activeColor : inactiveColor;
-    
+
     switch (routeName) {
       case 'Home':
         return <HOMESVG color={color} />;
@@ -110,8 +114,8 @@ console.log('{Actual Role }',role)
   }, []);
 
   const renderTabs = () => {
-   if ((role == 2 || (actualRole == 4 && isSeller)) && token) {
-        // Seller: Home, Inbox, Advertise, Profile
+    if ((activeRole == 2 || (actualRole == 4 && isSeller)) && token) {
+      // Seller: Home, Inbox, Advertise, Profile
       return (
         <>
           <Tab.Screen name="Home" component={SearchScreen} />
@@ -145,7 +149,7 @@ console.log('{Actual Role }',role)
           />
         </>
       );
-    } else if (role == 3 || (actualRole == 4 && !isSeller)) {
+    } else if (activeRole == 3 || (actualRole == 4 && !isSeller)) {
       // Buyer: Home, Inbox, Favourites, Cart, Profile
       return (
         <>
@@ -220,7 +224,7 @@ console.log('{Actual Role }',role)
   return (
     <View style={{flex: 1}}>
       <Tab.Navigator
-        key={role}
+        key={activeRole}
         screenOptions={({route}) => ({
           headerShown: false,
           tabBarShowLabel: false,
