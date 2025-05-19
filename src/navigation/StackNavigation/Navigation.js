@@ -30,7 +30,7 @@ import MapScreen from '../../screens/App/Map';
 import CardDetailsScreen from '../../components/Structure/Stripe/CardDetail';
 import PlanScreen from '../../components/Structure/Stripe/Plan';
 import PlansScreen from '../../screens/App/Plans';
-import cardUI from '../../screens/App/Plans/cardUI';
+import CardUI from '../../screens/App/Plans/cardUI';
 
 const Stack = createStackNavigator();
 
@@ -81,7 +81,7 @@ const AppNavigator = () => {
         <Stack.Screen name="CardDetailsScreen" component={CardDetailsScreen} />
         <Stack.Screen name="PlanScreen" component={PlanScreen} />
         <Stack.Screen name="Plans" component={PlansScreen} />
-        <Stack.Screen name="Card" component={cardUI} />
+        <Stack.Screen name="Card" component={CardUI} />
       </Stack.Navigator>
     </View>
   );

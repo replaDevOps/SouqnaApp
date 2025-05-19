@@ -22,7 +22,7 @@ import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
 import {submitCardDetails} from '../../../api/apiServices';
 
-const cardUI = () => {
+const CardUI = () => {
   const navigation = useNavigation();
   const {token} = useSelector(state => state.user);
 
@@ -400,4 +400,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default cardUI;
+export default CardUI;
