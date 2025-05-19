@@ -244,6 +244,18 @@ const Profile = () => {
               </View>
               {renderDirectionalIcon()}
             </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.menuItemContainer}
+              onPress={()=> navigation.navigate('card')}>
+              <View style={styles.leftRow}>
+                <View style={styles.iconWrapper}>
+                  <ChangePassSVG width={22} height={22} />
+                </View>
+                <Regular style={styles.menuText}>cardPlans</Regular>
+              </View>
+              {renderDirectionalIcon()}
+            </TouchableOpacity>
           </View>
           {/* <Regular style={styles.regularText}>{t('favourites')}</Regular>
 
