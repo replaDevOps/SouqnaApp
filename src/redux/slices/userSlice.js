@@ -1,5 +1,5 @@
 // redux/slices/userSlice.js
-import { createSlice } from '@reduxjs/toolkit';
+import {createSlice} from '@reduxjs/toolkit';
 
 const initialState = {
   token: null,
@@ -12,6 +12,7 @@ const initialState = {
   role: '',
   actualRole: '', // Add actualRole to initialState
   password: '',
+  sellerType: '',
 };
 
 const userSlice = createSlice({
@@ -55,7 +56,12 @@ const userSlice = createSlice({
   },
 });
 
-export const { setUser, logoutUser, setVerificationStatus, setRole, setActualRole } =
-  userSlice.actions;
+export const {
+  setUser,
+  logoutUser,
+  setVerificationStatus,
+  setRole,
+  setActualRole,
+} = userSlice.actions;
 
 export default userSlice.reducer;

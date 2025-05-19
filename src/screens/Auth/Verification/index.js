@@ -24,7 +24,6 @@ import {UploadSVG, CalendersSVG} from '../../../assets/svg';
 import {colors} from '../../../util/color';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useTranslation} from 'react-i18next';
-import axios from 'axios';
 
 // Radio Button Component
 const RadioButton = ({selected, onPress, label}) => {
@@ -59,6 +58,7 @@ const VerificationScreen = () => {
     idNumber: '',
     issueDate: '',
     expDate: '',
+    documentType: '',
   });
 
   const [idFrontSide, setIdFrontSide] = useState(null);
@@ -73,6 +73,7 @@ const VerificationScreen = () => {
   const [openExpDate, setOpenExpDate] = useState(false);
   const [verificationData, setVerificationData] = useState(null);
   const [isVerified, setIsVerified] = useState(false);
+  const [idType, setIdType] = useState('idCard'); // 'idCard' or 'drivingLicense'
 
   //At first view if user has added verification
   useEffect(() => {
@@ -139,6 +140,7 @@ const VerificationScreen = () => {
               idNumber: data.idNumber || '',
               issueDate: data.issueDate || '',
               expDate: data.expDate || '',
+              documentType: data.documentType || '',
             },
             idFrontSide: data.idFrontSide
               ? `${BASE_URL}${data.idFrontSide}`
@@ -150,6 +152,7 @@ const VerificationScreen = () => {
           });
         } else {
           setIsVerified(false);
+          setShowSubmit(true);
         }
       } catch (error) {
         console.error('Error fetching verification data:', error);
@@ -177,6 +180,10 @@ const VerificationScreen = () => {
   const handleInputChange = (key, value) => {
     setFormData({...formData, [key]: value});
   };
+
+  useEffect(() => {
+    setFormData({...formData, documentType: idType});
+  }, [idType]);
 
   // Format date to YYYY-MM-DD
   const formatDate = date => {
@@ -243,6 +250,7 @@ const VerificationScreen = () => {
       gender,
       country,
       address,
+      documentType,
       idNumber,
       issueDate,
       expDate,
@@ -258,7 +266,8 @@ const VerificationScreen = () => {
       !issueDate ||
       !expDate ||
       !idFrontSide ||
-      !idBackSide
+      !idBackSide ||
+      !documentType
     ) {
       ToastAndroid.show(t('fillAllFields'), ToastAndroid.SHORT);
       return;
@@ -415,16 +424,16 @@ const VerificationScreen = () => {
           </View>
 
           {/* Remaining text inputs */}
-          {['country', 'address', 'idNumber'].map(key => {
+          {['country', 'address'].map(key => {
             const labelMap = {
               country: 'Country',
               address: 'Address',
-              idNumber: 'ID Number',
+              // idNumber: 'ID Number',
             };
             const placeholderMap = {
               country: 'Enter Country',
               address: 'Enter Address',
-              idNumber: 'Enter ID Number',
+              // idNumber: 'Enter ID Number',
             };
             return (
               <View key={key} style={styles.inputContainer}>
@@ -439,6 +448,76 @@ const VerificationScreen = () => {
               </View>
             );
           })}
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>ID Type</Text>
+            <View
+              style={{
+                flexDirection: 'row',
+                marginTop: 5,
+              }}>
+              <RadioButton
+                label="ID Card"
+                selected={idType === 'idCard'}
+                onPress={() => setIdType('idCard')}
+              />
+              <RadioButton
+                label="Driving License"
+                selected={idType === 'drivingLicense'}
+                onPress={() => setIdType('drivingLicense')}
+                style={{marginLeft: 'auto'}}
+              />
+            </View>
+          </View>
+
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>ID Number</Text>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                gap: 10,
+              }}>
+              <TextInput
+                style={[styles.input, {flex: 1}]}
+                maxLength={5}
+                keyboardType="numeric"
+                placeholder="12345"
+                value={formData.idNumber.split('-')[0] || ''}
+                onChangeText={text => {
+                  const existing = formData.idNumber.split('-');
+                  const second = existing[1] || '';
+                  const third = existing[2] || '';
+                  handleInputChange('idNumber', `${text}-${second}-${third}`);
+                }}
+              />
+              <TextInput
+                style={[styles.input, {flex: 1}]}
+                maxLength={7}
+                keyboardType="numeric"
+                placeholder="1234567"
+                value={formData.idNumber.split('-')[1] || ''}
+                onChangeText={text => {
+                  const existing = formData.idNumber.split('-');
+                  const first = existing[0] || '';
+                  const third = existing[2] || '';
+                  handleInputChange('idNumber', `${first}-${text}-${third}`);
+                }}
+              />
+              <TextInput
+                style={[styles.input, {flex: 1}]}
+                maxLength={1}
+                keyboardType="numeric"
+                placeholder="1"
+                value={formData.idNumber.split('-')[2] || ''}
+                onChangeText={text => {
+                  const existing = formData.idNumber.split('-');
+                  const first = existing[0] || '';
+                  const second = existing[1] || '';
+                  handleInputChange('idNumber', `${first}-${second}-${text}`);
+                }}
+              />
+            </View>
+          </View>
 
           {/* Remaining date inputs */}
           {renderDateInput(
@@ -542,21 +621,22 @@ const VerificationScreen = () => {
             </View>
           </View>
 
-          {showSubmit && (
-            <MyButton
-              title={'Submit'}
-              onPress={handleSubmit}
-              disabled={loading}
-            />
-          )}
-
-          {loading && (
-            <ActivityIndicator
-              size="large"
-              color="#0000ff"
-              style={styles.loader}
-            />
-          )}
+          <MyButton
+            onPress={handleSubmit}
+            disabled={loading || !showSubmit}
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            {loading ? (
+              <ActivityIndicator size="large" color={colors.green} />
+            ) : (
+              <Text style={{color: '#fff', fontWeight: 'bold'}}>
+                {t('submit')}
+              </Text>
+            )}
+          </MyButton>
         </View>
 
         <Modal
