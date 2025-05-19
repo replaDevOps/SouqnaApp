@@ -82,7 +82,7 @@ const LoginScreen = () => {
         console.log('Login successful:', user);
 
         setTimeout(() => {
-          const destination = user.sellerType === 1 ? 'PlanScreen' : 'MainTabs';
+          const destination = 'MainTabs';
           navigation.navigate(destination);
         }, 1000);
       } else {
