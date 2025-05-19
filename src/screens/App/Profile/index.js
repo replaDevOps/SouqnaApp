@@ -16,8 +16,8 @@ import {
   setVerificationStatus,
 } from '../../../redux/slices/userSlice';
 import {
-  CommonActions,
   useFocusEffect,
+  useIsFocused,
   useNavigation,
 } from '@react-navigation/native';
 import {
@@ -30,7 +30,6 @@ import {
 } from '../../../assets/svg';
 import Regular from '../../../typography/RegularText';
 import VerificationStatus from '../../../components/Structure/VerificationStatus';
-import axios from 'axios';
 import ProfileHeader from '../../../components/Headers/ProfileHeader';
 import {colors} from '../../../util/color';
 import RNRestart from 'react-native-restart';
@@ -40,11 +39,16 @@ import API from '../../../api/apiServices';
 const Profile = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const {token, verificationStatus, role} = useSelector(state => state.user);
+  const {
+    token,
+    verificationStatus,
+    role: activeRole,
+    actualRole,
+  } = useSelector(state => state.user);
   const [refreshing, setRefreshing] = useState(false);
   const [verificationLoading, setVerificationLoading] = useState(true);
   const [localStatus, setLocalStatus] = useState(null);
-
+  const isFocused = useIsFocused();
   const fetchVerificationStatus = async () => {
     if (!token) return;
     setVerificationLoading(true);
@@ -75,28 +79,23 @@ const Profile = () => {
   };
   useFocusEffect(
     useCallback(() => {
-      if (role === 2) {
+      if (activeRole === '2') {
         fetchVerificationStatus();
+      } else {
+        // Reset visibility when switching to other roles
+        setLocalStatus(null);
       }
-    }, [role]),
+    }, [activeRole]),
   );
 
   const onRefresh = async () => {
     setRefreshing(true);
-    if (role === 2) {
+    if (activeRole === '2') {
       await fetchVerificationStatus();
     }
     setRefreshing(false);
     console.log('Profile Refreshed');
   };
-
-  useFocusEffect(
-    useCallback(() => {
-      if (role === 2) {
-        fetchVerificationStatus();
-      }
-    }, [role]),
-  );
 
   const handleLogout = () => {
     dispatch(logoutUser());
@@ -165,7 +164,7 @@ const Profile = () => {
       </View>
 
       <View style={styles.container}>
-        {role === 2 && (
+        {activeRole === '2' && (
           <VerificationStatus
             status={localStatus}
             loading={verificationLoading}
@@ -187,7 +186,7 @@ const Profile = () => {
               {renderDirectionalIcon()}
             </TouchableOpacity>
 
-            {role === 2 || role ===4 ?  (
+            {(activeRole === '2' || activeRole === 2) && actualRole === 4 ? (
               <TouchableOpacity
                 style={styles.menuItemContainer}
                 onPress={() => navigation.navigate('Verification')}>
@@ -203,7 +202,9 @@ const Profile = () => {
                 </View>
                 {renderDirectionalIcon()}
               </TouchableOpacity>
-            ):''}
+            ) : (
+              ''
+            )}
 
             <TouchableOpacity
               style={styles.menuItemContainer}
