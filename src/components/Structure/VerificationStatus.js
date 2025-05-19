@@ -1,10 +1,6 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {View, Text, StyleSheet, ActivityIndicator} from 'react-native';
-import axios from 'axios';
 import {colors} from '../../util/color';
-import {useDispatch, useSelector} from 'react-redux'; // If you're storing token in Redux
-import {setVerificationStatus} from '../../redux/slices/userSlice';
-import {useIsFocused} from '@react-navigation/native';
 import {useTranslation} from 'react-i18next';
 import Loader from '../Loader';
 import {mvs} from '../../util/metrices';

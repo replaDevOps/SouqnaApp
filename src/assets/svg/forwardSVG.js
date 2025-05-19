@@ -14,6 +14,7 @@ const ForwardSVG = props => (
     <Path
       className="afiado_een"
       d="M22.314,16l-8.485,8.485L11,21.657L16.657,16L11,10.343l2.828-2.828L22.314,16z"
+      fill={props.fill}
     />
   </Svg>
 );
