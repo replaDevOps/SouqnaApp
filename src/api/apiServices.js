@@ -338,6 +338,25 @@ export const submitCardDetails = async (cardData, token) => {
   }
 };
 
+export const verifyOtp = async otp => {
+  try {
+    const response = await API.post('verifyOtp', {
+      // phone: phoneNumber,
+      otp: otp,
+    });
+    return response.data;
+  } catch (error) {
+    console.error(
+      'Error verifying OTP:',
+      error.response?.data || error.message,
+    );
+    return {
+      success: false,
+      error: error?.response?.data?.message || error.message,
+    };
+  }
+};
+
 API.interceptors.request.use(
   async config => {
     // Example: Get token from AsyncStorage if needed

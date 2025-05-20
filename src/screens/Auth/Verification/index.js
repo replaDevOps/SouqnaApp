@@ -566,9 +566,9 @@ const VerificationScreen = () => {
             </View>
           </View>
 
-          {/* Remaining date inputs */}
-          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-            <View style={{flex: 1, marginRight: 8}}>
+          {/* Remaining date inputs - now in separate lines */}
+          <View style={{marginBottom: 12}}>
+            <View style={{marginBottom: 12}}>
               {renderDateInput(
                 'issueDate',
                 t('issueDate'),
@@ -580,7 +580,7 @@ const VerificationScreen = () => {
                 minIssueDate, // Minimum date is 20 years ago
               )}
             </View>
-            <View style={{flex: 1, marginLeft: 8}}>
+            <View>
               {renderDateInput(
                 'expDate',
                 t('expDate'),
@@ -593,6 +593,7 @@ const VerificationScreen = () => {
               )}
             </View>
           </View>
+
           <View style={styles.uploadRow}>
             {[
               {
