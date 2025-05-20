@@ -1,10 +1,9 @@
-/* eslint-disable react-native/no-inline-styles */
+
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import {
   FlatList,
   Image,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
   ScrollView,
@@ -15,10 +14,7 @@ import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 import { getUserConversations, getUserInfo } from '../../../firebase/chatService';
 import { formatDistanceToNow } from 'date-fns';
-import SearchSVG from '../../../assets/svg/SearchSVG';
-import { CloseSvg } from '../../../assets/svg';
 import styles from './styles';
-import { colors } from '../../../util/color';
 import { mvs } from '../../../util/metrices';
 import MainHeader from '../../../components/Headers/MainHeader';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -275,47 +271,14 @@ const InboxScreen = () => {
     </View>
   );
 
-
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" />
-
       <ScrollView
         style={{ flex: 1, backgroundColor: '#fbfbfb', paddingBottom: mvs(40) }}>
         <MainHeader title={'Messages'} />
-
-        {/* Search Bar */}
-        {/* <View style={styles.searchBarContainer}>
-          <TouchableOpacity style={styles.icon}>
-            <SearchSVG width={22} height={22} fill={colors.grey} />
-          </TouchableOpacity>
-
-          <TextInput
-            style={styles.searchBar}
-            onFocus={onFocusSearch}
-            placeholder={'Search here...'}
-            placeholderTextColor={colors.grey}
-            keyboardType="default"
-            value={searchText}
-            onChangeText={setSearchText}
-            onSubmitEditing={() => {
-              if (searchText.trim() !== '') {
-                onSearch(searchText);
-              }
-            }}
-          />
-
-          {searchText.length > 0 && (
-            <TouchableOpacity
-              onPress={handleClearText}
-              style={styles.notificationIcon}>
-              <CloseSvg width={13} height={13} />
-            </TouchableOpacity>
-          )}
-        </View> */}
-
-
-        {/* Messages */}
+{
+  filteredConversations!==0?
         <View style={styles.messagesWrapper}>
           <Text style={styles.header}>Messages</Text>
 
@@ -336,7 +299,17 @@ const InboxScreen = () => {
             />
           )}
         </View>
-      </ScrollView>
+      :
+      <View style={styles.emptyInbox}>
+            <Image
+              source={require('../../../assets/img/empty.png')}
+              style={{width: '90%', resizeMode: 'contain', height: mvs(200)}}
+              />
+            {/* <Bold style={styles.emptyCartText}>{t('empty')}</Bold> */}
+            <Text style={styles.emptyInboxText}>No text recieved yet</Text>
+          </View>
+}
+              </ScrollView>
     </SafeAreaView>
   );
 };
