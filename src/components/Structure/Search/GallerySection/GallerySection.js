@@ -12,7 +12,11 @@ import {
   Animated,
 } from 'react-native';
 import {useSelector} from 'react-redux';
-import {BASE_URL_Product, fetchProducts} from '../../../../api/apiServices';
+import {
+  BASE_URL_Product,
+  fetchBuyerProducts,
+  fetchSellerProducts,
+} from '../../../../api/apiServices';
 import Bold from '../../../../typography/BoldText';
 import {colors} from '../../../../util/color';
 import {mvs} from '../../../../util/metrices';
@@ -94,7 +98,7 @@ const GalleryContainer = ({
 }) => {
   const [apiProducts, setApiProducts] = useState([]);
   const [productsLoading, setProductsLoading] = useState(true);
-  const {token} = useSelector(state => state.user);
+  const {token, role} = useSelector(state => state.user);
   const {t} = useTranslation();
 
   useEffect(() => {
@@ -108,7 +112,15 @@ const GalleryContainer = ({
         status: '',
       };
 
-      const response = await fetchProducts(token, filters);
+      let response = null;
+
+      if (role === 2 || role === '2') {
+        // Seller
+        response = await fetchSellerProducts(token, filters);
+      } else {
+        // Buyer or Guest (role 3 or others)
+        response = await fetchBuyerProducts(filters);
+      }
       console.log('API Response:', response);
       if (response?.success && Array.isArray(response.data)) {
         setApiProducts(response.data);

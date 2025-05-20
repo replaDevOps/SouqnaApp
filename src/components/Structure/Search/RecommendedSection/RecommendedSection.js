@@ -13,7 +13,12 @@ import Regular from '../../../../typography/RegularText';
 import {HeartSvg} from '../../../../assets/svg';
 import Bold from '../../../../typography/BoldText';
 import {useSelector} from 'react-redux';
-import {BASE_URL_Product, fetchProducts} from '../../../../api/apiServices';
+import {
+  BASE_URL_Product,
+  fetchBuyerProducts,
+  fetchProducts,
+  fetchSellerProducts,
+} from '../../../../api/apiServices';
 import {useTranslation} from 'react-i18next';
 import {mvs} from '../../../../util/metrices';
 import ProductCardSkeleton from './ProductCardSkeleton';
@@ -56,7 +61,15 @@ const RecommendedSection = ({
       status: '',
     };
 
-    const response = await fetchProducts(token, filters);
+    let response = null;
+
+    if (role === 2 || role === '2') {
+      // Seller
+      response = await fetchSellerProducts(token, filters);
+    } else {
+      // Buyer or Guest (role 3 or others)
+      response = await fetchBuyerProducts(filters);
+    }
     console.log('API Response:', response);
     if (response?.success && Array.isArray(response.data)) {
       setApiProducts(response.data);
@@ -119,8 +132,8 @@ const RecommendedSection = ({
   return (
     <View style={styles.recommendedContainer}>
       {!hideTitle && (
-        <Bold style={[{marginBottom: 10}, styles.recommendedText]}>
-          {t('recommendedForYou')}
+        <Bold style={[{marginVertical: mvs(20)}, styles.recommendedText]}>
+          {t('Your Listings')}
         </Bold>
       )}
 

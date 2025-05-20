@@ -27,7 +27,7 @@ import {setVerificationStatus} from '../../../redux/slices/userSlice';
 import LogoHeader from '../../../components/Structure/Search/Header/LogoHeader';
 import {Snackbar} from 'react-native-paper';
 import {colors} from '../../../util/color';
-import {CurrentLocationSVG} from '../../../assets/svg';
+import {CurrentLocationSVG, MapMarkerSVG} from '../../../assets/svg';
 import {log} from 'console';
 
 const SearchScreen = () => {
@@ -44,7 +44,7 @@ const SearchScreen = () => {
   const {token, verificationStatus, role} = useSelector(state => state.user);
   const dispatch = useDispatch();
   const [apiCategories, setApiCategories] = useState([]);
-  const [setApiProducts] = useState([]);
+  const [apiProducts, setApiProducts] = useState([]);
   const [setCategoriesLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [refreshing, setRefreshing] = useState(false); // New state for pull-to-refresh
@@ -278,7 +278,7 @@ const SearchScreen = () => {
       <TouchableOpacity
         onPress={() => navigation.navigate('Map', {allProducts})}
         style={styles.mapContainer}>
-        <CurrentLocationSVG width={40} height={40} fill={colors.white} />
+        <MapMarkerSVG width={35} height={35} fill={colors.white} />
       </TouchableOpacity>
       <ScrollView
         contentContainerStyle={{backgroundColor: '#fbfbfb'}}
@@ -299,10 +299,13 @@ const SearchScreen = () => {
 
         <CategorySection categories={apiCategories} />
 
-        <GalleryContainer
-          onProductSelect={navigateToProductDetails}
-          onRefresh={onRefresh}
-        />
+        {role !== 2 && role !== '2' && (
+          <GalleryContainer
+            onProductSelect={navigateToProductDetails}
+            onRefresh={onRefresh}
+          />
+        )}
+
         <RecommendedSection
           products={allRecommendedProducts}
           loadMoreProducts={loadMoreRecommendedProducts}
