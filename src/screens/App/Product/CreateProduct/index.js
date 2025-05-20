@@ -9,6 +9,7 @@ import {
   ActivityIndicator,
   StatusBar,
   FlatList,
+  KeyboardAvoidingView,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {CommonActions, useNavigation, useRoute} from '@react-navigation/native';
@@ -21,13 +22,13 @@ import {styles} from './styles';
 import MainHeader from '../../../../components/Headers/MainHeader';
 import {MyButton} from '../../../../components/atoms/InputFields/MyButton';
 import {colors} from '../../../../util/color';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import {mvs} from '../../../../util/metrices';
 import {UploadSVG} from '../../../../assets/svg';
 import GooglePlacesSuggestion from '../../../../components/GooglePlacesSuggestion';
 import {useTranslation} from 'react-i18next';
 import PriceInputWithDropdown from '../../../../components/atoms/InputFields/PriceInputWithCurrency';
 import API from '../../../../api/apiServices';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const CreateProduct = () => {
   const route = useRoute();
@@ -272,285 +273,289 @@ const CreateProduct = () => {
     <SafeAreaView style={{flex: 1}}>
       <StatusBar barStyle="dark-content" />
       <MainHeader title={t('titleProduct')} showBackIcon={true} />
+      <KeyboardAvoidingView
+        style={{flex: 1}}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 80 : 0} // Adjust if you have headers
+      >
+        <ScrollView
+          style={{
+            paddingHorizontal: mvs(15),
+            paddingTop: mvs(25),
+            backgroundColor: colors.white,
+          }}
+          contentContainerStyle={{paddingBottom: mvs(60)}}>
+          <View style={styles.sectionContainer}>
+            <Text style={styles.sectionTitle}>{t('category')}</Text>
+            <View style={styles.categoryBox}>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <Image
+                  source={{uri: categoryImage}}
+                  style={styles.categoryImage}
+                />
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    // justifyContent: 'space-between',
+                  }}>
+                  <View style={styles.fixedTextBox}>
+                    <Text
+                      style={styles.categoryTitle}
+                      ellipsizeMode="tail"
+                      numberOfLines={1}>
+                      {category}
+                    </Text>
+                    <Text
+                      style={styles.categorySubtitle}
+                      ellipsizeMode="tail"
+                      numberOfLines={1}>
+                      {name}
+                    </Text>
+                  </View>
 
-      <ScrollView
-        style={{
-          paddingHorizontal: mvs(15),
-          paddingTop: mvs(25),
-          backgroundColor: colors.white,
-        }}
-        contentContainerStyle={{paddingBottom: mvs(60)}}>
-        <View style={styles.sectionContainer}>
-          <Text style={styles.sectionTitle}>{t('category')}</Text>
-          <View style={styles.categoryBox}>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <Image
-                source={{uri: categoryImage}}
-                style={styles.categoryImage}
-              />
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  // justifyContent: 'space-between',
-                }}>
-                <View style={styles.fixedTextBox}>
-                  <Text
-                    style={styles.categoryTitle}
-                    ellipsizeMode="tail"
-                    numberOfLines={1}>
-                    {category}
-                  </Text>
-                  <Text
-                    style={styles.categorySubtitle}
-                    ellipsizeMode="tail"
-                    numberOfLines={1}>
-                    {name}
-                  </Text>
+                  <TouchableOpacity onPress={handleChange}>
+                    <Text style={styles.changeText}>{t('change')}</Text>
+                  </TouchableOpacity>
                 </View>
-
-                <TouchableOpacity onPress={handleChange}>
-                  <Text style={styles.changeText}>{t('change')}</Text>
-                </TouchableOpacity>
               </View>
+            </View>
+
+            <View style={styles.uploadBox}>
+              {formData.images.length === 0 ? (
+                <TouchableOpacity
+                  style={styles.addButton}
+                  onPress={handleChooseImages}>
+                  <Text style={styles.addButtonText}>{t('addImages')}</Text>
+                </TouchableOpacity>
+              ) : (
+                <View>
+                  {formData.images.length > 0 && (
+                    <View style={styles.imagePreviewContainer}>
+                      <FlatList
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                        data={[{isUploadIcon: true}, ...formData.images]}
+                        keyExtractor={(item, index) => index.toString()}
+                        contentInset={{right: 25}}
+                        contentContainerStyle={styles.flatListContainer}
+                        // style
+                        renderItem={({item, index}) =>
+                          item.isUploadIcon ? (
+                            <TouchableOpacity
+                              onPress={handleChooseImages}
+                              style={styles.iconRow}>
+                              <UploadSVG
+                                width={22}
+                                height={22}
+                                style={styles.uploadIcon}
+                              />
+                              <Text style={styles.uploadText}>
+                                {t('uploadImage')}
+                              </Text>
+                            </TouchableOpacity>
+                          ) : (
+                            <View style={styles.imageWrapper}>
+                              <Image
+                                source={{uri: item.uri}}
+                                style={styles.imagePreview}
+                              />
+                              <TouchableOpacity
+                                style={styles.removeIcon}
+                                onPress={() => handleRemoveImage(index - 1)} // subtract 1 due to upload icon
+                              >
+                                <Text style={styles.removeIconText}>✕</Text>
+                              </TouchableOpacity>
+                            </View>
+                          )
+                        }
+                      />
+                    </View>
+                  )}
+                </View>
+              )}
+              <View>{/* Display Selected Images */}</View>
+
+              <Text style={styles.noteText}>{t('coverNote')} </Text>
             </View>
           </View>
 
-          <View style={styles.uploadBox}>
-            {formData.images.length === 0 ? (
+          {/* Condition Section - Updated to Radio Buttons */}
+          <View style={styles.sectionContainer}>
+            <Text style={styles.sectionTitle}>
+              {t('condition')}
+              <Text style={{color: colors.red}}>*</Text>
+            </Text>
+
+            <View style={styles.radioContainer}>
               <TouchableOpacity
-                style={styles.addButton}
-                onPress={handleChooseImages}>
-                <Text style={styles.addButtonText}>{t('addImages')}</Text>
-              </TouchableOpacity>
-            ) : (
-              <View>
-                {formData.images.length > 0 && (
-                  <View style={styles.imagePreviewContainer}>
-                    <FlatList
-                      horizontal
-                      showsHorizontalScrollIndicator={false}
-                      data={[{isUploadIcon: true}, ...formData.images]}
-                      keyExtractor={(item, index) => index.toString()}
-                      contentInset={{right: 25}}
-                      contentContainerStyle={styles.flatListContainer}
-                      // style
-                      renderItem={({item, index}) =>
-                        item.isUploadIcon ? (
-                          <TouchableOpacity
-                            onPress={handleChooseImages}
-                            style={styles.iconRow}>
-                            <UploadSVG
-                              width={22}
-                              height={22}
-                              style={styles.uploadIcon}
-                            />
-                            <Text style={styles.uploadText}>
-                              {t('uploadImage')}
-                            </Text>
-                          </TouchableOpacity>
-                        ) : (
-                          <View style={styles.imageWrapper}>
-                            <Image
-                              source={{uri: item.uri}}
-                              style={styles.imagePreview}
-                            />
-                            <TouchableOpacity
-                              style={styles.removeIcon}
-                              onPress={() => handleRemoveImage(index - 1)} // subtract 1 due to upload icon
-                            >
-                              <Text style={styles.removeIconText}>✕</Text>
-                            </TouchableOpacity>
-                          </View>
-                        )
-                      }
-                    />
+                style={styles.radioOption}
+                onPress={() => handleConditionSelect('New')}>
+                <View style={styles.radioWrapper}>
+                  <View
+                    style={[
+                      styles.radioOuter,
+                      selectedCondition === 'New' && styles.radioOuterSelected,
+                    ]}>
+                    {selectedCondition === 'New' && (
+                      <View style={styles.radioInner} />
+                    )}
                   </View>
-                )}
-              </View>
-            )}
-            <View>{/* Display Selected Images */}</View>
-
-            <Text style={styles.noteText}>{t('coverNote')} </Text>
-          </View>
-        </View>
-
-        {/* Condition Section - Updated to Radio Buttons */}
-        <View style={styles.sectionContainer}>
-          <Text style={styles.sectionTitle}>
-            {t('condition')}
-            <Text style={{color: colors.red}}>*</Text>
-          </Text>
-
-          <View style={styles.radioContainer}>
-            <TouchableOpacity
-              style={styles.radioOption}
-              onPress={() => handleConditionSelect('New')}>
-              <View style={styles.radioWrapper}>
-                <View
-                  style={[
-                    styles.radioOuter,
-                    selectedCondition === 'New' && styles.radioOuterSelected,
-                  ]}>
-                  {selectedCondition === 'New' && (
-                    <View style={styles.radioInner} />
-                  )}
                 </View>
-              </View>
-              <Text style={styles.radioText}>{t('new')}</Text>
-            </TouchableOpacity>
+                <Text style={styles.radioText}>{t('new')}</Text>
+              </TouchableOpacity>
 
-            <TouchableOpacity
-              style={styles.radioOption}
-              onPress={() => handleConditionSelect('Used')}>
-              <View style={styles.radioWrapper}>
-                <View
-                  style={[
-                    styles.radioOuter,
-                    selectedCondition === 'Used' && styles.radioOuterSelected,
-                  ]}>
-                  {selectedCondition === 'Used' && (
-                    <View style={styles.radioInner} />
-                  )}
+              <TouchableOpacity
+                style={styles.radioOption}
+                onPress={() => handleConditionSelect('Used')}>
+                <View style={styles.radioWrapper}>
+                  <View
+                    style={[
+                      styles.radioOuter,
+                      selectedCondition === 'Used' && styles.radioOuterSelected,
+                    ]}>
+                    {selectedCondition === 'Used' && (
+                      <View style={styles.radioInner} />
+                    )}
+                  </View>
                 </View>
-              </View>
-              <Text style={styles.radioText}>{t('used')}</Text>
-            </TouchableOpacity>
+                <Text style={styles.radioText}>{t('used')}</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
 
-        {/* Name Section */}
-        <View style={styles.sectionContainer}>
-          <Text style={styles.sectionTitle}>
-            {t('name')}
-            <Text style={{color: colors.red}}>*</Text>
-          </Text>
-          <TextInput
-            style={styles.input}
-            placeholder={t('namePlaceholder')}
-            placeholderTextColor={colors.grey}
-            value={formData.name}
-            onChangeText={text => handleInputChange('name', text)}
-          />
-        </View>
-
-        {/* Description Section */}
-        <View style={styles.sectionContainer}>
-          <Text style={styles.sectionTitle}>
-            {t('description')}
-            <Text style={{color: colors.red}}>*</Text>
-          </Text>
-          <TextInput
-            style={[styles.input, {height: mvs(100)}]}
-            placeholder={t('descriptionPlaceholder')}
-            placeholderTextColor={colors.grey}
-            value={formData.description}
-            multiline
-            onChangeText={text => handleInputChange('description', text)}
-          />
-        </View>
-
-        {/* Location Section - Fixed */}
-        <View style={styles.sectionContainer}>
-          <Text style={styles.sectionTitle}>
-            {t('location')}
-            <Text style={{color: colors.red}}>*</Text>
-          </Text>
-          <View style={styles.locationContainer}>
-            <GooglePlacesSuggestion
-              initialValue={formData.location}
-              onPlaceSelected={handlePlaceSelected}
+          {/* Name Section */}
+          <View style={styles.sectionContainer}>
+            <Text style={styles.sectionTitle}>
+              {t('name')}
+              <Text style={{color: colors.red}}>*</Text>
+            </Text>
+            <TextInput
+              style={styles.input}
+              placeholder={t('namePlaceholder')}
+              placeholderTextColor={colors.grey}
+              value={formData.name}
+              onChangeText={text => handleInputChange('name', text)}
             />
           </View>
-        </View>
 
-        {/* Price Section */}
-        <View style={styles.sectionContainer}>
-          <Text style={styles.sectionTitle}>
-            {t('price')}
-            <Text style={{color: colors.red}}>*</Text>
-          </Text>
-          {/* <PriceInputWithDropdown
+          {/* Description Section */}
+          <View style={styles.sectionContainer}>
+            <Text style={styles.sectionTitle}>
+              {t('description')}
+              <Text style={{color: colors.red}}>*</Text>
+            </Text>
+            <TextInput
+              style={[styles.input, {height: mvs(100)}]}
+              placeholder={t('descriptionPlaceholder')}
+              placeholderTextColor={colors.grey}
+              value={formData.description}
+              multiline
+              onChangeText={text => handleInputChange('description', text)}
+            />
+          </View>
+
+          {/* Location Section - Fixed */}
+          <View style={styles.sectionContainer}>
+            <Text style={styles.sectionTitle}>
+              {t('location')}
+              <Text style={{color: colors.red}}>*</Text>
+            </Text>
+            <View style={styles.locationContainer}>
+              <GooglePlacesSuggestion
+                initialValue={formData.location}
+                onPlaceSelected={handlePlaceSelected}
+              />
+            </View>
+          </View>
+
+          {/* Price Section */}
+          <View style={styles.sectionContainer}>
+            <Text style={styles.sectionTitle}>
+              {t('price')}
+              <Text style={{color: colors.red}}>*</Text>
+            </Text>
+            <PriceInputWithDropdown
+              value={formData.price}
+              onChangeText={text => handleInputChange('price', text)}
+              selectedCurrency={formData.currency}
+              onCurrencyChange={currency =>
+                handleInputChange('currency', currency)
+              }
+              placeholder={t('pricePlaceholder')}
+            />
+
+            {/* <TextInput
+            style={styles.input}
+            placeholder={t('pricePlaceholder')}
+            placeholderTextColor={colors.grey}
+            keyboardType="numeric"
             value={formData.price}
             onChangeText={text => handleInputChange('price', text)}
-            selectedCurrency={formData.currency}
-            onCurrencyChange={currency =>
-              handleInputChange('currency', currency)
-            }
-            placeholder={t('pricePlaceholder')}
           /> */}
+          </View>
 
-          <TextInput
-            style={styles.input}
-            placeholder={t('pricePlaceholder')}
-            placeholderTextColor={colors.grey}
-            keyboardType="numeric"
-            value={formData.price}
-            onChangeText={text => handleInputChange('price', text)}
-          />
-        </View>
+          {/* Discount Section */}
+          <View style={styles.sectionContainer}>
+            <Text style={styles.sectionTitle}>
+              {t('discount')}
+              {/* <Text style={{color: colors.red}}>*</Text> */}
+            </Text>
+            <TextInput
+              style={styles.input}
+              placeholder={t('discountPlaceholder')}
+              keyboardType="numeric"
+              placeholderTextColor={colors.grey}
+              value={formData.discount}
+              onChangeText={text => handleInputChange('discount', text)}
+            />
+          </View>
 
-        {/* Discount Section */}
-        <View style={styles.sectionContainer}>
-          <Text style={styles.sectionTitle}>
-            {t('discount')}
-            {/* <Text style={{color: colors.red}}>*</Text> */}
-          </Text>
-          <TextInput
-            style={styles.input}
-            placeholder={t('discountPlaceholder')}
-            keyboardType="numeric"
-            placeholderTextColor={colors.grey}
-            value={formData.discount}
-            onChangeText={text => handleInputChange('discount', text)}
-          />
-        </View>
+          {/* Special Offer Section */}
+          <View style={styles.sectionContainer}>
+            <Text style={styles.sectionTitle}>
+              {t('specialOffer')}
+              {/* <Text style={{color: colors.red}}>*</Text> */}
+            </Text>
+            <TextInput
+              style={styles.input}
+              placeholder={t('specialOfferPlaceholder')}
+              placeholderTextColor={colors.grey}
+              value={formData.specialOffer}
+              onChangeText={text => handleInputChange('specialOffer', text)}
+            />
+          </View>
 
-        {/* Special Offer Section */}
-        <View style={styles.sectionContainer}>
-          <Text style={styles.sectionTitle}>
-            {t('specialOffer')}
-            {/* <Text style={{color: colors.red}}>*</Text> */}
-          </Text>
-          <TextInput
-            style={styles.input}
-            placeholder={t('specialOfferPlaceholder')}
-            placeholderTextColor={colors.grey}
-            value={formData.specialOffer}
-            onChangeText={text => handleInputChange('specialOffer', text)}
-          />
-        </View>
+          {/* Stock Section */}
+          <View style={styles.sectionContainer}>
+            <Text style={styles.sectionTitle}>
+              {t('availableStock')}
+              <Text style={{color: colors.red}}>*</Text>
+            </Text>
+            <TextInput
+              style={styles.input}
+              placeholder={t('stockPlaceholder')}
+              placeholderTextColor={colors.grey}
+              keyboardType="numeric"
+              value={formData.stock}
+              onChangeText={text => handleInputChange('stock', text)}
+            />
+          </View>
 
-        {/* Stock Section */}
-        <View style={styles.sectionContainer}>
-          <Text style={styles.sectionTitle}>
-            {t('availableStock')}
-            <Text style={{color: colors.red}}>*</Text>
-          </Text>
-          <TextInput
-            style={styles.input}
-            placeholder={t('stockPlaceholder')}
-            placeholderTextColor={colors.grey}
-            keyboardType="numeric"
-            value={formData.stock}
-            onChangeText={text => handleInputChange('stock', text)}
-          />
-        </View>
-
-        {/* Submit Button */}
-        <MyButton
-          title={loading ? t('submitting') : t('submitProduct')}
-          style={styles.submitButton}
-          onPress={submitProduct}
-          disabled={loading}>
-          {loading ? (
-            <ActivityIndicator color={colors.green} />
-          ) : (
-            <Text style={styles.submitButtonText}>{t('submit')}</Text>
-          )}
-        </MyButton>
-      </ScrollView>
-
+          {/* Submit Button */}
+          <MyButton
+            title={loading ? t('submitting') : t('submitProduct')}
+            style={styles.submitButton}
+            onPress={submitProduct}
+            disabled={loading}>
+            {loading ? (
+              <ActivityIndicator color={colors.green} />
+            ) : (
+              <Text style={styles.submitButtonText}>{t('submit')}</Text>
+            )}
+          </MyButton>
+        </ScrollView>
+      </KeyboardAvoidingView>
       {/* Snackbar */}
       <Snackbar
         visible={snackbarVisible}

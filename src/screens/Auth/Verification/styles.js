@@ -255,7 +255,7 @@ const styles = StyleSheet.create({
     width: mvs(20),
     borderRadius: mvs(10),
     borderWidth: 2,
-    borderColor: colors.primary || '#007bff',
+    borderColor: '#adbd6e',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -263,7 +263,7 @@ const styles = StyleSheet.create({
     height: mvs(10),
     width: mvs(10),
     borderRadius: mvs(5),
-    backgroundColor: colors.primary || '#007bff',
+    backgroundColor: '#adbd6e',
   },
   radioLabel: {
     fontSize: mvs(16),

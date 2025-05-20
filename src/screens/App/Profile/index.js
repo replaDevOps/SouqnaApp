@@ -47,7 +47,7 @@ const Profile = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [verificationLoading, setVerificationLoading] = useState(true);
   const [localStatus, setLocalStatus] = useState(null);
-
+  const [isRoleSwitching, setIsRoleSwitching] = useState(false);
   const fetchVerificationStatus = async () => {
     if (!token) return;
     setVerificationLoading(true);
@@ -86,6 +86,15 @@ const Profile = () => {
       setVerificationLoading(false);
     }
   };
+
+  // Function to handle role switching
+  const handleRoleSwitching = () => {
+    setIsRoleSwitching(true);
+    setTimeout(() => {
+      setIsRoleSwitching(false);
+    }, 1500); // Show skeleton for 1.5 seconds
+  };
+
   useFocusEffect(
     useCallback(() => {
       if (activeRole === '2') {
@@ -169,7 +178,10 @@ const Profile = () => {
         />
       }>
       <View style={{backgroundColor: '#fff', elevation: 0, shadowOpacity: 0}}>
-        <ProfileHeader OnPressLogout={handleLogout} />
+        <ProfileHeader
+          OnPressLogout={handleLogout}
+          onRoleSwitch={handleRoleSwitching}
+        />
       </View>
 
       <View style={styles.container}>
