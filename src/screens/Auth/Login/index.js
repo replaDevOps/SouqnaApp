@@ -89,7 +89,7 @@ const LoginScreen = () => {
 
         setTimeout(() => {
           const destination = 'MainTabs';
-          navigation.navigate(destination);
+          navigation.replace(destination);
         }, 1000);
       } else {
         setSnackbarMessage(

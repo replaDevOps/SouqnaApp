@@ -42,10 +42,10 @@ const AddModal = ({visible, onClose, title, message}) => {
   });
 
   const handleRegister = () => {
-    navigation.navigate('Register');
+    navigation.replace('Register');
   };
   const handleLogin = () => {
-    navigation.navigate('Login');
+    navigation.replace('Login');
   };
 
   const viewabilityConfig = {

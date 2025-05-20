@@ -123,7 +123,7 @@ const Register = () => {
       if (data?.success === true) {
         showSnackbar(data.message || 'Registration successful! Please login.');
         setTimeout(() => {
-          navigation.replace('Login');
+          navigation.replace('OTP', {email});
         }, 2000);
       } else {
         showSnackbar(data.message || 'Registration failed. Please try again.');
