@@ -124,7 +124,7 @@ const Register = () => {
         showSnackbar(data.message || 'Registration successful! Please login.');
         setTimeout(() => {
           navigation.replace('Login');
-        }, 2800);
+        }, 2000);
       } else {
         showSnackbar(data.message || 'Registration failed. Please try again.');
       }

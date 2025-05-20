@@ -501,11 +501,7 @@ const VerificationScreen = () => {
           })}
           <View style={styles.inputContainer}>
             <Text style={styles.label}>ID Type</Text>
-            <View
-              style={{
-                flexDirection: 'row',
-                marginTop: 5,
-              }}>
+            <View style={[styles.radioGroup, {justifyContent: 'space-around'}]}>
               <RadioButton
                 label="ID Card"
                 selected={idType === 'idCard'}
@@ -571,28 +567,32 @@ const VerificationScreen = () => {
           </View>
 
           {/* Remaining date inputs */}
-          {renderDateInput(
-            'issueDate',
-            t('issueDate'),
-            t('enterIssueDate'),
-            openIssueDate,
-            setOpenIssueDate,
-            handleIssueDateChange,
-            null, // No maximum date for issue date
-            minIssueDate, // Minimum date is 20 years ago
-          )}
-
-          {renderDateInput(
-            'expDate',
-            t('expDate'),
-            t('enterExpDate'),
-            openExpDate,
-            setOpenExpDate,
-            handleExpDateChange,
-            null, // No maximum date for expiry date
-            minExpDate, // Minimum date is today (can't expire in the past)
-          )}
-
+          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+            <View style={{flex: 1, marginRight: 8}}>
+              {renderDateInput(
+                'issueDate',
+                t('issueDate'),
+                t('enterIssueDate'),
+                openIssueDate,
+                setOpenIssueDate,
+                handleIssueDateChange,
+                null, // No maximum date for issue date
+                minIssueDate, // Minimum date is 20 years ago
+              )}
+            </View>
+            <View style={{flex: 1, marginLeft: 8}}>
+              {renderDateInput(
+                'expDate',
+                t('expDate'),
+                t('enterExpDate'),
+                openExpDate,
+                setOpenExpDate,
+                handleExpDateChange,
+                null, // No maximum date for expiry date
+                minExpDate, // Minimum date is today (can't expire in the past)
+              )}
+            </View>
+          </View>
           <View style={styles.uploadRow}>
             {[
               {

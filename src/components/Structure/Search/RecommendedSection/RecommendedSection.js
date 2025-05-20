@@ -83,7 +83,7 @@ const RecommendedSection = ({
           <Regular style={styles.recommendedTitle}>{item.name}</Regular>
           <Regular style={styles.recommendedPrice}>
             {' '}
-            $ {Number(item.price).toLocaleString()} - USD
+            $ {Number(item.price).toLocaleString()}
           </Regular>
         </View>
         {role !== 2 && (

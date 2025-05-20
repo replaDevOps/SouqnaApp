@@ -134,12 +134,12 @@ const GalleryContainer = ({
             onPress={() => onProductSelect(item.id)}>
             <Image source={{uri: productImage}} style={styles.productImage} />
             <View style={{paddingVertical: mvs(15)}}>
-              <Text
+              <Bold
                 style={styles.productTitle}
                 numberOfLines={1}
                 ellipsizeMode="tail">
                 {item.name || 'Fall'}
-              </Text>
+              </Bold>
             </View>
           </TouchableOpacity>
         </View>
@@ -185,10 +185,13 @@ const styles = StyleSheet.create({
     paddingBottom: mvs(15),
   },
   galleryLabel: {
-    fontSize: mvs(19),
+    fontSize: mvs(16),
     paddingLeft: mvs(12),
     marginTop: mvs(20),
-    marginBottom: mvs(12),
+    marginBottom: mvs(20),
+    color: '#333',
+    paddingHorizontal: mvs(6),
+    lineHeight: mvs(16),
   },
   flatListContainer: {
     paddingHorizontal: mvs(10),
@@ -218,8 +221,11 @@ const styles = StyleSheet.create({
     borderTopRightRadius: mvs(10),
   },
   productTitle: {
-    fontSize: mvs(18),
+    fontSize: mvs(14),
     textAlign: 'center',
+    paddingHorizontal: mvs(6),
+    lineHeight: mvs(16),
+
     color: colors.black,
     marginRight: 'auto',
     marginBottom: mvs(4),
