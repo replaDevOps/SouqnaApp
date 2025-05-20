@@ -16,7 +16,7 @@ import {CommonActions, useNavigation, useRoute} from '@react-navigation/native';
 import axios from 'axios';
 import {useSelector} from 'react-redux';
 // import {launchImageLibrary} from 'react-native-image-picker';
-import ImagePicker from 'react-native-image-crop-picker';
+// import ImagePicker from 'react-native-image-crop-picker';
 import {Snackbar} from 'react-native-paper';
 import {styles} from './styles';
 import MainHeader from '../../../../components/Headers/MainHeader';
@@ -29,6 +29,9 @@ import {useTranslation} from 'react-i18next';
 import PriceInputWithDropdown from '../../../../components/atoms/InputFields/PriceInputWithCurrency';
 import API from '../../../../api/apiServices';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import {launchImageLibrary} from 'react-native-image-picker';
+import PhotoManipulator from 'react-native-photo-manipulator';
+import ImageResizer from 'react-native-image-resizer';
 
 const CreateProduct = () => {
   const route = useRoute();
@@ -67,56 +70,143 @@ const CreateProduct = () => {
     setSelectedCondition(condition);
     handleInputChange('condition', condition);
   };
-  useEffect(() => {
-    return () => {
-      ImagePicker.clean()
-        .then(() => console.log('Temp images cleaned up'))
-        .catch(e => console.log('Cleanup error:', e));
-    };
-  }, []);
+  // useEffect(() => {
+  //   return () => {
+  //     ImagePicker.clean()
+  //       .then(() => console.log('Temp images cleaned up'))
+  //       .catch(e => console.log('Cleanup error:', e));
+  //   };
+  // }, []);
+
+  // const handleChooseImages = async () => {
+  //   try {
+  //     const selectedImages = await ImagePicker.openPicker({
+  //       multiple: true,
+  //       mediaType: 'photo',
+  //     });
+
+  //     // Manually crop each selected image
+  //     const croppedImages = await Promise.all(
+  //       selectedImages.map(async image => {
+  //         const cropped = await ImagePicker.openCropper({
+  //           path: image.path,
+  //           width: 1024, // landscape width
+  //           height: 800, // landscape height
+  //           cropping: true,
+  //           freeStyleCropEnabled: true,
+  //           cropperToolbarTitle: 'Crop Image',
+  //           cropperCircleOverlay: false,
+  //           cropperStatusBarColor: '#ffffff',
+  //           cropperToolbarColor: '#ffffff',
+  //           cropperToolbarWidgetColor: '#000000',
+  //         });
+
+  //         return {
+  //           uri: cropped.path,
+  //           fileName: cropped.filename || cropped.path.split('/').pop(),
+  //           type: cropped.mime,
+  //           fileSize: cropped.size,
+  //         };
+  //       }),
+  //     );
+
+  //     setFormData(prev => ({
+  //       ...prev,
+  //       images: [...prev.images, ...croppedImages],
+  //     }));
+  //   } catch (error) {
+  //     if (error.code !== 'E_PICKER_CANCELLED') {
+  //       console.log('Image selection error:', error);
+  //       setSnackbarMessage('Failed to pick image.');
+  //       setSnackbarVisible(true);
+  //     }
+  //   }
+  // };
+
+  const getImageSize = uri =>
+    new Promise((resolve, reject) => {
+      Image.getSize(
+        uri,
+        (width, height) => resolve({width, height}),
+        error => reject(error),
+      );
+    });
 
   const handleChooseImages = async () => {
     try {
-      const selectedImages = await ImagePicker.openPicker({
-        multiple: true,
+      const result = await launchImageLibrary({
         mediaType: 'photo',
+        selectionLimit: 0, // allow multiple images
       });
 
-      // Manually crop each selected image
-      const croppedImages = await Promise.all(
-        selectedImages.map(async image => {
-          const cropped = await ImagePicker.openCropper({
-            path: image.path,
-            width: 1024, // landscape width
-            height: 800, // landscape height
-            cropping: true,
-            freeStyleCropEnabled: true,
-            cropperToolbarTitle: 'Crop Image',
-            cropperCircleOverlay: false,
-            cropperStatusBarColor: '#ffffff',
-            cropperToolbarColor: '#ffffff',
-            cropperToolbarWidgetColor: '#000000',
-          });
+      if (result.didCancel) return;
+
+      const assets = result.assets || [];
+
+      const targetWidth = 1024;
+      const targetHeight = 900;
+
+      const processedImages = await Promise.all(
+        assets.map(async asset => {
+          let sourceUri = asset.uri.startsWith('file://')
+            ? asset.uri
+            : `file://${asset.uri}`;
+
+          // Resize the image to ensure it meets minimum dimensions
+          const resized = await ImageResizer.createResizedImage(
+            sourceUri,
+            targetWidth,
+            targetHeight,
+            'JPEG',
+            80,
+            0,
+            undefined,
+            false,
+            {mode: 'contain'}, // Optional: avoid upscaling too much
+          );
+
+          sourceUri = resized.uri.startsWith('file://')
+            ? resized.uri
+            : `file://${resized.uri}`;
+
+          const {width: actualWidth, height: actualHeight} = await getImageSize(
+            sourceUri,
+          );
+
+          // Calculate crop region for center-cropping
+          const cropRegion = {
+            x: Math.max(0, (actualWidth - targetWidth) / 2),
+            y: Math.max(0, (actualHeight - targetHeight) / 2),
+            width: targetWidth,
+            height: targetHeight,
+          };
+
+          // Crop the image
+          const croppedPath = await PhotoManipulator.crop(
+            sourceUri,
+            cropRegion,
+          );
 
           return {
-            uri: cropped.path,
-            fileName: cropped.filename || cropped.path.split('/').pop(),
-            type: cropped.mime,
-            fileSize: cropped.size,
+            uri: croppedPath.startsWith('file://')
+              ? croppedPath
+              : `file://${croppedPath}`,
+            fileName: asset.fileName || croppedPath.split('/').pop(),
+            type: asset.type || 'image/jpeg',
+            fileSize: asset.fileSize || 0,
           };
         }),
       );
 
+      // Update your form data with cropped images
       setFormData(prev => ({
         ...prev,
-        images: [...prev.images, ...croppedImages],
+        images: [...prev.images, ...processedImages],
       }));
     } catch (error) {
-      if (error.code !== 'E_PICKER_CANCELLED') {
-        console.log('Image selection error:', error);
-        setSnackbarMessage('Failed to pick image.');
-        setSnackbarVisible(true);
-      }
+      console.error('Image selection error:', error);
+      setSnackbarMessage('Failed to pick or process image.');
+      setSnackbarVisible(true);
     }
   };
 
@@ -151,19 +241,21 @@ const CreateProduct = () => {
     data.append('categoryID', categoryId);
     data.append('subCategoryID', subCategoryId);
 
-    formData.images.forEach((image, index) => {
+    for (let i = 0; i < formData.images.length; i++) {
+      const image = formData.images[i];
       if (image.fileSize > 2 * 1024 * 1024) {
-        setSnackbarMessage('Each image must be under 2MB.');
+        setSnackbarMessage(`Image ${i + 1} must be under 2MB.`);
         setSnackbarVisible(true);
+        setLoading(false);
         return;
       }
 
       data.append('images[]', {
         uri: image.uri,
-        name: image.fileName || `photo_${index}.jpg`,
+        name: image.fileName || `photo_${i}.jpg`,
         type: image.type || 'image/jpeg',
       });
-    });
+    }
 
     data.append('stock', formData.stock);
     data.append('discount', formData.discount);

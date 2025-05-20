@@ -129,7 +129,7 @@ const AdvertiseScreen = () => {
   };
 
   const filteredCategories = categories.filter(
-    category => category.name !== 'Other Categories',
+    category => category.name !== 'Other Categories' && category.status !== 2,
   );
 
   return (
