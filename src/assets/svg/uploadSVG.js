@@ -19,7 +19,7 @@ const uploadSVG = props => (
       y2={3}
       style={{
         fill: 'none',
-        stroke: 'rgb(44, 169, 188)',
+        stroke: '#adbd6e',
         strokeLinecap: 'round',
         strokeLinejoin: 'round',
         strokeWidth: 2,
@@ -31,7 +31,7 @@ const uploadSVG = props => (
       points="16 7 12 3 8 7"
       style={{
         fill: 'none',
-        stroke: 'rgb(44, 169, 188)',
+        stroke: '#adbd6e',
         strokeLinecap: 'round',
         strokeLinejoin: 'round',
         strokeWidth: 2,
@@ -42,7 +42,7 @@ const uploadSVG = props => (
       d="M20,16v4a1.08,1.08,0,0,1-1.14,1H5.14A1.08,1.08,0,0,1,4,20V16"
       style={{
         fill: 'none',
-        stroke: 'rgb(0, 0, 0)',
+        stroke: '#adbd6e',
         strokeLinecap: 'round',
         strokeLinejoin: 'round',
         strokeWidth: 2,
