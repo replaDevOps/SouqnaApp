@@ -278,6 +278,7 @@ const SearchScreen = () => {
       {/* Map */}
       <TouchableOpacity
         onPress={() => navigation.navigate('Map', {allProducts})}
+        // onPress={() => setModalVisible(true)}
         style={styles.mapContainer}>
         <MapMarkerSVG width={35} height={35} fill={colors.white} />
       </TouchableOpacity>
@@ -300,7 +301,7 @@ const SearchScreen = () => {
 
         <CategorySection categories={apiCategories} />
 
-        <BannerSlider />
+        {!isModalVisible && hasFetchedVerification && <BannerSlider />}
 
         {/* {role !== 2 && role !== '2' && (
           <GalleryContainer
@@ -321,6 +322,7 @@ const SearchScreen = () => {
       </ScrollView>
 
       {isModalVisible && !token && <AddModal onClose={onClose} />}
+
       <VerificationModal
         visible={modalVisible}
         onVerify={handleVerifyProfile}
