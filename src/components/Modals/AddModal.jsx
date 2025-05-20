@@ -26,7 +26,9 @@ const AddModal = ({visible, onClose, title, message}) => {
   const {width: SCREEN_WIDTH} = Dimensions.get('window');
 
   const renderItem = ({item}) => (
-    <View style={[styles.imageContainer, {width: SCREEN_WIDTH}]}>
+    // <View style={[styles.imageContainer, {width: SCREEN_WIDTH}]}>
+    <View
+      style={[styles.imageContainer, {width: Dimensions.get('window').width}]}>
       <Image source={item.imageUrl} style={styles.image} />
       <Regular style={styles.infoText}>{item.description}</Regular>
     </View>

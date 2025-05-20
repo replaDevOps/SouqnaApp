@@ -1,7 +1,7 @@
 // components/BannerSlider.js
 
-import React, {useEffect, useRef, useState} from 'react';
-import {View, Image, Dimensions} from 'react-native';
+import React, {useState} from 'react';
+import {View, Image, Dimensions, StyleSheet} from 'react-native';
 import Carousel from 'react-native-reanimated-carousel';
 
 const {width} = Dimensions.get('window');
@@ -13,7 +13,7 @@ const BannerSlider = () => {
   ]);
 
   return (
-    <View style={{width, height: 180, marginVertical: 10}}>
+    <View style={bannerStyles.carouselContainer}>
       <Carousel
         loop
         width={width}
@@ -27,17 +27,26 @@ const BannerSlider = () => {
             key={item.id}
             source={item.image}
             resizeMode="cover"
-            style={{
-              width: '100%',
-              height: '100%',
-              marginTop: 10,
-              //   borderRadius: 12,
-            }}
+            style={bannerStyles.bannerImage}
           />
         )}
       />
     </View>
   );
 };
+
+const bannerStyles = StyleSheet.create({
+  carouselContainer: {
+    width,
+    height: 180,
+    marginVertical: 10,
+  },
+  bannerImage: {
+    width: '100%',
+    height: '100%',
+    marginTop: 10,
+    // borderRadius: 12, // uncomment if needed
+  },
+});
 
 export default BannerSlider;
