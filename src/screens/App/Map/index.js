@@ -18,7 +18,6 @@ import Geolocation from '@react-native-community/geolocation';
 import { request, PERMISSIONS, RESULTS } from 'react-native-permissions';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import isEqual from 'lodash.isequal';
-
 import MainHeader from '../../../components/Headers/MainHeader';
 import {
   BarsSVG,
@@ -44,6 +43,7 @@ export default function MapScreen() {
   const [activeCategory, setActiveCategory] = useState(null);
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [groupedProductsByLocation, setGroupedProductsByLocation] = useState({});
+  const [mapReady, setMapReady] = useState(false);
 
   // Group products by location
   const groupProductsByLocation = useCallback(() => {
@@ -81,8 +81,8 @@ export default function MapScreen() {
   // Add this reference for map
   const mapRef = useRef(null);
   const locationRetryCount = useRef(0);
-  const initialMapLoadedRef = useRef(false);
   const initialLocationRequestedRef = useRef(false);
+  const focusLocationOnNextReadyRef = useRef(false);
   const maxRetries = 3;
 
   const categories = useSelector(state => state.category.categories);
@@ -153,9 +153,38 @@ export default function MapScreen() {
         };
 
         setRegion(newRegion);
+        
+        // If map is already ready, animate to this region
+        if (mapReady && mapRef.current) {
+          mapRef.current.animateToRegion(newRegion, 1000);
+        }
       }
     }
-  }, [allProducts]);
+  }, [allProducts, mapReady]);
+
+  // Improved location focus logic
+  const focusUserLocation = useCallback((coords) => {
+    if (!coords) return;
+    
+    const newRegion = {
+      latitude: coords.latitude,
+      longitude: coords.longitude,
+      latitudeDelta: 0.09,
+      longitudeDelta: 0.09,
+    };
+    
+    // Update state
+    setUserLocation(coords);
+    setRegion(newRegion);
+    
+    // Animate map if ready
+    if (mapReady && mapRef.current) {
+      mapRef.current.animateToRegion(newRegion, 500);
+    } else {
+      // If map isn't ready yet, flag to focus when it is
+      focusLocationOnNextReadyRef.current = true;
+    }
+  }, [mapReady]);
 
   const getCurrentLocation = useCallback(() => {
     if (isLocationLoading) return;
@@ -168,24 +197,17 @@ export default function MapScreen() {
         locationRetryCount.current = 0;
 
         const { latitude, longitude } = position.coords;
-        const newRegion = {
-          latitude,
-          longitude,
-          latitudeDelta: 0.09,
-          longitudeDelta: 0.09,
-        };
-
-        setUserLocation({ latitude, longitude });
-        setRegion(newRegion);
-
-        if (mapRef.current) {
-          mapRef.current.animateToRegion(newRegion);
-        }
+        const coords = { latitude, longitude };
+        
+        // Focus on user location with the improved function
+        focusUserLocation(coords);
       },
       error => {
-        // Error handling code (unchanged)
+        // Error handling code
         setIsLocationLoading(false);
-        if (error.code === 3) {
+        console.log('Geolocation error:', error);
+        
+        if (error.code === 3) { // TIMEOUT
           if (locationRetryCount.current < maxRetries) {
             // Retry logic
             locationRetryCount.current += 1;
@@ -202,17 +224,21 @@ export default function MapScreen() {
           }
         } else {
           // Handle other location errors
+          Alert.alert(
+            'Location Error',
+            'Unable to access your location. Using default map view instead.',
+          );
           setDefaultRegion();
         }
       },
       {
         enableHighAccuracy: true,
-        timeout: 1000,
+        timeout: 5000, // Increased timeout for better reliability
         maximumAge: 10000,
         forceRequestLocation: true,
       },
     );
-  }, [isLocationLoading, setDefaultRegion]);
+  }, [isLocationLoading, setDefaultRegion, focusUserLocation]);
 
   const requestLocationPermission = useCallback(async () => {
     if (initialLocationRequestedRef.current) return;
@@ -223,15 +249,20 @@ export default function MapScreen() {
         ? PERMISSIONS.IOS.LOCATION_WHEN_IN_USE
         : PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION;
 
-    const result = await request(permission);
+    try {
+      const result = await request(permission);
 
-    if (result === RESULTS.GRANTED) {
-      getCurrentLocation();
-    } else {
-      Alert.alert(
-        'Location Permission',
-        'Location permission is required to show your current location on the map.',
-      );
+      if (result === RESULTS.GRANTED) {
+        getCurrentLocation();
+      } else {
+        Alert.alert(
+          'Location Permission',
+          'Location permission is required to show your current location on the map.',
+        );
+        setDefaultRegion();
+      }
+    } catch (err) {
+      console.error('Permission request error:', err);
       setDefaultRegion();
     }
   }, [getCurrentLocation, setDefaultRegion]);
@@ -253,13 +284,43 @@ export default function MapScreen() {
       locationProvider: 'auto',
     });
 
-    requestLocationPermission();
+    // Slight delay to ensure component is fully mounted
+    setTimeout(() => {
+      requestLocationPermission();
+    }, 500);
 
     return () => {
-      initialMapLoadedRef.current = false;
       initialLocationRequestedRef.current = false;
+      focusLocationOnNextReadyRef.current = false;
     };
   }, []);
+
+  // Handle map ready - this is critical for focusing
+  const handleMapReady = () => {
+    setMapReady(true);
+    
+    // If we have user location but couldn't focus before, focus now
+    if (focusLocationOnNextReadyRef.current && userLocation) {
+      const newRegion = {
+        ...userLocation,
+        latitudeDelta: 0.09,
+        longitudeDelta: 0.09,
+      };
+      
+      // Use a short timeout to ensure the map is fully ready
+      setTimeout(() => {
+        if (mapRef.current) {
+          mapRef.current.animateToRegion(newRegion, 500);
+        }
+      }, 300);
+      
+      focusLocationOnNextReadyRef.current = false;
+    }
+    // If no user location yet but we have products, show those
+    else if (!userLocation && !region) {
+      setDefaultRegion();
+    }
+  };
 
   const formatPrice = price => {
     if (price >= 1000000) {
@@ -374,14 +435,9 @@ export default function MapScreen() {
         {selectedProductsGroup ? (
           <View style={styles.productGroupContainer}>
             <View style={styles.productGroupHeader}>
-              {
-                selectedProductsGroup.length > 1 && (
-
               <Text style={styles.productGroupTitle}>
                 {selectedProductsGroup.length} Product{selectedProductsGroup.length > 1 ? 's' : ''} Available
               </Text>
-                )
-              }
               <TouchableOpacity
                 style={styles.closeButton}
                 onPress={() => setSelectedProductsGroup(null)}>
@@ -453,7 +509,7 @@ export default function MapScreen() {
           provider={PROVIDER_GOOGLE}
           style={styles.map}
           region={region}
-          showsUserLocation
+          showsUserLocation={true}
           showsMyLocationButton={false}
           onRegionChangeComplete={newRegion => {
             if (
@@ -464,23 +520,7 @@ export default function MapScreen() {
               setRegion(newRegion);
             }
           }}
-          onMapReady={() => {
-            if (!initialMapLoadedRef.current) {
-              initialMapLoadedRef.current = true;
-
-              if (userLocation && mapRef.current) {
-                mapRef.current.animateToRegion({
-                  ...userLocation,
-                  latitudeDelta: 0.09,
-                  longitudeDelta: 0.09,
-                });
-              } else if (region && mapRef.current) {
-                mapRef.current.animateToRegion(region);
-              } else if (allProducts && allProducts.length > 0 && !region) {
-                setDefaultRegion();
-              }
-            }
-          }}>
+          onMapReady={handleMapReady}>
 
           {/* Render markers for grouped products */}
           {Object.entries(groupedProductsByLocation).map(([locationKey, products]) => {
@@ -546,7 +586,6 @@ export default function MapScreen() {
               </Marker>
             );
           })}
-
         </MapView>
 
         <TouchableOpacity
