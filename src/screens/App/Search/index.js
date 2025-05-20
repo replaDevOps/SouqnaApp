@@ -15,16 +15,15 @@ import {useIsFocused, useNavigation} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
 import CategorySection from '../../../components/Structure/Search/CategorySection/CategorySection';
 import RecommendedSection from '../../../components/Structure/Search/RecommendedSection/RecommendedSection';
-import GalleryContainer from '../../../components/Structure/Search/GallerySection/GallerySection';
 import {
   addFavorite,
   removeFavorite,
 } from '../../../redux/slices/favoritesSlice';
 import VerificationModal from '../../../components/Modals/VerificationModal';
-
-import API, {fetchBuyerProducts, fetchCategories, fetchProducts} from '../../../api/apiServices';
-import axios from 'axios';
-
+import API, {
+  fetchBuyerProducts,
+  fetchCategories,
+} from '../../../api/apiServices';
 import {setVerificationStatus} from '../../../redux/slices/userSlice';
 import LogoHeader from '../../../components/Structure/Search/Header/LogoHeader';
 import {Snackbar} from 'react-native-paper';
