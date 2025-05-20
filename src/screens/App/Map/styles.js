@@ -1,7 +1,7 @@
-import {View, Text, StyleSheet} from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import React from 'react';
-import {mvs} from '../../../util/metrices';
-import {colors} from '../../../util/color';
+import { mvs } from '../../../util/metrices';
+import { colors } from '../../../util/color';
 
 const styles = StyleSheet.create({
   container: {
@@ -29,17 +29,12 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: mvs(110),
     right: mvs(18),
-    backgroundColor: colors.white,
+    backgroundColor: colors.lightgreen,
     width: mvs(60),
     height: mvs(60),
     borderRadius: mvs(30),
     justifyContent: 'center',
     alignItems: 'center',
-    elevation: 2,
-    shadowColor: colors.black,
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
     zIndex: 60,
   },
   loadingIndicator: {
@@ -51,7 +46,7 @@ const styles = StyleSheet.create({
     borderColor: colors.primary,
     borderTopColor: 'transparent',
     backgroundColor: 'transparent',
-    transform: [{rotate: '45deg'}],
+    transform: [{ rotate: '45deg' }],
     opacity: 0.7,
   },
   productDetailContainer: {
@@ -132,7 +127,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ddd',
     shadowColor: '#000',
-    shadowOffset: {width: 0, height: 1},
+    shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.2,
     shadowRadius: 1.5,
     elevation: 2,
@@ -165,7 +160,7 @@ const styles = StyleSheet.create({
     elevation: 1,
     shadowColor: '#000',
     shadowOpacity: 0.1,
-    shadowOffset: {width: 0, height: 1},
+    shadowOffset: { width: 0, height: 1 },
     shadowRadius: 2,
   },
 
@@ -183,6 +178,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 8,
     width: '55%',
+    maxHeight: 650, // Add this to make it scrollable
     zIndex: 100,
     elevation: 5,
     shadowColor: '#000',
@@ -220,6 +216,115 @@ const styles = StyleSheet.create({
   },
   dropdownText: {
     fontSize: 16,
+    width: '90%'
+  },
+  productGroupContainer: {
+    backgroundColor: 'white',
+    borderRadius: 8,
+    padding: 10,
+    width: '100%',
+    maxHeight: 220, // Height to accommodate product cards and header
+  },
+
+  productGroupHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10,
+    paddingHorizontal: 5,
+  },
+
+  productGroupTitle: {
+    fontSize: mvs(18),
+    fontWeight: 'bold',
+    color: colors.dark,
+  },
+
+  productCardContainer: {
+    flexDirection: 'column',
+    backgroundColor: 'white',
+    borderRadius: 8,
+    padding: 10,
+    marginRight: 10,
+    borderWidth: 1,
+    borderColor: '#f0f0f0',
+    width: 200, // Fixed width for each card
+    height: 160,
+  },
+
+  productImageContainer: {
+    width: '75%',
+    height: 80,
+    borderRadius: 6,
+    overflow: 'hidden',
+    marginBottom: 8,
+  },
+
+  productImage: {
+    width: '100%',
+    height: '100%',
+  },
+
+  productInfo: {
+    flex: 1,
+  },
+
+  productTitle: {
+    fontSize: mvs(14),
+    fontWeight: 'bold',
+    marginBottom: 4,
+  },
+
+  productLocation: {
+    fontSize: mvs(12),
+    color: '#666',
+    marginBottom: 4,
+  },
+
+  priceTagContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+
+  priceTag: {
+    fontSize: mvs(14),
+    fontWeight: 'bold',
+    color: colors.lightgreen,
+  },
+  dropdownOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'transparent',
+    zIndex: 90, // Lower than dropdown (100) but higher than other content
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.3)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingModal: {
+    width: '30%',
+    height: 70,
+    flexDirection:'row',
+    backgroundColor: 'white',
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  loadingText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: colors.black,
   },
 });
 
