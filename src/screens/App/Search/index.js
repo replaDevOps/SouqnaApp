@@ -21,7 +21,10 @@ import {
   removeFavorite,
 } from '../../../redux/slices/favoritesSlice';
 import VerificationModal from '../../../components/Modals/VerificationModal';
-import API, {fetchCategories, fetchProducts} from '../../../api/apiServices';
+
+import API, {fetchBuyerProducts, fetchCategories, fetchProducts} from '../../../api/apiServices';
+import axios from 'axios';
+
 import {setVerificationStatus} from '../../../redux/slices/userSlice';
 import LogoHeader from '../../../components/Structure/Search/Header/LogoHeader';
 import {Snackbar} from 'react-native-paper';
@@ -101,7 +104,7 @@ const SearchScreen = () => {
     const loadProducts = async () => {
       setLoading(true);
 
-      const response = await fetchProducts(token, {}, role);
+      const response = await fetchBuyerProducts(token, {}, role);
       if (response?.success) {
         const products = response.data;
         setAllRecommendedProducts(products.slice(0, 6));
@@ -251,7 +254,7 @@ const SearchScreen = () => {
       }
       setCategoriesLoading(false);
 
-      const productsResponse = await fetchProducts(token, {}, role);
+      const productsResponse = await fetchBuyerProducts(token, {}, role);
       if (productsResponse?.success) {
         const products = productsResponse.data;
         setAllRecommendedProducts(products.slice(0, 6));
