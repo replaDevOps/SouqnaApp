@@ -190,8 +190,31 @@ const VerificationScreen = () => {
     setShowSubmit(isFormChanged || isImageChanged);
   }, [formData, idFrontSide, idBackSide, selfie, originalData]);
 
+  const formatIdNumber = raw => {
+    const digits = raw.replace(/\D/g, ''); // Only keep digits
+    let result = '';
+
+    if (digits.length <= 5) {
+      result = digits;
+    } else if (digits.length <= 11) {
+      result = `${digits.slice(0, 5)} ${digits.slice(5)}`;
+    } else {
+      result = `${digits.slice(0, 5)} ${digits.slice(5, 12)} ${digits.slice(
+        12,
+        13,
+      )}`;
+    }
+
+    return result.trim();
+  };
+
   const handleInputChange = (key, value) => {
-    setFormData({...formData, [key]: value});
+    if (key === 'idNumber') {
+      const formatted = formatIdNumber(value);
+      setFormData({...formData, [key]: formatted});
+    } else {
+      setFormData({...formData, [key]: value});
+    }
   };
 
   useEffect(() => {
@@ -518,52 +541,13 @@ const VerificationScreen = () => {
 
           <View style={styles.inputContainer}>
             <Text style={styles.label}>ID Number</Text>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                gap: 10,
-              }}>
-              <TextInput
-                style={[styles.input, {flex: 1}]}
-                maxLength={5}
-                keyboardType="numeric"
-                placeholder="12345"
-                value={formData.idNumber.split('-')[0] || ''}
-                onChangeText={text => {
-                  const existing = formData.idNumber.split('-');
-                  const second = existing[1] || '';
-                  const third = existing[2] || '';
-                  handleInputChange('idNumber', `${text}-${second}-${third}`);
-                }}
-              />
-              <TextInput
-                style={[styles.input, {flex: 1}]}
-                maxLength={7}
-                keyboardType="numeric"
-                placeholder="1234567"
-                value={formData.idNumber.split('-')[1] || ''}
-                onChangeText={text => {
-                  const existing = formData.idNumber.split('-');
-                  const first = existing[0] || '';
-                  const third = existing[2] || '';
-                  handleInputChange('idNumber', `${first}-${text}-${third}`);
-                }}
-              />
-              <TextInput
-                style={[styles.input, {flex: 1}]}
-                maxLength={1}
-                keyboardType="numeric"
-                placeholder="1"
-                value={formData.idNumber.split('-')[2] || ''}
-                onChangeText={text => {
-                  const existing = formData.idNumber.split('-');
-                  const first = existing[0] || '';
-                  const second = existing[1] || '';
-                  handleInputChange('idNumber', `${first}-${second}-${text}`);
-                }}
-              />
-            </View>
+
+            <TextInput
+              style={styles.input} // <- make sure this matches other inputs
+              value={formData.idNumber}
+              onChangeText={text => handleInputChange('idNumber', text)}
+              placeholder="ID Number"
+            />
           </View>
 
           {/* Remaining date inputs - now in separate lines */}
