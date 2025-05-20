@@ -30,7 +30,7 @@ const ProductImages = ({images}) => {
             style={{
               width: width,
               height: height * 0.35,
-              resizeMode: 'contain',
+              resizeMode: 'cover',
               backgroundColor: '#fff',
             }}
           />

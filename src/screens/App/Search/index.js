@@ -22,13 +22,12 @@ import {
 } from '../../../redux/slices/favoritesSlice';
 import VerificationModal from '../../../components/Modals/VerificationModal';
 import API, {fetchCategories, fetchProducts} from '../../../api/apiServices';
-import axios from 'axios';
 import {setVerificationStatus} from '../../../redux/slices/userSlice';
 import LogoHeader from '../../../components/Structure/Search/Header/LogoHeader';
 import {Snackbar} from 'react-native-paper';
 import {colors} from '../../../util/color';
-import {CurrentLocationSVG, MapMarkerSVG} from '../../../assets/svg';
-import {log} from 'console';
+import {MapMarkerSVG} from '../../../assets/svg';
+import BannerSlider from '../../../components/atoms/BannerSlider';
 
 const SearchScreen = () => {
   const [likedItems, setLikedItems] = useState({});
@@ -299,12 +298,14 @@ const SearchScreen = () => {
 
         <CategorySection categories={apiCategories} />
 
-        {role !== 2 && role !== '2' && (
+        <BannerSlider />
+
+        {/* {role !== 2 && role !== '2' && (
           <GalleryContainer
             onProductSelect={navigateToProductDetails}
             onRefresh={onRefresh}
           />
-        )}
+        )} */}
 
         <RecommendedSection
           products={allRecommendedProducts}
