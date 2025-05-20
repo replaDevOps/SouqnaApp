@@ -32,6 +32,7 @@ import {colors} from '../../../util/color';
 export default function MapScreen() {
   const route = useRoute();
   const {allProducts} = route.params;
+console.log('[all producted]',allProducts);
 
   const navigation = useNavigation();
   const [region, setRegion] = useState(null);
