@@ -31,6 +31,7 @@ import CardDetailsScreen from '../../components/Structure/Stripe/CardDetail';
 import PlanScreen from '../../components/Structure/Stripe/Plan';
 import PlansScreen from '../../screens/App/Plans';
 import CardUI from '../../screens/App/Plans/cardUI';
+import OTPScreen from '../../screens/App/OTP';
 
 const Stack = createStackNavigator();
 
@@ -82,6 +83,7 @@ const AppNavigator = () => {
         <Stack.Screen name="PlanScreen" component={PlanScreen} />
         <Stack.Screen name="Plans" component={PlansScreen} />
         <Stack.Screen name="Card" component={CardUI} />
+        <Stack.Screen name="OTP" component={OTPScreen} />
       </Stack.Navigator>
     </View>
   );

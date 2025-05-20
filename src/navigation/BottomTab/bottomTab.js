@@ -203,8 +203,8 @@ const MyTabs = () => {
             })}
           />
           <Tab.Screen
-            name="CartScreen"
-            component={CartScreen}
+            name="Notification"
+            component={Notification}
             listeners={({navigation, route}) => ({
               tabPress: e => handleTabPress(e, route, navigation),
             })}
