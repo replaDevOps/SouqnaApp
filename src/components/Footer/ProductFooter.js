@@ -10,7 +10,6 @@ import {
 import {mvs} from '../../util/metrices';
 import {colors} from '../../util/color';
 import {CallSVG, CartSVG, ChatSVG} from '../../assets/svg';
-import {useNavigation} from '@react-navigation/native';
 
 const ProductFooter = ({
   onBuyPress,
@@ -21,53 +20,81 @@ const ProductFooter = ({
   loadingCall,
   sellerPhone,
 }) => {
-  const navigation = useNavigation();
-  const [showCall, setShowCall] = useState(false);
   const [showBuy, setShowBuy] = useState(false);
 
   const handleCallPress = () => {
     if (sellerPhone) {
       Linking.openURL(`tel:${sellerPhone}`);
-      setShowCall(true); // Once called, show permanently
     } else {
       console.warn('Seller phone number not available');
     }
   };
+
   const handleBuyPress = () => {
     setShowBuy(true);
     onBuyPress && onBuyPress();
   };
+
+ const role = 2;
+
+  // Declare buttons based on role
+  let buttons = [];
+
+  if (role === 1) {
+    buttons = [
+      {
+        key: 'chat',
+        onPress: onChatPress,
+        loading: loadingChat,
+        text: 'Chat with Seller',
+        Icon: ChatSVG,
+        // bgcolor:colors.lightgreen
+      },
+      {
+        key: 'call',
+        onPress: handleCallPress,
+        loading: loadingCall,
+        text: 'Call Seller',
+        Icon: CallSVG,
+        // bgcolor:colors.lightgreen
+      },
+    ];
+  } else {
+    buttons = [
+      {
+        key: 'update',
+        onPress: null,
+        loading: loadingChat,
+        text: 'Update Product',
+        Icon: ChatSVG,
+        // textclr:colors.black,
+        // bgcolor:colors.lightorange
+      },
+      {
+        key: 'delete',
+        onPress: null,
+        loading: loadingCall,
+        text: 'Delete Product',
+        Icon: CallSVG,
+        // textclr:'rgba(240, 149, 3, 0.92)',
+        // bgcolor:colors.red
+      },
+    ];
+  }
+
   return (
     <View style={styles.footerContainer}>
       <View style={styles.buttonRow}>
-        <TouchableOpacity style={[styles.buyButton]} onPress={onChatPress}>
-          <ChatSVG width={24} height={24} />
-          {loadingChat ? (
-            <ActivityIndicator size="small" color={colors.green} />
-          ) : (
-            <Text style={styles.buttonText}>Chat with Seller</Text>
-          )}
-        </TouchableOpacity>
-        {showBuy ? (
-          <TouchableOpacity style={[styles.buyButton]} onPress={onBuyPress}>
-            <CartSVG width={24} height={24} />
-            {loadingBuy ? (
+        {buttons.map(({key, onPress, loading, text, Icon}) => (
+          <TouchableOpacity key={key} style={[styles.buyButton]} onPress={onPress}>
+            <Icon width={24} height={24} />
+            {loading ? (
               <ActivityIndicator size="small" color={colors.green} />
             ) : (
-              <Text style={styles.buttonText}>Buy Directly</Text>
+              <Text style={[styles.buttonText]}>{text}</Text>
             )}
           </TouchableOpacity>
-        ) : null}
-        {/* {showCall ? ( */}
-        <TouchableOpacity style={styles.buyButton} onPress={handleCallPress}>
-          <CallSVG width={24} height={24} />
-          {loadingCall ? (
-            <ActivityIndicator size="small" color={colors.green} />
-          ) : (
-            <Text style={styles.buttonText}>Call Seller</Text>
-          )}
-        </TouchableOpacity>
-        {/* ) : null} */}
+        ))}
       </View>
     </View>
   );
@@ -93,18 +120,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     width: '100%',
     paddingHorizontal: mvs(10),
-  },
-  button: {
-    flex: 1,
-    paddingVertical: mvs(2),
-    marginHorizontal: mvs(5),
-    backgroundColor: colors.white,
-    borderWidth: 2,
-    borderColor: colors.grey,
-    borderRadius: mvs(25),
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'row',
   },
   buyButton: {
     flex: 1,
