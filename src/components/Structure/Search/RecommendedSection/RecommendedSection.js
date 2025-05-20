@@ -96,7 +96,7 @@ const RecommendedSection = ({
           <Regular style={styles.recommendedTitle}>{item.name}</Regular>
           <Regular style={styles.recommendedPrice}>
             {' '}
-            $ {Number(item.price).toLocaleString()}
+            ${Number(item.price).toLocaleString()}
           </Regular>
         </View>
         {role !== 2 && (
@@ -130,10 +130,14 @@ const RecommendedSection = ({
   };
 
   return (
-    <View style={styles.recommendedContainer}>
+    <View style={[styles.recommendedContainer, {flex: 1}]}>
       {!hideTitle && (
         <Bold style={[{marginVertical: mvs(20)}, styles.recommendedText]}>
-          {t('Your Listings')}
+          {role === 2
+            ? t('Your Listings')
+            : role === 3
+            ? t('Recommended For You')
+            : ''}
         </Bold>
       )}
 
@@ -148,7 +152,6 @@ const RecommendedSection = ({
           onEndReached={loadMoreProducts}
           onEndReachedThreshold={0.2}
           refreshControl={
-            // 👈 add this
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
           ListFooterComponent={
