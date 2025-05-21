@@ -73,30 +73,45 @@ export const switchUserRole = async (token, currentRole, sellerType = null) => {
   }
 };
 
-export const fetchProducts = async (token, filters = {}, role) => {
-  const isLoggedIn = !!token;
-
+export const fetchSellerProducts = async (token, filters = {}) => {
   try {
-    const endpoint =
-      isLoggedIn && role === 2 ? 'showAllProducts' : 'showProducts';
-
-    const response = await API.post(endpoint, filters, {
+    const response = await API.post('showAllProducts', filters, {
       headers: {
-        ...(isLoggedIn && {Authorization: `Bearer ${token}`}),
+        Authorization: `Bearer ${token}`,
         pageNo: 1,
         recordsPerPage: 20,
       },
     });
+    console.log('Endpoint Used: showAllProducts (Seller)');
 
-    if (response.status === 200) {
-      return response.data;
-    }
-
-    console.error(`Error: Received non-200 status code ${response.status}`);
+    if (response.status === 200) return response.data;
+    console.error(`Error: Received status code ${response.status}`);
     return null;
   } catch (error) {
     console.error(
-      `Error fetching ${token ? 'authenticated' : 'unauthenticated'} products:`,
+      'Error fetching seller products:',
+      error.response?.data || error.message,
+    );
+    return null;
+  }
+};
+
+export const fetchBuyerProducts = async (filters = {}) => {
+  try {
+    const response = await API.post('showProducts', filters, {
+      headers: {
+        pageNo: 1,
+        recordsPerPage: 20,
+      },
+    });
+    console.log('Endpoint Used: showProducts (Buyer/Guest)');
+
+    if (response.status === 200) return response.data;
+    console.error(`Error: Received status code ${response.status}`);
+    return null;
+  } catch (error) {
+    console.error(
+      'Error fetching buyer/guest products:',
       error.response?.data || error.message,
     );
     return null;
@@ -320,6 +335,25 @@ export const submitCardDetails = async (cardData, token) => {
       error.response?.data || error.message,
     );
     throw error;
+  }
+};
+
+export const verifyOtp = async otp => {
+  try {
+    const response = await API.post('verifyOtp', {
+      // phone: phoneNumber,
+      otp: otp,
+    });
+    return response.data;
+  } catch (error) {
+    console.error(
+      'Error verifying OTP:',
+      error.response?.data || error.message,
+    );
+    return {
+      success: false,
+      error: error?.response?.data?.message || error.message,
+    };
   }
 };
 

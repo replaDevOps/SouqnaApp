@@ -40,14 +40,16 @@ const LoginScreen = () => {
 
   const handleLogin = async () => {
     if (!isEmailValid(email)) {
-      setEmailError('Please enter a valid email.');
+      setSnackbarMessage('Please enter a valid email.');
+      setSnackbarVisible(true); // ✅ Show snackbar
       return;
     } else {
       setEmailError('');
     }
 
     if (!isPasswordValid(password)) {
-      setPasswordError('Password must be at least 8 characters.');
+      setSnackbarMessage('Password must be at least 8 characters.');
+      setSnackbarVisible(true); // ✅ Show snackbar
       return;
     } else {
       setPasswordError('');
@@ -72,21 +74,28 @@ const LoginScreen = () => {
             sellerType: user.sellerType,
           }),
         );
-        if (user.role === 3) {
-          setSnackbarMessage('Buyer logged in successfully');
-          setSnackbarVisible(true);
-        } else if (user.role === 2) {
-          setSnackbarMessage('Seller logged in successfully');
-          setSnackbarVisible(true);
-        }
+        const message =
+          user.role === 3
+            ? 'Buyer logged in successfully'
+            : user.role === 2
+            ? 'Seller logged in successfully'
+            : user.role === 4
+            ? 'Logged in as Both'
+            : 'Login successful';
+
+        setSnackbarMessage(message);
+        setSnackbarVisible(true); // ✅ Show snackbar
         console.log('Login successful:', user);
 
         setTimeout(() => {
-          const destination = user.sellerType === 1 ? 'PlanScreen' : 'MainTabs';
-          navigation.navigate(destination);
+          const destination = 'MainTabs';
+          navigation.replace(destination);
         }, 1000);
       } else {
-        showErrorMessage(res.message || 'Invalid email or password');
+        setSnackbarMessage(
+          res.error || res.message || 'Invalid email or password',
+        );
+        setSnackbarVisible(true); // ✅ Show snackbar
       }
     } catch (error) {
       console.log('Login error:', error);

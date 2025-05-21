@@ -18,13 +18,13 @@ import SearchScreen from '../../screens/App/Search';
 import FavouriteScreen from '../../screens/App/Favourite';
 import CartScreen from '../../screens/App/Cart';
 import AdvertiseScreen from '../../screens/App/Advertise';
-import AddModal from '../../components/Modals/AddModal';
 import PlusSvg from '../../assets/svg/plussvg';
 import Chat from '../../screens/App/Chat';
 import Notification from '../../screens/App/Notification/index';
 import InboxScreen from '../../screens/App/Inbox';
 import {fetchNotifications} from '../../api/apiServices';
 import {setRole} from '../../redux/slices/userSlice';
+import AddModal from '../../components/Modals/AddModal';
 
 const Tab = createBottomTabNavigator();
 
@@ -169,8 +169,8 @@ const MyTabs = () => {
             })}
           />
           <Tab.Screen
-            name="CartScreen"
-            component={CartScreen}
+            name="Notification"
+            component={Notification}
             listeners={({navigation, route}) => ({
               tabPress: e => handleTabPress(e, route, navigation),
             })}
@@ -203,8 +203,8 @@ const MyTabs = () => {
             })}
           />
           <Tab.Screen
-            name="CartScreen"
-            component={CartScreen}
+            name="Notification"
+            component={Notification}
             listeners={({navigation, route}) => ({
               tabPress: e => handleTabPress(e, route, navigation),
             })}
@@ -246,99 +246,6 @@ const MyTabs = () => {
     </View>
   );
 };
-
-// return (
-//   <View style={{flex: 1}}>
-//     <Tab.Navigator
-//       screenOptions={({route}) => ({
-//         headerShown: false,
-//         tabBarShowLabel: false,
-//         tabBarStyle: styles.tabBar,
-//         tabBarActiveTintColor: colors.green,
-//         tabBarIcon: ({focused}) => {
-//           let IconComponent;
-//           let label;
-//           const activeColor = colors.green;
-//           const inactiveColor = colors.grey;
-
-//           switch (route.name) {
-//             case 'Search':
-//               IconComponent = HOMESVG;
-//               // label = 'Home';
-//               break;
-//             case 'Favourite':
-//               IconComponent = HeartSVG;
-//               // label = 'Favourite';
-//               break;
-//             case 'Advertise':
-//               IconComponent = PlusSvg;
-//               // label = 'Advertise';
-//               break;
-//             case 'CartScreen':
-//               IconComponent = CartSVG;
-//               // label = 'Cart';
-//               break;
-//             case 'Profile':
-//               IconComponent = ProfileSVG;
-//               // label = 'Profile';
-//               break;
-//             default:
-//               IconComponent = HOMESVG;
-//             // label = 'Home';
-//           }
-
-//           return (
-//             <View style={styles.iconContainer}>
-//               <IconComponent color={focused ? activeColor : inactiveColor} />
-//               {/* <Bold
-//                 style={[
-//                   styles.label,
-//                   {color: focused ? activeColor : inactiveColor},
-//                 ]}>
-//                 {label}
-//               </Bold> */}
-//             </View>
-//           );
-//         },
-//       })}>
-//       <Tab.Screen name="Search" component={SearchScreen} />
-//       <Tab.Screen
-//         name="Favourite"
-//         component={FavouriteScreen}
-//         listeners={({navigation, route}) => ({
-//           tabPress: e => handleTabPress(e, route, navigation),
-//         })}
-//       />
-//       <Tab.Screen
-//         name="Advertise"
-//         component={AdvertiseScreen}
-//         listeners={({navigation, route}) => ({
-//           tabPress: e => handleTabPress(e, route, navigation),
-//         })}
-//       />
-//       <Tab.Screen
-//         name="CartScreen"
-//         component={CartScreen}
-//         listeners={({navigation, route}) => ({
-//           tabPress: e => handleTabPress(e, route, navigation),
-//         })}
-//       />
-//       <Tab.Screen
-//         name="Profile"
-//         component={Profile}
-//         listeners={({navigation, route}) => ({
-//           tabPress: e => handleTabPress(e, route, navigation),
-//         })}
-//       />
-//     </Tab.Navigator>
-
-//     <AddModal
-//       visible={isModalVisible}
-//       onClose={() => setIsModalVisible(false)}
-//     />
-//   </View>
-// );
-// };
 
 const styles = StyleSheet.create({
   tabBar: {

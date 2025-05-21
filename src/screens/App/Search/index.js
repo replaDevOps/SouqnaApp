@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 
-import React, { useCallback, useEffect, useState } from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   RefreshControl,
   ScrollView,
@@ -11,24 +11,25 @@ import {
 import SearchHeader from '../../../components/Headers/SearchHeader';
 import styles from './style';
 import AddModal from '../../../components/Modals/AddModal';
-import { useIsFocused, useNavigation } from '@react-navigation/native';
-import { useDispatch, useSelector } from 'react-redux';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
+import {useDispatch, useSelector} from 'react-redux';
 import CategorySection from '../../../components/Structure/Search/CategorySection/CategorySection';
 import RecommendedSection from '../../../components/Structure/Search/RecommendedSection/RecommendedSection';
-import GalleryContainer from '../../../components/Structure/Search/GallerySection/GallerySection';
 import {
   addFavorite,
   removeFavorite,
 } from '../../../redux/slices/favoritesSlice';
 import VerificationModal from '../../../components/Modals/VerificationModal';
-import API, {fetchCategories, fetchProducts} from '../../../api/apiServices';
-import axios from 'axios';
-import { setVerificationStatus } from '../../../redux/slices/userSlice';
+import API, {
+  fetchBuyerProducts,
+  fetchCategories,
+} from '../../../api/apiServices';
+import {setVerificationStatus} from '../../../redux/slices/userSlice';
 import LogoHeader from '../../../components/Structure/Search/Header/LogoHeader';
-import { Snackbar } from 'react-native-paper';
-import { colors } from '../../../util/color';
-import { CurrentLocationSVG } from '../../../assets/svg';
-import { log } from 'console';
+import {Snackbar} from 'react-native-paper';
+import {colors} from '../../../util/color';
+import {MapMarkerSVG} from '../../../assets/svg';
+import BannerSlider from '../../../components/atoms/BannerSlider';
 
 const SearchScreen = () => {
   const [likedItems, setLikedItems] = useState({});
@@ -41,10 +42,10 @@ const SearchScreen = () => {
   const [allRecommendedProducts, setAllRecommendedProducts] = useState([]);
 
   const [isEndOfResults, setIsEndOfResults] = useState(false);
-  const { token, verificationStatus, role } = useSelector(state => state.user);
+  const {token, verificationStatus, role} = useSelector(state => state.user);
   const dispatch = useDispatch();
   const [apiCategories, setApiCategories] = useState([]);
-  const [setApiProducts] = useState([]);
+  const [apiProducts, setApiProducts] = useState([]);
   const [setCategoriesLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [refreshing, setRefreshing] = useState(false); // New state for pull-to-refresh
@@ -102,7 +103,7 @@ const SearchScreen = () => {
     const loadProducts = async () => {
       setLoading(true);
 
-      const response = await fetchProducts(token, {}, role);
+      const response = await fetchBuyerProducts(token, {}, role);
       if (response?.success) {
         const products = response.data;
         setAllRecommendedProducts(products.slice(0, 6));
@@ -163,7 +164,7 @@ const SearchScreen = () => {
     // Logic to handle profile verification
     setModalVisible(false);
     // Navigate to the Verification screen
-    navigation.replace('Verification');
+    navigation.navigate('Verification');
   };
 
   const handleSkipVerification = () => {
@@ -203,7 +204,7 @@ const SearchScreen = () => {
       // If the product is already in the favorites, remove it
       dispatch(removeFavorite(product));
       setLikedItems(prevState => {
-        const updatedState = { ...prevState };
+        const updatedState = {...prevState};
         delete updatedState[id];
         return updatedState;
       });
@@ -238,7 +239,7 @@ const SearchScreen = () => {
   };
 
   const navigateToProductDetails = productId => {
-    navigation.navigate('ProductDetail', { productId });
+    navigation.navigate('ProductDetail', {productId});
     console.log('Product ID: ', productId);
   };
 
@@ -252,7 +253,7 @@ const SearchScreen = () => {
       }
       setCategoriesLoading(false);
 
-      const productsResponse = await fetchProducts(token, {}, role);
+      const productsResponse = await fetchBuyerProducts(token, {}, role);
       if (productsResponse?.success) {
         const products = productsResponse.data;
         setAllRecommendedProducts(products.slice(0, 6));
@@ -276,10 +277,10 @@ const SearchScreen = () => {
 
       {/* Map */}
       <TouchableOpacity
-        onPress={() => navigation.navigate('Map', {allProducts})
-        }
+        onPress={() => navigation.navigate('Map', {allProducts})}
+        // onPress={() => setModalVisible(true)}
         style={styles.mapContainer}>
-        <CurrentLocationSVG width={40} height={40} fill={colors.white} />
+        <MapMarkerSVG width={35} height={35} fill={colors.white} />
       </TouchableOpacity>
       <ScrollView
         contentContainerStyle={{backgroundColor: '#fbfbfb'}}
@@ -300,10 +301,15 @@ const SearchScreen = () => {
 
         <CategorySection categories={apiCategories} />
 
-        <GalleryContainer
-          onProductSelect={navigateToProductDetails}
-          onRefresh={onRefresh}
-        />
+        {!isModalVisible && hasFetchedVerification && <BannerSlider />}
+
+        {/* {role !== 2 && role !== '2' && (
+          <GalleryContainer
+            onProductSelect={navigateToProductDetails}
+            onRefresh={onRefresh}
+          />
+        )} */}
+
         <RecommendedSection
           products={allRecommendedProducts}
           loadMoreProducts={loadMoreRecommendedProducts}
@@ -315,7 +321,8 @@ const SearchScreen = () => {
         />
       </ScrollView>
 
-      { isModalVisible && !token && <AddModal onClose={onClose} /> }
+      {isModalVisible && !token && <AddModal onClose={onClose} />}
+
       <VerificationModal
         visible={modalVisible}
         onVerify={handleVerifyProfile}
@@ -332,7 +339,7 @@ const SearchScreen = () => {
         }}>
         {snackbarMessage}
       </Snackbar>
-    </View >
+    </View>
   );
 };
 

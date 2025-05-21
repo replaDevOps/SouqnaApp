@@ -12,7 +12,11 @@ import {
   Animated,
 } from 'react-native';
 import {useSelector} from 'react-redux';
-import {BASE_URL_Product, fetchProducts} from '../../../../api/apiServices';
+import {
+  BASE_URL_Product,
+  fetchBuyerProducts,
+  fetchSellerProducts,
+} from '../../../../api/apiServices';
 import Bold from '../../../../typography/BoldText';
 import {colors} from '../../../../util/color';
 import {mvs} from '../../../../util/metrices';
@@ -94,7 +98,7 @@ const GalleryContainer = ({
 }) => {
   const [apiProducts, setApiProducts] = useState([]);
   const [productsLoading, setProductsLoading] = useState(true);
-  const {token} = useSelector(state => state.user);
+  const {token, role} = useSelector(state => state.user);
   const {t} = useTranslation();
 
   useEffect(() => {
@@ -108,7 +112,15 @@ const GalleryContainer = ({
         status: '',
       };
 
-      const response = await fetchProducts(token, filters);
+      let response = null;
+
+      if (role === 2 || role === '2') {
+        // Seller
+        response = await fetchSellerProducts(token, filters);
+      } else {
+        // Buyer or Guest (role 3 or others)
+        response = await fetchBuyerProducts(filters);
+      }
       console.log('API Response:', response);
       if (response?.success && Array.isArray(response.data)) {
         setApiProducts(response.data);
@@ -134,12 +146,12 @@ const GalleryContainer = ({
             onPress={() => onProductSelect(item.id)}>
             <Image source={{uri: productImage}} style={styles.productImage} />
             <View style={{paddingVertical: mvs(15)}}>
-              <Text
+              <Bold
                 style={styles.productTitle}
                 numberOfLines={1}
                 ellipsizeMode="tail">
                 {item.name || 'Fall'}
-              </Text>
+              </Bold>
             </View>
           </TouchableOpacity>
         </View>
@@ -185,10 +197,13 @@ const styles = StyleSheet.create({
     paddingBottom: mvs(15),
   },
   galleryLabel: {
-    fontSize: mvs(19),
+    fontSize: mvs(16),
     paddingLeft: mvs(12),
     marginTop: mvs(20),
-    marginBottom: mvs(12),
+    marginBottom: mvs(20),
+    color: '#333',
+    paddingHorizontal: mvs(6),
+    lineHeight: mvs(16),
   },
   flatListContainer: {
     paddingHorizontal: mvs(10),
@@ -218,8 +233,11 @@ const styles = StyleSheet.create({
     borderTopRightRadius: mvs(10),
   },
   productTitle: {
-    fontSize: mvs(18),
+    fontSize: mvs(14),
     textAlign: 'center',
+    paddingHorizontal: mvs(6),
+    lineHeight: mvs(16),
+
     color: colors.black,
     marginRight: 'auto',
     marginBottom: mvs(4),

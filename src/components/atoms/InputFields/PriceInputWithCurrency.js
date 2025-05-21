@@ -76,8 +76,9 @@ const PriceInputWithDropdown = ({
               style={[
                 styles.dropdown,
                 {
-                  top: Math.max(calculatedTop, 0), // Ensuring dropdown doesn't overflow above screen
-                  left: buttonPosition.x - 50,
+                  top: buttonPosition.y + buttonPosition.height + 5,
+
+                  left: buttonPosition.x - 20,
                 },
               ]}>
               <FlatList

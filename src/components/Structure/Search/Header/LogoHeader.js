@@ -42,11 +42,11 @@ export default function LogoHeader() {
           source={require('../../../../assets/img/Souqna_Logo3.png')}
           style={{width: mvs(145), height: mvs(28), resizeMode: 'contain'}}
         />
-        {role !== 2 && (
+        {/* {role !== 2 && (
           <TouchableOpacity onPress={onNotification}>
             <NotificationSVG width={mvs(22)} height={mvs(22)} />
           </TouchableOpacity>
-        )}
+        )} */}
       </View>
     </View>
   );

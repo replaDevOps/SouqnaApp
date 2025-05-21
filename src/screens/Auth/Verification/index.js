@@ -24,6 +24,7 @@ import {UploadSVG, CalendersSVG} from '../../../assets/svg';
 import {colors} from '../../../util/color';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useTranslation} from 'react-i18next';
+import DropDownPicker from 'react-native-dropdown-picker';
 
 // Radio Button Component
 const RadioButton = ({selected, onPress, label}) => {
@@ -74,6 +75,18 @@ const VerificationScreen = () => {
   const [verificationData, setVerificationData] = useState(null);
   const [isVerified, setIsVerified] = useState(false);
   const [idType, setIdType] = useState('idCard'); // 'idCard' or 'drivingLicense'
+  // Dropdown state
+  const [countryOpen, setCountryOpen] = useState(false);
+  const [countryItems, setCountryItems] = useState([
+    {
+      label: '🇹🇷    Turkey',
+      value: 'Turkey',
+    },
+    {
+      label: '🇸🇾    Syria',
+      value: 'Syria',
+    },
+  ]);
 
   //At first view if user has added verification
   useEffect(() => {
@@ -177,8 +190,31 @@ const VerificationScreen = () => {
     setShowSubmit(isFormChanged || isImageChanged);
   }, [formData, idFrontSide, idBackSide, selfie, originalData]);
 
+  const formatIdNumber = raw => {
+    const digits = raw.replace(/\D/g, ''); // Only keep digits
+    let result = '';
+
+    if (digits.length <= 5) {
+      result = digits;
+    } else if (digits.length <= 11) {
+      result = `${digits.slice(0, 5)} ${digits.slice(5)}`;
+    } else {
+      result = `${digits.slice(0, 5)} ${digits.slice(5, 12)} ${digits.slice(
+        12,
+        13,
+      )}`;
+    }
+
+    return result.trim();
+  };
+
   const handleInputChange = (key, value) => {
-    setFormData({...formData, [key]: value});
+    if (key === 'idNumber') {
+      const formatted = formatIdNumber(value);
+      setFormData({...formData, [key]: formatted});
+    } else {
+      setFormData({...formData, [key]: value});
+    }
   };
 
   useEffect(() => {
@@ -241,9 +277,22 @@ const VerificationScreen = () => {
     );
   };
 
+  // useEffect(() => {
+  //   let timeout;
+  //   if (loading) {
+  //     timeout = setTimeout(() => {
+  //       ToastAndroid.show(
+  //         'Still submitting, please wait...',
+  //         ToastAndroid.SHORT,
+  //       );
+  //     }, 10000); // 10 seconds
+  //   }
+  //   return () => clearTimeout(timeout);
+  // }, [loading]);
+
   const handleSubmit = async () => {
     console.log('Submit button pressed ✅');
-
+    // if (loading) return;
     const {
       fullName,
       dob,
@@ -312,7 +361,7 @@ const VerificationScreen = () => {
         error.response?.data?.message ||
         error.message ||
         'An error occurred during verification.';
-      ToastAndroid.show(message, ToastAndroid.LONG);
+      ToastAndroid.show(message, ToastAndroid.SHORT);
     } finally {
       setLoading(false);
     }
@@ -422,16 +471,41 @@ const VerificationScreen = () => {
               />
             </View>
           </View>
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Country</Text>
+            <DropDownPicker
+              open={countryOpen}
+              value={formData.country}
+              items={countryItems}
+              setOpen={setCountryOpen}
+              setValue={val => handleInputChange('country', val())}
+              setItems={setCountryItems}
+              placeholder="Select Country"
+              zIndex={3000}
+              zIndexInverse={1000}
+              style={{
+                marginTop: 10,
+                borderWidth: 1,
+                borderColor: '#ccc', // Match with your input borderColor
+                borderRadius: 8,
+              }}
+              dropDownContainerStyle={{
+                marginTop: 10,
+                borderWidth: 1,
+                borderColor: '#ccc', // Optional: match dropdown container too
+              }}
+            />
+          </View>
 
           {/* Remaining text inputs */}
-          {['country', 'address'].map(key => {
+          {['address'].map(key => {
             const labelMap = {
-              country: 'Country',
+              // country: 'Country',
               address: 'Address',
               // idNumber: 'ID Number',
             };
             const placeholderMap = {
-              country: 'Enter Country',
+              // country: 'Enter Country',
               address: 'Enter Address',
               // idNumber: 'Enter ID Number',
             };
@@ -450,11 +524,7 @@ const VerificationScreen = () => {
           })}
           <View style={styles.inputContainer}>
             <Text style={styles.label}>ID Type</Text>
-            <View
-              style={{
-                flexDirection: 'row',
-                marginTop: 5,
-              }}>
+            <View style={[styles.radioGroup, {justifyContent: 'space-around'}]}>
               <RadioButton
                 label="ID Card"
                 selected={idType === 'idCard'}
@@ -471,76 +541,42 @@ const VerificationScreen = () => {
 
           <View style={styles.inputContainer}>
             <Text style={styles.label}>ID Number</Text>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                gap: 10,
-              }}>
-              <TextInput
-                style={[styles.input, {flex: 1}]}
-                maxLength={5}
-                keyboardType="numeric"
-                placeholder="12345"
-                value={formData.idNumber.split('-')[0] || ''}
-                onChangeText={text => {
-                  const existing = formData.idNumber.split('-');
-                  const second = existing[1] || '';
-                  const third = existing[2] || '';
-                  handleInputChange('idNumber', `${text}-${second}-${third}`);
-                }}
-              />
-              <TextInput
-                style={[styles.input, {flex: 1}]}
-                maxLength={7}
-                keyboardType="numeric"
-                placeholder="1234567"
-                value={formData.idNumber.split('-')[1] || ''}
-                onChangeText={text => {
-                  const existing = formData.idNumber.split('-');
-                  const first = existing[0] || '';
-                  const third = existing[2] || '';
-                  handleInputChange('idNumber', `${first}-${text}-${third}`);
-                }}
-              />
-              <TextInput
-                style={[styles.input, {flex: 1}]}
-                maxLength={1}
-                keyboardType="numeric"
-                placeholder="1"
-                value={formData.idNumber.split('-')[2] || ''}
-                onChangeText={text => {
-                  const existing = formData.idNumber.split('-');
-                  const first = existing[0] || '';
-                  const second = existing[1] || '';
-                  handleInputChange('idNumber', `${first}-${second}-${text}`);
-                }}
-              />
-            </View>
+
+            <TextInput
+              style={styles.input} // <- make sure this matches other inputs
+              value={formData.idNumber}
+              onChangeText={text => handleInputChange('idNumber', text)}
+              placeholder="ID Number"
+            />
           </View>
 
-          {/* Remaining date inputs */}
-          {renderDateInput(
-            'issueDate',
-            t('issueDate'),
-            t('enterIssueDate'),
-            openIssueDate,
-            setOpenIssueDate,
-            handleIssueDateChange,
-            null, // No maximum date for issue date
-            minIssueDate, // Minimum date is 20 years ago
-          )}
-
-          {renderDateInput(
-            'expDate',
-            t('expDate'),
-            t('enterExpDate'),
-            openExpDate,
-            setOpenExpDate,
-            handleExpDateChange,
-            null, // No maximum date for expiry date
-            minExpDate, // Minimum date is today (can't expire in the past)
-          )}
+          {/* Remaining date inputs - now in separate lines */}
+          <View style={{marginBottom: 12}}>
+            <View style={{marginBottom: 12}}>
+              {renderDateInput(
+                'issueDate',
+                t('issueDate'),
+                t('enterIssueDate'),
+                openIssueDate,
+                setOpenIssueDate,
+                handleIssueDateChange,
+                null, // No maximum date for issue date
+                minIssueDate, // Minimum date is 20 years ago
+              )}
+            </View>
+            <View>
+              {renderDateInput(
+                'expDate',
+                t('expDate'),
+                t('enterExpDate'),
+                openExpDate,
+                setOpenExpDate,
+                handleExpDateChange,
+                null, // No maximum date for expiry date
+                minExpDate, // Minimum date is today (can't expire in the past)
+              )}
+            </View>
+          </View>
 
           <View style={styles.uploadRow}>
             {[
@@ -633,7 +669,7 @@ const VerificationScreen = () => {
               <ActivityIndicator size="large" color={colors.green} />
             ) : (
               <Text style={{color: '#fff', fontWeight: 'bold'}}>
-                {t('submit')}
+                {'Submit Verification'}
               </Text>
             )}
           </MyButton>

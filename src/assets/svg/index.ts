@@ -62,3 +62,4 @@ export {default as NoneSVG} from './noneSVG';
 export {default as BarsSVG} from './barsSVG';
 export {default as CallSVG} from './callSVG';
 export {default as CardSVG} from './cardSVG';
+export {default as MapMarkerSVG} from './mapMarkerSVG';

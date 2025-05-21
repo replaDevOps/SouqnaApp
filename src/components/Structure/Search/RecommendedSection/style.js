@@ -2,7 +2,7 @@ import {Dimensions, StyleSheet} from 'react-native';
 import {mvs} from '../../../../util/metrices';
 import {colors} from '../../../../util/color';
 
-const { width } = Dimensions.get('window');
+const {width} = Dimensions.get('window');
 // const imageWidth = width * 0.4;
 const cardWidth = (width - mvs(45)) / 2;
 
@@ -16,8 +16,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  recommendedText:{
-   fontSize:mvs(18),
+  recommendedText: {
+    fontSize: mvs(16),
+    color: '#333',
+    paddingHorizontal: mvs(6),
+    lineHeight: mvs(16),
   },
   // Recommended Section Styles
   recommendedContainer: {
@@ -37,7 +40,7 @@ const styles = StyleSheet.create({
     borderRadius: mvs(10),
     elevation: 3, // Add this for Android shadow
     shadowColor: '#000', // iOS shadow
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.1,
     shadowRadius: 4,
   },
@@ -68,7 +71,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
   },
   recommendedTitle: {
-    fontSize: mvs(15),
+    fontSize: mvs(14),
     fontWeight: 'bold',
   },
   recommendedPrice: {

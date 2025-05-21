@@ -1,6 +1,6 @@
-import { StyleSheet } from 'react-native';
-import { colors } from '../../../util/color';
-import { mvs } from '../../../util/metrices';
+import {StyleSheet} from 'react-native';
+import {colors} from '../../../util/color';
+import {mvs} from '../../../util/metrices';
 
 const styles = StyleSheet.create({
   container: {
@@ -13,18 +13,18 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: mvs(55),
     height: mvs(55),
-    backgroundColor: colors.lightgreen,
-    opacity:0.9,
-    bottom: 10,
-    right:10,
+    backgroundColor: '#adbd6e',
+    opacity: 0.9,
+    bottom: 15,
+    right: 15,
     zIndex: 10,
     borderRadius: mvs(27),
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   LogoHeader: {
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.5,
     shadowRadius: 4,
     elevation: 6, // Android
@@ -64,7 +64,6 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     width: '100%',
   },
-
 
   content: {
     backgroundColor: colors.white,

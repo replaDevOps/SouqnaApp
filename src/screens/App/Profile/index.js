@@ -44,14 +44,11 @@ const Profile = () => {
     token,
     verificationStatus,
     role: activeRole,
-    actualRole,
   } = useSelector(state => state.user);
   const [refreshing, setRefreshing] = useState(false);
   const [verificationLoading, setVerificationLoading] = useState(true);
   const [localStatus, setLocalStatus] = useState(null);
   const [isRoleSwitching, setIsRoleSwitching] = useState(false);
-
-  const isFocused = useIsFocused();
   const fetchVerificationStatus = async () => {
     if (!token) return;
     setVerificationLoading(true);
@@ -64,12 +61,22 @@ const Profile = () => {
       });
 
       if (response.data.success) {
-        const apiStatus =
-          response.data?.data?.status ?? response.data?.data ?? 'unverified';
-        dispatch(setVerificationStatus(apiStatus));
-        setLocalStatus(apiStatus);
-
-        console.log('Fetched verification status: ', apiStatus);
+        const numericStatus =
+          Number(response.data?.data?.status) ??
+          response.data?.data ??
+          'unverified';
+        dispatch(
+          setVerificationStatus(
+            numericStatus === 2
+              ? 'verified'
+              : numericStatus === 3
+              ? 'rejected'
+              : numericStatus === 1
+              ? 'inProgress'
+              : 'unverified',
+          ),
+        );
+        setLocalStatus(numericStatus);
       } else {
         setLocalStatus(0);
       }
@@ -80,6 +87,15 @@ const Profile = () => {
       setVerificationLoading(false);
     }
   };
+
+  // Function to handle role switching
+  const handleRoleSwitching = () => {
+    setIsRoleSwitching(true);
+    setTimeout(() => {
+      setIsRoleSwitching(false);
+    }, 1500); // Show skeleton for 1.5 seconds
+  };
+
   useFocusEffect(
     useCallback(() => {
       if (activeRole === '2') {
@@ -173,20 +189,15 @@ const Profile = () => {
         />
       }>
       <View style={{backgroundColor: '#fff', elevation: 0, shadowOpacity: 0}}>
-        <ProfileHeader OnPressLogout={handleLogout} onRoleSwitch={handleRoleSwitching}  />
+        <ProfileHeader
+          OnPressLogout={handleLogout}
+          onRoleSwitch={handleRoleSwitching}
+        />
       </View>
 
       <View style={styles.container}>
-        {activeRole === '2' && (
-          <VerificationStatus
-            status={localStatus}
-            // loading={verificationLoading}
-          />
-        )}
-         {
-          isRoleSwitching ?(
-            <ProfileSkeleton />
-          ):
+        {activeRole === '2' || (activeRole === 2 && <VerificationStatus />)}
+
         <View style={styles.content}>
           <Regular style={styles.regularText}>{t('general')}</Regular>
           <View style={styles.menuContainer}>
@@ -202,7 +213,7 @@ const Profile = () => {
               {renderDirectionalIcon()}
             </TouchableOpacity>
 
-            {(activeRole === '2' || activeRole === 2) && actualRole === 4 ? (
+            {activeRole === '2' || activeRole === 2 ? (
               <TouchableOpacity
                 style={styles.menuItemContainer}
                 onPress={() => navigation.navigate('Verification')}>
@@ -252,7 +263,7 @@ const Profile = () => {
 
             <TouchableOpacity
               style={styles.menuItemContainer}
-              onPress={()=> navigation.navigate('Plans')}>
+              onPress={() => navigation.navigate('Plans')}>
               <View style={styles.leftRow}>
                 <View style={styles.iconWrapper}>
                   <ChangePassSVG width={22} height={22} />
@@ -264,7 +275,7 @@ const Profile = () => {
 
             <TouchableOpacity
               style={styles.menuItemContainer}
-              onPress={()=> navigation.navigate('Card')}>
+              onPress={() => navigation.navigate('Card')}>
               <View style={styles.leftRow}>
                 <View style={styles.iconWrapper}>
                   <ChangePassSVG width={22} height={22} />

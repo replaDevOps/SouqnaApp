@@ -313,7 +313,7 @@ const ProductDetail = () => {
               productId={product.id}
             />
           </ScrollView>
-          {(role !== 2 || role === null) && (
+          {role !== 2 && role !== 4 && role !== null && (
             <ProductFooter
               loadingBuy={addingToCart}
               loadingChat={chatLoading}

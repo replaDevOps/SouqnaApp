@@ -10,12 +10,13 @@ import {
   TouchableOpacity,
   Platform,
   Image,
+  ActivityIndicator,
 } from 'react-native';
 // import {useDispatch} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
 import Regular from '../../../typography/RegularText';
 import styles from './styles';
-import {EYESVG, SouqnaLogo} from '../../../assets/svg';
+import {EYESVG} from '../../../assets/svg';
 import Bold from '../../../typography/BoldText';
 import Header from '../../../components/Headers/Header';
 import {colors} from '../../../util/color';
@@ -26,8 +27,7 @@ import {MyButton} from '../../../components/atoms/InputFields/MyButton';
 import API from '../../../api/apiServices';
 import {mvs} from '../../../util/metrices';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {CardField, useStripe} from '@stripe/stripe-react-native';
-import CardDetailsModal from '../../../components/Structure/Stripe/CardDetail';
+import {Snackbar} from 'react-native-paper';
 
 // import {setRole} from '../../../redux/slices/userSlice';
 
@@ -44,8 +44,14 @@ const Register = () => {
   const [isSubscribed, setIsSubscribed] = useState(false);
   const profileNameOpacity = useRef(new Animated.Value(0)).current;
   const [sellerType, setSellerType] = useState('');
-  // const [showCardModal, setShowCardModal] = useState(false);
-  // const [cardDetails, setCardDetails] = useState(null);
+  const [snackbarVisible, setSnackbarVisible] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  const showSnackbar = message => {
+    setSnackbarMessage(message);
+    setSnackbarVisible(true);
+  };
 
   // const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -54,28 +60,29 @@ const Register = () => {
     console.log('Register button pressed');
 
     if (!profilename.trim()) {
-      alert('Please enter your name.');
+      showSnackbar('Please enter your name.');
+
       return;
     }
     if (!isEmailValid(email)) {
-      setEmailError('Please enter a valid email.');
+      showSnackbar('Please enter a valid email.');
       return;
     } else {
       setEmailError('');
     }
 
     if (!isPasswordValid(password)) {
-      setPasswordError('Password must be at least 8 characters.');
+      showSnackbar('Password must be at least 8 characters.');
       return;
     } else {
       setPasswordError('');
     }
     if ((isSeller || (isSeller && isBuyer)) && !sellerType) {
-      alert('Please select a seller type.');
+      showSnackbar('Please select a seller type.');
       return;
     }
     if (!isSeller && !isBuyer) {
-      alert('Please select a role.');
+      showSnackbar('Please select a role.');
       return;
     }
     // if (isSeller && sellerType === 'Company' && !cardDetails) {
@@ -105,30 +112,33 @@ const Register = () => {
     };
 
     console.log('Payload: ', payload); // Log the payload being sent to the API
-
+    setIsLoading(true);
     try {
-      // if (sellerType === 'Company') {
-      //   setShowCardModal(true); // Show modal if company selected
-      // }
       const response = await API.post('register', payload);
       console.log('API Response:', response.data);
 
       const data = response.data;
-      if (data.success) {
-        alert(data.message || 'Registration successful! Please login.');
-        navigation.replace('Login');
+
+      // Ensure that you're only treating this as success if `data.success === true`
+      if (data?.success === true) {
+        showSnackbar(data.message || 'Registration successful! Please login.');
+        setTimeout(() => {
+          navigation.replace('OTP', {email});
+        }, 2000);
       } else {
-        alert(data.message || 'Registration failed. Please try again.');
+        showSnackbar(data.message || 'Registration failed. Please try again.');
       }
     } catch (error) {
       console.error(
         'Registration Error:',
         error?.response?.data || error.message,
       );
-      alert(
+      showSnackbar(
         error?.response?.data?.message ||
           'An error occurred during registration. Please try again.',
       );
+    } finally {
+      setIsLoading(false); // Hide loader
     }
   };
 
@@ -166,133 +176,142 @@ const Register = () => {
   }, [profileNameOpacity, selectedOption]);
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={styles.container}>
-      <Header
-        showBackButton
-        onBackPress={() => navigation.goBack()}
-        title={'Help'}
-      />
-      <View style={styles.HeaderContainer}>
-        <Image
-          source={require('../../../assets/img/logo1.png')}
-          style={{width: mvs(50), height: mvs(50)}}
+    <>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.container}>
+        <Header
+          showBackButton
+          onBackPress={() => navigation.goBack()}
+          title={'Help'}
         />
-        <Bold style={styles.title}>Souqna</Bold>
-      </View>
-      <Bold style={styles.howText}>How do you want to use Souqna?</Bold>
-      <RadioGroup
-        options={[
-          {value: 'Seller', label: 'Seller'},
-          {value: 'Buyer', label: 'Buyer'},
-          {value: 'Both', label: 'Both'},
-        ]}
-        selectedOption={
-          isSeller && isBuyer
-            ? 'Both'
-            : isSeller
-            ? 'Seller'
-            : isBuyer
-            ? 'Buyer'
-            : ''
-        }
-        onSelect={value => {
-          console.log('Selected Role:', value);
-          if (value === 'Seller') {
-            setIsSeller(true);
-            setIsBuyer(false);
-          } else if (value === 'Buyer') {
-            setIsBuyer(true);
-            setIsSeller(false);
-          } else if (value === 'Both') {
-            setIsSeller(true);
-            setIsBuyer(true);
+        <View style={styles.HeaderContainer}>
+          <Image
+            source={require('../../../assets/img/logo1.png')}
+            style={{width: mvs(50), height: mvs(50)}}
+          />
+          <Bold style={styles.title}>Souqna</Bold>
+        </View>
+        <Bold style={styles.howText}>How do you want to use Souqna?</Bold>
+        <RadioGroup
+          options={[
+            {value: 'Seller', label: 'Seller'},
+            {value: 'Buyer', label: 'Buyer'},
+            {value: 'Both', label: 'Both'},
+          ]}
+          selectedOption={
+            isSeller && isBuyer
+              ? 'Both'
+              : isSeller
+              ? 'Seller'
+              : isBuyer
+              ? 'Buyer'
+              : ''
           }
-        }}
-      />
-      {isSeller && (
-        <View style={{marginTop: 16}}>
-          <RadioGroup
-            options={[
-              {value: 'Private', label: 'Private'},
-              {value: 'Company', label: 'Company'},
-            ]}
-            selectedOption={sellerType}
-            onSelect={value => {
-              console.log('Selected seller type:', value);
-              setSellerType(value);
-            }}
+          onSelect={value => {
+            console.log('Selected Role:', value);
+            if (value === 'Seller') {
+              setIsSeller(true);
+              setIsBuyer(false);
+            } else if (value === 'Buyer') {
+              setIsBuyer(true);
+              setIsSeller(false);
+            } else if (value === 'Both') {
+              setIsSeller(true);
+              setIsBuyer(true);
+            }
+          }}
+        />
+        {isSeller && (
+          <View style={{marginTop: 16}}>
+            <RadioGroup
+              options={[
+                {value: 'Private', label: 'Private'},
+                {value: 'Company', label: 'Company'},
+              ]}
+              selectedOption={sellerType}
+              onSelect={value => {
+                console.log('Selected seller type:', value);
+                setSellerType(value);
+              }}
+            />
+          </View>
+        )}
+
+        <PrimaryPasswordInput
+          value={profilename}
+          onChangeText={setProfilename}
+          placeholder="Name"
+        />
+        <PrimaryPasswordInput
+          value={email}
+          onChangeText={setEmail}
+          placeholder="E-Mail"
+          error={emailError}
+          clearText={handleClearEmail}
+        />
+        <View style={styles.passwordContainer}>
+          <PrimaryPasswordInput
+            value={password}
+            onChangeText={setPassword}
+            placeholder="Password"
+            rightIcon={<EYESVG />}
+            secureTextEntry={securePassword}
+            error={passwordError}
           />
         </View>
-      )}
+        <View style={styles.switchContainer}>
+          <CustomSwitch
+            value={isSubscribed}
+            onValueChange={setIsSubscribed}
+            trackColor={{false: colors.grey, true: colors.green}}
+            thumbColor={isSubscribed ? colors.white : '#f4f3f4'}
+          />
+          <Regular style={styles.switchText}>
+            Yes, I look forward to receiving regular email updates from the
+            group of companies - you can unsubscribe at any time.
+          </Regular>
+        </View>
+        <View style={styles.buttonContainer}>
+          <MyButton
+            title={isLoading ? '' : 'Register For Free'}
+            onPress={handleRegister}
+            disabled={isLoading || !email || !password}
+            style={{justifyContent: 'center', alignItems: 'center'}} // optional
+          >
+            {isLoading && <ActivityIndicator color={colors.green} />}
+          </MyButton>
 
-      <PrimaryPasswordInput
-        value={profilename}
-        onChangeText={setProfilename}
-        placeholder="Name"
-      />
-      <PrimaryPasswordInput
-        value={email}
-        onChangeText={setEmail}
-        placeholder="E-Mail"
-        error={emailError}
-        clearText={handleClearEmail}
-      />
-      <View style={styles.passwordContainer}>
-        <PrimaryPasswordInput
-          value={password}
-          onChangeText={setPassword}
-          placeholder="Password"
-          rightIcon={<EYESVG />}
-          secureTextEntry={securePassword}
-          error={passwordError}
-        />
-      </View>
-      <View style={styles.switchContainer}>
-        <CustomSwitch
-          value={isSubscribed}
-          onValueChange={setIsSubscribed}
-          trackColor={{false: colors.grey, true: colors.green}}
-          thumbColor={isSubscribed ? colors.white : '#f4f3f4'}
-        />
-        <Regular style={styles.switchText}>
-          Yes, I look forward to receiving regular email updates from the group
-          of companies - you can unsubscribe at any time.
-        </Regular>
-      </View>
-      <View style={styles.buttonContainer}>
-        <MyButton
-          title="Register For Free"
-          onPress={handleRegister}
-          disabled={!email || !password} // Disable button if form is not valid
-        />
-        <Regular style={styles.termsText}>
-          Our{' '}
-          <TouchableOpacity
-            onPress={() => Linking.openURL('https://www.example.com/terms')}>
-            <Regular style={styles.termsLink}>Terms of Use</Regular>
-          </TouchableOpacity>{' '}
-          apply. You can find information about the processing of your data in
-          our{' '}
-          <TouchableOpacity
-            onPress={() =>
-              Linking.openURL('https://www.example.com/privacy-policy')
-            }>
-            <Regular style={styles.termsLink}>Privacy Policy</Regular>
-          </TouchableOpacity>
-          .
-        </Regular>
-      </View>
-      {/* <CardDetailsModal
-        visible={showCardModal}
-        onClose={() => setShowCardModal(false)}
-        onSubmit={details => {
-          console.log('Collected card details: ', details);
-          setCardDetails(details);
-        }}
-      /> */}
-    </KeyboardAvoidingView>
+          <Regular style={styles.termsText}>
+            Our{' '}
+            <TouchableOpacity
+              onPress={() => Linking.openURL('https://www.example.com/terms')}>
+              <Regular style={styles.termsLink}>Terms of Use</Regular>
+            </TouchableOpacity>{' '}
+            apply. You can find information about the processing of your data in
+            our{' '}
+            <TouchableOpacity
+              onPress={() =>
+                Linking.openURL('https://www.example.com/privacy-policy')
+              }>
+              <Regular style={styles.termsLink}>Privacy Policy</Regular>
+            </TouchableOpacity>
+            .
+          </Regular>
+        </View>
+      </KeyboardAvoidingView>
+      <Snackbar
+        visible={snackbarVisible}
+        onDismiss={() => setSnackbarVisible(false)}
+        duration={3000}
+        style={{position: 'absolute', bottom: Platform.OS === 'ios' ? 30 : 30}}
+        action={{
+          label: 'OK',
+          onPress: () => setSnackbarVisible(false),
+        }}>
+        {snackbarMessage}
+      </Snackbar>
+    </>
   );
 };
 

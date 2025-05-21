@@ -4,21 +4,16 @@ import {colors} from '../../util/color';
 import {useTranslation} from 'react-i18next';
 import Loader from '../Loader';
 import {mvs} from '../../util/metrices';
+import {useSelector} from 'react-redux';
 
-const VerificationStatus = ({status, loading}) => {
+const VerificationStatus = () => {
   const {t} = useTranslation();
+  const {verificationStatus} = useSelector(state => state.user);
 
-  const isStepCompleted = stepNumber => {
-    return status >= stepNumber;
-  };
-
-  if (loading) {
-    return <Loader width={mvs(22)} heigh={mvs(22)} />;
-  }
-  if (status === null) {
+  if (verificationStatus === null) {
     return <ActivityIndicator size="small" color={colors.green} />;
   }
-  if (status === 2) {
+  if (verificationStatus === 2) {
     return (
       <View style={styles.verifiedContainer}>
         <View style={styles.greenDot} />
@@ -27,7 +22,7 @@ const VerificationStatus = ({status, loading}) => {
     );
   }
 
-  if (status === 3) {
+  if (verificationStatus === 3) {
     return (
       <View style={styles.unverifiedContainer}>
         <View style={styles.redDot} />
@@ -36,7 +31,7 @@ const VerificationStatus = ({status, loading}) => {
     );
   }
 
-  if (status === 0) {
+  if (verificationStatus === 0) {
     return (
       <View style={styles.unverifiedContainer}>
         <View style={styles.redDot} />
@@ -48,10 +43,14 @@ const VerificationStatus = ({status, loading}) => {
 
   return (
     <View style={styles.progressContainer}>
-       <View style={styles.InprogressContainer}>
-        <View style={styles.orangeDot}/>
-        <Text style={styles.InprogressText}>{t('inProgress')}</Text>
+             
+      <View style={styles.InprogressContainer}>
+                
+        <View style={styles.orangeDot} />
+                <Text style={styles.InprogressText}>{t('inProgress')}</Text>
+              
       </View>
+          
     </View>
   );
 };
@@ -190,6 +189,32 @@ const styles = StyleSheet.create({
     width: '23%',
     height: 4,
     borderRadius: 2,
+  },
+  InprogressContainer: {
+    backgroundColor: colors.lightorange,
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: 15,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignSelf: 'center',
+    marginBottom: 20,
+  },
+  orangeDot: {
+    height: 8,
+    width: 8,
+    marginRight: 5,
+    borderRadius: 4,
+    backgroundColor: colors.orange,
+  },
+  InprogressText: {
+    color: colors.orange,
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  progressContainer: {
+    paddingHorizontal: 10, // marginBottom: 30,
   },
 });
 

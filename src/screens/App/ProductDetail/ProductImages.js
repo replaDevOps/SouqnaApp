@@ -1,7 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {useState} from 'react';
 import {View, Image, Dimensions, ScrollView} from 'react-native';
-import {BlurView} from '@react-native-community/blur'; // Optional if you want true blur (iOS only)
 import {BASE_URL_Product} from '../../../api/apiServices';
 
 const {width, height} = Dimensions.get('window');
@@ -32,6 +31,7 @@ const ProductImages = ({images}) => {
               width: width,
               height: height * 0.35,
               resizeMode: 'cover',
+              backgroundColor: '#fff',
             }}
           />
         ))}
