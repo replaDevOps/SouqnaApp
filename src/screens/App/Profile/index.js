@@ -107,13 +107,7 @@ const Profile = () => {
     }, [activeRole]),
   );
 
-   // Function to handle role switching
-  const handleRoleSwitching = () => {
-    setIsRoleSwitching(true);
-    setTimeout(() => {
-      setIsRoleSwitching(false);
-    }, 1500); // Show skeleton for 1.5 seconds
-  };
+  
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -286,7 +280,6 @@ const Profile = () => {
             </TouchableOpacity>
           </View>
         </View>
-         }
       </View>
     </ScrollView>
   );
