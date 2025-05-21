@@ -39,6 +39,7 @@ const VerificationStatus = () => {
       </View>
     );
   }
+ 
 
   return (
     <View style={styles.progressContainer}>
@@ -101,9 +102,32 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '500',
   },
+  InprogressContainer: {
+    backgroundColor: colors.lightorange,
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: 15,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignSelf: 'center',
+    marginBottom: 20,
+  },
+  orangeDot: {
+    height: 8,
+    width: 8,
+    marginRight: 5,
+    borderRadius: 4,
+    backgroundColor: colors.orange,
+  },
+  InprogressText: {
+    color: colors.orange,
+    fontSize: 14,
+    fontWeight: '500',
+  },
   progressContainer: {
     paddingHorizontal: 10,
-    marginBottom: 30,
+    // marginBottom: 30,
   },
   labelsContainer: {
     flexDirection: 'row',

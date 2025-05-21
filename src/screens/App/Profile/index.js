@@ -35,6 +35,7 @@ import {colors} from '../../../util/color';
 import RNRestart from 'react-native-restart';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import API from '../../../api/apiServices';
+import ProfileSkeleton from './ProfileSkeleton';
 
 const Profile = () => {
   const dispatch = useDispatch();
@@ -106,6 +107,8 @@ const Profile = () => {
     }, [activeRole]),
   );
 
+  
+
   const onRefresh = async () => {
     setRefreshing(true);
     if (activeRole === '2') {
@@ -165,6 +168,8 @@ const Profile = () => {
     }
     return <ForwardSVG width={24} height={24} fill={colors.green} />;
   };
+
+  
 
   return (
     <ScrollView
