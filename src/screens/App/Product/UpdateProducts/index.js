@@ -18,12 +18,11 @@ import {useSelector} from 'react-redux';
 // import {launchImageLibrary} from 'react-native-image-picker';
 // import ImagePicker from 'react-native-image-crop-picker';
 import {Snackbar} from 'react-native-paper';
-import {styles} from './styles';
 import MainHeader from '../../../../components/Headers/MainHeader';
 import {MyButton} from '../../../../components/atoms/InputFields/MyButton';
 import {colors} from '../../../../util/color';
 import {mvs} from '../../../../util/metrices';
-import {UploadSVG} from '../../../../assets/svg';
+import {EYESVG, UploadSVG} from '../../../../assets/svg';
 import GooglePlacesSuggestion from '../../../../components/GooglePlacesSuggestion';
 import {useTranslation} from 'react-i18next';
 import PriceInputWithDropdown from '../../../../components/atoms/InputFields/PriceInputWithCurrency';
@@ -32,10 +31,12 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {launchImageLibrary} from 'react-native-image-picker';
 import PhotoManipulator from 'react-native-photo-manipulator';
 import ImageResizer from 'react-native-image-resizer';
+import {styles} from '../CreateProduct/styles';
 
-const CreateProduct = () => {
+const UpdateProduct = () => {
   const route = useRoute();
   const {
+    productId,
     id: subCategoryId,
     categoryId,
     name,
@@ -70,58 +71,69 @@ const CreateProduct = () => {
     setSelectedCondition(condition);
     handleInputChange('condition', condition);
   };
-  // useEffect(() => {
-  //   return () => {
-  //     ImagePicker.clean()
-  //       .then(() => console.log('Temp images cleaned up'))
-  //       .catch(e => console.log('Cleanup error:', e));
-  //   };
-  // }, []);
 
-  // const handleChooseImages = async () => {
-  //   try {
-  //     const selectedImages = await ImagePicker.openPicker({
-  //       multiple: true,
-  //       mediaType: 'photo',
-  //     });
+  useEffect(() => {
+    if (route.params) {
+      const {
+        productName,
+        description,
+        price,
+        stock,
+        discount,
+        specialOffer,
+        images,
+        location,
+        lat,
+        long,
+        condition,
+      } = route.params;
 
-  //     // Manually crop each selected image
-  //     const croppedImages = await Promise.all(
-  //       selectedImages.map(async image => {
-  //         const cropped = await ImagePicker.openCropper({
-  //           path: image.path,
-  //           width: 1024, // landscape width
-  //           height: 800, // landscape height
-  //           cropping: true,
-  //           freeStyleCropEnabled: true,
-  //           cropperToolbarTitle: 'Crop Image',
-  //           cropperCircleOverlay: false,
-  //           cropperStatusBarColor: '#ffffff',
-  //           cropperToolbarColor: '#ffffff',
-  //           cropperToolbarWidgetColor: '#000000',
-  //         });
+      setFormData({
+        name: productName || '',
+        description: description || '',
+        price: price?.toString() || '',
+        stock: stock?.toString() || '',
+        discount: discount?.toString() || '',
+        specialOffer: specialOffer || '',
+        images: images?.map(img => {
+          let uri = '';
+          let id = null;
 
-  //         return {
-  //           uri: cropped.path,
-  //           fileName: cropped.filename || cropped.path.split('/').pop(),
-  //           type: cropped.mime,
-  //           fileSize: cropped.size,
-  //         };
-  //       }),
-  //     );
+          if (typeof img === 'string') {
+            uri = img.startsWith('file://')
+              ? img
+              : `https://backend.souqna.net/${img}`;
+          } else if (img?.uri) {
+            uri = img.uri.startsWith('file://')
+              ? img.uri
+              : `https://backend.souqna.net/${img.uri}`;
+          } else if (img?.path) {
+            uri = `https://backend.souqna.net${img.path}`;
+          }
 
-  //     setFormData(prev => ({
-  //       ...prev,
-  //       images: [...prev.images, ...croppedImages],
-  //     }));
-  //   } catch (error) {
-  //     if (error.code !== 'E_PICKER_CANCELLED') {
-  //       console.log('Image selection error:', error);
-  //       setSnackbarMessage('Failed to pick image.');
-  //       setSnackbarVisible(true);
-  //     }
-  //   }
-  // };
+          // If img is an object, check if it has an id property:
+          if (typeof img === 'object' && img?.id) {
+            id = img.id;
+          }
+
+          return {
+            id, // store the id here
+            uri,
+            fileName: uri.split('/').pop(),
+            type: 'image/jpeg',
+            fileSize: 1000,
+          };
+        }),
+
+        location: location || '',
+        lat: lat || '',
+        long: long || '',
+        condition: condition === 1 ? 'New' : condition === 2 ? 'Used' : '',
+      });
+
+      setSelectedCondition(condition === 1 ? 'New' : 'Used');
+    }
+  }, []);
 
   const getImageSize = uri =>
     new Promise((resolve, reject) => {
@@ -216,11 +228,45 @@ const CreateProduct = () => {
       [field]: value,
     }));
   };
-  const handleRemoveImage = indexToRemove => {
-    setFormData(prev => ({
-      ...prev,
-      images: prev.images.filter((_, index) => index !== indexToRemove),
-    }));
+  const handleRemoveImage = async indexToRemove => {
+    const imageToRemove = formData.images[indexToRemove];
+    console.log('Image to remove id: ', imageToRemove?.id);
+    if (imageToRemove?.id) {
+      try {
+        setLoading(true);
+
+        // Call delete API
+        await API.delete(`deleteImage/${imageToRemove.id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        // On success, remove image locally
+        setFormData(prev => ({
+          ...prev,
+          images: prev.images.filter((_, index) => index !== indexToRemove),
+        }));
+
+        setSnackbarMessage('Image deleted successfully');
+        setSnackbarVisible(true);
+      } catch (error) {
+        console.error(
+          'Failed to delete image:',
+          error.response || error.message,
+        );
+        setSnackbarMessage('Failed to delete image.');
+        setSnackbarVisible(true);
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      // No id (newly added image, not yet uploaded), just remove locally
+      setFormData(prev => ({
+        ...prev,
+        images: prev.images.filter((_, index) => index !== indexToRemove),
+      }));
+    }
   };
 
   // Handle place selection from Google Places component
@@ -238,6 +284,7 @@ const CreateProduct = () => {
     data.append('name', formData.name);
     data.append('description', formData.description);
     data.append('price', formData.price);
+    data.append('id', route.params?.productId); // Important
     data.append('categoryID', categoryId);
     data.append('subCategoryID', subCategoryId);
 
@@ -258,8 +305,8 @@ const CreateProduct = () => {
     }
 
     data.append('stock', formData.stock);
-    data.append('discount', formData.discount);
-    data.append('specialOffer', formData.specialOffer);
+    // data.append('discount', formData.discount);
+    // data.append('specialOffer', formData.specialOffer);
     data.append('location', formData.location);
     data.append('lat', formData.lat);
     data.append('long', formData.long);
@@ -267,9 +314,9 @@ const CreateProduct = () => {
 
     try {
       setLoading(true);
-      const response = await API.post('createProduct', data, {
+      const response = await API.post('updateProduct', data, {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          //   'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
       });
@@ -277,7 +324,7 @@ const CreateProduct = () => {
       console.log('✅ Response:', response.data);
 
       if (response.data.success) {
-        setSnackbarMessage(t('productCreatedSuccess'));
+        setSnackbarMessage(t('Product Updated'));
         setFormData({
           name: '',
           description: '',
@@ -364,7 +411,7 @@ const CreateProduct = () => {
   return (
     <SafeAreaView style={{flex: 1}}>
       <StatusBar barStyle="dark-content" />
-      <MainHeader title={t('titleProduct')} showBackIcon={true} />
+      <MainHeader title={'Update Product'} showBackIcon={true} />
       <KeyboardAvoidingView
         style={{flex: 1}}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -452,6 +499,24 @@ const CreateProduct = () => {
                                 source={{uri: item.uri}}
                                 style={styles.imagePreview}
                               />
+                              {/* Eye Icon Overlay */}
+                              <TouchableOpacity
+                                onPress={() => {
+                                  // 👁 Navigate to a preview screen or show modal
+                                  navigation.navigate('ImagePreview', {
+                                    uri: item.uri,
+                                  });
+                                }}
+                                style={{
+                                  position: 'absolute',
+                                  bottom: 5,
+                                  right: 5,
+                                  backgroundColor: 'rgba(0,0,0,0.6)',
+                                  padding: 4,
+                                  borderRadius: 20,
+                                }}>
+                                <EYESVG size={20} color="#adbd6e" />
+                              </TouchableOpacity>
                               <TouchableOpacity
                                 style={styles.removeIcon}
                                 onPress={() => handleRemoveImage(index - 1)} // subtract 1 due to upload icon
@@ -466,12 +531,13 @@ const CreateProduct = () => {
                   )}
                 </View>
               )}
-              <View></View>
+              <View>{/* Display Selected Images */}</View>
 
               <Text style={styles.noteText}>{t('coverNote')} </Text>
             </View>
           </View>
 
+          {/* Condition Section - Updated to Radio Buttons */}
           <View style={styles.sectionContainer}>
             <Text style={styles.sectionTitle}>
               {t('condition')}
@@ -577,13 +643,13 @@ const CreateProduct = () => {
             />
 
             {/* <TextInput
-            style={styles.input}
-            placeholder={t('pricePlaceholder')}
-            placeholderTextColor={colors.grey}
-            keyboardType="numeric"
-            value={formData.price}
-            onChangeText={text => handleInputChange('price', text)}
-          /> */}
+              style={styles.input}
+              placeholder={t('pricePlaceholder')}
+              placeholderTextColor={colors.grey}
+              keyboardType="numeric"
+              value={formData.price}
+              onChangeText={text => handleInputChange('price', text)}
+            /> */}
           </View>
 
           {/* Discount Section */}
@@ -659,4 +725,4 @@ const CreateProduct = () => {
   );
 };
 
-export default CreateProduct;
+export default UpdateProduct;

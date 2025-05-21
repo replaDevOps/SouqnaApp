@@ -8,6 +8,43 @@ const API = axios.create({
 export const BASE_URL = 'https://backend.souqna.net/';
 export const BASE_URL_Product = 'https://backend.souqna.net';
 
+// api/uploadProductImages.js
+
+export const uploadProductImages = async (productId, imageFiles, token) => {
+  const formData = new FormData();
+
+  formData.append('id', productId);
+
+  imageFiles.forEach((image, index) => {
+    formData.append('images[]', {
+      uri: image.uri,
+      name: image.name || `image_${index}.jpg`,
+      type: image.type || 'image/jpeg',
+    });
+  });
+  console.log(
+    'Uploading images:',
+    imageFiles.map(img => ({
+      uri: img.uri,
+      name: img.name,
+      type: img.type,
+    })),
+  );
+
+  try {
+    const response = await API.post(`uploadProductImage`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Upload error:', error.response?.data || error.message);
+    return {success: false, message: error.message};
+  }
+};
+
 export const fetchCategories = async token => {
   try {
     const response = await API.get('viewCategories', {
@@ -354,6 +391,20 @@ export const verifyOtp = async otp => {
       success: false,
       error: error?.response?.data?.message || error.message,
     };
+  }
+};
+
+export const deleteProduct = async (productId, token) => {
+  try {
+    const response = await API.delete(`deleteProductSeller/${productId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting product:', error.response?.data || error);
+    throw error;
   }
 };
 

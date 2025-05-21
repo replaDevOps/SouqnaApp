@@ -122,7 +122,7 @@ export const styles = StyleSheet.create({
     width: '100%',
   },
   submitButtonText: {
-    color: colors.black,
+    color: colors.white,
     fontWeight: 'bold',
     fontSize: mvs(16),
   },
