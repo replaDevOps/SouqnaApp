@@ -9,7 +9,8 @@ import {
 } from 'react-native';
 import {mvs} from '../../util/metrices';
 import {colors} from '../../util/color';
-import {CallSVG, CartSVG, ChatSVG} from '../../assets/svg';
+import {CallSVG, CartSVG, ChatSVG, TrashSVG, UpdateSVG} from '../../assets/svg';
+import {useSelector} from 'react-redux';
 
 const ProductFooter = ({
   onBuyPress,
@@ -17,11 +18,15 @@ const ProductFooter = ({
   onCallPress,
   loadingChat,
   loadingBuy,
+  loadingUpdate,
+  loadingDelete,
+  handleUpdatePress,
+  handleDeletePress,
   loadingCall,
   sellerPhone,
 }) => {
   const [showBuy, setShowBuy] = useState(false);
-
+  const {token, role} = useSelector(state => state.user);
   const handleCallPress = () => {
     if (sellerPhone) {
       Linking.openURL(`tel:${sellerPhone}`);
@@ -35,12 +40,10 @@ const ProductFooter = ({
     onBuyPress && onBuyPress();
   };
 
- const role = 2;
-
   // Declare buttons based on role
   let buttons = [];
 
-  if (role === 1) {
+  if (role === 3 || token === null) {
     buttons = [
       {
         key: 'chat',
@@ -63,19 +66,19 @@ const ProductFooter = ({
     buttons = [
       {
         key: 'update',
-        onPress: null,
-        loading: loadingChat,
+        onPress: handleUpdatePress,
+        loading: loadingUpdate,
         text: 'Update Product',
-        Icon: ChatSVG,
+        Icon: UpdateSVG,
         // textclr:colors.black,
         // bgcolor:colors.lightorange
       },
       {
         key: 'delete',
-        onPress: null,
-        loading: loadingCall,
+        onPress: handleDeletePress,
+        loading: loadingDelete,
         text: 'Delete Product',
-        Icon: CallSVG,
+        Icon: TrashSVG,
         // textclr:'rgba(240, 149, 3, 0.92)',
         // bgcolor:colors.red
       },
@@ -86,7 +89,10 @@ const ProductFooter = ({
     <View style={styles.footerContainer}>
       <View style={styles.buttonRow}>
         {buttons.map(({key, onPress, loading, text, Icon}) => (
-          <TouchableOpacity key={key} style={[styles.buyButton]} onPress={onPress}>
+          <TouchableOpacity
+            key={key}
+            style={[styles.buyButton]}
+            onPress={onPress}>
             <Icon width={24} height={24} />
             {loading ? (
               <ActivityIndicator size="small" color={colors.green} />

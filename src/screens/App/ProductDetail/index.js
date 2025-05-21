@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {useEffect, useState} from 'react';
-import {View, Dimensions, ScrollView, Text} from 'react-native';
+import {View, Dimensions, ScrollView, Text, Alert} from 'react-native';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import Bold from '../../../typography/BoldText';
 import Regular from '../../../typography/RegularText';
@@ -26,6 +26,7 @@ import ProductImages from './ProductImages';
 import {
   addToCart,
   BASE_URL_Product,
+  deleteProduct,
   getProduct,
 } from '../../../api/apiServices';
 import {Snackbar} from 'react-native-paper';
@@ -55,6 +56,8 @@ const ProductDetail = () => {
   const [loading, setLoading] = useState(true);
   const [isReadMore, setIsReadMore] = useState(true);
   const navigation = useNavigation();
+  const [snackbarVisible, setSnackbarVisible] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
 
   useEffect(() => {
     if (!productId) {
@@ -211,6 +214,64 @@ const ProductDetail = () => {
     setShowAddedSnackbar(true);
   };
 
+  const handleUpdatePress = () => {
+    navigation.navigate('UpdateProduct', {
+      id: product.subCategoryID,
+      categoryId: product.categoryID,
+      name: product.subCategoryName,
+      category: product.categoryName,
+      categoryImage: product.categoryImage,
+      productId: product.id, // required for update API
+      productName: product.name,
+      description: product.description,
+      price: product.price,
+      stock: product.stock,
+      discount: product.discount,
+      specialOffer: product.specialOffer,
+      images: product.images, // array of existing image URLs
+      location: product.location,
+      lat: product.lat,
+      long: product.long,
+      condition: product.condition, // assuming it's 1 or 2
+    });
+  };
+
+  const handleDeletePress = () => {
+    Alert.alert(
+      'Confirm Delete',
+      'Are you sure you want to delete this product?',
+      [
+        {text: 'Cancel', style: 'cancel'},
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              const response = await deleteProduct(productId, token);
+              if (response.success) {
+                setSnackbarMessage('Product deleted successfully.');
+                setSnackbarVisible(true);
+                navigation.goBack();
+              } else {
+                console.warn('Failed to delete product:', response.message);
+                setSnackbarMessage(
+                  response.message || 'Failed to delete product.',
+                );
+                setSnackbarVisible(true);
+              }
+            } catch (error) {
+              console.error('Error deleting product:', error.message || error);
+              setSnackbarMessage(
+                'An error occurred while deleting the product.',
+              );
+              setSnackbarVisible(true);
+            }
+          },
+        },
+      ],
+    );
+  };
+
   const onScroll = event => {
     const contentOffsetY = event.nativeEvent.contentOffset.y;
     if (contentOffsetY > height * 0.25) {
@@ -236,9 +297,7 @@ const ProductDetail = () => {
           />
           <ScrollView
             showsVerticalScrollIndicator={false}
-            contentContainerStyle={
-              role !== 2 || role == null ? {paddingBottom: mvs(80)} : null
-            }
+            contentContainerStyle={{paddingBottom: mvs(80)}}
             onScroll={onScroll}
             scrollEventThrottle={16}>
             <ProductImages images={product?.images || []} />
@@ -313,15 +372,17 @@ const ProductDetail = () => {
               productId={product.id}
             />
           </ScrollView>
-          {role !== 2 && role !== 4 && role !== null && (
-            <ProductFooter
-              loadingBuy={addingToCart}
-              loadingChat={chatLoading}
-              onBuyPress={handleBuyPress}
-              onChatPress={handleChatPress}
-              sellerPhone="971501234567"
-            />
-          )}
+          {/* {role !== 2 && role !== 4 && token == null && ( */}
+          <ProductFooter
+            loadingBuy={addingToCart}
+            loadingChat={chatLoading}
+            onBuyPress={handleBuyPress}
+            onChatPress={handleChatPress}
+            handleUpdatePress={handleUpdatePress}
+            handleDeletePress={handleDeletePress}
+            sellerPhone="971501234567"
+          />
+          {/* )} */}
 
           {isModalVisible && <AddModal onClose={onClose} />}
         </>
@@ -345,6 +406,12 @@ const ProductDetail = () => {
           },
         }}>
         Product added to cart!
+      </Snackbar>
+      <Snackbar
+        visible={snackbarVisible}
+        onDismiss={() => setSnackbarVisible(false)}
+        duration={3000}>
+        {snackbarMessage}
       </Snackbar>
     </SafeAreaView>
   );
