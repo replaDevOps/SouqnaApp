@@ -218,8 +218,8 @@ const ProductDetail = () => {
     navigation.navigate('UpdateProduct', {
       id: product.subCategoryID,
       categoryId: product.categoryID,
-      name: product.subCategoryName,
-      category: product.categoryName,
+      name: product.sub_category?.name,
+      category: product.category.name,
       categoryImage: product.categoryImage,
       productId: product.id, // required for update API
       productName: product.name,
@@ -251,7 +251,7 @@ const ProductDetail = () => {
               if (response.success) {
                 setSnackbarMessage('Product deleted successfully.');
                 setSnackbarVisible(true);
-                navigation.goBack();
+                navigation.replace('MainTabs');
               } else {
                 console.warn('Failed to delete product:', response.message);
                 setSnackbarMessage(

@@ -214,26 +214,19 @@ const ProductDashboard = () => {
   };
 
   const CategoryLegend = () => {
-    const visibleCategories = activeCategories.slice(0, 3); // First 3 categories
-    const remainingCategories = activeCategories.slice(3); // Remaining categories
+    // const visibleCategories = activeCategories.slice(0, 3); // First 3 categories
+    // const remainingCategories = activeCategories.slice(3); // Remaining categories
 
     return (
-      <View style={styles.legendContainer}>
-        {visibleCategories.map((category, index) => (
-          <View key={index} style={styles.legendItem}>
-            <View style={[styles.legendColor, { backgroundColor: category.color }]} />
-            <Text style={styles.legendText}>
-              {category.name} ({category.count})
-            </Text>
-          </View>
-        ))}
-        {remainingCategories.length > 0 && (
-          <ScrollView
+     <ScrollView
             style={styles.legendScrollView}
             showsVerticalScrollIndicator={true}
             contentContainerStyle={styles.scrollContent}
+            nestedScrollEnabled={true}
+            onStartShouldSetResponder={()=> true}
           >
-            {remainingCategories.map((category, index) => (
+          <View>
+            {activeCategories.map((category, index) => (
               <View key={index} style={styles.legendItem}>
                 <View style={[styles.legendColor, { backgroundColor: category.color }]} />
                 <Text style={styles.legendText}>
@@ -241,9 +234,8 @@ const ProductDashboard = () => {
                 </Text>
               </View>
             ))}
-          </ScrollView>
-        )}
-      </View>
+          </View>
+        </ScrollView>
     );
   };
 

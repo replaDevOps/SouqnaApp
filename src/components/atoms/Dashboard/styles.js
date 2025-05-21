@@ -63,9 +63,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingLeft: mvs(15),
   },
-  legendContainer: {
-    flexDirection: 'column',
-  },
+  
   legendItem: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -86,7 +84,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   legendScrollView: {
-    maxHeight: mvs(70),
+    maxHeight: mvs(140),
   },
   scrollContent: {
     paddingRight: mvs(10),
