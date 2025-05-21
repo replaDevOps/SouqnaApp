@@ -1,19 +1,31 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {useState} from 'react';
-import {View, Image, Dimensions, ScrollView} from 'react-native';
+import {
+  View,
+  Image,
+  Dimensions,
+  ScrollView,
+  Modal,
+  TouchableOpacity,
+  StyleSheet,
+} from 'react-native';
 import {BASE_URL_Product} from '../../../api/apiServices';
 
 const {width, height} = Dimensions.get('window');
 
 const ProductImages = ({images}) => {
   const [activeIndex, setActiveIndex] = useState(0);
-
+  const [modalVisible, setModalVisible] = useState(false);
+  const [previewImage, setPreviewImage] = useState(null);
   const handleScroll = event => {
     const scrollPosition = event.nativeEvent.contentOffset.x;
     const currentIndex = Math.round(scrollPosition / width);
     setActiveIndex(currentIndex);
   };
-
+  const openPreview = imageUri => {
+    setPreviewImage(imageUri);
+    setModalVisible(true);
+  };
   return (
     <View>
       <ScrollView
@@ -23,18 +35,25 @@ const ProductImages = ({images}) => {
         onScroll={handleScroll}
         scrollEventThrottle={16}
         style={{width: width, height: height * 0.35}}>
-        {images.map((img, index) => (
-          <Image
-            key={index}
-            source={{uri: `${BASE_URL_Product}${img.path}`}}
-            style={{
-              width: width,
-              height: height * 0.35,
-              resizeMode: 'cover',
-              backgroundColor: '#fff',
-            }}
-          />
-        ))}
+        {images.map((img, index) => {
+          const uri = `${BASE_URL_Product}${img.path}`;
+          return (
+            <TouchableOpacity
+              key={index}
+              activeOpacity={0.9}
+              onPress={() => openPreview(uri)}>
+              <Image
+                source={{uri}}
+                style={{
+                  width: width,
+                  height: height * 0.35,
+                  resizeMode: 'cover',
+                  backgroundColor: '#fff',
+                }}
+              />
+            </TouchableOpacity>
+          );
+        })}
       </ScrollView>
 
       <View
@@ -68,8 +87,35 @@ const ProductImages = ({images}) => {
           ))}
         </View>
       </View>
+      {/* Modal for preview */}
+      <Modal
+        visible={modalVisible}
+        transparent={true}
+        onRequestClose={() => setModalVisible(false)}>
+        <TouchableOpacity
+          activeOpacity={1}
+          style={styles.modalBackground}
+          onPress={() => setModalVisible(false)}>
+          <Image
+            source={{uri: previewImage}}
+            style={styles.previewImage}
+            resizeMode="contain"
+          />
+        </TouchableOpacity>
+      </Modal>
     </View>
   );
 };
-
+const styles = StyleSheet.create({
+  modalBackground: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.9)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  previewImage: {
+    width: width,
+    height: height,
+  },
+});
 export default ProductImages;
