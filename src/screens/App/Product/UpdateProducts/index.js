@@ -13,10 +13,7 @@ import {
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {CommonActions, useNavigation, useRoute} from '@react-navigation/native';
-import axios from 'axios';
 import {useSelector} from 'react-redux';
-// import {launchImageLibrary} from 'react-native-image-picker';
-// import ImagePicker from 'react-native-image-crop-picker';
 import {Snackbar} from 'react-native-paper';
 import MainHeader from '../../../../components/Headers/MainHeader';
 import {MyButton} from '../../../../components/atoms/InputFields/MyButton';
@@ -29,8 +26,6 @@ import PriceInputWithDropdown from '../../../../components/atoms/InputFields/Pri
 import API from '../../../../api/apiServices';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {launchImageLibrary} from 'react-native-image-picker';
-import PhotoManipulator from 'react-native-photo-manipulator';
-import ImageResizer from 'react-native-image-resizer';
 import {styles} from '../CreateProduct/styles';
 
 const UpdateProduct = () => {
@@ -277,25 +272,7 @@ const UpdateProduct = () => {
     data.append('categoryID', categoryId);
     data.append('subCategoryID', subCategoryId);
 
-    for (let i = 0; i < formData.images.length; i++) {
-      const image = formData.images[i];
-      if (image.fileSize > 2 * 1024 * 1024) {
-        setSnackbarMessage(`Image ${i + 1} must be under 2MB.`);
-        setSnackbarVisible(true);
-        setLoading(false);
-        return;
-      }
-
-      data.append('images[]', {
-        uri: image.uri,
-        name: image.fileName || `photo_${i}.jpg`,
-        type: image.type || 'image/jpeg',
-      });
-    }
-
     data.append('stock', formData.stock);
-    // data.append('discount', formData.discount);
-    // data.append('specialOffer', formData.specialOffer);
     data.append('location', formData.location);
     data.append('lat', formData.lat);
     data.append('long', formData.long);
@@ -359,21 +336,7 @@ const UpdateProduct = () => {
       if (error.response?.status === 403) {
         errorMessage = t('profileNotVerified');
       }
-      // Check if it's an image size error
-      else if (
-        typeof errorMessage === 'string' &&
-        errorMessage.includes('images.')
-      ) {
-        errorMessage = errorMessage.replace(/images\.(\d+)/g, (match, p1) => {
-          const imageIndex = parseInt(p1, 10) + 1;
-          return `Image ${imageIndex}`;
-        });
 
-        errorMessage = errorMessage.replace(
-          'greater than 2048 kilobytes',
-          'must be less than 2MB',
-        );
-      }
       setSnackbarMessage(error.message || 'Something went wrong. Try again!');
       setSnackbarVisible(true);
     } finally {
@@ -388,9 +351,6 @@ const UpdateProduct = () => {
         routes: [
           {
             name: 'MainTabs',
-            params: {
-              screen: 'Advertise',
-            },
           },
         ],
       }),
@@ -692,14 +652,14 @@ const UpdateProduct = () => {
 
           {/* Submit Button */}
           <MyButton
-            title={loading ? t('submitting') : t('submitProduct')}
+            title={loading ? t('submitting') : t('Update Product')}
             style={styles.submitButton}
             onPress={submitProduct}
             disabled={loading}>
             {loading ? (
               <ActivityIndicator color={colors.green} />
             ) : (
-              <Text style={styles.submitButtonText}>{t('submit')}</Text>
+              <Text style={styles.submitButtonText}>{t('Update Product')}</Text>
             )}
           </MyButton>
         </ScrollView>
