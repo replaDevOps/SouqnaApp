@@ -218,8 +218,8 @@ const ProductDetail = () => {
     navigation.navigate('UpdateProduct', {
       id: product.subCategoryID,
       categoryId: product.categoryID,
-      name: product.subCategoryName,
-      category: product.categoryName,
+      name: product.sub_category?.name,
+      category: product.category.name,
       categoryImage: product.categoryImage,
       productId: product.id, // required for update API
       productName: product.name,
