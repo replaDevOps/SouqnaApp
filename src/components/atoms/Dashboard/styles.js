@@ -70,14 +70,17 @@ const styles = StyleSheet.create({
     marginVertical: mvs(4),
   },
   legendColor: {
-    width: mvs(12),
-    height: mvs(12),
+    width: mvs(8),
+    height: mvs(8),
     borderRadius: mvs(6),
     marginRight: mvs(8),
   },
   legendText: {
     fontSize: mvs(12),
+    maxWidth:mvs(120),
+
     color: '#333',
+
     fontWeight: '500',
   },
   legendScrollView: {
