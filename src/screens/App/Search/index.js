@@ -303,7 +303,7 @@ const SearchScreen = () => {
         <CategorySection categories={apiCategories} />
 
         {/* {!isModalVisible && hasFetchedVerification && <BannerSlider />} */}
-        <BannerSlider />
+        {hasFetchedVerification || (role === 3 && <BannerSlider />)}
 
         {/* {role !== 2 && role !== '2' && (
           <GalleryContainer
