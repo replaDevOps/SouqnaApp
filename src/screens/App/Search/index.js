@@ -304,11 +304,7 @@ const SearchScreen = () => {
         <CategorySection categories={apiCategories} />
 
         {/* {!isModalVisible && hasFetchedVerification && <BannerSlider />} */}
-        {hasFetchedVerification || role === 3 ? (
-          <BannerSlider />
-        ) : (
-          <ProductDashboard />
-        )}
+        {!token ? null : role === 3 ? <BannerSlider /> : <ProductDashboard />}
 
         {/* <BannerSlider /> */}
 

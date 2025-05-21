@@ -1,14 +1,14 @@
-import { View, Text, StyleSheet } from 'react-native'
-import React from 'react'
-import { mvs } from '../../../util/metrices';
-import { colors } from '../../../util/color';
+import {View, Text, StyleSheet} from 'react-native';
+import React from 'react';
+import {mvs} from '../../../util/metrices';
+import {colors} from '../../../util/color';
 
 const styles = StyleSheet.create({
   container: {
     margin: mvs(15),
-    backgroundColor:'#eee',
+    backgroundColor: '#eee',
     padding: mvs(10),
-    borderRadius:mvs(15)
+    borderRadius: mvs(15),
   },
   statsContainer: {
     flexDirection: 'row',
@@ -22,8 +22,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: mvs(10),
-    backgroundColor:'#fbfbfb',
-    borderRadius:20,
+    backgroundColor: '#fbfbfb',
+    borderRadius: 20,
     // shadowColor: '#000',
     // shadowOffset: { width: 0, height: 2 },
     // shadowOpacity: 0.1,
@@ -46,8 +46,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-     backgroundColor:'#fbfbfb',
-    borderRadius:20,
+    backgroundColor: '#fbfbfb',
+    borderRadius: 20,
     // shadowColor: '#000',
     // shadowOffset: { width: 0, height: 2 },
     // shadowOpacity: 0.1,
@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingLeft: mvs(15),
   },
-  
+
   legendItem: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
   },
   legendText: {
     fontSize: mvs(12),
-    maxWidth:mvs(120),
+    maxWidth: mvs(120),
 
     color: '#333',
 
@@ -91,4 +91,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default styles
+export default styles;
