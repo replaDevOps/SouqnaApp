@@ -3,11 +3,16 @@ import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import Svg, { Path, G, Text as SvgText } from 'react-native-svg';
 import styles from './styles';
 import { mvs } from '../../../util/metrices';
+import { useSelector } from 'react-redux';
 
 const ProductDashboard = () => {
   const productCategories = [
     { name: 'Electronics', count: 120, color: '#2f4b7c' },
     { name: 'Clothing', count: 95, color: '#665191' },
+    { name: 'Sports', count: 60, color: '#d45087' },
+    { name: 'Sports', count: 60, color: '#d45087' },
+    { name: 'Sports', count: 60, color: '#d45087' },
+    { name: 'Sports', count: 60, color: '#d45087' },
     { name: 'Sports', count: 60, color: '#d45087' },
     { name: 'Home & Garden', count: 80, color: '#a05195' },
     { name: 'Furniture', count: 45, color: '#f95d6a' },
@@ -15,6 +20,7 @@ const ProductDashboard = () => {
 ];
 
   const totalProducts = productCategories.reduce((sum, category) => sum + category.count, 0);
+  const categories = useSelector(state => state.category.categories);
 
   const PieChart = () => {
     const radius = 80; // Increased size for better visibility
@@ -77,23 +83,18 @@ const ProductDashboard = () => {
     const visibleCategories = productCategories.slice(0, 3); // First 3 categories
     const remainingCategories = productCategories.slice(3); // Remaining categories
 
+
+
     return (
-      <View style={styles.legendContainer}>
-        {visibleCategories.map((category, index) => (
-          <View key={index} style={styles.legendItem}>
-            <View style={[styles.legendColor, { backgroundColor: category.color }]} />
-            <Text style={styles.legendText}>
-              {category.name} ({category.count})
-            </Text>
-          </View>
-        ))}
-        {remainingCategories.length > 0 && (
-          <ScrollView
+     <ScrollView
             style={styles.legendScrollView}
             showsVerticalScrollIndicator={true}
             contentContainerStyle={styles.scrollContent}
+            nestedScrollEnabled={true}
+            onStartShouldSetResponder={()=> true}
           >
-            {remainingCategories.map((category, index) => (
+          <View>
+            {productCategories.map((category, index) => (
               <View key={index} style={styles.legendItem}>
                 <View style={[styles.legendColor, { backgroundColor: category.color }]} />
                 <Text style={styles.legendText}>
@@ -101,11 +102,13 @@ const ProductDashboard = () => {
                 </Text>
               </View>
             ))}
-          </ScrollView>
-        )}
-      </View>
+          </View>
+        </ScrollView>
     );
   };
+
+console.log('[Catrgories]',categories);
+
 
   return (
     <View style={styles.container}>
