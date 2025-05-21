@@ -30,6 +30,7 @@ import {Snackbar} from 'react-native-paper';
 import {colors} from '../../../util/color';
 import {MapMarkerSVG} from '../../../assets/svg';
 import BannerSlider from '../../../components/atoms/BannerSlider';
+import ProductDashboard from '../../../components/atoms/Dashboard';
 
 const SearchScreen = () => {
   const [likedItems, setLikedItems] = useState({});
@@ -303,7 +304,13 @@ const SearchScreen = () => {
         <CategorySection categories={apiCategories} />
 
         {/* {!isModalVisible && hasFetchedVerification && <BannerSlider />} */}
-        {hasFetchedVerification || (role === 3 && <BannerSlider />)}
+        {hasFetchedVerification || role === 3 ? (
+          <BannerSlider />
+        ) : (
+          <ProductDashboard />
+        )}
+
+        {/* <BannerSlider /> */}
 
         {/* {role !== 2 && role !== '2' && (
           <GalleryContainer
