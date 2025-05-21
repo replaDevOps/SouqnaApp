@@ -251,7 +251,7 @@ const ProductDetail = () => {
               if (response.success) {
                 setSnackbarMessage('Product deleted successfully.');
                 setSnackbarVisible(true);
-                navigation.goBack();
+                navigation.replace('MainTabs');
               } else {
                 console.warn('Failed to delete product:', response.message);
                 setSnackbarMessage(
