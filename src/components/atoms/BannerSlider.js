@@ -1,20 +1,19 @@
-import React, {useState} from 'react';
-import {View, Image, Dimensions, StyleSheet} from 'react-native';
+import React, { useState } from 'react';
+import { View, Image, Dimensions, StyleSheet } from 'react-native';
 import Carousel from 'react-native-reanimated-carousel';
 import ProductDashboard from './Dashboard';
-import {useSelector} from 'react-redux';
 
-const {width} = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
-const BannerSlider = () => {
+const BannerSlider = ({ userRole = 2 }) => {
   const [banners] = useState([
-    {id: 1, image: require('../../assets/img/banner.png')},
-    {id: 2, image: require('../../assets/img/banner1.png')},
+    { id: 1, image: require('../../assets/img/banner.png') },
+    { id: 2, image: require('../../assets/img/banner1.png') },
   ]);
-  const {role, token} = useSelector(state => state.user);
+
   return (
     <View>
-      {role === 3 || token === null ? (
+      {userRole === 1 ? (
         <View style={styles.carouselContainer}>
           <Carousel
             loop
@@ -24,7 +23,7 @@ const BannerSlider = () => {
             data={banners}
             scrollAnimationDuration={1500}
             autoPlayInterval={4000}
-            renderItem={({item}) => (
+            renderItem={({ item }) => (
               <Image
                 key={item.id}
                 source={item.image}
