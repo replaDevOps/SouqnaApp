@@ -107,19 +107,17 @@ const ProductDashboard = () => {
     );
   };
 
-console.log('[Catrgories]',categories);
-
 
   return (
     <View style={styles.container}>
       {/* Stats Section */}
       <View style={styles.statsContainer}>
         <View style={[styles.statBox,{marginRight:mvs(5)}]}>
-          <Text style={styles.statLabel}>Total No. of Products</Text>
+          <Text style={styles.statLabel}>Total No. of Ads</Text>
           <Text style={styles.statValue}>480</Text>
         </View>
         <View style={styles.statBox}>
-          <Text style={styles.statLabel}>No. of Products This Month</Text>
+          <Text style={styles.statLabel}>No. of Ads This Month</Text>
           <Text style={styles.statValue}>22</Text>
         </View>
       </View>
