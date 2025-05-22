@@ -254,85 +254,146 @@ const UpdateProduct = () => {
     }));
   };
 
-  const submitProduct = async () => {
-    const data = new FormData();
-    data.append('name', formData.name);
-    data.append('description', formData.description);
-    data.append('price', Number(formData.price));
-    data.append('id', route.params?.productId); // Important
-    data.append('categoryID', categoryId);
-    data.append('subCategoryID', subCategoryId);
+  // const submitProduct = async () => {
+  //   const data = new FormData();
+  //   data.append('name', formData.name);
+  //   data.append('description', formData.description);
+  //   data.append('price', Number(formData.price));
+  //   data.append('id', route.params?.productId); // Important
+  //   data.append('categoryID', categoryId);
+  //   data.append('subCategoryID', subCategoryId);
 
-    data.append('stock', Number(formData.stock));
-    data.append('location', formData.location);
-    data.append('lat', formData.lat);
-    data.append('long', formData.long);
-    data.append('condition', conditionValue);
-    console.log('DATA BEING SENT :', data);
-    try {
-      setLoading(true);
-      console.log('Calling:', 'updateProduct', data);
+  //   data.append('stock', Number(formData.stock));
+  //   data.append('location', formData.location);
+  //   data.append('lat', formData.lat);
+  //   data.append('long', formData.long);
+  //   data.append('condition', conditionValue);
+  //   console.log('DATA BEING SENT :', data);
+  //   try {
+  //     setLoading(true);
+  //     console.log('Calling:', 'updateProduct', data);
 
-      const response = await API.post('updateProduct', data, {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-      });
+  //     const response = await API.post('updateProduct', data, {
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //     });
 
-      console.log('✅ Response:', response.data);
+  //     console.log('✅ Response:', response.data);
 
-      if (response.data.success) {
-        setSnackbarMessage(t('Product Updated'));
-        setFormData({
-          name: '',
-          description: '',
-          price: '',
-          stock: '',
-          discount: '',
-          specialOffer: '',
-          images: [],
-          location: '',
-          lat: '',
-          long: '',
-          condition: '',
-        });
+  //     if (response.data.success) {
+  //       setSnackbarMessage(t('Product Updated'));
+  //       // setFormData({
+  //       //   name: '',
+  //       //   description: '',
+  //       //   price: '',
+  //       //   stock: '',
+  //       //   discount: '',
+  //       //   specialOffer: '',
+  //       //   images: [],
+  //       //   location: '',
+  //       //   lat: '',
+  //       //   long: '',
+  //       //   condition: '',
+  //       // });
 
-        navigation.dispatch(
-          CommonActions.reset({
-            index: 0,
-            routes: [
-              {
-                name: 'MainTabs',
-              },
-            ],
-          }),
-        );
-      } else {
-        setSnackbarMessage(
-          response.data.message || 'Failed to update product.',
-        );
-      }
+  //       navigation.dispatch(
+  //         CommonActions.reset({
+  //           index: 0,
+  //           routes: [
+  //             {
+  //               name: 'MainTabs',
+  //             },
+  //           ],
+  //         }),
+  //       );
+  //     } else {
+  //       setSnackbarMessage(
+  //         response.data.message || 'Failed to update product.',
+  //       );
+  //     }
 
-      setSnackbarVisible(true);
-    } catch (error) {
-      if (error.response) {
-        // Request made and server responded
-        console.error('❌ Error Response:', error.response.data);
-      } else if (error.request) {
-        // Request made but no response received
-        console.error('❌ No response:', error.request);
-      } else {
-        // Something else
-        console.error('❌ Error Message:', error.message);
-      }
+  //     setSnackbarVisible(true);
+  //   } catch (error) {
+  //     if (error.response) {
+  //       // Request made and server responded
+  //       console.error('❌ Error Response:', error.response.data);
+  //     } else if (error.request) {
+  //       // Request made but no response received
+  //       console.error('❌ No response:', error.request);
+  //     } else {
+  //       // Something else
+  //       console.error('❌ Error Message:', error.message);
+  //     }
 
-      setSnackbarMessage('Network Error: Unable to update product.');
-      setSnackbarVisible(true);
-    } finally {
-      setLoading(false);
-    }
+  //     setSnackbarMessage('Network Error: Unable to update product.');
+  //     setSnackbarVisible(true);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+const submitProduct = async () => {
+  const payload = {
+    name: formData.name,
+    description: formData.description,
+    price: Number(formData.price),
+    id: route.params?.productId, // Important
+    categoryID: categoryId,
+    subCategoryID: subCategoryId,
+    stock: Number(formData.stock),
+    location: formData.location,
+    lat: formData.lat,
+    long: formData.long,
+    condition: conditionValue,
   };
+
+  console.log('DATA BEING SENT :', payload);
+
+  try {
+    setLoading(true);
+    console.log('Calling:', 'updateProduct', payload);
+
+    const response = await API.post('updateProduct', payload, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    console.log('✅ Response:', response.data);
+
+    if (response.data.success) {
+      setSnackbarMessage(t('Product Updated'));
+
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: 'MainTabs' }],
+        })
+      );
+    } else {
+      setSnackbarMessage(response.data.message || 'Failed to update product.');
+    }
+
+    setSnackbarVisible(true);
+  } catch (error) {
+    if (error.response) {
+      console.error('❌ Error Response:', error.response.data);
+    } else if (error.request) {
+      console.error('❌ No response:', error.request);
+    } else {
+      console.error('❌ Error Message:', error.message);
+    }
+
+    setSnackbarMessage('Network Error: Unable to update product.');
+    setSnackbarVisible(true);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   const handleChange = () => {
     navigation.dispatch(

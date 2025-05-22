@@ -23,26 +23,26 @@ const ProductDashboard = () => {
 
   // Color palette for categories - we'll use this as our base palette
   const colorPalette = [
-    '#2f4b7c',
+    '#2F4B7C',
     '#665191',
-    '#a05195',
-    '#d45087',
-    '#f95d6a',
-    '#ff7c43',
-    '#ffa600',
-    '#003f5c',
-    '#58508d',
-    '#bc5090',
-    '#ff6361',
-    '#ffa600',
-    '#488f31',
-    '#de425b',
-    '#0bb4ff',
-    '#8bd3c7',
-    '#7d8cc4',
-    '#d3a294',
-    '#a5bd78',
-    '#c47dcc',
+    '#A05195',
+    '#D45087',
+    '#F95D6A',
+    '#FF7C43',
+    '#FFA600',
+    '#003F5C',
+    '#58508D',
+    '#BC5090',
+    '#FF6361',
+    '#FFA600',
+    '#488F31',
+    '#DE425B',
+    '#0BB4FF',
+    '#8BD3C7',
+    '#7D8CC4',
+    '#D3A294',
+    '#A5BD78',
+    '#C47DCC',
   ];
 
   const {token} = useSelector(state => state.user);
@@ -177,9 +177,9 @@ const ProductDashboard = () => {
           viewBox={`0 0 ${radius * 2} ${radius * 2}`}>
           {/* Draw a complete circle for the single category */}
           <Path
-            d={`M ${centerX} ${centerY} 
-                m 0 -${radius} 
-                a ${radius} ${radius} 0 1 1 0 ${radius * 2} 
+            d={`M ${centerX} ${centerY}
+                m 0 -${radius}
+                a ${radius} ${radius} 0 1 1 0 ${radius * 2}
                 a ${radius} ${radius} 0 1 1 0 -${radius * 2}`}
             fill={activeCategories[0].color}
           />
@@ -279,6 +279,41 @@ const ProductDashboard = () => {
     );
   };
 
+  if (loading) {
+    return (
+      <View
+        style={[
+          styles.container,
+          {justifyContent: 'center', alignItems: 'center'},
+        ]}>
+        <ActivityIndicator size="large" color={colors.primary} />
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View
+        style={[
+          styles.container,
+          {justifyContent: 'center', alignItems: 'center'},
+        ]}>
+        <Text style={{color: 'red'}}>{error}</Text>
+      </View>
+    );
+  }
+
+  if (!dashboardData) {
+    return (
+      <View
+        style={[
+          styles.container,
+          {justifyContent: 'center', alignItems: 'center'},
+        ]}>
+        <Text>No data available</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -299,7 +334,7 @@ const ProductDashboard = () => {
               styles.statLabel,
               activeView === 'total' && {color: '#000'},
             ]}>
-            Total No. of Ads
+            Total No. of Products
           </Text>
           <Text style={[styles.statValue]}>{dashboardData.total_ads}</Text>
         </TouchableOpacity>
@@ -318,7 +353,7 @@ const ProductDashboard = () => {
               styles.statLabel,
               activeView === 'monthly' && {color: '#000'},
             ]}>
-            No. of Products This Ads
+            No. of Products This Month
           </Text>
           <Text
             style={[
