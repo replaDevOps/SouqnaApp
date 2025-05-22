@@ -10,8 +10,10 @@ import {
   ToastAndroid,
   Image,
   Modal,
+  PermissionsAndroid,
+  Platform,
 } from 'react-native';
-import {launchImageLibrary} from 'react-native-image-picker';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
 import DatePicker from 'react-native-date-picker';
@@ -175,6 +177,61 @@ const VerificationScreen = () => {
     fetchVerification();
   }, []);
 
+  async function requestCameraPermission() {
+    if (Platform.OS === 'android') {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.CAMERA,
+          {
+            title: 'Camera Permission',
+            message: 'App needs access to your camera',
+            buttonNeutral: 'Ask Me Later',
+            buttonNegative: 'Cancel',
+            buttonPositive: 'OK',
+          },
+        );
+        return granted === PermissionsAndroid.RESULTS.GRANTED;
+      } catch (err) {
+        console.warn(err);
+        return false;
+      }
+    } else {
+      return true; // iOS permission handled differently
+    }
+  }
+  const pickSelfieFromCamera = async setter => {
+    const hasPermission = await requestCameraPermission();
+    if (!hasPermission) {
+      Alert.alert(
+        'Permission Denied',
+        'Camera permission is required to take a selfie.',
+      );
+      return;
+    }
+
+    launchCamera(
+      {
+        mediaType: 'photo',
+        cameraType: 'front',
+        saveToPhotos: false,
+        quality: 0.8,
+      },
+      response => {
+        if (response.didCancel) return;
+        if (response.errorCode) {
+          Alert.alert('Error', 'Camera Error: ' + response.errorMessage);
+        } else if (response.assets?.length > 0) {
+          const asset = response.assets[0];
+          setter({
+            uri: asset.uri,
+            type: asset.type,
+            name: asset.fileName || 'selfie.jpg',
+          });
+        }
+      },
+    );
+  };
+
   useEffect(() => {
     if (!originalData) return;
 
@@ -293,6 +350,13 @@ const VerificationScreen = () => {
   const handleSubmit = async () => {
     console.log('Submit button pressed ✅');
     // if (loading) return;
+
+    const formData = new FormData();
+    formData.append('selfie', {
+      uri: selfie.uri,
+      name: selfie.name,
+      type: selfie.type || 'image/jpeg',
+    });
     const {
       fullName,
       dob,
@@ -329,7 +393,7 @@ const VerificationScreen = () => {
 
     data.append('idFrontSide', idFrontSide);
     data.append('idBackSide', idBackSide);
-    data.append('selfie', selfie);
+    // data.append('selfie', selfie);
     console.log('Data being sent to API:', data);
     try {
       setLoading(true);
@@ -349,7 +413,7 @@ const VerificationScreen = () => {
         !response.data.success &&
         response.data.message === 'Your document is still Pending'
       ) {
-        setModalVisible(true); // Open modal if the document is still pending
+        setModalVisible(true);
       } else {
         ToastAndroid.show(
           response?.data?.message || 'Verification failed.',
@@ -379,9 +443,8 @@ const VerificationScreen = () => {
 
   // Calculate minimum date for Issue Date (can be in the past)
   const minIssueDate = new Date();
-  minIssueDate.setFullYear(minIssueDate.getFullYear() - 20); // Allow up to 20 years in the past for issue date
+  minIssueDate.setFullYear(minIssueDate.getFullYear() - 20);
 
-  // Calculate minimum date for Expiry Date (today)
   const minExpDate = new Date();
 
   const renderDateInput = (
@@ -628,7 +691,7 @@ const VerificationScreen = () => {
             <View style={styles.uploadBox}>
               <TouchableOpacity
                 style={styles.imagePickerTouch}
-                onPress={() => pickImage(setSelfie)}>
+                onPress={() => pickSelfieFromCamera(setSelfie)}>
                 {selfie ? (
                   <Image
                     source={{uri: selfie.uri}}
