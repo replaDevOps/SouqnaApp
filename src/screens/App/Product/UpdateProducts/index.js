@@ -126,15 +126,6 @@ const UpdateProduct = () => {
     }
   }, [route.params]);
 
-  const getImageSize = uri =>
-    new Promise((resolve, reject) => {
-      Image.getSize(
-        uri,
-        (width, height) => resolve({width, height}),
-        error => reject(error),
-      );
-    });
-
   const pickAndUploadImages = async () => {
     try {
       const result = await launchImageLibrary({
@@ -267,22 +258,24 @@ const UpdateProduct = () => {
     const data = new FormData();
     data.append('name', formData.name);
     data.append('description', formData.description);
-    data.append('price', formData.price);
+    data.append('price', Number(formData.price));
     data.append('id', route.params?.productId); // Important
     data.append('categoryID', categoryId);
     data.append('subCategoryID', subCategoryId);
 
-    data.append('stock', formData.stock);
+    data.append('stock', Number(formData.stock));
     data.append('location', formData.location);
     data.append('lat', formData.lat);
     data.append('long', formData.long);
     data.append('condition', conditionValue);
-
+    console.log('DATA BEING SENT :', data);
     try {
       setLoading(true);
+      console.log('Calling:', 'updateProduct', data);
+
       const response = await API.post('updateProduct', data, {
         headers: {
-          //   'Content-Type': 'application/json',
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
       });
@@ -317,27 +310,24 @@ const UpdateProduct = () => {
         );
       } else {
         setSnackbarMessage(
-          response.data.message || 'Failed to create product.',
+          response.data.message || 'Failed to update product.',
         );
       }
 
       setSnackbarVisible(true);
     } catch (error) {
-      console.error(
-        '❌ Error creating product:',
-        error.response?.data || error.message,
-      );
-      let errorMessage =
-        error.response?.data?.message ||
-        error.message ||
-        t('somethingWentWrong');
-
-      // Check if 403 error (profile not verified)
-      if (error.response?.status === 403) {
-        errorMessage = t('profileNotVerified');
+      if (error.response) {
+        // Request made and server responded
+        console.error('❌ Error Response:', error.response.data);
+      } else if (error.request) {
+        // Request made but no response received
+        console.error('❌ No response:', error.request);
+      } else {
+        // Something else
+        console.error('❌ Error Message:', error.message);
       }
 
-      setSnackbarMessage(error.message || 'Something went wrong. Try again!');
+      setSnackbarMessage('Network Error: Unable to update product.');
       setSnackbarVisible(true);
     } finally {
       setLoading(false);
