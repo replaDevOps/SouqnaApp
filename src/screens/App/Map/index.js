@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, {useState, useEffect, useRef, useCallback, useMemo} from 'react';
 import {
   View,
   Text,
@@ -12,12 +12,12 @@ import {
   ScrollView,
   TouchableWithoutFeedback,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import MapView, { PROVIDER_GOOGLE, Marker, Circle } from 'react-native-maps';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import MapView, {PROVIDER_GOOGLE, Marker, Circle} from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
-import { request, PERMISSIONS, RESULTS } from 'react-native-permissions';
-import { useNavigation, useRoute } from '@react-navigation/native';
-import isEqual from 'lodash.isequal';
+import {request, PERMISSIONS, RESULTS} from 'react-native-permissions';
+import {useNavigation, useRoute} from '@react-navigation/native';
+// Remove the isEqual import - we don't need it anymore
 import MainHeader from '../../../components/Headers/MainHeader';
 import {
   BarsSVG,
@@ -25,28 +25,29 @@ import {
   ForwardSVG,
   NoneSVG,
 } from '../../../assets/svg';
-import { mvs } from '../../../util/metrices';
+import {mvs} from '../../../util/metrices';
 import styles from './styles';
-import { useSelector } from 'react-redux';
-import { colors } from '../../../util/color';
+import {useSelector} from 'react-redux';
+import {colors} from '../../../util/color';
 
 export default function MapScreen() {
   const route = useRoute();
-  const { allProducts } = route.params;
+  const {allProducts} = route.params;
 
   const navigation = useNavigation();
   const [region, setRegion] = useState(null);
   const [userLocation, setUserLocation] = useState(null);
   const [isLocationLoading, setIsLocationLoading] = useState(false);
-  const [visibleProducts, setVisibleProducts] = useState([]);
   const [selectedProductsGroup, setSelectedProductsGroup] = useState(null);
   const [activeCategory, setActiveCategory] = useState(null);
   const [dropdownVisible, setDropdownVisible] = useState(false);
-  const [groupedProductsByLocation, setGroupedProductsByLocation] = useState({});
   const [mapReady, setMapReady] = useState(false);
 
-  // Group products by location
-  const groupProductsByLocation = useCallback(() => {
+  // Add refs for debouncing
+  const regionUpdateTimeoutRef = useRef(null);
+
+  // Group products by location - memoized to prevent unnecessary recalculations
+  const groupedProductsByLocation = useMemo(() => {
     const groupedProducts = {};
 
     if (allProducts && allProducts.length > 0) {
@@ -71,6 +72,55 @@ export default function MapScreen() {
     return groupedProducts;
   }, [allProducts]);
 
+  // Memoize visible products calculation
+  const visibleProducts = useMemo(() => {
+    if (!region || !allProducts?.length) return [];
+
+    // First filter by region
+    let filtered = allProducts.filter(product => {
+      const lat = parseFloat(product.lat);
+      const lng = parseFloat(product.long);
+
+      if (isNaN(lat) || isNaN(lng)) return false;
+
+      const latMin = region.latitude - region.latitudeDelta / 2;
+      const latMax = region.latitude + region.latitudeDelta / 2;
+      const lngMin = region.longitude - region.longitudeDelta / 2;
+      const lngMax = region.longitude + region.longitudeDelta / 2;
+
+      return lat >= latMin && lat <= latMax && lng >= lngMin && lng <= lngMax;
+    });
+
+    // Then apply category filter if a category is selected
+    if (activeCategory) {
+      filtered = filtered.filter(
+        product => product.category && product.category.name === activeCategory,
+      );
+    }
+
+    return filtered;
+  }, [region, allProducts, activeCategory]);
+
+  // Memoize filtered grouped products for markers
+  const filteredGroupedProducts = useMemo(() => {
+    if (!activeCategory) return groupedProductsByLocation;
+
+    const filtered = {};
+    Object.entries(groupedProductsByLocation).forEach(
+      ([locationKey, products]) => {
+        const categoryFiltered = products.filter(
+          product =>
+            product.category && product.category.name === activeCategory,
+        );
+        if (categoryFiltered.length > 0) {
+          filtered[locationKey] = categoryFiltered;
+        }
+      },
+    );
+
+    return filtered;
+  }, [groupedProductsByLocation, activeCategory]);
+
   // Close dropdown when clicking outside
   const closeDropdownOnOutsidePress = () => {
     if (dropdownVisible) {
@@ -86,43 +136,6 @@ export default function MapScreen() {
   const maxRetries = 3;
 
   const categories = useSelector(state => state.category.categories);
-
-  // Process products based on visible region and active category
-  const isProductInVisibleRegion = (product, region) => {
-    if (!region) return false;
-
-    const lat = parseFloat(product.lat);
-    const lng = parseFloat(product.long);
-
-    const latMin = region.latitude - region.latitudeDelta / 2;
-    const latMax = region.latitude + region.latitudeDelta / 2;
-    const lngMin = region.longitude - region.longitudeDelta / 2;
-    const lngMax = region.longitude + region.longitudeDelta / 2;
-
-    return lat >= latMin && lat <= latMax && lng >= lngMin && lng <= lngMax;
-  };
-
-  useEffect(() => {
-    if (region && allProducts && allProducts.length > 0) {
-      // First filter by region
-      let filtered = allProducts.filter(product =>
-        isProductInVisibleRegion(product, region),
-      );
-      // Then apply category filter if a category is selected
-      if (activeCategory) {
-        filtered = filterProductsByCategory(filtered, activeCategory);
-      }
-      if (!isEqual(filtered, visibleProducts)) {
-        setVisibleProducts(filtered);
-      }
-    }
-  }, [region, allProducts, activeCategory]);
-
-  // Initialize grouped products when allProducts changes
-  useEffect(() => {
-    const grouped = groupProductsByLocation();
-    setGroupedProductsByLocation(grouped);
-  }, [groupProductsByLocation]);
 
   const setDefaultRegion = useCallback(() => {
     if (allProducts && allProducts.length > 0) {
@@ -153,7 +166,7 @@ export default function MapScreen() {
         };
 
         setRegion(newRegion);
-        
+
         // If map is already ready, animate to this region
         if (mapReady && mapRef.current) {
           mapRef.current.animateToRegion(newRegion, 1000);
@@ -162,29 +175,34 @@ export default function MapScreen() {
     }
   }, [allProducts, mapReady]);
 
-  // Improved location focus logic
-  const focusUserLocation = useCallback((coords) => {
-    if (!coords) return;
-    
-    const newRegion = {
-      latitude: coords.latitude,
-      longitude: coords.longitude,
-      latitudeDelta: 0.09,
-      longitudeDelta: 0.09,
-    };
-    
-    // Update state
-    setUserLocation(coords);
-    setRegion(newRegion);
-    
-    // Animate map if ready
-    if (mapReady && mapRef.current) {
-      mapRef.current.animateToRegion(newRegion, 500);
-    } else {
-      // If map isn't ready yet, flag to focus when it is
-      focusLocationOnNextReadyRef.current = true;
-    }
-  }, [mapReady]);
+  // Improved location focus logic with batched updates
+  const focusUserLocation = useCallback(
+    coords => {
+      if (!coords) return;
+
+      const newRegion = {
+        latitude: coords.latitude,
+        longitude: coords.longitude,
+        latitudeDelta: 0.09,
+        longitudeDelta: 0.09,
+      };
+
+      // Batch state updates to prevent multiple re-renders
+      React.unstable_batchedUpdates(() => {
+        setUserLocation(coords);
+        setRegion(newRegion);
+      });
+
+      // Animate map if ready
+      if (mapReady && mapRef.current) {
+        mapRef.current.animateToRegion(newRegion, 500);
+      } else {
+        // If map isn't ready yet, flag to focus when it is
+        focusLocationOnNextReadyRef.current = true;
+      }
+    },
+    [mapReady],
+  );
 
   const getCurrentLocation = useCallback(() => {
     if (isLocationLoading) return;
@@ -196,9 +214,9 @@ export default function MapScreen() {
         setIsLocationLoading(false);
         locationRetryCount.current = 0;
 
-        const { latitude, longitude } = position.coords;
-        const coords = { latitude, longitude };
-        
+        const {latitude, longitude} = position.coords;
+        const coords = {latitude, longitude};
+
         // Focus on user location with the improved function
         focusUserLocation(coords);
       },
@@ -206,8 +224,9 @@ export default function MapScreen() {
         // Error handling code
         setIsLocationLoading(false);
         console.log('Geolocation error:', error);
-        
-        if (error.code === 3) { // TIMEOUT
+
+        if (error.code === 3) {
+          // TIMEOUT
           if (locationRetryCount.current < maxRetries) {
             // Retry logic
             locationRetryCount.current += 1;
@@ -292,13 +311,17 @@ export default function MapScreen() {
     return () => {
       initialLocationRequestedRef.current = false;
       focusLocationOnNextReadyRef.current = false;
+      // Clear any pending timeouts
+      if (regionUpdateTimeoutRef.current) {
+        clearTimeout(regionUpdateTimeoutRef.current);
+      }
     };
   }, []);
 
   // Handle map ready - this is critical for focusing
   const handleMapReady = () => {
     setMapReady(true);
-    
+
     // If we have user location but couldn't focus before, focus now
     if (focusLocationOnNextReadyRef.current && userLocation) {
       const newRegion = {
@@ -306,14 +329,14 @@ export default function MapScreen() {
         latitudeDelta: 0.09,
         longitudeDelta: 0.09,
       };
-      
+
       // Use a short timeout to ensure the map is fully ready
       setTimeout(() => {
         if (mapRef.current) {
           mapRef.current.animateToRegion(newRegion, 500);
         }
       }, 300);
-      
+
       focusLocationOnNextReadyRef.current = false;
     }
     // If no user location yet but we have products, show those
@@ -322,9 +345,31 @@ export default function MapScreen() {
     }
   };
 
+  // Debounced region update handler
+  const handleRegionChangeComplete = useCallback(
+    newRegion => {
+      // Clear any existing timeout
+      if (regionUpdateTimeoutRef.current) {
+        clearTimeout(regionUpdateTimeoutRef.current);
+      }
+
+      // Set a new timeout to debounce the region update
+      regionUpdateTimeoutRef.current = setTimeout(() => {
+        if (
+          !region ||
+          Math.abs(newRegion.latitude - region.latitude) > 0.001 || // Increased threshold
+          Math.abs(newRegion.longitude - region.longitude) > 0.001
+        ) {
+          setRegion(newRegion);
+        }
+      }, 150); // Debounce delay
+    },
+    [region],
+  );
+
   const formatPrice = price => {
     if (price >= 1000000) {
-      return (price / 1000000).toFixed(1).replace(/\.0$/, '') + 'm';
+      return (price / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
     } else if (price >= 1000) {
       return (price / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
     } else {
@@ -333,7 +378,7 @@ export default function MapScreen() {
   };
 
   const navigateToProductDetails = productId => {
-    navigation.navigate('ProductDetail', { productId });
+    navigation.navigate('ProductDetail', {productId});
     console.log('Product ID: ', productId);
   };
 
@@ -342,18 +387,21 @@ export default function MapScreen() {
   };
 
   // Modified to accept locationKey instead of a single product
-  const handleMarkerPress = (locationKey) => {
-    if (groupedProductsByLocation[locationKey]) {
-      setSelectedProductsGroup(groupedProductsByLocation[locationKey]);
-    }
-  };
+  const handleMarkerPress = useCallback(
+    locationKey => {
+      if (filteredGroupedProducts[locationKey]) {
+        setSelectedProductsGroup(filteredGroupedProducts[locationKey]);
+      }
+    },
+    [filteredGroupedProducts],
+  );
 
   const goToMyLocation = () => {
     locationRetryCount.current = 0;
     getCurrentLocation();
   };
 
-  const RadioButton = ({ selected }) => {
+  const RadioButton = ({selected}) => {
     return (
       <View
         style={{
@@ -389,7 +437,7 @@ export default function MapScreen() {
           onPress={toggleDropdown}
           style={styles.dropdownButton}>
           <BarsSVG width={24} height={24} />
-          <Text style={{ fontSize: mvs(18), fontWeight: 'bold' }}>
+          <Text style={{fontSize: mvs(18), fontWeight: 'bold'}}>
             {' '}
             Categories
           </Text>
@@ -436,7 +484,8 @@ export default function MapScreen() {
           <View style={styles.productGroupContainer}>
             <View style={styles.productGroupHeader}>
               <Text style={styles.productGroupTitle}>
-                {selectedProductsGroup.length} Product{selectedProductsGroup.length > 1 ? 's' : ''} Available
+                {selectedProductsGroup.length} Product
+                {selectedProductsGroup.length > 1 ? 's' : ''} Available
               </Text>
               <TouchableOpacity
                 style={styles.closeButton}
@@ -449,8 +498,8 @@ export default function MapScreen() {
               data={selectedProductsGroup}
               horizontal
               showsHorizontalScrollIndicator={true}
-              keyExtractor={(item) => item.id.toString()}
-              renderItem={({ item }) => (
+              keyExtractor={item => item.id.toString()}
+              renderItem={({item}) => (
                 <TouchableOpacity
                   onPress={() => navigateToProductDetails(item.id)}
                   style={styles.productCardContainer}>
@@ -464,7 +513,11 @@ export default function MapScreen() {
                         resizeMode="cover"
                       />
                     ) : (
-                      <View style={[styles.productImage, styles.noImagePlaceholder]}>
+                      <View
+                        style={[
+                          styles.productImage,
+                          styles.noImagePlaceholder,
+                        ]}>
                         <Text>No Image</Text>
                       </View>
                     )}
@@ -473,13 +526,14 @@ export default function MapScreen() {
                     <Text style={styles.productTitle} numberOfLines={1}>
                       {item.name}
                     </Text>
-                    <Text style={styles.productLocation} numberOfLines={1} ellipsizeMode="tail">
+                    <Text
+                      style={styles.productLocation}
+                      numberOfLines={1}
+                      ellipsizeMode="tail">
                       {item.location}
                     </Text>
                     <View style={styles.priceTagContainer}>
-                      <Text style={styles.priceTag}>
-                        {item.price} - USD
-                      </Text>
+                      <Text style={styles.priceTag}>{item.price} - USD</Text>
                       {item.condition != 2 ? (
                         <Text style={styles.conditionTag}>New</Text>
                       ) : (
@@ -492,11 +546,11 @@ export default function MapScreen() {
             />
           </View>
         ) : (
-          <View style={{ alignItems: 'center' }}>
-            <Text style={{ fontSize: mvs(15), fontWeight: '400' }}>
+          <View style={{alignItems: 'center'}}>
+            <Text style={{fontSize: mvs(15), fontWeight: '400'}}>
               In this region:
             </Text>
-            <Text style={{ fontSize: mvs(22), fontWeight: 'bold' }}>
+            <Text style={{fontSize: mvs(22), fontWeight: 'bold'}}>
               {visibleProducts.length} ads
             </Text>
           </View>
@@ -511,85 +565,89 @@ export default function MapScreen() {
           region={region}
           showsUserLocation={true}
           showsMyLocationButton={false}
-          onRegionChangeComplete={newRegion => {
-            if (
-              !region ||
-              Math.abs(newRegion.latitude - region.latitude) > 0.0001 ||
-              Math.abs(newRegion.longitude - region.longitude) > 0.0001
-            ) {
-              setRegion(newRegion);
-            }
-          }}
+          onRegionChangeComplete={handleRegionChangeComplete}
           onMapReady={handleMapReady}>
-
           {/* Render markers for grouped products */}
-          {Object.entries(groupedProductsByLocation).map(([locationKey, products]) => {
-            const [lat, long] = locationKey.split(',').map(parseFloat);
+          {Object.entries(filteredGroupedProducts).map(
+            ([locationKey, products]) => {
+              const [lat, long] = locationKey.split(',').map(parseFloat);
 
-            // Skip invalid coordinates
-            if (isNaN(lat) || isNaN(long)) return null;
+              // Skip invalid coordinates
+              if (isNaN(lat) || isNaN(long)) return null;
 
-            // Filter products based on active category if needed
-            let displayProducts = products;
-            if (activeCategory) {
-              displayProducts = products.filter(
-                product => product.category && product.category.name === activeCategory
-              );
-              if (displayProducts.length === 0) return null; // Skip if no products match the category
-            }
+              // Calculate average price or use first product price as indicator
+              const averagePrice =
+                products.reduce(
+                  (sum, product) => sum + parseFloat(product.price),
+                  0,
+                ) / products.length;
 
-            // Calculate average price or use first product price as indicator
-            const averagePrice = displayProducts.reduce((sum, product) => sum + parseFloat(product.price), 0) / displayProducts.length;
-
-            return (
-              <Marker
-                key={locationKey}
-                coordinate={{
-                  latitude: lat,
-                  longitude: long,
-                }}
-                title={`${displayProducts.length} product${displayProducts.length > 1 ? 's' : ''}`}
-                description={`${displayProducts.length} item${displayProducts.length > 1 ? 's' : ''} available at this location`}
-                onPress={() => handleMarkerPress(locationKey)}>
-                <View
-                  style={{
-                    backgroundColor: colors.lightgreen,
-                    borderRadius: 4,
-                    padding: 1,
-                    width: displayProducts.length > 1 ? 45 : 35,
-                    height: displayProducts.length > 1 ? 45 : 35,
-                    borderWidth: 1,
-                    borderColor: '#ccc',
-                    justifyContent: 'center',
-                  }}>
-                  <Text
+              return (
+                <Marker
+                  key={locationKey}
+                  coordinate={{
+                    latitude: lat,
+                    longitude: long,
+                  }}
+                  // title={`${products.length} product${
+                  //   products.length > 1 ? 's' : ''
+                  // }`}
+                  // description={`${products.length} item${
+                  //   products.length > 1 ? 's' : ''
+                  // } available at this location`}
+                  onPress={() => handleMarkerPress(locationKey)}>
+                  <View
                     style={{
-                      fontSize: displayProducts.length > 1 ? 10 : 12,
-                      fontWeight: 'bold',
-                      color: '#fff',
-                      textAlign: 'center',
+                      backgroundColor: colors.lightgreen,
+                      borderRadius: 4,
+                      padding: 1,
+                      width: products.length > 1 ? 38 : 35,
+                      height: products.length > 1 ? 38 : 35,
+                      borderWidth: 1,
+                      borderColor: '#ccc', 
+                      justifyContent: 'center',
                     }}>
-                    {formatPrice(averagePrice)}
-                  </Text>
-                  {displayProducts.length > 1 && (
+
+                      {products.length == 1 && (
+                        <Text
+                        style={{
+                        fontSize: 12,
+                        fontWeight: 'bold',
+                        color: '#fff',
+                        textAlign: 'center',
+                      }}>$</Text>
+                      )}
                     <Text
                       style={{
-                        fontSize: 10,
+                        fontSize: products.length > 1 ? 10 : 12,
                         fontWeight: 'bold',
                         color: '#fff',
                         textAlign: 'center',
                       }}>
-                      {displayProducts.length} items
+                      {formatPrice(averagePrice)}
                     </Text>
-                  )}
-                </View>
-              </Marker>
-            );
-          })}
+                    {products.length > 1 && (
+                      <Text
+                        style={{
+                          fontSize: 10,
+                          fontWeight: 'bold',
+                          color: '#fff',
+                        }}>
+                        {products.length} items
+                      </Text>
+                    )}
+                  </View>
+                </Marker>
+              );
+            },
+          )}
         </MapView>
 
         <TouchableOpacity
-          style={styles.myLocationButton}
+          style={[
+            styles.myLocationButton,
+            {bottom: mvs(selectedProductsGroup ? 240 : 110)}, // conditional bottom
+          ]}
           onPress={goToMyLocation}
           disabled={isLocationLoading}>
           <CurrentLocationSVG width={24} height={24} />

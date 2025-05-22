@@ -58,11 +58,13 @@ const styles = StyleSheet.create({
     fontWeight: '600', // Lighter font weight for smaller screens   
   },    
   newMessageContainer: {   
-    shadowColor: '#000',   
-    shadowOffset: { width: 0, height: 2 },   
-    shadowOpacity: 0.5,   
-    shadowRadius: 4,   
-    elevation: 3,   
+    // shadowColor: '#000',   
+    // shadowOffset: { width: 0, height: 2 },   
+    // shadowOpacity: 0.5,   
+    // shadowRadius: 4,   
+    // elevation: 3,   
+    borderWidth:1,
+    borderColor:'#eee',
     backgroundColor: colors.white,   
     flexDirection: 'row',   
     paddingHorizontal: mvs(8),   
@@ -70,7 +72,7 @@ const styles = StyleSheet.create({
     borderRadius: mvs(8), 
   },  
   messageContentWrapper: {   
-    gap: mvs(3),   
+    gap: mvs(5),   
     padding: mvs(5),   
     flex: 1, 
   },  
@@ -80,7 +82,7 @@ const styles = StyleSheet.create({
     alignItems: 'center', 
   },  
   messagePreviewContainer: {   
-    width: '85%', 
+    width: '75%', 
   },    
   messagesWrapper: {     
     // marginHorizontal: mvs(14),     
@@ -128,17 +130,17 @@ const styles = StyleSheet.create({
   },   
   unreadBadge: {     
     backgroundColor: colors.lightgreen,     
-    paddingVertical: mvs(3), // Adjusted padding for better centering     
-    paddingHorizontal: mvs(8), // Adjusted to fit content dynamically     
+    // paddingVertical: mvs(3), // Adjusted padding for better centering     
+    // paddingHorizontal: mvs(8), // Adjusted to fit content dynamically     
     borderRadius: mvs(15),     
-    minWidth: mvs(25),     
-    height: mvs(25),     
+    minWidth: mvs(20),     
+    height: mvs(20),     
     justifyContent: 'center',     
     alignItems: 'center',   
   },   
   unreadBadgeText: {     
     color: colors.white,     
-    fontSize: mvs(16),     
+    fontSize: mvs(12),     
     fontWeight: 'bold',   
   },   
   emptyInbox: {     
