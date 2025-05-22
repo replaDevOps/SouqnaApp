@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: mvs(10),
+    paddingHorizontal: mvs(7),
     paddingTop: mvs(20),
     paddingBottom: mvs(10),
     backgroundColor: '#fbfbfb',
