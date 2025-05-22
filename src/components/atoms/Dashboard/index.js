@@ -334,7 +334,7 @@ const ProductDashboard = () => {
               styles.statLabel,
               activeView === 'total' && {color: '#000'},
             ]}>
-            Total No. of Products
+            Total No. of Ads
           </Text>
           <Text style={[styles.statValue]}>{dashboardData.total_ads}</Text>
         </TouchableOpacity>
@@ -353,7 +353,7 @@ const ProductDashboard = () => {
               styles.statLabel,
               activeView === 'monthly' && {color: '#000'},
             ]}>
-            No. of Products This Month
+            No. of Products This Ads
           </Text>
           <Text
             style={[
