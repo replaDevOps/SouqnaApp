@@ -445,6 +445,7 @@ const VerificationScreen = () => {
   const minIssueDate = new Date();
   minIssueDate.setFullYear(minIssueDate.getFullYear() - 20);
 
+  // Calculate minimum date for Expiry Date (today)
   const minExpDate = new Date();
 
   const renderDateInput = (

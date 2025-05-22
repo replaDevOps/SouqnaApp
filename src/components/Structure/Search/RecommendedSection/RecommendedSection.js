@@ -7,6 +7,8 @@ import {
   Image,
   Text,
   RefreshControl,
+  Button,
+  Linking,
 } from 'react-native';
 import styles from './style';
 import Regular from '../../../../typography/RegularText';
@@ -140,6 +142,14 @@ const RecommendedSection = ({
             : ''}
         </Bold>
       )}
+      {/* <Button
+        title="Test Deep Link"
+        onPress={() =>
+          Linking.openURL(
+            'myapp://product/ddf69a24-0c13-4185-a639-ec1372ece937',
+          )
+        }
+      /> */}
 
       {productsLoading ? (
         renderSkeletonList()

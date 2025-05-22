@@ -60,7 +60,7 @@ const ProductHeader = ({
           <Text style={styles.headerTitle}>{title}</Text>
         )}
 
-        {/* Icons Container: Heart and Open icons */}
+        {/* Icons Container: Heart and Open icons
         <View style={styles.iconsContainer}>
           {role !== 2 && (
             <TouchableOpacity onPress={onHeartPressHandler}>
@@ -72,7 +72,7 @@ const ProductHeader = ({
             onPress={handleCopyLink}>
             <OpenSVG width={24} height={24} />
           </TouchableOpacity>
-        </View>
+        </View> */}
       </View>
     </View>
   );
