@@ -72,7 +72,7 @@ export default function MapScreen() {
     return groupedProducts;
   }, [allProducts]);
 
-  // Memoize visible products calculation
+  // Memoize visible products calculation - ONLY for the bottom counter
   const visibleProducts = useMemo(() => {
     if (!region || !allProducts?.length) return [];
 
@@ -101,7 +101,7 @@ export default function MapScreen() {
     return filtered;
   }, [region, allProducts, activeCategory]);
 
-  // Memoize filtered grouped products for markers
+  // Modified: Show ALL products on map, only filter by category (not region)
   const filteredGroupedProducts = useMemo(() => {
     if (!activeCategory) return groupedProductsByLocation;
 
@@ -188,10 +188,10 @@ export default function MapScreen() {
       };
 
       // Batch state updates to prevent multiple re-renders
-      React.unstable_batchedUpdates(() => {
+      // React.unstable_batchedUpdates(() => {
         setUserLocation(coords);
         setRegion(newRegion);
-      });
+      // });
 
       // Animate map if ready
       if (mapReady && mapRef.current) {
@@ -204,87 +204,73 @@ export default function MapScreen() {
     [mapReady],
   );
 
-  const getCurrentLocation = useCallback(() => {
-    if (isLocationLoading) return;
-
-    setIsLocationLoading(true);
-
-    Geolocation.getCurrentPosition(
-      position => {
-        setIsLocationLoading(false);
-        locationRetryCount.current = 0;
-
-        const {latitude, longitude} = position.coords;
-        const coords = {latitude, longitude};
-
-        // Focus on user location with the improved function
-        focusUserLocation(coords);
-      },
-      error => {
-        // Error handling code
-        setIsLocationLoading(false);
-        console.log('Geolocation error:', error);
-
-        if (error.code === 3) {
-          // TIMEOUT
-          if (locationRetryCount.current < maxRetries) {
-            // Retry logic
-            locationRetryCount.current += 1;
-            setTimeout(() => {
-              getCurrentLocation();
-            }, 1000);
-          } else {
-            // Set default region if location fails after retries
-            Alert.alert(
-              'Location Timeout',
-              'Unable to get your current location. Please check your device location.',
-            );
-            setDefaultRegion();
-          }
-        } else {
-          // Handle other location errors
-          Alert.alert(
-            'Location Error',
-            'Unable to access your location. Using default map view instead.',
-          );
-          setDefaultRegion();
-        }
-      },
-      {
-        enableHighAccuracy: true,
-        timeout: 5000, // Increased timeout for better reliability
-        maximumAge: 10000,
-        forceRequestLocation: true,
-      },
-    );
-  }, [isLocationLoading, setDefaultRegion, focusUserLocation]);
-
-  const requestLocationPermission = useCallback(async () => {
-    if (initialLocationRequestedRef.current) return;
-    initialLocationRequestedRef.current = true;
-
-    const permission =
-      Platform.OS === 'ios'
-        ? PERMISSIONS.IOS.LOCATION_WHEN_IN_USE
-        : PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION;
-
-    try {
-      const result = await request(permission);
-
-      if (result === RESULTS.GRANTED) {
-        getCurrentLocation();
-      } else {
-        Alert.alert(
-          'Location Permission',
-          'Location permission is required to show your current location on the map.',
-        );
-        setDefaultRegion();
+const getCurrentLocation = useCallback(() => {
+  if (isLocationLoading) return;
+  
+  setIsLocationLoading(true);
+  
+  Geolocation.getCurrentPosition(
+    (position) => {
+      setIsLocationLoading(false);
+      const { latitude, longitude } = position.coords;
+      focusUserLocation({ latitude, longitude });
+    },
+    (error) => {
+      setIsLocationLoading(false);
+      console.log('Location error:', error);
+      
+      // Better error handling
+      switch (error.code) {
+        case 1: // PERMISSION_DENIED
+          Alert.alert('Permission Denied', 'Location access was denied');
+          break;
+        case 2: // POSITION_UNAVAILABLE
+          Alert.alert('Location Unavailable', 'Unable to determine location');
+          break;
+        case 3: // TIMEOUT
+          Alert.alert('Location Timeout', 'Location request timed out');
+          break;
+        default:
+          Alert.alert('Location Error', 'Failed to get location');
       }
-    } catch (err) {
-      console.error('Permission request error:', err);
       setDefaultRegion();
+    },
+    {
+      enableHighAccuracy: false, // Start with less accuracy for faster response
+      timeout: 10000,
+      maximumAge: 30000,
     }
-  }, [getCurrentLocation, setDefaultRegion]);
+  );
+}, [isLocationLoading, focusUserLocation]);
+
+  const requestLocationPermission = async () => {
+  try {
+    const permission = Platform.OS === 'ios' 
+      ? PERMISSIONS.IOS.LOCATION_WHEN_IN_USE 
+      : PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION;
+    
+    const result = await request(permission);
+    
+    switch (result) {
+      case RESULTS.GRANTED:
+        getCurrentLocation();
+        break;
+      case RESULTS.DENIED:
+        Alert.alert('Permission Required', 'Location access is needed');
+        setDefaultRegion();
+        break;
+      case RESULTS.BLOCKED:
+        Alert.alert('Permission Blocked', 'Please enable location in settings');
+        setDefaultRegion();
+        break;
+      default:
+        setDefaultRegion();
+    }
+  } catch (error) {
+    console.error('Permission error:', error);
+    setDefaultRegion();
+  }
+};
 
   const filterProductsByCategory = (products, categoryName) => {
     if (!categoryName || categoryName === 'All') {
@@ -296,17 +282,15 @@ export default function MapScreen() {
     }
   };
 
-  useEffect(() => {
-    Geolocation.setRNConfiguration({
-      skipPermissionRequests: false,
-      authorizationLevel: 'whenInUse',
-      locationProvider: 'auto',
-    });
-
+useEffect(() => {
+  Geolocation.setRNConfiguration({
+    skipPermissionRequests: true, // Handle permissions manually
+    authorizationLevel: 'whenInUse',
+    locationProvider: 'playServices', // More reliable on Android
+  });
     // Slight delay to ensure component is fully mounted
-    setTimeout(() => {
+    
       requestLocationPermission();
-    }, 500);
 
     return () => {
       initialLocationRequestedRef.current = false;
@@ -563,11 +547,11 @@ export default function MapScreen() {
           provider={PROVIDER_GOOGLE}
           style={styles.map}
           region={region}
-          showsUserLocation={true}
+          showsUserLocation={false}
           showsMyLocationButton={false}
           onRegionChangeComplete={handleRegionChangeComplete}
           onMapReady={handleMapReady}>
-          {/* Render markers for grouped products */}
+          {/* Render markers for grouped products - NOW SHOWS ALL PRODUCTS */}
           {Object.entries(filteredGroupedProducts).map(
             ([locationKey, products]) => {
               const [lat, long] = locationKey.split(',').map(parseFloat);
@@ -589,12 +573,6 @@ export default function MapScreen() {
                     latitude: lat,
                     longitude: long,
                   }}
-                  // title={`${products.length} product${
-                  //   products.length > 1 ? 's' : ''
-                  // }`}
-                  // description={`${products.length} item${
-                  //   products.length > 1 ? 's' : ''
-                  // } available at this location`}
                   onPress={() => handleMarkerPress(locationKey)}>
                   <View
                     style={{
