@@ -284,14 +284,50 @@ const ProductDashboard = () => {
     <View style={styles.container}>
       {/* Stats Section as Buttons */}
       <View style={styles.statsContainer}>
-        <View style={[styles.statBox,{marginRight:mvs(5)}]}>
-          <Text style={styles.statLabel}>Total No. of Ads</Text>
-          <Text style={styles.statValue}>480</Text>
-        </View>
-        <View style={styles.statBox}>
-          <Text style={styles.statLabel}>No. of Ads This Month</Text>
-          <Text style={styles.statValue}>22</Text>
-        </View>
+        <TouchableOpacity
+          style={[
+            styles.statBox,
+            {marginRight: mvs(10)},
+            activeView === 'total' && {
+              backgroundColor: 'rgba(196, 218, 106, 0.14)',
+              borderWidth: 1,
+            },
+          ]}
+          onPress={() => setActiveView('total')}>
+          <Text
+            style={[
+              styles.statLabel,
+              activeView === 'total' && {color: '#000'},
+            ]}>
+            Total No. of Ads
+          </Text>
+          <Text style={[styles.statValue]}>{dashboardData.total_ads}</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[
+            styles.statBox,
+            activeView === 'monthly' && {
+              backgroundColor: 'rgba(196, 218, 106, 0.14)',
+              borderWidth: 1,
+            },
+          ]}
+          onPress={() => setActiveView('monthly')}>
+          <Text
+            style={[
+              styles.statLabel,
+              activeView === 'monthly' && {color: '#000'},
+            ]}>
+            No. of Products This Ads
+          </Text>
+          <Text
+            style={[
+              styles.statValue,
+              activeView === 'monthly' && {color: '#000'},
+            ]}>
+            {dashboardData.ads_this_month}
+          </Text>
+        </TouchableOpacity>
       </View>
 
       {/* Chart and Legend Section */}
