@@ -30,11 +30,12 @@ import {Snackbar} from 'react-native-paper';
 import {colors} from '../../../util/color';
 import {MapMarkerSVG} from '../../../assets/svg';
 import BannerSlider from '../../../components/atoms/BannerSlider';
+import ProductDashboard from '../../../components/atoms/Dashboard';
 
 const SearchScreen = () => {
   const [likedItems, setLikedItems] = useState({});
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [setSelectedProduct] = useState(null);
+  const [selectedProduct, setSelectedProduct] = useState(null);
   const navigation = useNavigation();
   const [isSearchMode, setIsSearchMode] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -46,7 +47,8 @@ const SearchScreen = () => {
   const dispatch = useDispatch();
   const [apiCategories, setApiCategories] = useState([]);
   const [apiProducts, setApiProducts] = useState([]);
-  const [setCategoriesLoading] = useState(true);
+  const [categoriesLoading, setCategoriesLoading] = useState(true);
+
   const [modalVisible, setModalVisible] = useState(false);
   const [refreshing, setRefreshing] = useState(false); // New state for pull-to-refresh
   const isFocused = useIsFocused();
@@ -301,7 +303,10 @@ const SearchScreen = () => {
 
         <CategorySection categories={apiCategories} />
 
-        {!isModalVisible && hasFetchedVerification && <BannerSlider />}
+        {/* {!isModalVisible && hasFetchedVerification && <BannerSlider />} */}
+        {!token ? null : role === 3 ? <BannerSlider /> : <ProductDashboard />}
+
+        {/* <BannerSlider /> */}
 
         {/* {role !== 2 && role !== '2' && (
           <GalleryContainer

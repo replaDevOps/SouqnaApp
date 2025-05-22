@@ -13,10 +13,7 @@ import {
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {CommonActions, useNavigation, useRoute} from '@react-navigation/native';
-import axios from 'axios';
 import {useSelector} from 'react-redux';
-// import {launchImageLibrary} from 'react-native-image-picker';
-// import ImagePicker from 'react-native-image-crop-picker';
 import {Snackbar} from 'react-native-paper';
 import MainHeader from '../../../../components/Headers/MainHeader';
 import {MyButton} from '../../../../components/atoms/InputFields/MyButton';
@@ -29,8 +26,6 @@ import PriceInputWithDropdown from '../../../../components/atoms/InputFields/Pri
 import API from '../../../../api/apiServices';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {launchImageLibrary} from 'react-native-image-picker';
-import PhotoManipulator from 'react-native-photo-manipulator';
-import ImageResizer from 'react-native-image-resizer';
 import {styles} from '../CreateProduct/styles';
 
 const UpdateProduct = () => {
@@ -88,6 +83,30 @@ const UpdateProduct = () => {
         condition,
       } = route.params;
 
+      const getImageUri = img => {
+        if (typeof img === 'string') {
+          return img.startsWith('file://')
+            ? img
+            : `https://backend.souqna.net/${img}`;
+        } else if (img?.uri) {
+          return img.uri.startsWith('file://')
+            ? img.uri
+            : `https://backend.souqna.net/${img.uri}`;
+        } else if (img?.path) {
+          return `https://backend.souqna.net${img.path}`;
+        }
+        return '';
+      };
+
+      const formattedImages =
+        images?.map(img => ({
+          id: typeof img === 'object' && img?.id ? img.id : null,
+          uri: getImageUri(img),
+          fileName: getImageUri(img).split('/').pop(),
+          type: 'image/jpeg',
+          fileSize: 1000,
+        })) || [];
+
       setFormData({
         name: productName || '',
         description: description || '',
@@ -95,45 +114,17 @@ const UpdateProduct = () => {
         stock: stock?.toString() || '',
         discount: discount?.toString() || '',
         specialOffer: specialOffer || '',
-        images: images?.map(img => {
-          let uri = '';
-          let id = null;
-
-          if (typeof img === 'string') {
-            uri = img.startsWith('file://')
-              ? img
-              : `https://backend.souqna.net/${img}`;
-          } else if (img?.uri) {
-            uri = img.uri.startsWith('file://')
-              ? img.uri
-              : `https://backend.souqna.net/${img.uri}`;
-          } else if (img?.path) {
-            uri = `https://backend.souqna.net${img.path}`;
-          }
-
-          // If img is an object, check if it has an id property:
-          if (typeof img === 'object' && img?.id) {
-            id = img.id;
-          }
-
-          return {
-            id, // store the id here
-            uri,
-            fileName: uri.split('/').pop(),
-            type: 'image/jpeg',
-            fileSize: 1000,
-          };
-        }),
-
+        images: formattedImages,
         location: location || '',
         lat: lat || '',
         long: long || '',
         condition: condition === 1 ? 'New' : condition === 2 ? 'Used' : '',
       });
 
-      setSelectedCondition(condition === 1 ? 'New' : 'Used');
+      if (condition === 1) setSelectedCondition('New');
+      else if (condition === 2) setSelectedCondition('Used');
     }
-  }, []);
+  }, [route.params]);
 
   const getImageSize = uri =>
     new Promise((resolve, reject) => {
@@ -144,80 +135,73 @@ const UpdateProduct = () => {
       );
     });
 
-  const handleChooseImages = async () => {
+  const pickAndUploadImages = async () => {
     try {
       const result = await launchImageLibrary({
         mediaType: 'photo',
-        selectionLimit: 0, // allow multiple images
+        selectionLimit: 0, // multiple images allowed
       });
 
       if (result.didCancel) return;
 
-      const assets = result.assets || [];
+      const newImages = result.assets.map(asset => ({
+        uri: asset.uri,
+        fileName: asset.fileName,
+        type: asset.type,
+        fileSize: asset.fileSize,
+      }));
+      console.log('NEW IMAGES: ', newImages);
+      // Now call uploadImages with the selected images
+      await uploadImages(newImages);
 
-      const targetWidth = 1024;
-      const targetHeight = 900;
-
-      const processedImages = await Promise.all(
-        assets.map(async asset => {
-          let sourceUri = asset.uri.startsWith('file://')
-            ? asset.uri
-            : `file://${asset.uri}`;
-
-          // Resize the image to ensure it meets minimum dimensions
-          const resized = await ImageResizer.createResizedImage(
-            sourceUri,
-            targetWidth,
-            targetHeight,
-            'JPEG',
-            80,
-            0,
-            undefined,
-            false,
-            {mode: 'contain'}, // Optional: avoid upscaling too much
-          );
-
-          sourceUri = resized.uri.startsWith('file://')
-            ? resized.uri
-            : `file://${resized.uri}`;
-
-          const {width: actualWidth, height: actualHeight} = await getImageSize(
-            sourceUri,
-          );
-
-          // Calculate crop region for center-cropping
-          const cropRegion = {
-            x: Math.max(0, (actualWidth - targetWidth) / 2),
-            y: Math.max(0, (actualHeight - targetHeight) / 2),
-            width: targetWidth,
-            height: targetHeight,
-          };
-
-          // Crop the image
-          const croppedPath = await PhotoManipulator.crop(
-            sourceUri,
-            cropRegion,
-          );
-
-          return {
-            uri: croppedPath.startsWith('file://')
-              ? croppedPath
-              : `file://${croppedPath}`,
-            fileName: asset.fileName || croppedPath.split('/').pop(),
-            type: asset.type || 'image/jpeg',
-            fileSize: asset.fileSize || 0,
-          };
-        }),
-      );
-
-      // Update your form data with cropped images
+      // Also update local form data images if needed
       setFormData(prev => ({
         ...prev,
-        images: [...prev.images, ...processedImages],
+        images: [...prev.images, ...newImages],
       }));
+    } catch (err) {
+      console.error('Image picker error:', err);
+      setSnackbarMessage('Failed to pick or upload images');
+      setSnackbarVisible(true);
+    }
+  };
+
+  // Upload new images API call
+  const uploadImages = async newImages => {
+    try {
+      if (!newImages || newImages.length === 0) return;
+
+      const formData = new FormData();
+      formData.append('id', productId);
+
+      newImages.forEach((img, idx) => {
+        formData.append('images[]', {
+          uri: img.uri,
+          name: img.fileName || `image_${idx}.jpg`,
+          type: img.type || 'image/jpeg',
+        });
+      });
+
+      const response = await API.post('uploadProductImage', formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      if (response.data.success) {
+        setSnackbarMessage(
+          response.data.message || 'Images uploaded successfully',
+        );
+        setSnackbarVisible(true);
+        // navigation.replace('MainTabs')
+      } else {
+        setSnackbarMessage('Image upload failed');
+        setSnackbarVisible(true);
+      }
     } catch (error) {
-      console.error('Image selection error:', error);
-      setSnackbarMessage('Failed to pick or process image.');
+      console.error('Upload image error:', error);
+      setSnackbarMessage('Error uploading images');
       setSnackbarVisible(true);
     }
   };
@@ -288,25 +272,7 @@ const UpdateProduct = () => {
     data.append('categoryID', categoryId);
     data.append('subCategoryID', subCategoryId);
 
-    for (let i = 0; i < formData.images.length; i++) {
-      const image = formData.images[i];
-      if (image.fileSize > 2 * 1024 * 1024) {
-        setSnackbarMessage(`Image ${i + 1} must be under 2MB.`);
-        setSnackbarVisible(true);
-        setLoading(false);
-        return;
-      }
-
-      data.append('images[]', {
-        uri: image.uri,
-        name: image.fileName || `photo_${i}.jpg`,
-        type: image.type || 'image/jpeg',
-      });
-    }
-
     data.append('stock', formData.stock);
-    // data.append('discount', formData.discount);
-    // data.append('specialOffer', formData.specialOffer);
     data.append('location', formData.location);
     data.append('lat', formData.lat);
     data.append('long', formData.long);
@@ -370,21 +336,7 @@ const UpdateProduct = () => {
       if (error.response?.status === 403) {
         errorMessage = t('profileNotVerified');
       }
-      // Check if it's an image size error
-      else if (
-        typeof errorMessage === 'string' &&
-        errorMessage.includes('images.')
-      ) {
-        errorMessage = errorMessage.replace(/images\.(\d+)/g, (match, p1) => {
-          const imageIndex = parseInt(p1, 10) + 1;
-          return `Image ${imageIndex}`;
-        });
 
-        errorMessage = errorMessage.replace(
-          'greater than 2048 kilobytes',
-          'must be less than 2MB',
-        );
-      }
       setSnackbarMessage(error.message || 'Something went wrong. Try again!');
       setSnackbarVisible(true);
     } finally {
@@ -399,9 +351,6 @@ const UpdateProduct = () => {
         routes: [
           {
             name: 'MainTabs',
-            params: {
-              screen: 'Advertise',
-            },
           },
         ],
       }),
@@ -464,7 +413,7 @@ const UpdateProduct = () => {
               {formData.images.length === 0 ? (
                 <TouchableOpacity
                   style={styles.addButton}
-                  onPress={handleChooseImages}>
+                  onPress={pickAndUploadImages}>
                   <Text style={styles.addButtonText}>{t('addImages')}</Text>
                 </TouchableOpacity>
               ) : (
@@ -475,14 +424,16 @@ const UpdateProduct = () => {
                         horizontal
                         showsHorizontalScrollIndicator={false}
                         data={[{isUploadIcon: true}, ...formData.images]}
-                        keyExtractor={(item, index) => index.toString()}
+                        keyExtractor={(item, index) =>
+                          item.id ? item.id.toString() : `upload-icon-${index}`
+                        }
                         contentInset={{right: 25}}
                         contentContainerStyle={styles.flatListContainer}
                         // style
                         renderItem={({item, index}) =>
                           item.isUploadIcon ? (
                             <TouchableOpacity
-                              onPress={handleChooseImages}
+                              onPress={pickAndUploadImages}
                               style={styles.iconRow}>
                               <UploadSVG
                                 width={22}
@@ -701,14 +652,14 @@ const UpdateProduct = () => {
 
           {/* Submit Button */}
           <MyButton
-            title={loading ? t('submitting') : t('submitProduct')}
+            title={loading ? t('submitting') : t('Update Product')}
             style={styles.submitButton}
             onPress={submitProduct}
             disabled={loading}>
             {loading ? (
               <ActivityIndicator color={colors.green} />
             ) : (
-              <Text style={styles.submitButtonText}>{t('submit')}</Text>
+              <Text style={styles.submitButtonText}>{t('Update Product')}</Text>
             )}
           </MyButton>
         </ScrollView>
