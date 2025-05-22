@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
   },
   myLocationButton: {
     position: 'absolute',
-    bottom: mvs(110),
+    // bottom: mvs(110),
     right: mvs(18),
     backgroundColor: colors.lightgreen,
     width: mvs(60),
