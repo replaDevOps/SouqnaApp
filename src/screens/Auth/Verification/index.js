@@ -248,7 +248,7 @@ const VerificationScreen = () => {
   }, [formData, idFrontSide, idBackSide, selfie, originalData]);
 
   const formatIdNumber = raw => {
-    const digits = raw.replace(/\D/g, ''); // Only keep digits
+    const digits = raw.replace(/\D/g, '').slice(0, 13); // Only keep digits and limit to 13
     let result = '';
 
     if (digits.length <= 5) {
@@ -258,7 +258,6 @@ const VerificationScreen = () => {
     } else {
       result = `${digits.slice(0, 5)} ${digits.slice(5, 12)} ${digits.slice(
         12,
-        13,
       )}`;
     }
 
