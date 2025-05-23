@@ -16,7 +16,6 @@ import {mvs} from '../../util/metrices';
 import Profile from '../../screens/App/Profile';
 import SearchScreen from '../../screens/App/Search';
 import FavouriteScreen from '../../screens/App/Favourite';
-import CartScreen from '../../screens/App/Cart';
 import AdvertiseScreen from '../../screens/App/Advertise';
 import PlusSvg from '../../assets/svg/plussvg';
 import Chat from '../../screens/App/Chat';

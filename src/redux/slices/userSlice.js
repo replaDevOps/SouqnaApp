@@ -53,6 +53,7 @@ const userSlice = createSlice({
         state.role = action.payload;
       }
     },
+    resetUser: () => initialState,
   },
 });
 
@@ -62,6 +63,7 @@ export const {
   setVerificationStatus,
   setRole,
   setActualRole,
+  resetUser,
 } = userSlice.actions;
 
 export default userSlice.reducer;

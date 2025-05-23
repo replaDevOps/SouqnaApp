@@ -17,10 +17,12 @@ import {t} from 'i18next';
 import {useDispatch, useSelector} from 'react-redux';
 import {setActualRole, setRole} from '../../redux/slices/userSlice';
 import {Snackbar} from 'react-native-paper';
-import {useNavigation} from '@react-navigation/native';
+import {CommonActions, useNavigation} from '@react-navigation/native';
 import SwitchModal from '../Modals/SwitchModal';
 import {switchUserRole} from '../../api/apiServices'; // Updated to match the import from your document
 const {height} = Dimensions.get('window');
+import {RNRestart} from 'react-native-restart';
+
 const headerHeight = height * 0.28;
 
 export default function ProfileHeader({OnPressLogout, onRoleSwitch}) {
@@ -41,30 +43,25 @@ export default function ProfileHeader({OnPressLogout, onRoleSwitch}) {
   const [fadeAnim] = useState(new Animated.Value(1));
   const navigation = useNavigation();
   console.log('{Role Switch}', onRoleSwitch);
-  
+
   useEffect(() => {
     setIsSellerOn(activeRole === '2' || activeRole === 2);
   }, [activeRole]);
 
   const toggleSellerMode = () => {
-    // First, trigger the skeleton loading via parent component
+    // Trigger parent loading indicator
     if (onRoleSwitch) {
       onRoleSwitch();
     }
 
-    if (actualRole === '4' || actualRole === 4) {
-      let newRole;
-      let newSellerState;
+    const isCurrentlySeller = activeRole === '2' || activeRole === 2;
+    const isCurrentlyBuyer = activeRole === '3' || activeRole === 3;
 
-      if (isSellerOn) {
-        // If currently seller and toggling -> switch to buyer (role 3)
-        newRole = '3';
-        newSellerState = false;
-      } else {
-        // If currently buyer and toggling back -> switch to seller (role 2)
-        newRole = '2';
-        newSellerState = true;
-      }
+    // If actual role is 4 (has both buyer and seller)
+    if (actualRole === '4' || actualRole === 4) {
+      // Just switch without showing modal
+      const newRole = isCurrentlySeller ? 3 : 2;
+      const newSellerState = !isCurrentlySeller;
 
       dispatch(setRole(newRole));
       setIsSellerOn(newSellerState);
@@ -72,10 +69,21 @@ export default function ProfileHeader({OnPressLogout, onRoleSwitch}) {
       const message = newSellerState
         ? t('Switched to Seller Account')
         : t('Switched to Buyer Account');
+
       setSnackbarMessage(message);
       setSnackbarVisible(true);
-    } else {
+    } else if (
+      actualRole === '2' ||
+      actualRole === 2 ||
+      actualRole === '3' ||
+      actualRole === 3
+    ) {
+      // Only show modal for standard buyer/seller switching
       setModalVisible(true);
+    } else {
+      // Fallback (optional)
+      setSnackbarMessage(t('Role switching not permitted.'));
+      setSnackbarVisible(true);
     }
   };
 
@@ -129,8 +137,6 @@ export default function ProfileHeader({OnPressLogout, onRoleSwitch}) {
       useNativeDriver: true,
     }).start();
   };
-
-  
 
   return (
     <View style={styles.headerContainer}>
