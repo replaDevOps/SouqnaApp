@@ -79,10 +79,16 @@ const VerificationStatus = () => {
       </View>
     );
   }
-  if (loading) {
-    return <ActivityIndicator size="small" color={colors.green} />;
+  if (apiStatus === 1) {
+    return (
+      <View style={styles.progressContainer}>
+        <View style={styles.InprogressContainer}>
+          <View style={styles.orangeDot} />
+          <Text style={styles.InprogressText}>{t('inProgress')}</Text>
+        </View>
+      </View>
+    );
   }
-
   // return (
   //   <View style={styles.progressContainer}>
   //     <View style={styles.InprogressContainer}>
@@ -91,6 +97,9 @@ const VerificationStatus = () => {
   //     </View>
   //   </View>
   // );
+  if (loading) {
+    return <ActivityIndicator size="small" color={colors.green} />;
+  }
 };
 
 const styles = StyleSheet.create({

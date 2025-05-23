@@ -25,6 +25,10 @@ const OTPScreen = ({navigation}) => {
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [code, setCode] = useState(['', '', '', '']);
+  // New state for enabling resend
+  const [resendEnabled, setResendEnabled] = useState(false);
+  // New state for showing resend loading
+  const [resendLoading, setResendLoading] = useState(false);
   const inputRefs = useRef([]);
   const [loading, setLoading] = useState(false);
   const showSnackbar = message => {
@@ -40,6 +44,33 @@ const OTPScreen = ({navigation}) => {
       }
     }, 100);
   }, []);
+  // Enable resend button after 10 seconds on mount
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setResendEnabled(true);
+    }, 10000);
+
+    return () => clearTimeout(timer);
+  }, []);
+  const handleResendCode = async () => {
+    setResendLoading(true);
+    try {
+      // Example API call or function to resend OTP, adapt as per your api
+      // Here you might want to call some resendOtp(email) function
+      // For demo, just wait 1.5s and show a snackbar:
+      await new Promise(resolve => setTimeout(resolve, 1500));
+
+      showSnackbar('OTP resent successfully.');
+      setResendEnabled(false); // disable button again after resend
+
+      // Restart the 10 second timer to enable again
+      setTimeout(() => setResendEnabled(true), 10000);
+    } catch (error) {
+      showSnackbar('Failed to resend OTP. Please try again.');
+    } finally {
+      setResendLoading(false);
+    }
+  };
 
   const handleCodeChange = (text, index) => {
     // Only accept single digit inputs
@@ -148,7 +179,29 @@ const OTPScreen = ({navigation}) => {
               <Text style={styles.continueButtonText}>Continue</Text>
             )}
           </TouchableOpacity>
+
+          {/* Resend Code Button */}
+          <TouchableOpacity
+            disabled={!resendEnabled || resendLoading}
+            onPress={handleResendCode}
+            style={[
+              styles.resendButton,
+              (!resendEnabled || resendLoading) && styles.resendButtonDisabled,
+            ]}>
+            {resendLoading ? (
+              <ActivityIndicator size="small" color={colors.lightgreen} />
+            ) : (
+              <Text
+                style={[
+                  styles.resendButtonText,
+                  !resendEnabled && {color: 'gray'},
+                ]}>
+                Resend Code
+              </Text>
+            )}
+          </TouchableOpacity>
         </View>
+
         <Snackbar
           visible={snackbarVisible}
           onDismiss={() => setSnackbarVisible(false)}
@@ -244,6 +297,18 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 18,
     fontWeight: '500',
+  },
+  resendButton: {
+    marginTop: 20,
+    alignSelf: 'center',
+  },
+  resendButtonDisabled: {
+    opacity: 0.5,
+  },
+  resendButtonText: {
+    color: colors.lightgreen,
+    fontWeight: '600',
+    fontSize: 16,
   },
 });
 

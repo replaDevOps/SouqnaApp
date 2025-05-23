@@ -24,6 +24,7 @@ import InboxScreen from '../../screens/App/Inbox';
 import {fetchNotifications} from '../../api/apiServices';
 import {setRole} from '../../redux/slices/userSlice';
 import AddModal from '../../components/Modals/AddModal';
+import VerificationModal from '../../components/Modals/VerificationModal';
 
 const Tab = createBottomTabNavigator();
 
@@ -32,8 +33,12 @@ const MyTabs = () => {
     token,
     role: activeRole,
     actualRole,
+    verificationStatus,
   } = useSelector(state => state.user); // Token will indicate if the user is logged in
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [verificationModalVisible, setVerificationModalVisible] =
+    useState(false);
+
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -76,16 +81,36 @@ const MyTabs = () => {
   const handleTabPress = (e, route, navigation) => {
     if (!token) {
       e.preventDefault();
-      setIsModalVisible(true);
-    } else {
-      navigation.navigate(route.name);
+      setVerificationModalVisible(true);
+    } // Show modal if verificationStatus is 0 or 1 AND user clicks Advertise tab
+    if (
+      route.name === 'Advertise' &&
+      (verificationStatus === 0 || verificationStatus === 1)
+    ) {
+      e.preventDefault();
+      setVerificationModalVisible(true);
+      return;
     }
+
+    navigation.navigate(route.name);
   };
+
   useEffect(() => {
     if (activeRole === 4) {
       dispatch(setRole(2));
     }
   }, [activeRole]);
+
+  const handleVerifyProfile = () => {
+    // Logic to handle profile verification
+    setVerificationModalVisible(false);
+    // Navigate to the Verification screen
+    navigation.navigate('Verification');
+  };
+
+  const handleSkipVerification = () => {
+    setVerificationModalVisible(false);
+  };
 
   const getIconComponent = React.useCallback((routeName, focused) => {
     const activeColor = 'rgba(70, 80, 45, 1)';
@@ -241,6 +266,12 @@ const MyTabs = () => {
       <AddModal
         visible={isModalVisible}
         onClose={() => setIsModalVisible(false)}
+      />
+      <VerificationModal
+        visible={verificationModalVisible}
+        onVerify={handleVerifyProfile}
+        onSkip={handleSkipVerification}
+        onClose={() => setVerificationModalVisible(false)}
       />
     </View>
   );
