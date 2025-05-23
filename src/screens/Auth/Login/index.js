@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   View,
   KeyboardAvoidingView,
@@ -7,13 +7,19 @@ import {
   Alert,
   ActivityIndicator,
   StatusBar,
+  Animated,
+  Modal,
+  TouchableOpacity,
+  Easing,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
 import Regular from '../../../typography/RegularText';
 import styles from './styles';
 import {MyButton} from '../../../components/atoms/InputFields/MyButton';
-import {setUser} from '../../../redux/slices/userSlice';
+import {setRole, setUser} from '../../../redux/slices/userSlice';
 import {EYESVG, SouqnaLogo} from '../../../assets/svg';
 import PrimaryPasswordInput from '../../../components/atoms/InputFields/PrimaryPasswordInput';
 import Bold from '../../../typography/BoldText';
@@ -34,9 +40,25 @@ const LoginScreen = () => {
   const [loading, setLoading] = useState(false);
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [showRoleSelection, setShowRoleSelection] = useState(false);
 
   // const email = 'jmubashir272@gmail.com';
   // const password = 'admin123@'; // Static password for testing
+
+  // Add animation value
+  const slideAnim = useRef(new Animated.Value(1000)).current;
+
+  // Animate modal in when `showRoleModal` is true
+  useEffect(() => {
+    if (showRoleSelection) {
+      Animated.timing(slideAnim, {
+        toValue: 0,
+        duration: 400,
+        easing: Easing.out(Easing.exp),
+        useNativeDriver: true,
+      }).start();
+    }
+  }, [showRoleSelection]);
 
   const handleLogin = async () => {
     if (!isEmailValid(email)) {
@@ -61,6 +83,7 @@ const LoginScreen = () => {
       if (res.success) {
         const user = res.user;
 
+        // Save actual role first
         dispatch(
           setUser({
             token: user.token,
@@ -69,28 +92,25 @@ const LoginScreen = () => {
             id: user.id,
             name: user.name,
             email: user.email,
-            role: user.role,
-            password: password,
+            actualRole: user.role, // Save actual role
+            role: user.role === 4 ? null : user.role, // Wait for active role selection if both
+            password,
             sellerType: user.sellerType,
           }),
         );
-        const message =
-          user.role === 3
-            ? 'Buyer logged in successfully'
-            : user.role === 2
-            ? 'Seller logged in successfully'
-            : user.role === 4
-            ? 'Logged in as Both'
-            : 'Login successful';
 
-        setSnackbarMessage(message);
-        setSnackbarVisible(true); // ✅ Show snackbar
-        console.log('Login successful:', user);
-
-        setTimeout(() => {
-          const destination = 'MainTabs';
-          navigation.replace(destination);
-        }, 1000);
+        if (user.role === 4) {
+          // Show role selection modal if both
+          setShowRoleSelection(true);
+        } else {
+          setSnackbarMessage(
+            user.role === 3
+              ? 'Buyer logged in successfully'
+              : 'Seller logged in successfully',
+          );
+          setSnackbarVisible(true);
+          setTimeout(() => navigation.replace('MainTabs'), 1000);
+        }
       } else {
         setSnackbarMessage(
           res.error || res.message || 'Invalid email or password',
@@ -142,69 +162,119 @@ const LoginScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" />
-      <Header title={'Help'} />
-      <View style={styles.HeaderContainer}>
-        <SouqnaLogo width={50} height={50} />
-        <Bold style={styles.title}>Souqna</Bold>
-      </View>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+        <View style={{flex: 1}}>
+          <StatusBar barStyle="dark-content" />
+          <Header title={'Help'} />
 
-      <PrimaryPasswordInput
-        value={email}
-        onChangeText={setEmail}
-        placeholder="E-Mail"
-        error={emailError}
-        clearText={handleClearEmail} // Pass clearText function to clear email input
-      />
+          <View style={styles.HeaderContainer}>
+            <SouqnaLogo width={50} height={50} />
+            <Bold style={styles.title}>Souqna</Bold>
+          </View>
 
-      <View style={styles.passwordContainer}>
-        <PrimaryPasswordInput
-          value={password}
-          onChangeText={setPassword}
-          placeholder="Password"
-          rightIcon={<EYESVG />}
-          secureTextEntry={securePassword}
-          error={passwordError}
-        />
-      </View>
-      <View style={styles.buttonContainer}>
-        <MyButton
-          title={
-            loading ? (
-              <ActivityIndicator size="large" color={colors.green} />
-            ) : (
-              'Login'
-            )
-          }
-          onPress={handleLogin}
-          disabled={loading || !isFormValid}
-        />
-        <Regular style={styles.registerText}>
-          Don’t have an account?{' '}
-          <Regular style={styles.registerLink} onPress={navigateToRegister}>
-            Register
-          </Regular>
-        </Regular>
-      </View>
-      <Snackbar
-        visible={snackbarVisible}
-        onDismiss={() => setSnackbarVisible(false)}
-        duration={Snackbar.DURATION_SHORT}
-        wrapperStyle={{
-          position: 'absolute',
-          bottom: 40,
-          left: 0,
-          right: 0,
-          alignItems: 'center', // centers the snackbar horizontally
-        }}
-        style={{
-          backgroundColor: colors.lightgreen,
-          width: '90%',
-          borderRadius: 8,
-          left: 30,
-        }}>
-        <Regular style={{textAlign: 'center'}}>{snackbarMessage}</Regular>
-      </Snackbar>
+          <PrimaryPasswordInput
+            value={email}
+            onChangeText={setEmail}
+            placeholder="E-Mail"
+            error={emailError}
+            clearText={handleClearEmail} // Pass clearText function to clear email input
+          />
+
+          <View style={styles.passwordContainer}>
+            <PrimaryPasswordInput
+              value={password}
+              onChangeText={setPassword}
+              placeholder="Password"
+              rightIcon={<EYESVG />}
+              secureTextEntry={securePassword}
+              error={passwordError}
+            />
+          </View>
+          <View style={styles.buttonContainer}>
+            <MyButton
+              title={
+                loading ? (
+                  <ActivityIndicator size="large" color={colors.green} />
+                ) : (
+                  'Login'
+                )
+              }
+              onPress={handleLogin}
+              disabled={loading || !isFormValid}
+            />
+            <Regular style={styles.registerText}>
+              Don’t have an account?{' '}
+              <Regular style={styles.registerLink} onPress={navigateToRegister}>
+                Register
+              </Regular>
+            </Regular>
+          </View>
+          <Snackbar
+            visible={snackbarVisible}
+            onDismiss={() => setSnackbarVisible(false)}
+            duration={Snackbar.DURATION_SHORT}
+            wrapperStyle={{
+              position: 'absolute',
+              bottom: 40,
+              left: 0,
+              right: 0,
+              alignItems: 'center', // centers the snackbar horizontally
+            }}
+            style={{
+              backgroundColor: colors.lightgreen,
+              width: '90%',
+              borderRadius: 8,
+              left: 30,
+            }}>
+            <Regular style={{textAlign: 'center'}}>{snackbarMessage}</Regular>
+          </Snackbar>
+          {showRoleSelection && (
+            <Modal transparent visible={showRoleSelection} animationType="none">
+              <View style={styles.modalOverlay}>
+                <Animated.View
+                  style={[
+                    styles.modalContainer,
+                    {transform: [{translateY: slideAnim}]},
+                  ]}>
+                  <Bold style={styles.modalTitle}>Choose Role</Bold>
+                  <Regular style={styles.modalText}>
+                    Do you want to login as a Buyer or Seller?
+                  </Regular>
+
+                  <View
+                    style={{flexDirection: 'row', justifyContent: 'center'}}>
+                    <TouchableOpacity
+                      style={styles.modalButton}
+                      onPress={() => {
+                        dispatch(setRole(3)); // Buyer
+                        console.log('Role set as 3 (Buyer)');
+                        setShowRoleSelection(false);
+                        navigation.replace('MainTabs');
+                      }}>
+                      <Regular style={styles.modalButtonText}>
+                        Login as Buyer
+                      </Regular>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                      style={styles.modalButton}
+                      onPress={() => {
+                        dispatch(setRole(2)); // Seller
+                        console.log('Role set as 2 (Seller)');
+                        setShowRoleSelection(false);
+                        navigation.replace('MainTabs');
+                      }}>
+                      <Regular style={styles.modalButtonText}>
+                        Login as Seller
+                      </Regular>
+                    </TouchableOpacity>
+                  </View>
+                </Animated.View>
+              </View>
+            </Modal>
+          )}
+        </View>
+      </TouchableWithoutFeedback>
     </SafeAreaView>
   );
 };

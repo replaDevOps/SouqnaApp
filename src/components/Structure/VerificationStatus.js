@@ -1,19 +1,59 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, ActivityIndicator} from 'react-native';
 import {colors} from '../../util/color';
 import {useTranslation} from 'react-i18next';
-import Loader from '../Loader';
-import {mvs} from '../../util/metrices';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
+import {useIsFocused} from '@react-navigation/native';
+import API from '../../api/apiServices';
+import {setVerificationStatus} from '../../redux/slices/userSlice';
 
 const VerificationStatus = () => {
   const {t} = useTranslation();
-  const {verificationStatus} = useSelector(state => state.user);
+  const dispatch = useDispatch();
+  const isFocused = useIsFocused();
+  const {role, token, verificationStatus} = useSelector(state => state.user);
+  const [loading, setLoading] = useState(true);
+  const [apiStatus, setApiStatus] = useState();
+  console.log(
+    'verification status in component from redux: ',
+    verificationStatus,
+  );
+  useEffect(() => {
+    if (role === 3 || !token || !isFocused) return;
 
-  if (verificationStatus === null) {
+    const fetchVerificationStatus = async () => {
+      setLoading(true);
+      try {
+        const response = await API.get('viewVerification', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const apiStatus = response.data?.data?.status ?? 0;
+        dispatch(setVerificationStatus(apiStatus));
+        setApiStatus(apiStatus);
+      } catch (error) {
+        console.error('Verification API error:', error);
+        if (
+          error.response &&
+          error.response.status === 401 &&
+          error.response.data.message === 'Unauthenticated'
+        ) {
+          dispatch(setVerificationStatus(0));
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchVerificationStatus();
+  }, [token, dispatch, isFocused, role]);
+
+  if (apiStatus === null) {
     return <ActivityIndicator size="small" color={colors.green} />;
   }
-  if (verificationStatus === 2) {
+  if (apiStatus === 2) {
     return (
       <View style={styles.verifiedContainer}>
         <View style={styles.greenDot} />
@@ -22,7 +62,7 @@ const VerificationStatus = () => {
     );
   }
 
-  if (verificationStatus === 3) {
+  if (apiStatus === 3) {
     return (
       <View style={styles.unverifiedContainer}>
         <View style={styles.redDot} />
@@ -31,7 +71,7 @@ const VerificationStatus = () => {
     );
   }
 
-  if (verificationStatus === 0) {
+  if (apiStatus === 0) {
     return (
       <View style={styles.unverifiedContainer}>
         <View style={styles.redDot} />
@@ -39,20 +79,18 @@ const VerificationStatus = () => {
       </View>
     );
   }
- 
+  if (loading) {
+    return <ActivityIndicator size="small" color={colors.green} />;
+  }
 
-  return (
-    <View style={styles.progressContainer}>
-             
-      <View style={styles.InprogressContainer}>
-                
-        <View style={styles.orangeDot} />
-                <Text style={styles.InprogressText}>{t('inProgress')}</Text>
-              
-      </View>
-          
-    </View>
-  );
+  // return (
+  //   <View style={styles.progressContainer}>
+  //     <View style={styles.InprogressContainer}>
+  //       <View style={styles.orangeDot} />
+  //       <Text style={styles.InprogressText}>{t('inProgress')}</Text>
+  //     </View>
+  //   </View>
+  // );
 };
 
 const styles = StyleSheet.create({

@@ -3,26 +3,44 @@ import {colors} from '../../../util/color';
 import {mvs} from '../../../util/metrices';
 
 const styles = StyleSheet.create({
-  modalOverlay: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  modalContainer: {
-    backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 10,
-    width: '80%',
-    alignItems: 'center',
-  },
+  // modalOverlay:lovigoy
   modalText: {
+    textAlign: 'center',
     fontSize: 16,
     marginBottom: 20,
   },
+  modalOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 10,
+  },
+
+  modalContainer: {
+    width: '85%',
+    padding: 20,
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    elevation: 10,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+  },
+
+  modalTitle: {
+    fontSize: 18,
+    marginBottom: 16,
+    textAlign: 'center',
+  },
 
   modalButton: {
-    backgroundColor: colors.green,
+    backgroundColor: colors.lightgreen,
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 5,
