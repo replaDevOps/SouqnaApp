@@ -1,11 +1,12 @@
 import React from 'react';
-import {View} from 'react-native';
+import {Image, View} from 'react-native';
 import {Row} from '../../atoms/row';
 import {WorldSVG, ProfileSVG, ActiveSVG} from '../../../assets/svg';
 import Line from '../../atoms/InputFields/Line';
 import Bold from '../../../typography/BoldText';
 import Regular from '../../../typography/RegularText';
 import styles from './style';
+import {BASE_URL_Product} from '../../../api/apiServices';
 
 const ProviderInfo = ({provider}) => {
   const roleText =
@@ -22,6 +23,15 @@ const ProviderInfo = ({provider}) => {
         {provider.user?.name || provider.seller?.name}
       </Bold>
       <Regular style={styles.display}>{roleText}</Regular>
+
+      {/* <View style={{marginVertical: 10}}>
+        {provider.category?.image ? (
+          <Image
+            source={{uri: `${BASE_URL_Product}${provider.category.image}`}}
+            style={{width: 50, height: 50, resizeMode: 'contain'}} // Customize the style as needed
+          />
+        ) : null}
+      </View> */}
 
       <View style={styles.attributes}>
         <View style={styles.attributeBox}>

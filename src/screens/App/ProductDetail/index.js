@@ -220,7 +220,7 @@ const ProductDetail = () => {
       categoryId: product.categoryID,
       name: product.sub_category?.name,
       category: product.category.name,
-      categoryImage: product.categoryImage,
+      categoryImage: `${BASE_URL_Product}${product.category?.image}`,
       productId: product.id, // required for update API
       productName: product.name,
       description: product.description,
