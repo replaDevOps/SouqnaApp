@@ -394,6 +394,27 @@ export const verifyOtp = async otp => {
   }
 };
 
+export const resendOtp = async email => {
+  try {
+    const response = await API.post(
+      'resendOtp',
+      {email},
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+    return response.data;
+  } catch (error) {
+    console.error(
+      'Error resending OTP:',
+      error.response?.data || error.message,
+    );
+    throw error;
+  }
+};
+
 export const deleteProduct = async (productId, token) => {
   try {
     const response = await API.delete(`deleteProductSeller/${productId}`, {

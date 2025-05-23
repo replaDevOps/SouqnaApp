@@ -15,7 +15,7 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {colors} from '../../../util/color';
 import MainHeader from '../../../components/Headers/MainHeader';
 import Bold from '../../../typography/BoldText';
-import {verifyOtp} from '../../../api/apiServices';
+import {resendOtp, verifyOtp} from '../../../api/apiServices';
 import {Snackbar} from 'react-native-paper';
 import {useRoute} from '@react-navigation/native';
 
@@ -25,7 +25,7 @@ const OTPScreen = ({navigation}) => {
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [code, setCode] = useState(['', '', '', '']);
-  // New state for enabling resend
+  const [countdown, setCountdown] = useState(60);
   const [resendEnabled, setResendEnabled] = useState(false);
   // New state for showing resend loading
   const [resendLoading, setResendLoading] = useState(false);
@@ -46,25 +46,39 @@ const OTPScreen = ({navigation}) => {
   }, []);
   // Enable resend button after 10 seconds on mount
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setResendEnabled(true);
-    }, 10000);
+    let interval;
+    if (!resendEnabled) {
+      setCountdown(60);
+      interval = setInterval(() => {
+        setCountdown(prev => {
+          if (prev <= 1) {
+            clearInterval(interval);
+            setResendEnabled(true);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
 
-    return () => clearTimeout(timer);
-  }, []);
+    return () => clearInterval(interval);
+  }, [resendEnabled]);
+
   const handleResendCode = async () => {
     setResendLoading(true);
     try {
-      // Example API call or function to resend OTP, adapt as per your api
-      // Here you might want to call some resendOtp(email) function
-      // For demo, just wait 1.5s and show a snackbar:
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Replace with the actual email variable you're using
+      const email = userEmail; // e.g. from state or props
 
-      showSnackbar('OTP resent successfully.');
-      setResendEnabled(false); // disable button again after resend
+      const result = await resendOtp(email);
 
-      // Restart the 10 second timer to enable again
-      setTimeout(() => setResendEnabled(true), 10000);
+      if (result?.success) {
+        showSnackbar('OTP resent successfully.');
+      } else {
+        showSnackbar(result?.message || 'Failed to resend OTP.');
+      }
+      setResendEnabled(false);
+      setTimeout(() => setResendEnabled(true), 60000);
     } catch (error) {
       showSnackbar('Failed to resend OTP. Please try again.');
     } finally {
@@ -196,7 +210,7 @@ const OTPScreen = ({navigation}) => {
                   styles.resendButtonText,
                   !resendEnabled && {color: 'gray'},
                 ]}>
-                Resend Code
+                Resend Code{!resendEnabled ? ` (${countdown} sec)` : ''}
               </Text>
             )}
           </TouchableOpacity>
