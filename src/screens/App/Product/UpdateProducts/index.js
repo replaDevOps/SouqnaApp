@@ -31,7 +31,7 @@ import {styles} from '../CreateProduct/styles';
 const UpdateProduct = () => {
   const route = useRoute();
   const {
-    productId,
+    // productId,
     id: subCategoryId,
     categoryId,
     name,
@@ -56,6 +56,10 @@ const UpdateProduct = () => {
   });
 
   const [loading, setLoading] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedSubCategory, setSelectedSubCategory] = useState('');
+  const [categoryImage1, setCategoryImage1] = useState('');
+
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [selectedCondition, setSelectedCondition] = useState('');
@@ -334,78 +338,84 @@ const UpdateProduct = () => {
   //   }
   // };
 
-const submitProduct = async () => {
-  const payload = {
-    name: formData.name,
-    description: formData.description,
-    price: Number(formData.price),
-    id: route.params?.productId, // Important
-    categoryID: categoryId,
-    subCategoryID: subCategoryId,
-    stock: Number(formData.stock),
-    location: formData.location,
-    lat: formData.lat,
-    long: formData.long,
-    condition: conditionValue,
+  const submitProduct = async () => {
+    const payload = {
+      name: formData.name,
+      description: formData.description,
+      price: Number(formData.price),
+      id: route.params?.productId, // Important
+      categoryID: categoryId,
+      subCategoryID: subCategoryId,
+      stock: Number(formData.stock),
+      location: formData.location,
+      lat: formData.lat,
+      long: formData.long,
+      condition: conditionValue,
+    };
+
+    console.log('DATA BEING SENT :', payload);
+
+    try {
+      setLoading(true);
+      console.log('Calling:', 'updateProduct', payload);
+
+      const response = await API.post('updateProduct', payload, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      console.log('✅ Response:', response.data);
+
+      if (response.data.success) {
+        setSnackbarMessage(t('Product Updated'));
+
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [{name: 'MainTabs'}],
+          }),
+        );
+      } else {
+        setSnackbarMessage(
+          response.data.message || 'Failed to update product.',
+        );
+      }
+
+      setSnackbarVisible(true);
+    } catch (error) {
+      if (error.response) {
+        console.error('❌ Error Response:', error.response.data);
+      } else if (error.request) {
+        console.error('❌ No response:', error.request);
+      } else {
+        console.error('❌ Error Message:', error.message);
+      }
+
+      setSnackbarMessage('Network Error: Unable to update product.');
+      setSnackbarVisible(true);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  console.log('DATA BEING SENT :', payload);
-
-  try {
-    setLoading(true);
-    console.log('Calling:', 'updateProduct', payload);
-
-    const response = await API.post('updateProduct', payload, {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
+  const handleChange = () => {
+    navigation.navigate('Category', {
+      onSelect: (selectedCategory, selectedSubcategory) => {
+        console.log('Selected:', selectedCategory, selectedSubcategory);
+        setSelectedCategory(selectedCategory);
+        setSelectedSubCategory(selectedSubcategory);
+        setCategoryImage1(selectedCategory.image); // Add this if needed
+        if (selectedCategory) {
+          setSelectedCategory(selectedCategory);
+          setCategoryImage1(selectedCategory.image);
+        }
+        if (selectedSubCategory) {
+          setSelectedSubCategory(selectedSubCategory);
+        }
       },
     });
-
-    console.log('✅ Response:', response.data);
-
-    if (response.data.success) {
-      setSnackbarMessage(t('Product Updated'));
-
-      navigation.dispatch(
-        CommonActions.reset({
-          index: 0,
-          routes: [{ name: 'MainTabs' }],
-        })
-      );
-    } else {
-      setSnackbarMessage(response.data.message || 'Failed to update product.');
-    }
-
-    setSnackbarVisible(true);
-  } catch (error) {
-    if (error.response) {
-      console.error('❌ Error Response:', error.response.data);
-    } else if (error.request) {
-      console.error('❌ No response:', error.request);
-    } else {
-      console.error('❌ Error Message:', error.message);
-    }
-
-    setSnackbarMessage('Network Error: Unable to update product.');
-    setSnackbarVisible(true);
-  } finally {
-    setLoading(false);
-  }
-};
-
-
-  const handleChange = () => {
-    navigation.dispatch(
-      CommonActions.reset({
-        index: 0,
-        routes: [
-          {
-            name: 'MainTabs',
-          },
-        ],
-      }),
-    );
   };
 
   return (
@@ -429,7 +439,7 @@ const submitProduct = async () => {
             <View style={styles.categoryBox}>
               <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <Image
-                  source={{uri: categoryImage}}
+                  source={{uri: selectedCategory?.image || categoryImage}}
                   style={styles.categoryImage}
                 />
                 <View
@@ -443,13 +453,13 @@ const submitProduct = async () => {
                       style={styles.categoryTitle}
                       ellipsizeMode="tail"
                       numberOfLines={1}>
-                      {category}
+                      {selectedCategory?.name || category}
                     </Text>
                     <Text
                       style={styles.categorySubtitle}
                       ellipsizeMode="tail"
                       numberOfLines={1}>
-                      {name}
+                      {selectedSubCategory?.name || name}
                     </Text>
                   </View>
 

@@ -21,6 +21,7 @@ const styles = StyleSheet.create({
     color: colors.black,
   },
   attributes: {
+    flexWrap: 'wrap',
     flexDirection: 'row',
     justifyContent: 'flex-start',
     marginVertical: mvs(10),
@@ -31,6 +32,7 @@ const styles = StyleSheet.create({
     paddingVertical: mvs(2),
     paddingHorizontal: mvs(15),
     marginRight: mvs(10),
+    marginVertical: mvs(6),
     alignItems: 'center',
     justifyContent: 'center',
   },
