@@ -10,7 +10,7 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     backgroundColor: colors.white,
-    paddingBottom: 15,
+    paddingBottom: 40,
   },
   categoryList: {
     paddingHorizontal: mvs(16),

@@ -15,9 +15,10 @@ const styles = StyleSheet.create({
   providerName: {
     marginVertical: mvs(10),
     fontSize: mvs(14),
+    color: '#000',
   },
   display: {
-    color: colors.grey,
+    color: colors.black,
   },
   attributes: {
     flexDirection: 'row',
@@ -25,7 +26,7 @@ const styles = StyleSheet.create({
     marginVertical: mvs(10),
   },
   attributeBox: {
-    backgroundColor: colors.lightpurple,
+    backgroundColor: colors.lightgreen,
     borderRadius: mvs(15),
     paddingVertical: mvs(2),
     paddingHorizontal: mvs(15),

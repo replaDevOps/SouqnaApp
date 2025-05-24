@@ -78,7 +78,7 @@ const SearchScreen = () => {
         const apiStatus = response.data?.data?.status || 0; // Defaults to 0 if status is not available
         dispatch(setVerificationStatus(apiStatus)); // Store status in Redux
 
-        console.log('API verification status: ', apiStatus);
+        console.log('API verification status in search: ', apiStatus);
       } catch (error) {
         console.error('Verification API error:', error);
 
@@ -278,12 +278,14 @@ const SearchScreen = () => {
       </View>
 
       {/* Map */}
-      <TouchableOpacity
-        onPress={() => navigation.navigate('Map', {allProducts})}
-        // onPress={() => setModalVisible(true)}
-        style={styles.mapContainer}>
-        <MapMarkerSVG width={35} height={35} fill={colors.white} />
-      </TouchableOpacity>
+      {role !== 2 && (
+        <TouchableOpacity
+          onPress={() => navigation.navigate('Map', {allProducts})}
+          // onPress={() => setModalVisible(true)}
+          style={styles.mapContainer}>
+          <MapMarkerSVG width={35} height={35} fill={colors.white} />
+        </TouchableOpacity>
+      )}
       <ScrollView
         contentContainerStyle={{backgroundColor: '#fbfbfb'}}
         refreshControl={

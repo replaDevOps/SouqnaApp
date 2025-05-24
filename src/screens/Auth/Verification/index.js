@@ -248,7 +248,7 @@ const VerificationScreen = () => {
   }, [formData, idFrontSide, idBackSide, selfie, originalData]);
 
   const formatIdNumber = raw => {
-    const digits = raw.replace(/\D/g, ''); // Only keep digits
+    const digits = raw.replace(/\D/g, '').slice(0, 13); // Only keep digits and limit to 13
     let result = '';
 
     if (digits.length <= 5) {
@@ -258,7 +258,6 @@ const VerificationScreen = () => {
     } else {
       result = `${digits.slice(0, 5)} ${digits.slice(5, 12)} ${digits.slice(
         12,
-        13,
       )}`;
     }
 
@@ -349,14 +348,7 @@ const VerificationScreen = () => {
 
   const handleSubmit = async () => {
     console.log('Submit button pressed ✅');
-    // if (loading) return;
 
-    const formData = new FormData();
-    formData.append('selfie', {
-      uri: selfie.uri,
-      name: selfie.name,
-      type: selfie.type || 'image/jpeg',
-    });
     const {
       fullName,
       dob,
@@ -387,13 +379,27 @@ const VerificationScreen = () => {
     }
 
     const data = new FormData();
-    Object.entries(formData).forEach(([key, value]) => {
-      data.append(key, value);
-    });
-
+    data.append('fullName', fullName);
+    data.append('dob', dob);
+    data.append('gender', gender);
+    data.append('country', country);
+    data.append('address', address);
+    data.append('documentType', documentType);
+    data.append('idNumber', idNumber);
+    data.append('issueDate', issueDate);
+    data.append('expDate', expDate);
     data.append('idFrontSide', idFrontSide);
     data.append('idBackSide', idBackSide);
-    // data.append('selfie', selfie);
+
+    // Add selfie only if it exists
+    if (selfie) {
+      data.append('selfie', {
+        uri: selfie.uri,
+        name: selfie.name,
+        type: selfie.type || 'image/jpeg',
+      });
+    }
+
     console.log('Data being sent to API:', data);
     try {
       setLoading(true);
@@ -413,7 +419,7 @@ const VerificationScreen = () => {
         !response.data.success &&
         response.data.message === 'Your document is still Pending'
       ) {
-        setModalVisible(true);
+        setModalVisible(true); // Open modal if the document is still pending
       } else {
         ToastAndroid.show(
           response?.data?.message || 'Verification failed.',
@@ -445,6 +451,7 @@ const VerificationScreen = () => {
   const minIssueDate = new Date();
   minIssueDate.setFullYear(minIssueDate.getFullYear() - 20);
 
+  // Calculate minimum date for Expiry Date (today)
   const minExpDate = new Date();
 
   const renderDateInput = (
@@ -493,7 +500,7 @@ const VerificationScreen = () => {
           <View style={styles.inputContainer}>
             <Text style={styles.label}>{t('fullName')}</Text>
             <TextInput
-              editable={!isVerified}
+              // editable={!isVerified}
               style={styles.input}
               placeholder={t('enterFullName')}
               value={formData.fullName}
@@ -576,7 +583,7 @@ const VerificationScreen = () => {
               <View key={key} style={styles.inputContainer}>
                 <Text style={styles.label}>{t(`${key}`)}</Text>
                 <TextInput
-                  editable={!isVerified}
+                  // editable={!isVerified}
                   style={styles.input}
                   placeholder={placeholderMap[key]}
                   value={formData[key]}
@@ -732,7 +739,7 @@ const VerificationScreen = () => {
               <ActivityIndicator size="large" color={colors.green} />
             ) : (
               <Text style={{color: '#fff', fontWeight: 'bold'}}>
-                {'Submit Verification'}
+                {isVerified ? 'Update Verification' : 'Submit Verification'}
               </Text>
             )}
           </MyButton>

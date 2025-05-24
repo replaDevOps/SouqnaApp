@@ -61,21 +61,8 @@ const Profile = () => {
       });
 
       if (response.data.success) {
-        const numericStatus =
-          Number(response.data?.data?.status) ??
-          response.data?.data ??
-          'unverified';
-        dispatch(
-          setVerificationStatus(
-            numericStatus === 2
-              ? 'verified'
-              : numericStatus === 3
-              ? 'rejected'
-              : numericStatus === 1
-              ? 'inProgress'
-              : 'unverified',
-          ),
-        );
+        const numericStatus = Number(response.data?.data?.status);
+        dispatch(setVerificationStatus(numericStatus));
         setLocalStatus(numericStatus);
       } else {
         setLocalStatus(0);
@@ -98,16 +85,18 @@ const Profile = () => {
 
   useFocusEffect(
     useCallback(() => {
-      if (activeRole === '2') {
-        fetchVerificationStatus();
-      } else {
-        // Reset visibility when switching to other roles
-        setLocalStatus(null);
-      }
+      const fetchStatusIfSeller = async () => {
+        if (activeRole === '2' || activeRole === 2) {
+          await fetchVerificationStatus();
+        } else {
+          dispatch(setVerificationStatus(null));
+          setLocalStatus(null);
+        }
+      };
+
+      fetchStatusIfSeller();
     }, [activeRole]),
   );
-
-  
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -169,8 +158,6 @@ const Profile = () => {
     return <ForwardSVG width={24} height={24} fill={colors.green} />;
   };
 
-  
-
   return (
     <ScrollView
       style={{flex: 1, backgroundColor: '#fff'}}
@@ -216,7 +203,7 @@ const Profile = () => {
                     <VerifiedSVG width={22} height={22} />
                   </View>
                   <Regular style={styles.menuText}>
-                    {verificationStatus === 'verified'
+                    {verificationStatus === 2
                       ? t('updateProfile')
                       : t('getVerified')}
                   </Regular>
@@ -267,7 +254,7 @@ const Profile = () => {
               {renderDirectionalIcon()}
             </TouchableOpacity>
 
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={styles.menuItemContainer}
               onPress={() => navigation.navigate('Card')}>
               <View style={styles.leftRow}>
@@ -277,7 +264,7 @@ const Profile = () => {
                 <Regular style={styles.menuText}>cardPlans</Regular>
               </View>
               {renderDirectionalIcon()}
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
         </View>
       </View>

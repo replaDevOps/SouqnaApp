@@ -15,7 +15,7 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {colors} from '../../../util/color';
 import MainHeader from '../../../components/Headers/MainHeader';
 import Bold from '../../../typography/BoldText';
-import {verifyOtp} from '../../../api/apiServices';
+import {resendOtp, verifyOtp} from '../../../api/apiServices';
 import {Snackbar} from 'react-native-paper';
 import {useRoute} from '@react-navigation/native';
 
@@ -25,6 +25,10 @@ const OTPScreen = ({navigation}) => {
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [code, setCode] = useState(['', '', '', '']);
+  const [countdown, setCountdown] = useState(60);
+  const [resendEnabled, setResendEnabled] = useState(false);
+  // New state for showing resend loading
+  const [resendLoading, setResendLoading] = useState(false);
   const inputRefs = useRef([]);
   const [loading, setLoading] = useState(false);
   const showSnackbar = message => {
@@ -40,6 +44,47 @@ const OTPScreen = ({navigation}) => {
       }
     }, 100);
   }, []);
+  // Enable resend button after 10 seconds on mount
+  useEffect(() => {
+    let interval;
+    if (!resendEnabled) {
+      setCountdown(60);
+      interval = setInterval(() => {
+        setCountdown(prev => {
+          if (prev <= 1) {
+            clearInterval(interval);
+            setResendEnabled(true);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+
+    return () => clearInterval(interval);
+  }, [resendEnabled]);
+
+  const handleResendCode = async () => {
+    setResendLoading(true);
+    try {
+      // Replace with the actual email variable you're using
+      const email = userEmail; // e.g. from state or props
+
+      const result = await resendOtp(email);
+
+      if (result?.success) {
+        showSnackbar('OTP resent successfully.');
+      } else {
+        showSnackbar(result?.message || 'Failed to resend OTP.');
+      }
+      setResendEnabled(false);
+      setTimeout(() => setResendEnabled(true), 60000);
+    } catch (error) {
+      showSnackbar('Failed to resend OTP. Please try again.');
+    } finally {
+      setResendLoading(false);
+    }
+  };
 
   const handleCodeChange = (text, index) => {
     // Only accept single digit inputs
@@ -148,7 +193,29 @@ const OTPScreen = ({navigation}) => {
               <Text style={styles.continueButtonText}>Continue</Text>
             )}
           </TouchableOpacity>
+
+          {/* Resend Code Button */}
+          <TouchableOpacity
+            disabled={!resendEnabled || resendLoading}
+            onPress={handleResendCode}
+            style={[
+              styles.resendButton,
+              (!resendEnabled || resendLoading) && styles.resendButtonDisabled,
+            ]}>
+            {resendLoading ? (
+              <ActivityIndicator size="small" color={colors.lightgreen} />
+            ) : (
+              <Text
+                style={[
+                  styles.resendButtonText,
+                  !resendEnabled && {color: 'gray'},
+                ]}>
+                Resend Code{!resendEnabled ? ` (${countdown} sec)` : ''}
+              </Text>
+            )}
+          </TouchableOpacity>
         </View>
+
         <Snackbar
           visible={snackbarVisible}
           onDismiss={() => setSnackbarVisible(false)}
@@ -244,6 +311,18 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 18,
     fontWeight: '500',
+  },
+  resendButton: {
+    marginTop: 20,
+    alignSelf: 'center',
+  },
+  resendButtonDisabled: {
+    opacity: 0.5,
+  },
+  resendButtonText: {
+    color: colors.lightgreen,
+    fontWeight: '600',
+    fontSize: 16,
   },
 });
 

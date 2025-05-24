@@ -1,13 +1,13 @@
 import React from 'react';
-import {Linking, ToastAndroid, TouchableOpacity, View} from 'react-native';
-import {Share} from 'react-native';
 import {
-  WhatsappSVG,
-  EmailSvg,
-  ChatSVG,
-  CopyLinkSVG,
-  OpenSVG,
-} from '../../../assets/svg';
+  Button,
+  Linking,
+  ToastAndroid,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import {Share} from 'react-native';
+import {WhatsappSVG, EmailSvg, ChatSVG, CopyLinkSVG} from '../../../assets/svg';
 import styles from './style';
 import Regular from '../../../typography/RegularText';
 import Clipboard from '@react-native-clipboard/clipboard';
