@@ -164,7 +164,7 @@ const Profile = () => {
 
   const renderDirectionalIcon = () => {
     if (I18nManager.isRTL) {
-      return <BackwardSVG width={24} height={24} stroke={colors.green} />;
+      return <BackwardSVG width={24} height={24} fill={colors.green} />;
     }
     return <ForwardSVG width={24} height={24} fill={colors.green} />;
   };
