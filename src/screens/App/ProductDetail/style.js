@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
   },
   description: {
     color: 'rgba(36, 33, 33, 0.66)',
-    fontSize: mvs(15),
+    fontSize: mvs(16),
     lineHeight: mvs(23),
     paddingHorizontal: mvs(5),
     paddingVertical: mvs(4),
