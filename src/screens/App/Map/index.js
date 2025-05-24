@@ -17,7 +17,6 @@ import MapView, {PROVIDER_GOOGLE, Marker, Circle} from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import {request, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import {useNavigation, useRoute} from '@react-navigation/native';
-// Remove the isEqual import - we don't need it anymore
 import MainHeader from '../../../components/Headers/MainHeader';
 import {
   BarsSVG,
@@ -29,6 +28,54 @@ import {mvs} from '../../../util/metrices';
 import styles from './styles';
 import {useSelector} from 'react-redux';
 import {colors} from '../../../util/color';
+
+// Memoized Marker Component to prevent unnecessary re-renders
+const MarkerComponent = React.memo(({ item, onPress }) => (
+  <Marker
+    key={item.key}
+    coordinate={item.coordinate}
+    onPress={() => onPress(item.key)}>
+    <View style={[markerStyles.container, item.isMultiple ? markerStyles.multiple : markerStyles.single]}>
+      {!item.isMultiple && <Text style={markerStyles.dollarSign}>$</Text>}
+      <Text style={[markerStyles.priceText, { fontSize: item.isMultiple ? 10 : 12 }]}>
+        {item.formattedPrice}
+      </Text>
+      {item.isMultiple && (
+        <Text style={markerStyles.itemCount}>{item.products.length} items</Text>
+      )}
+    </View>
+  </Marker>
+));
+
+// Pre-calculated marker styles
+const markerStyles = {
+  container: {
+    backgroundColor: colors.lightgreen,
+    borderRadius: 4,
+    padding: 1,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    justifyContent: 'center',
+  },
+  single: { width: 35, height: 35 },
+  multiple: { width: 38, height: 38 },
+  dollarSign: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: '#fff',
+    textAlign: 'center',
+  },
+  priceText: {
+    fontWeight: 'bold',
+    color: '#fff',
+    textAlign: 'center',
+  },
+  itemCount: {
+    fontSize: 10,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+};
 
 export default function MapScreen() {
   const route = useRoute();
@@ -42,9 +89,28 @@ export default function MapScreen() {
   const [activeCategory, setActiveCategory] = useState(null);
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [mapReady, setMapReady] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
 
   // Add refs for debouncing
   const regionUpdateTimeoutRef = useRef(null);
+  const mapRef = useRef(null);
+  const locationRetryCount = useRef(0);
+  const initialLocationRequestedRef = useRef(false);
+  const focusLocationOnNextReadyRef = useRef(false);
+  const maxRetries = 3;
+
+  const categories = useSelector(state => state.category.categories);
+
+  // Memoize format price function
+  const formatPrice = useCallback((price) => {
+    if (price >= 1000000) {
+      return (price / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+    } else if (price >= 1000) {
+      return (price / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
+    } else {
+      return price.toString();
+    }
+  }, []);
 
   // Group products by location - memoized to prevent unnecessary recalculations
   const groupedProductsByLocation = useMemo(() => {
@@ -72,35 +138,6 @@ export default function MapScreen() {
     return groupedProducts;
   }, [allProducts]);
 
-  // Memoize visible products calculation - ONLY for the bottom counter
-  const visibleProducts = useMemo(() => {
-    if (!region || !allProducts?.length) return [];
-
-    // First filter by region
-    let filtered = allProducts.filter(product => {
-      const lat = parseFloat(product.lat);
-      const lng = parseFloat(product.long);
-
-      if (isNaN(lat) || isNaN(lng)) return false;
-
-      const latMin = region.latitude - region.latitudeDelta / 2;
-      const latMax = region.latitude + region.latitudeDelta / 2;
-      const lngMin = region.longitude - region.longitudeDelta / 2;
-      const lngMax = region.longitude + region.longitudeDelta / 2;
-
-      return lat >= latMin && lat <= latMax && lng >= lngMin && lng <= lngMax;
-    });
-
-    // Then apply category filter if a category is selected
-    if (activeCategory) {
-      filtered = filtered.filter(
-        product => product.category && product.category.name === activeCategory,
-      );
-    }
-
-    return filtered;
-  }, [region, allProducts, activeCategory]);
-
   // Modified: Show ALL products on map, only filter by category (not region)
   const filteredGroupedProducts = useMemo(() => {
     if (!activeCategory) return groupedProductsByLocation;
@@ -121,21 +158,72 @@ export default function MapScreen() {
     return filtered;
   }, [groupedProductsByLocation, activeCategory]);
 
+  // Optimized marker data calculation
+  const markerData = useMemo(() => {
+    return Object.entries(filteredGroupedProducts).map(([locationKey, products]) => {
+      const [lat, long] = locationKey.split(',').map(parseFloat);
+      if (isNaN(lat) || isNaN(long)) return null;
+      
+      const averagePrice = products.reduce((sum, product) => sum + parseFloat(product.price), 0) / products.length;
+      
+      return {
+        key: locationKey,
+        coordinate: { latitude: lat, longitude: long },
+        products,
+        averagePrice,
+        formattedPrice: formatPrice(averagePrice),
+        isMultiple: products.length > 1
+      };
+    }).filter(Boolean);
+  }, [filteredGroupedProducts, formatPrice]);
+
+  // Optimized visible products calculation with larger threshold for better performance
+  const visibleProducts = useMemo(() => {
+    if (!region || !allProducts?.length || isAnimating) return [];
+
+    const threshold = 0.01; // Larger threshold for better performance
+    const latMin = region.latitude - region.latitudeDelta / 2 - threshold;
+    const latMax = region.latitude + region.latitudeDelta / 2 + threshold;
+    const lngMin = region.longitude - region.longitudeDelta / 2 - threshold;
+    const lngMax = region.longitude + region.longitudeDelta / 2 + threshold;
+
+    return allProducts.filter(product => {
+      const lat = parseFloat(product.lat);
+      const lng = parseFloat(product.long);
+      
+      return !isNaN(lat) && !isNaN(lng) && 
+             lat >= latMin && lat <= latMax && 
+             lng >= lngMin && lng <= lngMax &&
+             (!activeCategory || (product.category?.name === activeCategory));
+    });
+  }, [region?.latitude, region?.longitude, region?.latitudeDelta, region?.longitudeDelta, allProducts, activeCategory, isAnimating]);
+
+  // Static MapView props to prevent unnecessary updates
+  const mapViewProps = useMemo(() => ({
+    provider: PROVIDER_GOOGLE,
+    showsUserLocation: false,
+    showsMyLocationButton: false,
+    showsCompass: false,
+    showsScale: false,
+    rotateEnabled: true, // Keep enabled for better UX
+    pitchEnabled: false, // Disable for better performance
+  }), []);
+
+  // FlatList optimization functions
+  const getItemLayout = useCallback((data, index) => ({
+    length: 200, // Fixed item width
+    offset: 200 * index,
+    index,
+  }), []);
+
+  const keyExtractor = useCallback((item) => item.id.toString(), []);
+
   // Close dropdown when clicking outside
   const closeDropdownOnOutsidePress = () => {
     if (dropdownVisible) {
       setDropdownVisible(false);
     }
   };
-
-  // Add this reference for map
-  const mapRef = useRef(null);
-  const locationRetryCount = useRef(0);
-  const initialLocationRequestedRef = useRef(false);
-  const focusLocationOnNextReadyRef = useRef(false);
-  const maxRetries = 3;
-
-  const categories = useSelector(state => state.category.categories);
 
   const setDefaultRegion = useCallback(() => {
     if (allProducts && allProducts.length > 0) {
@@ -175,7 +263,7 @@ export default function MapScreen() {
     }
   }, [allProducts, mapReady]);
 
-  // Improved location focus logic with batched updates
+  // Improved location focus logic with batched updates - GEOLOCATION PRESERVED
   const focusUserLocation = useCallback(
     coords => {
       if (!coords) return;
@@ -187,11 +275,9 @@ export default function MapScreen() {
         longitudeDelta: 0.09,
       };
 
-      // Batch state updates to prevent multiple re-renders
-      // React.unstable_batchedUpdates(() => {
-        setUserLocation(coords);
-        setRegion(newRegion);
-      // });
+      // Preserve original geolocation logic
+      setUserLocation(coords);
+      setRegion(newRegion);
 
       // Animate map if ready
       if (mapReady && mapRef.current) {
@@ -204,73 +290,75 @@ export default function MapScreen() {
     [mapReady],
   );
 
-const getCurrentLocation = useCallback(() => {
-  if (isLocationLoading) return;
-  
-  setIsLocationLoading(true);
-  
-  Geolocation.getCurrentPosition(
-    (position) => {
-      setIsLocationLoading(false);
-      const { latitude, longitude } = position.coords;
-      focusUserLocation({ latitude, longitude });
-    },
-    (error) => {
-      setIsLocationLoading(false);
-      console.log('Location error:', error);
+  // PRESERVED GEOLOCATION LOGIC - No changes to location functionality
+  const getCurrentLocation = useCallback(() => {
+    if (isLocationLoading) return;
+    
+    setIsLocationLoading(true);
+    
+    Geolocation.getCurrentPosition(
+      (position) => {
+        setIsLocationLoading(false);
+        const { latitude, longitude } = position.coords;
+        focusUserLocation({ latitude, longitude });
+      },
+      (error) => {
+        setIsLocationLoading(false);
+        console.log('Location error:', error);
+        
+        // Better error handling
+        switch (error.code) {
+          case 1: // PERMISSION_DENIED
+            Alert.alert('Permission Denied', 'Location access was denied');
+            break;
+          case 2: // POSITION_UNAVAILABLE
+            Alert.alert('Location Unavailable', 'Unable to determine location');
+            break;
+          case 3: // TIMEOUT
+            Alert.alert('Location Timeout', 'Location request timed out');
+            break;
+          default:
+            Alert.alert('Location Error', 'Failed to get location');
+        }
+        setDefaultRegion();
+      },
+      {
+        enableHighAccuracy: false, // Start with less accuracy for faster response
+        timeout: 10000,
+        maximumAge: 30000,
+      }
+    );
+  }, [isLocationLoading, focusUserLocation, setDefaultRegion]);
+
+  // PRESERVED GEOLOCATION LOGIC
+  const requestLocationPermission = async () => {
+    try {
+      const permission = Platform.OS === 'ios' 
+        ? PERMISSIONS.IOS.LOCATION_WHEN_IN_USE 
+        : PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION;
       
-      // Better error handling
-      switch (error.code) {
-        case 1: // PERMISSION_DENIED
-          Alert.alert('Permission Denied', 'Location access was denied');
+      const result = await request(permission);
+      
+      switch (result) {
+        case RESULTS.GRANTED:
+          getCurrentLocation();
           break;
-        case 2: // POSITION_UNAVAILABLE
-          Alert.alert('Location Unavailable', 'Unable to determine location');
+        case RESULTS.DENIED:
+          Alert.alert('Permission Required', 'Location access is needed');
+          setDefaultRegion();
           break;
-        case 3: // TIMEOUT
-          Alert.alert('Location Timeout', 'Location request timed out');
+        case RESULTS.BLOCKED:
+          Alert.alert('Permission Blocked', 'Please enable location in settings');
+          setDefaultRegion();
           break;
         default:
-          Alert.alert('Location Error', 'Failed to get location');
+          setDefaultRegion();
       }
+    } catch (error) {
+      console.error('Permission error:', error);
       setDefaultRegion();
-    },
-    {
-      enableHighAccuracy: false, // Start with less accuracy for faster response
-      timeout: 10000,
-      maximumAge: 30000,
     }
-  );
-}, [isLocationLoading, focusUserLocation]);
-
-  const requestLocationPermission = async () => {
-  try {
-    const permission = Platform.OS === 'ios' 
-      ? PERMISSIONS.IOS.LOCATION_WHEN_IN_USE 
-      : PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION;
-    
-    const result = await request(permission);
-    
-    switch (result) {
-      case RESULTS.GRANTED:
-        getCurrentLocation();
-        break;
-      case RESULTS.DENIED:
-        Alert.alert('Permission Required', 'Location access is needed');
-        setDefaultRegion();
-        break;
-      case RESULTS.BLOCKED:
-        Alert.alert('Permission Blocked', 'Please enable location in settings');
-        setDefaultRegion();
-        break;
-      default:
-        setDefaultRegion();
-    }
-  } catch (error) {
-    console.error('Permission error:', error);
-    setDefaultRegion();
-  }
-};
+  };
 
   const filterProductsByCategory = (products, categoryName) => {
     if (!categoryName || categoryName === 'All') {
@@ -282,15 +370,15 @@ const getCurrentLocation = useCallback(() => {
     }
   };
 
-useEffect(() => {
-  Geolocation.setRNConfiguration({
-    skipPermissionRequests: true, // Handle permissions manually
-    authorizationLevel: 'whenInUse',
-    locationProvider: 'playServices', // More reliable on Android
-  });
-    // Slight delay to ensure component is fully mounted
+  // PRESERVED GEOLOCATION INITIALIZATION
+  useEffect(() => {
+    Geolocation.setRNConfiguration({
+      skipPermissionRequests: true, // Handle permissions manually
+      authorizationLevel: 'whenInUse',
+      locationProvider: 'playServices', // More reliable on Android
+    });
     
-      requestLocationPermission();
+    requestLocationPermission();
 
     return () => {
       initialLocationRequestedRef.current = false;
@@ -302,7 +390,7 @@ useEffect(() => {
     };
   }, []);
 
-  // Handle map ready - this is critical for focusing
+  // Handle map ready - PRESERVED GEOLOCATION LOGIC
   const handleMapReady = () => {
     setMapReady(true);
 
@@ -329,7 +417,16 @@ useEffect(() => {
     }
   };
 
-  // Debounced region update handler
+  // Optimized region change handlers
+  const handleRegionWillChange = useCallback(() => {
+    setIsAnimating(true);
+  }, []);
+
+  const handleRegionDidChange = useCallback(() => {
+    setIsAnimating(false);
+  }, []);
+
+  // Optimized debounced region update handler
   const handleRegionChangeComplete = useCallback(
     newRegion => {
       // Clear any existing timeout
@@ -341,25 +438,15 @@ useEffect(() => {
       regionUpdateTimeoutRef.current = setTimeout(() => {
         if (
           !region ||
-          Math.abs(newRegion.latitude - region.latitude) > 0.001 || // Increased threshold
-          Math.abs(newRegion.longitude - region.longitude) > 0.001
+          Math.abs(newRegion.latitude - region.latitude) > 0.005 || // Increased threshold
+          Math.abs(newRegion.longitude - region.longitude) > 0.005
         ) {
           setRegion(newRegion);
         }
-      }, 150); // Debounce delay
+      }, 100); // Reduced debounce delay
     },
     [region],
   );
-
-  const formatPrice = price => {
-    if (price >= 1000000) {
-      return (price / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
-    } else if (price >= 1000) {
-      return (price / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
-    } else {
-      return price.toString();
-    }
-  };
 
   const navigateToProductDetails = productId => {
     navigation.navigate('ProductDetail', {productId});
@@ -380,6 +467,7 @@ useEffect(() => {
     [filteredGroupedProducts],
   );
 
+  // PRESERVED GEOLOCATION LOGIC
   const goToMyLocation = () => {
     locationRetryCount.current = 0;
     getCurrentLocation();
@@ -411,6 +499,52 @@ useEffect(() => {
       </View>
     );
   };
+
+  // Optimized product card renderer
+  const renderProductCard = useCallback(({item}) => (
+    <TouchableOpacity
+      onPress={() => navigateToProductDetails(item.id)}
+      style={styles.productCardContainer}>
+      <View style={styles.productImageContainer}>
+        {item.images && item.images.length > 0 ? (
+          <Image
+            source={{
+              uri: `https://backend.souqna.net${item.images[0].path}`,
+            }}
+            style={styles.productImage}
+            resizeMode="cover"
+          />
+        ) : (
+          <View
+            style={[
+              styles.productImage,
+              styles.noImagePlaceholder,
+            ]}>
+            <Text>No Image</Text>
+          </View>
+        )}
+      </View>
+      <View style={styles.productInfo}>
+        <Text style={styles.productTitle} numberOfLines={1}>
+          {item.name}
+        </Text>
+        <Text
+          style={styles.productLocation}
+          numberOfLines={1}
+          ellipsizeMode="tail">
+          {item.location}
+        </Text>
+        <View style={styles.priceTagContainer}>
+          <Text style={styles.priceTag}>{item.price} - USD</Text>
+          {item.condition != 2 ? (
+            <Text style={styles.conditionTag}>New</Text>
+          ) : (
+            <Text style={styles.conditionTag}>Used</Text>
+          )}
+        </View>
+      </View>
+    </TouchableOpacity>
+  ), []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -482,51 +616,12 @@ useEffect(() => {
               data={selectedProductsGroup}
               horizontal
               showsHorizontalScrollIndicator={true}
-              keyExtractor={item => item.id.toString()}
-              renderItem={({item}) => (
-                <TouchableOpacity
-                  onPress={() => navigateToProductDetails(item.id)}
-                  style={styles.productCardContainer}>
-                  <View style={styles.productImageContainer}>
-                    {item.images && item.images.length > 0 ? (
-                      <Image
-                        source={{
-                          uri: `https://backend.souqna.net${item.images[0].path}`,
-                        }}
-                        style={styles.productImage}
-                        resizeMode="cover"
-                      />
-                    ) : (
-                      <View
-                        style={[
-                          styles.productImage,
-                          styles.noImagePlaceholder,
-                        ]}>
-                        <Text>No Image</Text>
-                      </View>
-                    )}
-                  </View>
-                  <View style={styles.productInfo}>
-                    <Text style={styles.productTitle} numberOfLines={1}>
-                      {item.name}
-                    </Text>
-                    <Text
-                      style={styles.productLocation}
-                      numberOfLines={1}
-                      ellipsizeMode="tail">
-                      {item.location}
-                    </Text>
-                    <View style={styles.priceTagContainer}>
-                      <Text style={styles.priceTag}>{item.price} - USD</Text>
-                      {item.condition != 2 ? (
-                        <Text style={styles.conditionTag}>New</Text>
-                      ) : (
-                        <Text style={styles.conditionTag}>Used</Text>
-                      )}
-                    </View>
-                  </View>
-                </TouchableOpacity>
-              )}
+              keyExtractor={keyExtractor}
+              renderItem={renderProductCard}
+              getItemLayout={getItemLayout}
+              removeClippedSubviews={true}
+              maxToRenderPerBatch={5}
+              windowSize={10}
             />
           </View>
         ) : (
@@ -544,81 +639,21 @@ useEffect(() => {
       <View style={styles.mapContainer}>
         <MapView
           ref={mapRef}
-          provider={PROVIDER_GOOGLE}
+          {...mapViewProps}
           style={styles.map}
           region={region}
-          showsUserLocation={false}
-          showsMyLocationButton={false}
+          onRegionWillChange={handleRegionWillChange}
+          onRegionDidChange={handleRegionDidChange}
           onRegionChangeComplete={handleRegionChangeComplete}
           onMapReady={handleMapReady}>
-          {/* Render markers for grouped products - NOW SHOWS ALL PRODUCTS */}
-          {Object.entries(filteredGroupedProducts).map(
-            ([locationKey, products]) => {
-              const [lat, long] = locationKey.split(',').map(parseFloat);
-
-              // Skip invalid coordinates
-              if (isNaN(lat) || isNaN(long)) return null;
-
-              // Calculate average price or use first product price as indicator
-              const averagePrice =
-                products.reduce(
-                  (sum, product) => sum + parseFloat(product.price),
-                  0,
-                ) / products.length;
-
-              return (
-                <Marker
-                  key={locationKey}
-                  coordinate={{
-                    latitude: lat,
-                    longitude: long,
-                  }}
-                  onPress={() => handleMarkerPress(locationKey)}>
-                  <View
-                    style={{
-                      backgroundColor: colors.lightgreen,
-                      borderRadius: 4,
-                      padding: 1,
-                      width: products.length > 1 ? 38 : 35,
-                      height: products.length > 1 ? 38 : 35,
-                      borderWidth: 1,
-                      borderColor: '#ccc', 
-                      justifyContent: 'center',
-                    }}>
-
-                      {products.length == 1 && (
-                        <Text
-                        style={{
-                        fontSize: 12,
-                        fontWeight: 'bold',
-                        color: '#fff',
-                        textAlign: 'center',
-                      }}>$</Text>
-                      )}
-                    <Text
-                      style={{
-                        fontSize: products.length > 1 ? 10 : 12,
-                        fontWeight: 'bold',
-                        color: '#fff',
-                        textAlign: 'center',
-                      }}>
-                      {formatPrice(averagePrice)}
-                    </Text>
-                    {products.length > 1 && (
-                      <Text
-                        style={{
-                          fontSize: 10,
-                          fontWeight: 'bold',
-                          color: '#fff',
-                        }}>
-                        {products.length} items
-                      </Text>
-                    )}
-                  </View>
-                </Marker>
-              );
-            },
-          )}
+          {/* Optimized markers rendering */}
+          {markerData.map((item) => (
+            <MarkerComponent
+              key={item.key}
+              item={item}
+              onPress={handleMarkerPress}
+            />
+          ))}
         </MapView>
 
         <TouchableOpacity
