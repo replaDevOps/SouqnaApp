@@ -1,24 +1,25 @@
-import React, { useState } from 'react';
-import { 
-  View, 
-  TextInput, 
-  SafeAreaView, 
-  Text, 
-  TouchableOpacity, 
-  KeyboardAvoidingView, 
-  Platform, 
+import React, {useState} from 'react';
+import {
+  View,
+  TextInput,
+  SafeAreaView,
+  Text,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
   ScrollView,
   Keyboard,
   TouchableWithoutFeedback,
-  Image
+  Image,
 } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
-import { setUser } from '../../../redux/slices/userSlice';
-import { useNavigation } from '@react-navigation/native';
+import {useDispatch, useSelector} from 'react-redux';
+import {setUser} from '../../../redux/slices/userSlice';
+import {useNavigation} from '@react-navigation/native';
 import styles from './style';
-import { useTranslation } from 'react-i18next';
-import { colors } from '../../../util/color';
-import { EYESVG } from '../../../assets/svg';
+import {useTranslation} from 'react-i18next';
+import {colors} from '../../../util/color';
+import {EYESVG} from '../../../assets/svg';
+import MainHeader from '../../../components/Headers/MainHeader';
 
 const ChangePassword = () => {
   const dispatch = useDispatch();
@@ -30,12 +31,12 @@ const ChangePassword = () => {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigation = useNavigation();
-  const { t } = useTranslation();
+  const {t} = useTranslation();
 
   const handleResetPassword = () => {
     if (newPassword === confirmPassword) {
       // Update password in Redux
-      dispatch(setUser({ ...user, password: newPassword }));
+      dispatch(setUser({...user, password: newPassword}));
       alert(t('passwordUpdated'));
       navigation.goBack();
     } else {
@@ -49,16 +50,21 @@ const ChangePassword = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <MainHeader title={'Change Password'} showBackIcon={true} />
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={{ flex: 1 }}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
-      >
+        style={{flex: 1}}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
         <TouchableWithoutFeedback onPress={dismissKeyboard}>
-          <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+          <ScrollView
+            contentContainerStyle={{flexGrow: 1, padding: 20}}
+            showsVerticalScrollIndicator={false}>
             <View style={styles.formContainer}>
               <View style={styles.inputContainer}>
-                <Image source={require('../../../assets/img/logo1.png')} style={styles.logo} />
+                <Image
+                  source={require('../../../assets/img/logo1.png')}
+                  style={styles.logo}
+                />
               </View>
               <Text style={styles.title}>Reset Password</Text>
 
@@ -72,10 +78,9 @@ const ChangePassword = () => {
                   value={oldPassword}
                   onChangeText={setOldPassword}
                 />
-                <TouchableOpacity 
+                <TouchableOpacity
                   style={styles.eyeButton}
-                  onPress={() => setShowOldPassword(!showOldPassword)}
-                >
+                  onPress={() => setShowOldPassword(!showOldPassword)}>
                   <EYESVG />
                 </TouchableOpacity>
               </View>
@@ -90,10 +95,9 @@ const ChangePassword = () => {
                   value={newPassword}
                   onChangeText={setNewPassword}
                 />
-                <TouchableOpacity 
+                <TouchableOpacity
                   style={styles.eyeButton}
-                  onPress={() => setShowNewPassword(!showNewPassword)}
-                >
+                  onPress={() => setShowNewPassword(!showNewPassword)}>
                   <EYESVG />
                 </TouchableOpacity>
               </View>
@@ -108,18 +112,16 @@ const ChangePassword = () => {
                   value={confirmPassword}
                   onChangeText={setConfirmPassword}
                 />
-                <TouchableOpacity 
+                <TouchableOpacity
                   style={styles.eyeButton}
-                  onPress={() => setShowConfirmPassword(!showConfirmPassword)}
-                >
+                  onPress={() => setShowConfirmPassword(!showConfirmPassword)}>
                   <EYESVG />
                 </TouchableOpacity>
               </View>
 
               <TouchableOpacity
                 style={styles.resetButton}
-                onPress={handleResetPassword}
-              >
+                onPress={handleResetPassword}>
                 <Text style={styles.resetButtonText}>Reset</Text>
               </TouchableOpacity>
             </View>
@@ -132,7 +134,6 @@ const ChangePassword = () => {
 
 // These styles position the eye icon correctly inside the text input field
 const eyeStyles = {
-  
   eyeButton: {
     // position: 'absolute',
     // right: 15,
@@ -141,7 +142,7 @@ const eyeStyles = {
     // justifyContent: 'center',
     // alignItems: 'center',
     // zIndex: 1,
-  }
+  },
 };
 
 export default ChangePassword;

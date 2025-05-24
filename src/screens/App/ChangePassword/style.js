@@ -6,11 +6,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
-    padding: mvs(20),
+    // padding: mvs(20),
   },
   formContainer: {
     flex: 1,
     // justifyContent: 'center',
+    // padding: mvs(20),
     paddingHorizontal: mvs(10),
   },
   title: {
@@ -27,22 +28,21 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   input: {
-    flex:1,
+    flex: 1,
     fontSize: mvs(16),
-    color:colors.black,
+    color: colors.black,
     // backgroundColor:'#000'
   },
   inputWrapper: {
-    
     height: mvs(50),
     // flex:1,
     position: 'relative',
     width: '100%',
     marginBottom: 0,
-    flexDirection:'row',
-    justifyContent:'space-between',
-    alignItems:'center',
-    
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+
     backgroundColor: '#fff', // Light gray background for inputs
     borderRadius: mvs(5),
     marginBottom: mvs(20),
@@ -81,21 +81,21 @@ const styles = StyleSheet.create({
     fontSize: mvs(16),
     fontWeight: '600',
   },
-  logo:{
-    width: mvs(300),
-    height: mvs(300),
-    resizeMode:'contain'
+  logo: {
+    width: mvs(200),
+    height: mvs(200),
+    resizeMode: 'contain',
   },
-  inputContainer:{
+  inputContainer: {
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center', // Changed from 'flex-end' to 'center'
-    // marginBottom: mvs(20), 
-    marginVertical:mvs(0)// Added some margin at the bottom for spacing
+    // marginBottom: mvs(20),
+    // marginVertical: mvs(0), // Added some margin at the bottom for spacing
   },
   eyeButton: {
     // backgroundColor:'#000'
-  }
+  },
 });
 
 export default styles;
