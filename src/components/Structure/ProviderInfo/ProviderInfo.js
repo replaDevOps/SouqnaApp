@@ -38,7 +38,6 @@ const ProviderInfo = ({provider}) => {
           <Regular style={styles.leftText}>{provider.category?.name}</Regular>
         </View>
         <View style={styles.attributeBox}>
-          {' '}
           <Regular style={styles.leftText}>
             {provider.sub_category?.name}
           </Regular>

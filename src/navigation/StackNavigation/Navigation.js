@@ -34,6 +34,8 @@ import CardUI from '../../screens/App/Plans/cardUI';
 import OTPScreen from '../../screens/App/OTP';
 import UpdateProduct from '../../screens/App/Product/UpdateProducts';
 import ImagePreview from '../../screens/App/Product/ImagePreview';
+import Category from '../../screens/App/UpdateAdvertise/Category';
+import SubCategory from '../../screens/App/UpdateAdvertise/SubCategory';
 
 const Stack = createStackNavigator();
 
@@ -88,6 +90,8 @@ const AppNavigator = () => {
         <Stack.Screen name="OTP" component={OTPScreen} />
         <Stack.Screen name="UpdateProduct" component={UpdateProduct} />
         <Stack.Screen name="ImagePreview" component={ImagePreview} />
+        <Stack.Screen name="Category" component={Category} />
+        <Stack.Screen name="SubCategory" component={SubCategory} />
       </Stack.Navigator>
     </View>
   );

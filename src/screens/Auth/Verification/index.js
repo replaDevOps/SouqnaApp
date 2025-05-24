@@ -76,7 +76,7 @@ const VerificationScreen = () => {
   const [openExpDate, setOpenExpDate] = useState(false);
   const [verificationData, setVerificationData] = useState(null);
   const [isVerified, setIsVerified] = useState(false);
-  const [idType, setIdType] = useState('idCard'); // 'idCard' or 'drivingLicense'
+  const [idType, setIdType] = useState('cnic'); // 'idCard' or 'drivingLicense'
   // Dropdown state
   const [countryOpen, setCountryOpen] = useState(false);
   const [countryItems, setCountryItems] = useState([
@@ -247,6 +247,33 @@ const VerificationScreen = () => {
     setShowSubmit(isFormChanged || isImageChanged);
   }, [formData, idFrontSide, idBackSide, selfie, originalData]);
 
+  // const formatIdNumber = raw => {
+  //   const digits = raw.replace(/\D/g, '').slice(0, 13); // Only keep digits and limit to 13
+  //   let result = '';
+
+  //   if (digits.length <= 5) {
+  //     result = digits;
+  //   } else if (digits.length <= 11) {
+  //     result = `${digits.slice(0, 5)} ${digits.slice(5)}`;
+  //   } else {
+  //     result = `${digits.slice(0, 5)} ${digits.slice(5, 12)} ${digits.slice(
+  //       12,
+  //     )}`;
+  //   }
+
+  //   return result.trim();
+  // };
+
+  const handleInputChange = (key, value) => {
+    if (key === 'idNumber') {
+      const digits = value.replace(/\D/g, ''); // Only keep digits
+      const formatted = formatIdNumber(digits);
+      setFormData({...formData, [key]: formatted});
+    } else {
+      setFormData({...formData, [key]: value});
+    }
+  };
+
   const formatIdNumber = raw => {
     const digits = raw.replace(/\D/g, '').slice(0, 13); // Only keep digits and limit to 13
     let result = '';
@@ -262,15 +289,6 @@ const VerificationScreen = () => {
     }
 
     return result.trim();
-  };
-
-  const handleInputChange = (key, value) => {
-    if (key === 'idNumber') {
-      const formatted = formatIdNumber(value);
-      setFormData({...formData, [key]: formatted});
-    } else {
-      setFormData({...formData, [key]: value});
-    }
   };
 
   useEffect(() => {
@@ -596,9 +614,9 @@ const VerificationScreen = () => {
             <Text style={styles.label}>ID Type</Text>
             <View style={[styles.radioGroup, {justifyContent: 'space-around'}]}>
               <RadioButton
-                label="ID Card"
-                selected={idType === 'idCard'}
-                onPress={() => setIdType('idCard')}
+                label="cnic"
+                selected={idType === 'cnic'}
+                onPress={() => setIdType('cnic')}
               />
               <RadioButton
                 label="Driving License"
@@ -613,10 +631,12 @@ const VerificationScreen = () => {
             <Text style={styles.label}>ID Number</Text>
 
             <TextInput
-              style={styles.input} // <- make sure this matches other inputs
+              style={styles.input}
               value={formData.idNumber}
               onChangeText={text => handleInputChange('idNumber', text)}
               placeholder="ID Number"
+              // editable={formData.idNumber.replace(/\D/g, '').length < 13}
+              maxLength={15}
             />
           </View>
 
