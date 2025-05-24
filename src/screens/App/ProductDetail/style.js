@@ -45,8 +45,8 @@ const styles = StyleSheet.create({
     marginTop: mvs(7),
   },
   description: {
-    color: 'rgba(36, 33, 33, 0.66)',
-    fontSize: mvs(16),
+    color: '#000',
+    fontSize: mvs(14),
     lineHeight: mvs(23),
     paddingHorizontal: mvs(5),
     paddingVertical: mvs(4),
