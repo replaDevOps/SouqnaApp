@@ -346,7 +346,7 @@ const ProductDetail = () => {
               {product.description?.split(' ').length > 20 && (
                 <Text
                   style={{
-                    color: colors.primary,
+                    color: '#000',
                     marginTop: 4,
                     marginRight: 10,
                     textAlign: 'right',
