@@ -417,16 +417,36 @@ const VerificationScreen = () => {
         type: selfie.type || 'image/jpeg',
       });
     }
-
+    if (isVerified) {
+      data.append('id', verificationData.id);
+    }
     console.log('Data being sent to API:', data);
     try {
       setLoading(true);
-      const response = await API.post('verification', data, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      // const response = await API.post('verification', data, {
+      //   headers: {
+      //     Authorization: `Bearer ${token}`,
+      //     'Content-Type': 'multipart/form-data',
+      //   },
+      // });
+      let response;
+      if (isVerified) {
+        // Use updateVerification endpoint if verification details are present
+        response = await API.post('updateVerfication', data, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+      } else {
+        // Use verification endpoint if no verification details are present
+        response = await API.post('verification', data, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+      }
       console.log('API Response:', response.data);
       if (response.status === 200 && response.data.success) {
         Alert.alert('Success', 'Verification completed!');

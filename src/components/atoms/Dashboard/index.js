@@ -23,16 +23,36 @@ const ProductDashboard = () => {
 
   // Color palette for categories - we'll use this as our base palette
   const colorPalette = [
-    '#adbd6e', // base color
-    '#c4da6a',
-    '#d3e38a',
-    '#a1c349',
-    '#c1dc72',
-    '#d8e8a7',
-    '#b4ca59',
-    '#9dbd3b',
-    '#e3efb0',
-    '#c9db7d',
+    // '#adbd6e', // base color
+    // '#c4da6a',
+    // '#d3e38a',
+    // '#a1c349',
+    // '#c1dc72',
+    // '#d8e8a7',
+    // '#b4ca59',
+    // '#9dbd3b',
+    // '#e3efb0',
+    // '#c9db7d',
+    '#2F4B7C',
+    '#665191',
+    '#A05195',
+    '#D45087',
+    '#F95D6A',
+    '#FF7C43',
+    '#FFA600',
+    '#003F5C',
+    '#58508D',
+    '#BC5090',
+    '#FF6361',
+    '#FFA600',
+    '#488F31',
+    '#DE425B',
+    '#0BB4FF',
+    '#8BD3C7',
+    '#7D8CC4',
+    '#D3A294',
+    '#A5BD78',
+    '#C47DCC',
   ];
 
   const {token} = useSelector(state => state.user);

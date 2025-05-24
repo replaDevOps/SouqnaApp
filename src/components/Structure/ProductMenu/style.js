@@ -21,11 +21,11 @@ const styles = StyleSheet.create({
   menuText: {
     fontSize: mvs(15),
     marginLeft: mvs(10),
-    color: 'rgba(36, 33, 33, 0.66)',
+    color: '#000',
   },
   leftText: {
     fontSize: mvs(16),
-    fontWeight:'700',
+    fontWeight: '700',
     marginLeft: mvs(10),
     color: colors.black,
   },

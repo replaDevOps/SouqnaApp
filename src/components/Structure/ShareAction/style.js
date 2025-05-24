@@ -12,7 +12,7 @@ const style = StyleSheet.create({
   },
   shareTitle: {
     fontSize: mvs(17),
-    textAlign:'center',
+    textAlign: 'center',
     marginBottom: mvs(15),
   },
   shareIconsRow: {
