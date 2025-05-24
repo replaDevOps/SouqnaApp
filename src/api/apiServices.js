@@ -397,7 +397,7 @@ export const verifyOtp = async otp => {
 export const resendOtp = async email => {
   try {
     const response = await API.post(
-      'resendOtp',
+      'resendOtp', // replace with actual base URL
       {email},
       {
         headers: {
@@ -405,6 +405,7 @@ export const resendOtp = async email => {
         },
       },
     );
+
     return response.data;
   } catch (error) {
     console.error(

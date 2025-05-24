@@ -635,6 +635,7 @@ const VerificationScreen = () => {
               value={formData.idNumber}
               onChangeText={text => handleInputChange('idNumber', text)}
               placeholder="ID Number"
+              keyboardType="numeric"
               // editable={formData.idNumber.replace(/\D/g, '').length < 13}
               maxLength={15}
             />

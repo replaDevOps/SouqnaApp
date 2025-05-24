@@ -80,19 +80,19 @@ const MyTabs = () => {
 
   const handleTabPress = (e, route, navigation) => {
     if (!token) {
+      setIsModalVisible(true);
       e.preventDefault();
-      setVerificationModalVisible(true);
     } // Show modal if verificationStatus is 0 or 1 AND user clicks Advertise tab
-    if (
+    else if (
       route.name === 'Advertise' &&
       (verificationStatus === 0 || verificationStatus === 1)
     ) {
       e.preventDefault();
       setVerificationModalVisible(true);
       return;
+    } else {
+      navigation.navigate(route.name);
     }
-
-    navigation.navigate(route.name);
   };
 
   useEffect(() => {

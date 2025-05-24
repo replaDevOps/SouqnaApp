@@ -169,7 +169,7 @@ const Profile = () => {
           progressViewOffset={50}
         />
       }>
-      <View style={{backgroundColor: '#fff', elevation: 0, shadowOpacity: 0}}>
+      <View style={{backgroundColor: '#fff'}}>
         <ProfileHeader
           OnPressLogout={handleLogout}
           onRoleSwitch={handleRoleSwitching}
