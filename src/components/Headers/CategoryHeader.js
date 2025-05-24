@@ -34,13 +34,13 @@ const styles = StyleSheet.create({
   },
   backText: {
     fontSize: mvs(14),
-    color: colors.green,
+    color: colors.white,
     marginLeft: mvs(4),
   },
   title: {
     fontSize: mvs(16),
     fontWeight: 'bold',
-    color: colors.green,
+    color: colors.white,
     textAlign: 'center',
   },
 });

@@ -112,9 +112,7 @@ const LoginScreen = () => {
           setTimeout(() => navigation.replace('MainTabs'), 1000);
         }
       } else {
-        setSnackbarMessage(
-          res.error || res.message || 'Invalid email or password',
-        );
+        setSnackbarMessage('Invalid email or password');
         setSnackbarVisible(true); // ✅ Show snackbar
       }
     } catch (error) {
@@ -209,25 +207,7 @@ const LoginScreen = () => {
               </Regular>
             </Regular>
           </View>
-          <Snackbar
-            visible={snackbarVisible}
-            onDismiss={() => setSnackbarVisible(false)}
-            duration={Snackbar.DURATION_SHORT}
-            wrapperStyle={{
-              position: 'absolute',
-              bottom: 40,
-              left: 0,
-              right: 0,
-              alignItems: 'center', // centers the snackbar horizontally
-            }}
-            style={{
-              backgroundColor: colors.lightgreen,
-              width: '90%',
-              borderRadius: 8,
-              left: 30,
-            }}>
-            <Regular style={{textAlign: 'center'}}>{snackbarMessage}</Regular>
-          </Snackbar>
+
           {showRoleSelection && (
             <Modal transparent visible={showRoleSelection} animationType="none">
               <View style={styles.modalOverlay}>
@@ -275,6 +255,25 @@ const LoginScreen = () => {
           )}
         </View>
       </TouchableWithoutFeedback>
+      <Snackbar
+        visible={snackbarVisible}
+        onDismiss={() => setSnackbarVisible(false)}
+        duration={Snackbar.DURATION_SHORT}
+        wrapperStyle={{
+          position: 'absolute',
+          bottom: 40,
+          left: 0,
+          right: 0,
+          alignItems: 'center', // centers the snackbar horizontally
+        }}
+        style={{
+          backgroundColor: colors.lightgreen,
+          width: '90%',
+          borderRadius: 8,
+          left: 30,
+        }}>
+        <Regular style={{textAlign: 'center'}}>{snackbarMessage}</Regular>
+      </Snackbar>
     </SafeAreaView>
   );
 };

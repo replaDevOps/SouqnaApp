@@ -14,9 +14,7 @@ const MainHeader = ({
   const navigation = useNavigation();
 
   const handleClose = () => {
-    if (onClose) {
-      onClose();
-    }
+    if (onClose) onClose();
   };
 
   const handleBack = () => {
@@ -26,13 +24,15 @@ const MainHeader = ({
   return (
     <View style={styles.header}>
       {showBackIcon && (
-        <TouchableOpacity onPress={handleBack} style={styles.closeButton}>
+        <TouchableOpacity onPress={handleBack} style={styles.leftIcon}>
           <BackSVG />
         </TouchableOpacity>
       )}
+
       <Text style={styles.title}>{title}</Text>
+
       {showCloseIcon && (
-        <TouchableOpacity onPress={handleClose} style={styles.closeButton}>
+        <TouchableOpacity onPress={handleClose} style={styles.rightIcon}>
           <CloseSvg color={colors.green} />
         </TouchableOpacity>
       )}
@@ -42,24 +42,29 @@ const MainHeader = ({
 
 const styles = StyleSheet.create({
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
     height: mvs(60),
     backgroundColor: colors.lightgreen,
-    paddingHorizontal: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'relative',
   },
   title: {
     fontSize: mvs(20),
     color: colors.white,
     fontWeight: 'bold',
     textAlign: 'center',
-    flex: 1,
   },
-  closeButton: {
-    // padding: mvs(2),
-    // marginLeft: 10, // Optional: Add margin if needed to avoid the icon being clipped
-    // flexDirection: 'row', // Ensure layout is correct
+  leftIcon: {
+    position: 'absolute',
+    left: 16,
+    top: '50%',
+    transform: [{translateY: -12}],
+  },
+  rightIcon: {
+    position: 'absolute',
+    right: 16,
+    top: '50%',
+    transform: [{translateY: -12}],
   },
 });
 

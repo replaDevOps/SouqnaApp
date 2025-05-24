@@ -177,7 +177,7 @@ const RecommendedSection = ({
                 <Image
                   source={require('../../../../assets/img/empty.png')}
                   style={{
-                    width: '90%',
+                    width: '100%',
                     resizeMode: 'contain',
                     height: mvs(200),
                   }}

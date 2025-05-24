@@ -42,37 +42,36 @@ const ProductHeader = ({
           styles.headerContainer,
           headerTitleVisible && styles.headerTitleVisible,
         ]}>
+        {/* Back button - left aligned */}
         <TouchableOpacity
-          style={{
-            backgroundColor: colors.lightgreen,
-            padding: mvs(4),
-            justifyContent: 'center',
-            alignItems: 'center',
-            borderRadius: mvs(23),
-            width: mvs(40),
-            height: mvs(40),
-          }}
+          style={styles.leftIcon}
           onPress={() => navigation.goBack()}>
           <BackSVG width={30} fill={'white'} height={30} />
         </TouchableOpacity>
 
+        {/* Title - centered */}
         {headerTitleVisible && title && (
-          <Text style={styles.headerTitle}>{title}</Text>
+          <View style={styles.titleWrapper}>
+            <Text style={styles.headerTitle} numberOfLines={1}>
+              {title}
+            </Text>
+          </View>
         )}
 
-        {/* Icons Container: Heart and Open icons
-        <View style={styles.iconsContainer}>
-          {role !== 2 && (
-            <TouchableOpacity onPress={onHeartPressHandler}>
-              <HeartSVG width={24} height={24} />
-            </TouchableOpacity>
-          )}
-          <TouchableOpacity
-            style={styles.openIconContainer}
-            onPress={handleCopyLink}>
-            <OpenSVG width={24} height={24} />
-          </TouchableOpacity>
-        </View> */}
+        {/* Right icons - Heart and Open */}
+        {/* Uncomment when needed */}
+        {/* <View style={styles.rightIconGroup}>
+      {role !== 2 && (
+        <TouchableOpacity onPress={onHeartPressHandler}>
+          <HeartSVG width={24} height={24} />
+        </TouchableOpacity>
+      )}
+      <TouchableOpacity
+        style={styles.openIconContainer}
+        onPress={handleCopyLink}>
+        <OpenSVG width={24} height={24} />
+      </TouchableOpacity>
+    </View> */}
       </View>
     </View>
   );
@@ -84,9 +83,6 @@ const styles = StyleSheet.create({
   headerWrapper: {
     width: '100%',
     position: 'relative',
-    top: 0,
-    left: 0,
-    right: 0,
     zIndex: 1,
   },
   headerContainer: {
@@ -95,28 +91,49 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     zIndex: 100,
-    backgroundColor: 'transparent', // Initially transparent
-    paddingHorizontal: mvs(10),
-    justifyContent: 'space-between', // Ensures proper space between the items
-    alignItems: 'center', // Vertically centers the icons in the row
+    backgroundColor: 'transparent',
     height: mvs(60),
-    flexDirection: 'row', // Aligns everything in the same row
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   headerTitleVisible: {
-    backgroundColor: colors.white, // White background when the title is visible
+    backgroundColor: colors.white,
+  },
+  titleWrapper: {
+    position: 'absolute',
+    left: 60,
+    right: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   headerTitle: {
     fontSize: mvs(18),
     fontWeight: 'bold',
     color: colors.black,
     textAlign: 'center',
-    flex: 1, // Makes the title take up remaining space in the header
   },
-  iconsContainer: {
-    flexDirection: 'row', // Ensures that the Heart and Open icons are in the same row
-    alignItems: 'center', // Ensures that the icons are vertically centered
+  leftIcon: {
+    position: 'absolute',
+    left: mvs(10),
+    top: '50%',
+    transform: [{translateY: -20}],
+    backgroundColor: colors.lightgreen,
+    padding: mvs(4),
+    borderRadius: mvs(23),
+    width: mvs(40),
+    height: mvs(40),
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  rightIconGroup: {
+    position: 'absolute',
+    right: mvs(10),
+    top: '50%',
+    transform: [{translateY: -12}],
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   openIconContainer: {
-    marginLeft: mvs(10), // Adds space between the Heart and Open icons
+    marginLeft: mvs(10),
   },
 });
