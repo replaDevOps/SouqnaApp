@@ -315,7 +315,7 @@ const ProductDetail = () => {
                     fill={colors.red1}
                   />
                   <Regular style={styles.productLocation}>
-                    <Text>{product.location}</Text>
+                    <Regular>{product.location}</Regular>
                     {/* {product.location} */}
                   </Regular>
                 </View>
