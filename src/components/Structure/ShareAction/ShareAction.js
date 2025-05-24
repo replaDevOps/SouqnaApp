@@ -90,16 +90,16 @@ const ShareActions = ({productTitle, productLink, productId}) => {
       <Regular style={styles.shareTitle}>Share This Ad</Regular>
       <View style={styles.shareIconsRow}>
         <TouchableOpacity onPress={handleShareToWhatsApp}>
-          <WhatsappSVG width={30} height={30} style={styles.shareIcon} />
+          <WhatsappSVG width={25} height={25} style={styles.shareIcon} />
         </TouchableOpacity>
         <TouchableOpacity onPress={handleShareToEmail}>
           <EmailSvg width={30} height={30} style={styles.shareIcon} />
         </TouchableOpacity>
         <TouchableOpacity onPress={handleShareToSMS}>
-          <ChatSVG width={30} height={30} style={styles.shareIcon} />
+          <ChatSVG width={25} height={25} style={styles.shareIcon} />
         </TouchableOpacity>
         <TouchableOpacity onPress={handleCopyLink}>
-          <CopyLinkSVG width={30} height={30} style={styles.shareIcon} />
+          <CopyLinkSVG width={25} height={25} style={styles.shareIcon} />
         </TouchableOpacity>
         {/* <TouchableOpacity onPress={handleShareProduct}>
           <OpenSVG width={30} height={30} style={styles.shareIcon} />

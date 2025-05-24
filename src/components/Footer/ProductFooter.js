@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import {mvs} from '../../util/metrices';
 import {colors} from '../../util/color';
-import {CallSVG, CartSVG, ChatSVG, TrashSVG, UpdateSVG} from '../../assets/svg';
+import {CallSVG, CartSVG, ChatSVG, ChatSVG2, TrashSVG, UpdateSVG} from '../../assets/svg';
 import {useSelector} from 'react-redux';
 
 const ProductFooter = ({
@@ -50,7 +50,7 @@ const ProductFooter = ({
         onPress: onChatPress,
         loading: loadingChat,
         text: 'Chat with Seller',
-        Icon: ChatSVG,
+        Icon: ChatSVG2,
         // bgcolor:colors.lightgreen
       },
       {

@@ -7,16 +7,17 @@ const style = StyleSheet.create({
     backgroundColor: colors.white,
     paddingVertical: mvs(10),
     marginTop: mvs(10),
-    alignItems: 'center',
+    // alignItems: 'center',
     justifyContent: 'center',
   },
   shareTitle: {
-    fontSize: mvs(14),
-    marginBottom: mvs(10),
+    fontSize: mvs(17),
+    textAlign:'center',
+    marginBottom: mvs(15),
   },
   shareIconsRow: {
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'space-around',
     alignItems: 'center',
   },
   shareIcon: {
