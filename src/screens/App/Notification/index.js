@@ -19,6 +19,7 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {fetchNotifications} from '../../../api/apiServices';
 import {useSelector} from 'react-redux';
 import {mvs} from '../../../util/metrices';
+import MainHeader from '../../../components/Headers/MainHeader';
 
 const Notification = () => {
   const navigation = useNavigation();
@@ -64,7 +65,7 @@ const Notification = () => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" />
-      <CategoryHeader title={t('titleNotification')} onBack={handleBack} />
+      <MainHeader title={t('titleNotification')} showBackIcon={true} />
 
       {loading ? (
         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
