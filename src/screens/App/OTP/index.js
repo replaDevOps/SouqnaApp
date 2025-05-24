@@ -67,9 +67,6 @@ const OTPScreen = ({navigation}) => {
   const handleResendCode = async () => {
     setResendLoading(true);
     try {
-      // Replace with the actual email variable you're using
-      const email = userEmail; // e.g. from state or props
-
       const result = await resendOtp(email);
 
       if (result?.success) {

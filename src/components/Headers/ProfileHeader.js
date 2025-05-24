@@ -20,10 +20,10 @@ import {Snackbar} from 'react-native-paper';
 import {CommonActions, useNavigation} from '@react-navigation/native';
 import SwitchModal from '../Modals/SwitchModal';
 import {switchUserRole} from '../../api/apiServices'; // Updated to match the import from your document
-const {height} = Dimensions.get('window');
-import {RNRestart} from 'react-native-restart';
+import {SafeAreaView} from 'react-native-safe-area-context';
+// const {height} = Dimensions.get('window');
 
-const headerHeight = height * 0.28;
+// const headerHeight = height * 0.28;
 
 export default function ProfileHeader({OnPressLogout, onRoleSwitch}) {
   const {
@@ -139,7 +139,7 @@ export default function ProfileHeader({OnPressLogout, onRoleSwitch}) {
   };
 
   return (
-    <View style={styles.headerContainer}>
+    <SafeAreaView style={styles.headerContainer}>
       <StatusBar
         barStyle="dark-content"
         backgroundColor="#FFFFFF" // Make sure this matches your background
@@ -193,15 +193,15 @@ export default function ProfileHeader({OnPressLogout, onRoleSwitch}) {
         onSubmit={handleModalSubmit}
         isLoading={isLoading}
       />
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   headerContainer: {
     backgroundColor: colors.lightorange,
-    height: headerHeight,
-    paddingTop: StatusBar.currentHeight || 40,
+    // height: headerHeight,
+    // paddingTop: 40,
     paddingHorizontal: mvs(15),
     flexDirection: 'column',
     justifyContent: 'space-between',

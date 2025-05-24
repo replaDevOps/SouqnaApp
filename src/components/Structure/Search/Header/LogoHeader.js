@@ -5,6 +5,7 @@ import {useNavigation} from '@react-navigation/native';
 import {mvs} from '../../../../util/metrices';
 import {NotificationSVG} from '../../../../assets/svg';
 import {useSelector} from 'react-redux';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 export default function LogoHeader() {
   const [isSearchMode, setIsSearchMode] = useState(false);
@@ -27,10 +28,10 @@ export default function LogoHeader() {
   };
 
   return (
-    <View style={{backgroundColor: '#fff', elevation: 3}}>
+    <SafeAreaView style={{backgroundColor: '#fff', elevation: 3}}>
       <View
         style={{
-          paddingTop: mvs(45),
+          // paddingTop: mvs(45),
           paddingBottom: mvs(4),
           backgroundColor: '#fff',
           justifyContent: 'space-between',
@@ -48,6 +49,6 @@ export default function LogoHeader() {
           </TouchableOpacity>
         )} */}
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
