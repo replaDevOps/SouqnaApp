@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
   menuText: {
     fontSize: mvs(15),
     marginLeft: mvs(10),
-    color: colors.grey,
+    color: 'rgba(36, 33, 33, 0.66)',
   },
   leftText: {
     fontSize: mvs(16),

@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
   },
   productLocation: {
     fontSize: mvs(16),
-    color: colors.grey,
+    color: 'rgba(36, 33, 33, 0.66)',
     marginLeft: mvs(7),
   },
   descriptionContainer: {
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
     marginTop: mvs(7),
   },
   description: {
-    color: colors.grey,
+    color: 'rgba(36, 33, 33, 0.66)',
     fontSize: mvs(15),
     lineHeight: mvs(23),
     paddingHorizontal: mvs(5),

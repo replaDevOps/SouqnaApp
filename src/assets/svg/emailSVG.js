@@ -2,7 +2,7 @@ import * as React from 'react';
 import Svg, {Path} from 'react-native-svg';
 const EmailSvg = props => (
   <Svg
-    fill="#000000"
+    fill="#758CA3"
     width="800px"
     height="800px"
     viewBox="0 0 24 24"

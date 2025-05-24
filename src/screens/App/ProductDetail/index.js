@@ -312,7 +312,7 @@ const ProductDetail = () => {
                   <MarkerSVG
                     width={mvs(20)}
                     height={mvs(20)}
-                    fill={colors.grey}
+                    fill={colors.red1}
                   />
                   <Regular style={styles.productLocation}>
                     <Text>{product.location}</Text>

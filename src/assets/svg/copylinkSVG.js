@@ -1,14 +1,26 @@
-import * as React from 'react';
-import Svg, {Path} from 'react-native-svg';
-const CopyLinkSVG = props => (
+import * as React from "react";
+import Svg, { Path } from "react-native-svg";
+const CopyLinkSVG = (props) => (
   <Svg
-    fill="#000000"
     width="800px"
     height="800px"
-    viewBox="0 0 24 24"
+    viewBox="0 0 36 36"
     xmlns="http://www.w3.org/2000/svg"
-    {...props}>
-    <Path d="M10,17.55,8.23,19.27a2.47,2.47,0,0,1-3.5-3.5l4.54-4.55a2.46,2.46,0,0,1,3.39-.09l.12.1a1,1,0,0,0,1.4-1.43A2.75,2.75,0,0,0,14,9.59a4.46,4.46,0,0,0-6.09.22L3.31,14.36a4.48,4.48,0,0,0,6.33,6.33L11.37,19A1,1,0,0,0,10,17.55ZM20.69,3.31a4.49,4.49,0,0,0-6.33,0L12.63,5A1,1,0,0,0,14,6.45l1.73-1.72a2.47,2.47,0,0,1,3.5,3.5l-4.54,4.55a2.46,2.46,0,0,1-3.39.09l-.12-.1a1,1,0,0,0-1.4,1.43,2.75,2.75,0,0,0,.23.21,4.47,4.47,0,0,0,6.09-.22l4.55-4.55A4.49,4.49,0,0,0,20.69,3.31Z" />
+    xmlnsXlink="http://www.w3.org/1999/xlink"
+    aria-hidden="true"
+    role="img"
+    className="iconify iconify--twemoji"
+    preserveAspectRatio="xMidYMid meet"
+    {...props}
+  >
+    <Path
+      fill="#8899A6"
+      d="M15 9l6-6s6-6 12 0s0 12 0 12l-8 8s-6 6-12 0c-1.125-1.125-1.822-2.62-1.822-2.62l3.353-3.348S14.396 18.396 16 20c0 0 3 3 6 0l8-8s3-3 0-6s-6 0-6 0l-3.729 3.729s-1.854-1.521-5.646-.354L15 9z"
+    />
+    <Path
+      fill="#8899A6"
+      d="M20.845 27l-6 6s-6 6-12 0s0-12 0-12l8-8s6-6 12 0c1.125 1.125 1.822 2.62 1.822 2.62l-3.354 3.349s.135-1.365-1.469-2.969c0 0-3-3-6 0l-8 8s-3 3 0 6s6 0 6 0l3.729-3.729s1.854 1.521 5.646.354l-.374.375z"
+    />
   </Svg>
 );
 export default CopyLinkSVG;

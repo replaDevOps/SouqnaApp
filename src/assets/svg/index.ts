@@ -2,6 +2,7 @@ export {default as EYESVG} from './eyeSVG';
 export {default as GallerySvg} from './gallerySVG';
 export {default as HOMESVG} from './homeSVG';
 export {default as ChatSVG} from './chatSVG';
+export {default as ChatSVG2} from './chatSVG2';
 export {default as NotificationSVG} from './notificationSVG';
 export {default as ProfileSVG} from './profileSVG';
 export {default as SettingSVG} from './settingSVG';
