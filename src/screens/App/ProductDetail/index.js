@@ -15,7 +15,6 @@ import {
   addFavorite,
   removeFavorite,
 } from '../../../redux/slices/favoritesSlice';
-
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {mvs} from '../../../util/metrices';
 import ProductMenu from '../../../components/Structure/ProductMenu/ProductMenu';

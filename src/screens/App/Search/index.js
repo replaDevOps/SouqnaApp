@@ -320,7 +320,7 @@ const SearchScreen = () => {
         <RecommendedSection
           products={allRecommendedProducts}
           loadMoreProducts={loadMoreRecommendedProducts}
-          onRefresh={onRefresh}
+          // onRefresh={onRefresh}
           isEndOfResults={isEndOfResults}
           likedItems={likedItems}
           handleHeartClick={handleHeartClick}

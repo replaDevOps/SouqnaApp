@@ -16,11 +16,7 @@ import {
   logoutUser,
   setVerificationStatus,
 } from '../../../redux/slices/userSlice';
-import {
-  useFocusEffect,
-  useIsFocused,
-  useNavigation,
-} from '@react-navigation/native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {
   BackwardSVG,
   ChangePassSVG,
