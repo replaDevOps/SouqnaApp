@@ -379,37 +379,36 @@ const VerificationScreen = () => {
       expDate,
     } = formData;
 
-    if (
-      !fullName ||
-      !dob ||
-      !gender ||
-      !country ||
-      !address ||
-      !idNumber ||
-      !issueDate ||
-      !expDate ||
-      !idFrontSide ||
-      !idBackSide ||
-      !documentType
-    ) {
-      ToastAndroid.show(t('fillAllFields'), ToastAndroid.SHORT);
-      return;
-    }
+    // if (
+    //   !fullName ||
+    //   !dob ||
+    //   !gender ||
+    //   !country ||
+    //   !address ||
+    //   !idNumber ||
+    //   !issueDate ||
+    //   !expDate ||
+    //   !idFrontSide ||
+    //   !idBackSide ||
+    //   !documentType
+    // ) {
+    //   ToastAndroid.show(t('fillAllFields'), ToastAndroid.SHORT);
+    //   return;
+    // }
 
+    // Prepare form data with only the fields that have been changed or are provided
     const data = new FormData();
-    data.append('fullName', fullName);
-    data.append('dob', dob);
-    data.append('gender', gender);
-    data.append('country', country);
-    data.append('address', address);
-    data.append('documentType', documentType);
-    data.append('idNumber', idNumber);
-    data.append('issueDate', issueDate);
-    data.append('expDate', expDate);
-    data.append('idFrontSide', idFrontSide);
-    data.append('idBackSide', idBackSide);
-
-    // Add selfie only if it exists
+    if (fullName) data.append('fullName', fullName);
+    if (dob) data.append('dob', dob);
+    if (gender) data.append('gender', gender);
+    if (country) data.append('country', country);
+    if (address) data.append('address', address);
+    if (documentType) data.append('documentType', documentType);
+    if (idNumber) data.append('idNumber', idNumber);
+    if (issueDate) data.append('issueDate', issueDate);
+    if (expDate) data.append('expDate', expDate);
+    if (idFrontSide) data.append('idFrontSide', idFrontSide);
+    if (idBackSide) data.append('idBackSide', idBackSide);
     if (selfie) {
       data.append('selfie', {
         uri: selfie.uri,
@@ -417,6 +416,7 @@ const VerificationScreen = () => {
         type: selfie.type || 'image/jpeg',
       });
     }
+    // Add user ID to the form data for updateVerification
     if (isVerified) {
       data.append('id', verificationData.id);
     }

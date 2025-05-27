@@ -7,6 +7,7 @@ import {
   RefreshControl,
   I18nManager,
   Alert,
+  Animated,
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import styles from './styles';
@@ -35,10 +36,10 @@ import {colors} from '../../../util/color';
 import RNRestart from 'react-native-restart';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import API from '../../../api/apiServices';
-import ProfileSkeleton from './ProfileSkeleton';
 
 const Profile = () => {
   const dispatch = useDispatch();
+  const [translateXAnim] = useState(new Animated.Value(0));
   const navigation = useNavigation();
   const {
     token,
@@ -49,6 +50,22 @@ const Profile = () => {
   const [verificationLoading, setVerificationLoading] = useState(true);
   const [localStatus, setLocalStatus] = useState(null);
   const [isRoleSwitching, setIsRoleSwitching] = useState(false);
+  const slideOutAndIn = () => {
+    Animated.sequence([
+      Animated.timing(translateXAnim, {
+        toValue: -500, // Slide out left
+        duration: 300,
+        useNativeDriver: true,
+      }),
+      Animated.delay(300),
+      Animated.timing(translateXAnim, {
+        toValue: 0, // Slide in
+        duration: 300,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  };
+
   const fetchVerificationStatus = async () => {
     if (!token) return;
     setVerificationLoading(true);
@@ -78,6 +95,7 @@ const Profile = () => {
   // Function to handle role switching
   const handleRoleSwitching = () => {
     setIsRoleSwitching(true);
+    slideOutAndIn();
     setTimeout(() => {
       setIsRoleSwitching(false);
     }, 1500); // Show skeleton for 1.5 seconds
@@ -100,7 +118,12 @@ const Profile = () => {
 
   const onRefresh = async () => {
     setRefreshing(true);
-    if (activeRole === '2') {
+    if (
+      activeRole === 2 ||
+      activeRole === 3 ||
+      activeRole === 0 ||
+      activeRole === 1
+    ) {
       await fetchVerificationStatus();
     }
     setRefreshing(false);
@@ -159,102 +182,105 @@ const Profile = () => {
   };
 
   return (
-    <ScrollView
-      style={{flex: 1, backgroundColor: '#fff'}}
-      contentContainerStyle={styles.Scrollcontainer}
-      refreshControl={
-        <RefreshControl
-          refreshing={refreshing}
-          onRefresh={onRefresh}
-          progressViewOffset={50}
-        />
-      }>
-      <View style={{backgroundColor: '#fff'}}>
-        <ProfileHeader
-          OnPressLogout={handleLogout}
-          onRoleSwitch={handleRoleSwitching}
-        />
-      </View>
+    <Animated.View style={{flex: 1, transform: [{translateX: translateXAnim}]}}>
+      <ScrollView
+        style={{flex: 1, backgroundColor: '#fff'}}
+        contentContainerStyle={styles.Scrollcontainer}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            progressViewOffset={50}
+          />
+        }>
+        <View style={{backgroundColor: '#fff'}}>
+          <ProfileHeader
+            OnPressLogout={handleLogout}
+            onRoleSwitch={handleRoleSwitching}
+          />
+        </View>
 
-      <View style={styles.container}>
-        {activeRole === '2' || (activeRole === 2 && <VerificationStatus />)}
+        <View style={styles.container}>
+          {(activeRole === '2' || activeRole === 2) && <VerificationStatus />}
 
-        <View style={styles.content}>
-          <Regular style={styles.regularText}>{t('general')}</Regular>
-          <View style={styles.menuContainer}>
-            <TouchableOpacity
-              style={styles.menuItemContainer}
-              onPress={() => navigation.navigate('MyAccount')}>
-              <View style={styles.leftRow}>
-                <View style={styles.iconWrapper}>
-                  <ProfileSVG width={22} height={22} />
-                </View>
-                <Regular style={styles.menuText}>{t('myAccount')}</Regular>
-              </View>
-              {renderDirectionalIcon()}
-            </TouchableOpacity>
-
-            {activeRole === '2' || activeRole === 2 ? (
+          <View style={styles.content}>
+            <Regular style={styles.regularText}>{t('general')}</Regular>
+            <View style={styles.menuContainer}>
               <TouchableOpacity
                 style={styles.menuItemContainer}
-                onPress={() => navigation.navigate('Verification')}>
+                onPress={() => navigation.navigate('MyAccount')}>
                 <View style={styles.leftRow}>
                   <View style={styles.iconWrapper}>
-                    <VerifiedSVG width={22} height={22} />
+                    <ProfileSVG width={22} height={22} />
+                  </View>
+                  <Regular style={styles.menuText}>{t('myAccount')}</Regular>
+                </View>
+                {renderDirectionalIcon()}
+              </TouchableOpacity>
+
+              {activeRole === '2' || activeRole === 2 ? (
+                <TouchableOpacity
+                  style={styles.menuItemContainer}
+                  onPress={() => navigation.navigate('Verification')}>
+                  <View style={styles.leftRow}>
+                    <View style={styles.iconWrapper}>
+                      <VerifiedSVG width={22} height={22} />
+                    </View>
+                    <Regular style={styles.menuText}>
+                      {verificationStatus === 2
+                        ? t('updateProfile')
+                        : t('getVerified')}
+                    </Regular>
+                  </View>
+                  {renderDirectionalIcon()}
+                </TouchableOpacity>
+              ) : (
+                ''
+              )}
+
+              <TouchableOpacity
+                style={styles.menuItemContainer}
+                onPress={handleChangePassword}>
+                <View style={styles.leftRow}>
+                  <View style={styles.iconWrapper}>
+                    <ChangePassSVG width={22} height={22} />
                   </View>
                   <Regular style={styles.menuText}>
-                    {verificationStatus === 2
-                      ? t('updateProfile')
-                      : t('getVerified')}
+                    {t('changePassword')}
                   </Regular>
                 </View>
                 {renderDirectionalIcon()}
               </TouchableOpacity>
-            ) : (
-              ''
-            )}
 
-            <TouchableOpacity
-              style={styles.menuItemContainer}
-              onPress={handleChangePassword}>
-              <View style={styles.leftRow}>
-                <View style={styles.iconWrapper}>
-                  <ChangePassSVG width={22} height={22} />
+              <TouchableOpacity
+                style={styles.menuItemContainer}
+                onPress={toggleLanguage}>
+                <View style={styles.leftRow}>
+                  <View style={styles.iconWrapper}>
+                    <LanguageSVG width={24} height={24} />
+                  </View>
+                  <Regular style={styles.menuText}>
+                    {i18n.language === 'en'
+                      ? t('switchToArabic')
+                      : t('switchToEnglish')}
+                  </Regular>
                 </View>
-                <Regular style={styles.menuText}>{t('changePassword')}</Regular>
-              </View>
-              {renderDirectionalIcon()}
-            </TouchableOpacity>
+                {renderDirectionalIcon()}
+              </TouchableOpacity>
 
-            <TouchableOpacity
-              style={styles.menuItemContainer}
-              onPress={toggleLanguage}>
-              <View style={styles.leftRow}>
-                <View style={styles.iconWrapper}>
-                  <LanguageSVG width={24} height={24} />
+              <TouchableOpacity
+                style={styles.menuItemContainer}
+                onPress={() => navigation.navigate('Plans')}>
+                <View style={styles.leftRow}>
+                  <View style={styles.iconWrapper}>
+                    <ChangePassSVG width={22} height={22} />
+                  </View>
+                  <Regular style={styles.menuText}>Subscription Plans</Regular>
                 </View>
-                <Regular style={styles.menuText}>
-                  {i18n.language === 'en'
-                    ? t('switchToArabic')
-                    : t('switchToEnglish')}
-                </Regular>
-              </View>
-              {renderDirectionalIcon()}
-            </TouchableOpacity>
+                {renderDirectionalIcon()}
+              </TouchableOpacity>
 
-            <TouchableOpacity
-              style={styles.menuItemContainer}
-              onPress={() => navigation.navigate('Plans')}>
-              <View style={styles.leftRow}>
-                <View style={styles.iconWrapper}>
-                  <ChangePassSVG width={22} height={22} />
-                </View>
-                <Regular style={styles.menuText}>Subscription Plans</Regular>
-              </View>
-              {renderDirectionalIcon()}
-            </TouchableOpacity>
-
-            {/* <TouchableOpacity
+              {/* <TouchableOpacity
               style={styles.menuItemContainer}
               onPress={() => navigation.navigate('Card')}>
               <View style={styles.leftRow}>
@@ -265,10 +291,11 @@ const Profile = () => {
               </View>
               {renderDirectionalIcon()}
             </TouchableOpacity> */}
+            </View>
           </View>
         </View>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </Animated.View>
   );
 };
 

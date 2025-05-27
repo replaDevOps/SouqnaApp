@@ -152,10 +152,6 @@ const LoginScreen = () => {
     setEmail('');
   };
 
-  const onBackPress = () => {
-    navigation.goBack();
-  };
-
   const isFormValid = email && password; // Button activation condition
 
   return (

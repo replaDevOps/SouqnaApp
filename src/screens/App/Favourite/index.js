@@ -46,6 +46,10 @@ const FavouriteScreen = () => {
         <StatusBar barStyle="dark-content" />
         <MainHeader title={t('favourites')} />
         <View style={styles.content}>
+          <Image
+            source={require('../../../assets/img/empty.png')}
+            style={{height: 200, width: 200, marginBottom: 10}}
+          />
           <Bold>{t('noFavourites')}</Bold>
         </View>
       </SafeAreaView>
