@@ -95,6 +95,11 @@ export const getUserConversations = (userId, onResult, onError) => {
 // Send a message in a conversation
 export const sendMessage = async (conversationId, message) => {
   try {
+
+     if (!message.text || message.text.trim() === '') {
+      return null ;
+    }
+
     const batch = writeBatch(db);
     
     const messagesRef = collection(db, `conversations/${conversationId}/messages`);
@@ -109,7 +114,7 @@ export const sendMessage = async (conversationId, message) => {
     
     const lastMessageUpdate = {
       lastMessage: {
-        text: message.text || '📎 Attachment',
+        text: message.text || '',
         senderId: message.user._id,
         createdAt: serverTimestamp(),
       },
