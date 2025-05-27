@@ -5,7 +5,6 @@ import Regular from '../../../typography/RegularText';
 import CategoryHeader from '../../../components/Headers/CategoryHeader';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {ForwardSVG} from '../../../assets/svg';
-import {mvs} from '../../../util/metrices';
 import styles from '../AdvertiseAll/style';
 
 const SubCategoryMain = () => {
