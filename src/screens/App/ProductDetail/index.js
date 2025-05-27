@@ -127,6 +127,12 @@ const ProductDetail = () => {
   };
 
   const handleChatPress = async () => {
+    // Check if user is not logged in
+    if (!token) {
+      setIsModalVisible(true);
+      return;
+    }
+
     if (!product || !product.seller || !userId) {
       console.error('Missing required data for chat');
       return;
