@@ -51,6 +51,7 @@ const SubCategoryMain = () => {
       <View style={styles.content}>
         <FlatList
           data={subcategories}
+          showsVerticalScrollIndicator={false}
           keyExtractor={item => item.id}
           renderItem={renderSubCategoryItem}
         />

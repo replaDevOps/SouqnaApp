@@ -5,7 +5,6 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   CartSVG,
-  ChatSVG,
   ChatSVG2,
   HeartSVG,
   HOMESVG,

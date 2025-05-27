@@ -299,14 +299,11 @@ export const placeOrder = async (orderData, token) => {
 
 const sendPushNotification = async (title, body, receiverToken) => {
   try {
-    const res = await axios.post(
-      'https://your-backend.com/api/send-notification',
-      {
-        title,
-        body,
-        token: receiverToken, // or userId, depending on backend design
-      },
-    );
+    const res = await API.post('send-notification', {
+      title,
+      body,
+      token: receiverToken, // or userId, depending on backend design
+    });
 
     if (res.data.success) {
       console.log('Notification sent!');
