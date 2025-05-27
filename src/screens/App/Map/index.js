@@ -58,7 +58,7 @@ const markerStyles = {
     justifyContent: 'center',
   },
   single: { width: 35, height: 35 },
-  multiple: { width: 38, height: 38 },
+  multiple: { width: 35, height: 35 },
   dollarSign: {
     fontSize: 12,
     fontWeight: 'bold',
