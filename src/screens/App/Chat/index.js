@@ -185,7 +185,7 @@ const Chat = () => {
 
   const onSend = useCallback(
     async (newMessages = []) => {
-      if (!conversationId || !userId || !token || newMessages.length === 0) {
+      if (!conversationId || !userId || !token || newMessages.length === 0|| newMessages.trim() === ''|| !newMessages) {
         return;
       }
 

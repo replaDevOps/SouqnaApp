@@ -252,17 +252,16 @@ const InboxScreen = () => {
   );
 
   const EmptyComponent = () => (
-    <View style={styles.emptyContainer}>
-      <Text style={styles.emptyText}>
-        {isLoading ? 'Loading conversations...' : 'No conversations yet'}
-      </Text>
-      {!isLoading && (
-        <TouchableOpacity style={styles.startChatButton} onPress={refreshInbox}>
-          <Text style={styles.startChatButtonText}>Refresh Inbox</Text>
-        </TouchableOpacity>
-      )}
-    </View>
+    <View style={styles.emptyInbox}>
+            <Image
+              source={require('../../../assets/img/empty.png')}
+              style={{width: '90%', resizeMode: 'contain', height: mvs(200)}}
+            />
+            {/* <Bold style={styles.emptyCartText}>{t('empty')}</Bold> */}
+            <Text style={styles.emptyInboxText}>No text recieved yet</Text>
+          </View>
   );
+console.log('{FilteredConverations}',filteredConversations);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -270,7 +269,7 @@ const InboxScreen = () => {
       <ScrollView
         style={{flex: 1, backgroundColor: '#fbfbfb', paddingBottom: mvs(40)}}>
         <MainHeader title={'Messages'} />
-        {filteredConversations !== 0 ? (
+        {/* {filteredConversations.length > 0 ? ( */}
           <View style={styles.messagesWrapper}>
             <Text style={styles.header}>Messages</Text>
 
@@ -281,6 +280,7 @@ const InboxScreen = () => {
                 data={filteredConversations}
                 keyExtractor={item => item.id}
                 renderItem={renderItem}
+                ListEmptyComponent={EmptyComponent}
                 contentContainerStyle={{
                   gap: 15,
                   marginHorizontal: mvs(14),
@@ -296,16 +296,17 @@ const InboxScreen = () => {
               />
             )}
           </View>
-        ) : (
-          <View style={styles.emptyInbox}>
-            <Image
-              source={require('../../../assets/img/empty.png')}
-              style={{width: '90%', resizeMode: 'contain', height: mvs(200)}}
-            />
-            {/* <Bold style={styles.emptyCartText}>{t('empty')}</Bold> */}
-            <Text style={styles.emptyInboxText}>No text recieved yet</Text>
-          </View>
-        )}
+        {/* // ) : ( */}
+        {/* //   <View style={styles.emptyInbox}> */}
+        {/* //     <Image */}
+        {/* //       source={require('../../../assets/img/empty.png')}
+        //       style={{width: '90%', resizeMode: 'contain', height: mvs(200)}}
+        //     />
+        //     {/* <Bold style={styles.emptyCartText}>{t('empty')}</Bold> */}
+        {/* //     <Text style={styles.emptyInboxText}>No text recieved yet</Text>
+        //   </View>
+        // )
+        } */} 
       </ScrollView>
     </SafeAreaView>
   );

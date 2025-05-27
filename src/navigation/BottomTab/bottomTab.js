@@ -80,6 +80,11 @@ const MyTabs = () => {
   }, [token, activeRole]);
 
   const handleTabPress = (e, route, navigation) => {
+
+ if (route.name === 'Favourite') {
+    return navigation.navigate(route.name);
+  }
+
     if (!token) {
       setIsModalVisible(true);
       e.preventDefault();
