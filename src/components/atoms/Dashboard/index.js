@@ -86,20 +86,33 @@ const ProductDashboard = () => {
     const updatedColorMap = {...categoryColorMap};
     let hasNewCategories = false;
 
+    // Get all currently used colors to avoid duplicates
+    const usedColors = new Set(Object.values(updatedColorMap));
+    
+    // Create a shuffled copy of available colors to ensure better distribution
+    const availableColors = colorPalette.filter(color => !usedColors.has(color));
+    
+    // If we've run out of unique colors, we'll need to reuse some
+    // But we'll try to pick colors that are least recently used
+    let colorIndex = 0;
+
     // Assign colors to any new categories
     categories.forEach(category => {
       if (!updatedColorMap[category.name]) {
-        // Find the first unused color in our palette
-        const usedColors = Object.values(updatedColorMap);
-        const availableColor = colorPalette.find(
-          color => !usedColors.includes(color),
-        );
-
-        // If all colors are used, pick one randomly
-        updatedColorMap[category.name] =
-          availableColor ||
-          colorPalette[Math.floor(Math.random() * colorPalette.length)];
-
+        let assignedColor;
+        
+        if (availableColors.length > 0) {
+          // Use an available unique color
+          assignedColor = availableColors.shift();
+        } else {
+          // All colors are used, cycle through the palette
+          // This ensures we don't assign the exact same color to consecutive new categories
+          assignedColor = colorPalette[colorIndex % colorPalette.length];
+          colorIndex++;
+        }
+        
+        updatedColorMap[category.name] = assignedColor;
+        usedColors.add(assignedColor);
         hasNewCategories = true;
       }
     });

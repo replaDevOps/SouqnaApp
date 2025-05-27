@@ -6,6 +6,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {
   CartSVG,
   ChatSVG,
+  ChatSVG2,
   HeartSVG,
   HOMESVG,
   NotificationSVG,
@@ -127,7 +128,7 @@ const MyTabs = () => {
       case 'Advertise':
         return <PlusSvg color={color} />;
       case 'Inbox':
-        return <ChatSVG color={color} />;
+        return <ChatSVG2 color={color} />;
       case 'Profile':
         return <ProfileSVG color={color} />;
       case 'Notification':
