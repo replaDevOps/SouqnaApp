@@ -38,6 +38,8 @@ import {
 import React, {useState} from 'react';
 import OnSVG from '../../../../assets/svg/OnSVG';
 import {OffSVG} from '../../../../assets/svg';
+import MainHeader from '../../../../components/Headers/MainHeader';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 export default function MyAccount() {
   const [isEditing, setIsEditing] = useState(false);
@@ -78,87 +80,89 @@ export default function MyAccount() {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.flexOne}
       keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0}>
-      <View style={styles.flexOne}>
-        <ScrollView contentContainerStyle={styles.scrollContainer}>
-          {/* <MainHeader/> */}
-          <View>
-            {/* Profile Image */}
-            <View style={styles.profileImageContainer}>
-              <View style={styles.profileImageWrapper}>
-                <Image
-                  style={styles.profileImage}
-                  source={require('../../../../assets/img/profile.png')}
-                />
+      <SafeAreaView style={{flex: 1}}>
+        <View style={styles.flexOne}>
+          <ScrollView contentContainerStyle={styles.scrollContainer}>
+            <MainHeader title={'My Account'} showBackIcon={true} />
+            <View>
+              {/* Profile Image */}
+              <View style={styles.profileImageContainer}>
+                <View style={styles.profileImageWrapper}>
+                  <Image
+                    style={styles.profileImage}
+                    source={require('../../../../assets/img/profile.png')}
+                  />
+                </View>
               </View>
-            </View>
 
-            {/* Personal Info */}
-            <View style={styles.card}>
-              <Text style={styles.cardTitle}>Personal Info</Text>
+              {/* Personal Info */}
+              <View style={styles.card}>
+                <Text style={styles.cardTitle}>Personal Info</Text>
 
-              {renderEditableRow('Your name', 'name')}
-              {renderEditableRow('Occupation', 'occupation')}
-              {renderEditableRow('Address', 'address')}
+                {renderEditableRow('Your name', 'name')}
+                {renderEditableRow('Occupation', 'occupation')}
+                {renderEditableRow('Address', 'address')}
 
-              <View style={styles.row}>
-                <Text>Seller</Text>
-                <TouchableOpacity
-                  onPress={isEditing ? toggleMember : undefined}>
-                  {editedData.isMember ? (
-                    <OnSVG
-                      width={50}
-                      height={50}
-                      stroke={'white'}
-                      fill={'green'}
-                    />
-                  ) : (
-                    <OffSVG
-                      width={50}
-                      height={50}
-                      stroke={'white'}
-                      fill={'green'}
-                    />
-                  )}
-                </TouchableOpacity>
-              </View>
-            </View>
-
-            {/* Contact Info */}
-            <View style={[styles.card, {marginTop: 16, marginBottom: 24}]}>
-              <Text style={styles.cardTitle}>Contact Info</Text>
-
-              {renderEditableRow('Phone number', 'phone', 'phone-pad')}
-              {renderEditableRow('Email', 'email', 'email-address')}
-            </View>
-          </View>
-
-          {/* Save/Cancel Buttons */}
-          <View style={styles.centered}>
-            <View style={styles.buttonRow}>
-              {isEditing ? (
-                <>
+                <View style={styles.row}>
+                  <Text>Seller</Text>
                   <TouchableOpacity
-                    style={styles.cancelBtn}
-                    onPress={handleCancel}>
-                    <Text style={styles.cancelText}>Cancel</Text>
+                    onPress={isEditing ? toggleMember : undefined}>
+                    {editedData.isMember ? (
+                      <OnSVG
+                        width={50}
+                        height={50}
+                        stroke={'white'}
+                        fill={'green'}
+                      />
+                    ) : (
+                      <OffSVG
+                        width={50}
+                        height={50}
+                        stroke={'white'}
+                        fill={'green'}
+                      />
+                    )}
                   </TouchableOpacity>
+                </View>
+              </View>
+
+              {/* Contact Info */}
+              <View style={[styles.card, {marginTop: 16, marginBottom: 24}]}>
+                <Text style={styles.cardTitle}>Contact Info</Text>
+
+                {renderEditableRow('Phone number', 'phone', 'phone-pad')}
+                {renderEditableRow('Email', 'email', 'email-address')}
+              </View>
+            </View>
+
+            {/* Save/Cancel Buttons */}
+            <View style={styles.centered}>
+              <View style={styles.buttonRow}>
+                {isEditing ? (
+                  <>
+                    <TouchableOpacity
+                      style={styles.cancelBtn}
+                      onPress={handleCancel}>
+                      <Text style={styles.cancelText}>Cancel</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.saveBtn}
+                      onPress={handleEditToggle}>
+                      <Text style={styles.saveText}>Save</Text>
+                    </TouchableOpacity>
+                  </>
+                ) : (
                   <TouchableOpacity
-                    style={styles.saveBtn}
+                    style={styles.editBtn}
                     onPress={handleEditToggle}>
-                    <Text style={styles.saveText}>Save</Text>
+                    <Text style={styles.editText}>Edit Profile</Text>
                   </TouchableOpacity>
-                </>
-              ) : (
-                <TouchableOpacity
-                  style={styles.editBtn}
-                  onPress={handleEditToggle}>
-                  <Text style={styles.editText}>Edit Profile</Text>
-                </TouchableOpacity>
-              )}
+                )}
+              </View>
             </View>
-          </View>
-        </ScrollView>
-      </View>
+          </ScrollView>
+        </View>
+      </SafeAreaView>
     </KeyboardAvoidingView>
   );
 
@@ -189,7 +193,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   profileImageContainer: {
-    marginVertical: 80,
+    marginVertical: 40,
     alignItems: 'center',
   },
   profileImageWrapper: {
@@ -261,7 +265,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 24,
     borderRadius: 12,
-    backgroundColor: '#22C55E',
+    backgroundColor: '#ADBD6E',
   },
   saveText: {
     fontSize: 18,

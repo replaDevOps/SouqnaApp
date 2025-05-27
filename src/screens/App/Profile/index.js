@@ -91,7 +91,7 @@ const Profile = () => {
   // Function to handle role switching
   const handleRoleSwitching = () => {
     setIsRoleSwitching(true);
-    slideOutAndIn();
+    // slideOutAndIn();
     setTimeout(() => {
       setIsRoleSwitching(false);
     }, 1500); // Show skeleton for 1.5 seconds
