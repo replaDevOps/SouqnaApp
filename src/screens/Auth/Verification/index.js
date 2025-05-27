@@ -114,6 +114,7 @@ const VerificationScreen = () => {
             idNumber: data.idNumber || '',
             issueDate: data.issueDate || '',
             expDate: data.expDate || '',
+            documentType: data.documentType || '', // Ensure documentType is set
           });
           // Pre-fill image placeholders if URLs exist
           setIdFrontSide(
