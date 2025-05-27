@@ -12,27 +12,19 @@ const VerificationStatus = () => {
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
   const {role, token, verificationStatus} = useSelector(state => state.user);
-  const [loading, setLoading] = useState(true);
-  const [apiStatus, setApiStatus] = useState();
-  console.log(
-    'verification status in component from redux: ',
-    verificationStatus,
-  );
+
   useEffect(() => {
     if (role === 3 || !token || !isFocused) return;
 
     const fetchVerificationStatus = async () => {
-      setLoading(true);
       try {
         const response = await API.get('viewVerification', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-
-        const apiStatus = response.data?.data?.status ?? 0;
-        dispatch(setVerificationStatus(apiStatus));
-        setApiStatus(apiStatus);
+        const status = response.data?.data?.status ?? 0;
+        dispatch(setVerificationStatus(status));
       } catch (error) {
         console.error('Verification API error:', error);
         if (
@@ -42,17 +34,18 @@ const VerificationStatus = () => {
         ) {
           dispatch(setVerificationStatus(0));
         }
-      } finally {
-        setLoading(false);
       }
     };
 
     fetchVerificationStatus();
   }, [token, dispatch, isFocused, role]);
 
-  if (apiStatus === null) {
+  const apiStatus = verificationStatus;
+
+  if (!apiStatus && apiStatus !== 0) {
     return <ActivityIndicator size="small" color={colors.green} />;
   }
+
   if (apiStatus === 2) {
     return (
       <View style={styles.verifiedContainer}>
@@ -79,6 +72,7 @@ const VerificationStatus = () => {
       </View>
     );
   }
+
   if (apiStatus === 1) {
     return (
       <View style={styles.progressContainer}>
@@ -89,19 +83,7 @@ const VerificationStatus = () => {
       </View>
     );
   }
-  // return (
-  //   <View style={styles.progressContainer}>
-  //     <View style={styles.InprogressContainer}>
-  //       <View style={styles.orangeDot} />
-  //       <Text style={styles.InprogressText}>{t('inProgress')}</Text>
-  //     </View>
-  //   </View>
-  // );
-  if (loading) {
-    return <ActivityIndicator size="small" color={colors.green} />;
-  }
 };
-
 const styles = StyleSheet.create({
   verifiedContainer: {
     backgroundColor: colors.lightpastelgreen,
