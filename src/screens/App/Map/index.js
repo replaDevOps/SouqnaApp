@@ -578,7 +578,8 @@ export default function MapScreen() {
               setDropdownVisible(false);
             }}>
             <RadioButton selected={activeCategory === null} />
-            <Text style={styles.dropdownText}>All Categories</Text>
+            <Text style={styles.dropdownText} numberOfLines={1}
+                    ellipsizeMode="tail">All Categories</Text>
           </TouchableOpacity>
 
           {categories.map(category => (
@@ -590,7 +591,10 @@ export default function MapScreen() {
                 setDropdownVisible(false);
               }}>
               <RadioButton selected={activeCategory === category.name} />
-              <Text style={styles.dropdownText}>{category.name}</Text>
+              <Text 
+              style={styles.dropdownText} 
+              numberOfLines={1}
+              ellipsizeMode="tail">{category.name}</Text>
             </TouchableOpacity>
           ))}
         </ScrollView>

@@ -45,8 +45,8 @@ const styles = StyleSheet.create({
     marginTop: mvs(7),
   },
   description: {
-    color: '#000',
-    fontSize: mvs(14),
+    color: 'rgba(36, 33, 33, 0.66)',
+    fontSize: mvs(16),
     lineHeight: mvs(23),
     paddingHorizontal: mvs(5),
     paddingVertical: mvs(4),
@@ -57,7 +57,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     marginTop: mvs(10),
   },
-
   providerTitle: {
     fontSize: mvs(16),
   },

@@ -17,11 +17,12 @@ const style = StyleSheet.create({
   },
   shareIconsRow: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'center',
     alignItems: 'center',
+    gap:mvs(30)
   },
   shareIcon: {
-    marginHorizontal: mvs(15),
+    // marginHorizontal: mvs(15),
   },
 });
 

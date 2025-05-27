@@ -199,7 +199,7 @@ const styles = StyleSheet.create({
     marginTop: mvs(3),
     position: 'absolute',
     zIndex: 80,
-    width: '35%',
+    width: mvs(140),
     backgroundColor: colors.lightorange,
     borderRadius: mvs(8),
     flexDirection: 'row',
@@ -216,7 +216,7 @@ const styles = StyleSheet.create({
   },
   dropdownText: {
     fontSize: 16,
-    width: '90%'
+    width: mvs(140),
   },
   productGroupContainer: {
     backgroundColor: 'white',
