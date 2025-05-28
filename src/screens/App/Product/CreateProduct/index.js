@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import {
   Text,
   TextInput,
@@ -14,6 +15,8 @@ import React, {useEffect, useState} from 'react';
 import {CommonActions, useNavigation, useRoute} from '@react-navigation/native';
 import axios from 'axios';
 import {useSelector} from 'react-redux';
+// import {launchImageLibrary} from 'react-native-image-picker';
+// import ImagePicker from 'react-native-image-crop-picker';
 import {Snackbar} from 'react-native-paper';
 import {styles} from './styles';
 import MainHeader from '../../../../components/Headers/MainHeader';
@@ -39,12 +42,11 @@ const CreateProduct = () => {
     category,
     categoryImage,
   } = route.params;
-  const categoryType = category.toLowerCase();
   const {token} = useSelector(state => state.user);
   const navigation = useNavigation();
   const {t} = useTranslation();
 
-  let initialFormData = {
+  const [formData, setFormData] = useState({
     name: '',
     description: '',
     price: '',
@@ -55,97 +57,7 @@ const CreateProduct = () => {
     location: '',
     lat: '',
     long: '',
-    condition: '',
-  };
-
-  if (categoryType === 'vehicle') {
-    initialFormData = {
-      ...initialFormData,
-      title: '',
-      category: '',
-      make: '',
-      model: '',
-      year: '',
-      mileage: '',
-      fuelType: '',
-      transmission: '',
-      power: '',
-      doors: '',
-      vehicleType: '',
-      condition: '',
-      registrationDate: '',
-      inspectionValidUntil: '',
-      vin: '',
-      previousOwners: '',
-      serviceHistory: '',
-      registrationCity: '',
-      insuranceValidUntil: '',
-      tyreCondition: '',
-      spareKey: '',
-      equipment: '',
-      price: '',
-      negotiable: '',
-    };
-  } else if (categoryType === 'property') {
-    initialFormData = {
-      ...initialFormData,
-      adTitle: '',
-      purpose: '',
-      propertyType: '',
-      city: '',
-      neighborhood: '',
-      mapLocation: '',
-      size: '',
-      price: '',
-      negotiable: '',
-      rooms: '',
-      bathrooms: '',
-      floorNumber: '',
-      totalFloors: '',
-      furnished: '',
-      balcony: '',
-      parking: '',
-      elevator: '',
-      waterElectricity: '',
-      heatingCooling: '',
-      titleDeed: '',
-      yearBuilt: '',
-      facingDirection: '',
-      view: '',
-      petsAllowed: '',
-      nearbyLandmarks: '',
-      monthlyMaintenanceCost: '',
-      floorPlan: '',
-      distanceFromCityCenter: '',
-      media: [],
-      description: '',
-    };
-  } else if (categoryType === 'jobs') {
-    initialFormData = {
-      ...initialFormData,
-      jobTitle: '',
-      industry: '',
-      employmentType: '',
-      description: '',
-      requirements: '',
-      companyName: '',
-      jobLocation: '',
-      experienceRequired: '',
-      educationRequired: '',
-      skills: '',
-      genderPreference: '',
-      workTiming: '',
-      vacancies: '',
-      contractDuration: '',
-      applicationDeadline: '',
-      contactMethod: '',
-      salary: '',
-      salaryType: '',
-      benefits: '',
-    };
-  }
-
-  const [formData, setFormData] = useState(initialFormData);
+  });
 
   const [loading, setLoading] = useState(false);
   const [snackbarVisible, setSnackbarVisible] = useState(false);
@@ -158,29 +70,67 @@ const CreateProduct = () => {
     setSelectedCondition(condition);
     handleInputChange('condition', condition);
   };
+  // useEffect(() => {
+  //   return () => {
+  //     ImagePicker.clean()
+  //       .then(() => console.log('Temp images cleaned up'))
+  //       .catch(e => console.log('Cleanup error:', e));
+  //   };
+  // }, []);
 
-  const handleInputChange = (field, value) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value,
-    }));
-  };
+  // const handleChooseImages = async () => {
+  //   try {
+  //     const selectedImages = await ImagePicker.openPicker({
+  //       multiple: true,
+  //       mediaType: 'photo',
+  //     });
 
-  const handleRemoveImage = indexToRemove => {
-    setFormData(prev => ({
-      ...prev,
-      images: prev.images.filter((_, index) => index !== indexToRemove),
-    }));
-  };
+  //     // Manually crop each selected image
+  //     const croppedImages = await Promise.all(
+  //       selectedImages.map(async image => {
+  //         const cropped = await ImagePicker.openCropper({
+  //           path: image.path,
+  //           width: 1024, // landscape width
+  //           height: 800, // landscape height
+  //           cropping: true,
+  //           freeStyleCropEnabled: true,
+  //           cropperToolbarTitle: 'Crop Image',
+  //           cropperCircleOverlay: false,
+  //           cropperStatusBarColor: '#ffffff',
+  //           cropperToolbarColor: '#ffffff',
+  //           cropperToolbarWidgetColor: '#000000',
+  //         });
 
-  const handlePlaceSelected = placeData => {
-    setFormData(prev => ({
-      ...prev,
-      location: placeData.location,
-      lat: placeData.lat,
-      long: placeData.long,
-    }));
-  };
+  //         return {
+  //           uri: cropped.path,
+  //           fileName: cropped.filename || cropped.path.split('/').pop(),
+  //           type: cropped.mime,
+  //           fileSize: cropped.size,
+  //         };
+  //       }),
+  //     );
+
+  //     setFormData(prev => ({
+  //       ...prev,
+  //       images: [...prev.images, ...croppedImages],
+  //     }));
+  //   } catch (error) {
+  //     if (error.code !== 'E_PICKER_CANCELLED') {
+  //       console.log('Image selection error:', error);
+  //       setSnackbarMessage('Failed to pick image.');
+  //       setSnackbarVisible(true);
+  //     }
+  //   }
+  // };
+
+  const getImageSize = uri =>
+    new Promise((resolve, reject) => {
+      Image.getSize(
+        uri,
+        (width, height) => resolve({width, height}),
+        error => reject(error),
+      );
+    });
 
   const handleChooseImages = async () => {
     try {
@@ -260,6 +210,29 @@ const CreateProduct = () => {
     }
   };
 
+  const handleInputChange = (field, value) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+  const handleRemoveImage = indexToRemove => {
+    setFormData(prev => ({
+      ...prev,
+      images: prev.images.filter((_, index) => index !== indexToRemove),
+    }));
+  };
+
+  // Handle place selection from Google Places component
+  const handlePlaceSelected = placeData => {
+    setFormData(prev => ({
+      ...prev,
+      location: placeData.location,
+      lat: placeData.lat,
+      long: placeData.long,
+    }));
+  };
+
   const submitProduct = async () => {
     const data = new FormData();
     data.append('name', formData.name);
@@ -291,82 +264,6 @@ const CreateProduct = () => {
     data.append('lat', formData.lat);
     data.append('long', formData.long);
     data.append('condition', conditionValue);
-
-    if (categoryType === 'vehicle') {
-      data.append('make', formData.make);
-      data.append('model', formData.model);
-      data.append('year', formData.year);
-      data.append('mileage', formData.mileage);
-      data.append('fuelType', formData.fuelType);
-      data.append('transmission', formData.transmission);
-      data.append('power', formData.power);
-      data.append('doors', formData.doors);
-      data.append('vehicleType', formData.vehicleType);
-      data.append('condition', formData.condition);
-      data.append('registrationDate', formData.registrationDate);
-      data.append('inspectionValidUntil', formData.inspectionValidUntil);
-      data.append('vin', formData.vin);
-      data.append('previousOwners', formData.previousOwners);
-      data.append('serviceHistory', formData.serviceHistory);
-      data.append('registrationCity', formData.registrationCity);
-      data.append('insuranceValidUntil', formData.insuranceValidUntil);
-      data.append('tyreCondition', formData.tyreCondition);
-      data.append('spareKey', formData.spareKey);
-      data.append('equipment', formData.equipment);
-      data.append('price', formData.price);
-      data.append('negotiable', formData.negotiable);
-    } else if (categoryType === 'property') {
-      data.append('adTitle', formData.adTitle);
-      data.append('purpose', formData.purpose);
-      data.append('propertyType', formData.propertyType);
-      data.append('city', formData.city);
-      data.append('neighborhood', formData.neighborhood);
-      data.append('mapLocation', formData.mapLocation);
-      data.append('size', formData.size);
-      data.append('price', formData.price);
-      data.append('negotiable', formData.negotiable);
-      data.append('rooms', formData.rooms);
-      data.append('bathrooms', formData.bathrooms);
-      data.append('floorNumber', formData.floorNumber);
-      data.append('totalFloors', formData.totalFloors);
-      data.append('furnished', formData.furnished);
-      data.append('balcony', formData.balcony);
-      data.append('parking', formData.parking);
-      data.append('elevator', formData.elevator);
-      data.append('waterElectricity', formData.waterElectricity);
-      data.append('heatingCooling', formData.heatingCooling);
-      data.append('titleDeed', formData.titleDeed);
-      data.append('yearBuilt', formData.yearBuilt);
-      data.append('facingDirection', formData.facingDirection);
-      data.append('view', formData.view);
-      data.append('petsAllowed', formData.petsAllowed);
-      data.append('nearbyLandmarks', formData.nearbyLandmarks);
-      data.append('monthlyMaintenanceCost', formData.monthlyMaintenanceCost);
-      data.append('floorPlan', formData.floorPlan);
-      data.append('distanceFromCityCenter', formData.distanceFromCityCenter);
-      data.append('media', formData.media);
-      data.append('description', formData.description);
-    } else if (categoryType === 'jobs') {
-      data.append('jobTitle', formData.jobTitle);
-      data.append('industry', formData.industry);
-      data.append('employmentType', formData.employmentType);
-      data.append('description', formData.description);
-      data.append('requirements', formData.requirements);
-      data.append('companyName', formData.companyName);
-      data.append('jobLocation', formData.jobLocation);
-      data.append('experienceRequired', formData.experienceRequired);
-      data.append('educationRequired', formData.educationRequired);
-      data.append('skills', formData.skills);
-      data.append('genderPreference', formData.genderPreference);
-      data.append('workTiming', formData.workTiming);
-      data.append('vacancies', formData.vacancies);
-      data.append('contractDuration', formData.contractDuration);
-      data.append('applicationDeadline', formData.applicationDeadline);
-      data.append('contactMethod', formData.contactMethod);
-      data.append('salary', formData.salary);
-      data.append('salaryType', formData.salaryType);
-      data.append('benefits', formData.benefits);
-    }
 
     try {
       setLoading(true);
@@ -422,9 +319,12 @@ const CreateProduct = () => {
         error.message ||
         t('somethingWentWrong');
 
+      // Check if 403 error (profile not verified)
       if (error.response?.status === 403) {
         errorMessage = t('profileNotVerified');
-      } else if (
+      }
+      // Check if it's an image size error
+      else if (
         typeof errorMessage === 'string' &&
         errorMessage.includes('images.')
       ) {
@@ -464,7 +364,7 @@ const CreateProduct = () => {
   return (
     <SafeAreaView style={{flex: 1}}>
       <StatusBar barStyle="dark-content" />
-      <MainHeader title={t('Post Your Ad')} showBackIcon={true} />
+      <MainHeader title={t('titleProduct')} showBackIcon={true} />
       <KeyboardAvoidingView
         style={{flex: 1}}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -489,6 +389,7 @@ const CreateProduct = () => {
                   style={{
                     flexDirection: 'row',
                     alignItems: 'center',
+                    // justifyContent: 'space-between',
                   }}>
                   <View style={styles.fixedTextBox}>
                     <Text
@@ -530,6 +431,7 @@ const CreateProduct = () => {
                         keyExtractor={(item, index) => index.toString()}
                         contentInset={{right: 25}}
                         contentContainerStyle={styles.flatListContainer}
+                        // style
                         renderItem={({item, index}) =>
                           item.isUploadIcon ? (
                             <TouchableOpacity
@@ -552,7 +454,8 @@ const CreateProduct = () => {
                               />
                               <TouchableOpacity
                                 style={styles.removeIcon}
-                                onPress={() => handleRemoveImage(index - 1)}>
+                                onPress={() => handleRemoveImage(index - 1)} // subtract 1 due to upload icon
+                              >
                                 <Text style={styles.removeIconText}>✕</Text>
                               </TouchableOpacity>
                             </View>
@@ -565,7 +468,7 @@ const CreateProduct = () => {
               )}
               <View></View>
 
-              <Text style={styles.noteText}>{t('coverNote')}</Text>
+              <Text style={styles.noteText}>{t('coverNote')} </Text>
             </View>
           </View>
 
@@ -594,7 +497,7 @@ const CreateProduct = () => {
               </TouchableOpacity>
 
               <TouchableOpacity
-                style={styles.radioCondition}
+                style={styles.radioOption}
                 onPress={() => handleConditionSelect('Used')}>
                 <View style={styles.radioWrapper}>
                   <View
@@ -672,11 +575,23 @@ const CreateProduct = () => {
               }
               placeholder={t('pricePlaceholder')}
             />
+
+            {/* <TextInput
+            style={styles.input}
+            placeholder={t('pricePlaceholder')}
+            placeholderTextColor={colors.grey}
+            keyboardType="numeric"
+            value={formData.price}
+            onChangeText={text => handleInputChange('price', text)}
+          /> */}
           </View>
 
           {/* Discount Section */}
           <View style={styles.sectionContainer}>
-            <Text style={styles.sectionTitle}>{t('discount')}</Text>
+            <Text style={styles.sectionTitle}>
+              {t('discount')}
+              {/* <Text style={{color: colors.red}}>*</Text> */}
+            </Text>
             <TextInput
               style={styles.input}
               placeholder={t('discountPlaceholder')}
@@ -689,7 +604,10 @@ const CreateProduct = () => {
 
           {/* Special Offer Section */}
           <View style={styles.sectionContainer}>
-            <Text style={styles.sectionTitle}>{t('specialOffer')}</Text>
+            <Text style={styles.sectionTitle}>
+              {t('specialOffer')}
+              {/* <Text style={{color: colors.red}}>*</Text> */}
+            </Text>
             <TextInput
               style={styles.input}
               placeholder={t('specialOfferPlaceholder')}
@@ -715,682 +633,16 @@ const CreateProduct = () => {
             />
           </View>
 
-          {/* Category-Specific Fields */}
-          {categoryType === 'vehicle' && (
-            <>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Vehicle Title</Text>
-                <TextInput
-                  value={formData.title}
-                  onChangeText={text => handleInputChange('title', text)}
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Category</Text>
-                <TextInput
-                  value={formData.category}
-                  onChangeText={text => handleInputChange('category', text)}
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Make</Text>
-                <TextInput
-                  value={formData.make}
-                  onChangeText={text => handleInputChange('make', text)}
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Model</Text>
-                <TextInput
-                  value={formData.model}
-                  onChangeText={text => handleInputChange('model', text)}
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Year of Manufacture</Text>
-                <TextInput
-                  value={formData.year}
-                  onChangeText={text => handleInputChange('year', text)}
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Mileage (km)</Text>
-                <TextInput
-                  value={formData.mileage}
-                  onChangeText={text => handleInputChange('mileage', text)}
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Fuel Type</Text>
-                <TextInput
-                  value={formData.fuelType}
-                  onChangeText={text => handleInputChange('fuelType', text)}
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Transmission</Text>
-                <TextInput
-                  value={formData.transmission}
-                  onChangeText={text => handleInputChange('transmission', text)}
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Power (HP or kW)</Text>
-                <TextInput
-                  value={formData.power}
-                  onChangeText={text => handleInputChange('power', text)}
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Number of Doors</Text>
-                <TextInput
-                  value={formData.doors}
-                  onChangeText={text => handleInputChange('doors', text)}
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Vehicle Type</Text>
-                <TextInput
-                  value={formData.vehicleType}
-                  onChangeText={text => handleInputChange('vehicleType', text)}
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Condition</Text>
-                <TextInput
-                  value={formData.condition}
-                  onChangeText={text => handleInputChange('condition', text)}
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>First Registration Date</Text>
-                <TextInput
-                  value={formData.registrationDate}
-                  onChangeText={text =>
-                    handleInputChange('registrationDate', text)
-                  }
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Inspection Valid Until</Text>
-                <TextInput
-                  value={formData.inspectionValidUntil}
-                  onChangeText={text =>
-                    handleInputChange('inspectionValidUntil', text)
-                  }
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>VIN / Chassis Number</Text>
-                <TextInput
-                  value={formData.vin}
-                  onChangeText={text => handleInputChange('vin', text)}
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Previous Owners Count</Text>
-                <TextInput
-                  value={formData.previousOwners}
-                  onChangeText={text =>
-                    handleInputChange('previousOwners', text)
-                  }
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Service History</Text>
-                <TextInput
-                  value={formData.serviceHistory}
-                  onChangeText={text =>
-                    handleInputChange('serviceHistory', text)
-                  }
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Registration City</Text>
-                <TextInput
-                  value={formData.registrationCity}
-                  onChangeText={text =>
-                    handleInputChange('registrationCity', text)
-                  }
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Insurance Valid Until</Text>
-                <TextInput
-                  value={formData.insuranceValidUntil}
-                  onChangeText={text =>
-                    handleInputChange('insuranceValidUntil', text)
-                  }
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Tyre Condition</Text>
-                <TextInput
-                  value={formData.tyreCondition}
-                  onChangeText={text =>
-                    handleInputChange('tyreCondition', text)
-                  }
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Spare Key</Text>
-                <TextInput
-                  value={formData.spareKey}
-                  onChangeText={text => handleInputChange('spareKey', text)}
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Equipment / Features</Text>
-                <TextInput
-                  value={formData.equipment}
-                  onChangeText={text => handleInputChange('equipment', text)}
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Price (PKR/USD)</Text>
-                <TextInput
-                  value={formData.price}
-                  onChangeText={text => handleInputChange('price', text)}
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Negotiable</Text>
-                <TextInput
-                  value={formData.negotiable}
-                  onChangeText={text => handleInputChange('negotiable', text)}
-                  style={styles.input}
-                />
-              </View>
-            </>
-          )}
-
-          {categoryType === 'property' && (
-            <>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Ad Title</Text>
-                <TextInput
-                  value={formData.adTitle}
-                  onChangeText={text => handleInputChange('adTitle', text)}
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Purpose</Text>
-                <TextInput
-                  value={formData.purpose}
-                  onChangeText={text => handleInputChange('purpose', text)}
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Property Type</Text>
-                <TextInput
-                  value={formData.propertyType}
-                  onChangeText={text => handleInputChange('propertyType', text)}
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>City / Region</Text>
-                <TextInput
-                  value={formData.city}
-                  onChangeText={text => handleInputChange('city', text)}
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Neighborhood / Area</Text>
-                <TextInput
-                  value={formData.neighborhood}
-                  onChangeText={text => handleInputChange('neighborhood', text)}
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Map Location</Text>
-                <TextInput
-                  value={formData.mapLocation}
-                  onChangeText={text => handleInputChange('mapLocation', text)}
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Size (m²)</Text>
-                <TextInput
-                  value={formData.size}
-                  onChangeText={text => handleInputChange('size', text)}
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Price (PKR/USD)</Text>
-                <TextInput
-                  value={formData.price}
-                  onChangeText={text => handleInputChange('price', text)}
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Negotiable</Text>
-                <TextInput
-                  value={formData.negotiable}
-                  onChangeText={text => handleInputChange('negotiable', text)}
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Rooms</Text>
-                <TextInput
-                  value={formData.rooms}
-                  onChangeText={text => handleInputChange('rooms', text)}
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Bathrooms</Text>
-                <TextInput
-                  value={formData.bathrooms}
-                  onChangeText={text => handleInputChange('bathrooms', text)}
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Floor Number</Text>
-                <TextInput
-                  value={formData.floorNumber}
-                  onChangeText={text => handleInputChange('floorNumber', text)}
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>
-                  Total Floors in Building
-                </Text>
-                <TextInput
-                  value={formData.totalFloors}
-                  onChangeText={text => handleInputChange('totalFloors', text)}
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Furnished</Text>
-                <TextInput
-                  value={formData.furnished}
-                  onChangeText={text => handleInputChange('furnished', text)}
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Balcony / Terrace</Text>
-                <TextInput
-                  value={formData.balcony}
-                  onChangeText={text => handleInputChange('balcony', text)}
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Parking</Text>
-                <TextInput
-                  value={formData.parking}
-                  onChangeText={text => handleInputChange('parking', text)}
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Elevator</Text>
-                <TextInput
-                  value={formData.elevator}
-                  onChangeText={text => handleInputChange('elevator', text)}
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>
-                  Water / Electricity Availability
-                </Text>
-                <TextInput
-                  value={formData.waterElectricity}
-                  onChangeText={text =>
-                    handleInputChange('waterElectricity', text)
-                  }
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Heating / Cooling</Text>
-                <TextInput
-                  value={formData.heatingCooling}
-                  onChangeText={text =>
-                    handleInputChange('heatingCooling', text)
-                  }
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Title Deed / Document</Text>
-                <TextInput
-                  value={formData.titleDeed}
-                  onChangeText={text => handleInputChange('titleDeed', text)}
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Year Built / Renovated</Text>
-                <TextInput
-                  value={formData.yearBuilt}
-                  onChangeText={text => handleInputChange('yearBuilt', text)}
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Facing Direction</Text>
-                <TextInput
-                  value={formData.facingDirection}
-                  onChangeText={text =>
-                    handleInputChange('facingDirection', text)
-                  }
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>View</Text>
-                <TextInput
-                  value={formData.view}
-                  onChangeText={text => handleInputChange('view', text)}
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Pets Allowed</Text>
-                <TextInput
-                  value={formData.petsAllowed}
-                  onChangeText={text => handleInputChange('petsAllowed', text)}
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Nearby Landmarks</Text>
-                <TextInput
-                  value={formData.nearbyLandmarks}
-                  onChangeText={text =>
-                    handleInputChange('nearbyLandmarks', text)
-                  }
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>
-                  Monthly Maintenance Cost (PKR)
-                </Text>
-                <TextInput
-                  value={formData.monthlyMaintenanceCost}
-                  onChangeText={text =>
-                    handleInputChange('monthlyMaintenanceCost', text)
-                  }
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Floor Plan</Text>
-                <TextInput
-                  value={formData.floorPlan}
-                  onChangeText={text => handleInputChange('floorPlan', text)}
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>
-                  Distance from City Center / Transport (km)
-                </Text>
-                <TextInput
-                  value={formData.distanceFromCityCenter}
-                  onChangeText={text =>
-                    handleInputChange('distanceFromCityCenter', text)
-                  }
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>
-                  Media (Photos 1–20 images)
-                </Text>
-                <TextInput
-                  value={formData.media}
-                  onChangeText={text => handleInputChange('media', text)}
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Video / Virtual Tour</Text>
-                <TextInput
-                  value={formData.videoVirtualTour}
-                  onChangeText={text =>
-                    handleInputChange('videoVirtualTour', text)
-                  }
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Description</Text>
-                <TextInput
-                  value={formData.description}
-                  onChangeText={text => handleInputChange('description', text)}
-                  style={styles.input}
-                />
-              </View>
-            </>
-          )}
-
-          {categoryType === 'jobs' && (
-            <>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Job Title</Text>
-                <TextInput
-                  value={formData.jobTitle}
-                  onChangeText={text => handleInputChange('jobTitle', text)}
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Category / Industry</Text>
-                <TextInput
-                  value={formData.industry}
-                  onChangeText={text => handleInputChange('industry', text)}
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Employment Type</Text>
-                <TextInput
-                  value={formData.employmentType}
-                  onChangeText={text =>
-                    handleInputChange('employmentType', text)
-                  }
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Description</Text>
-                <TextInput
-                  value={formData.description}
-                  onChangeText={text => handleInputChange('description', text)}
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>
-                  Requirements / Qualifications
-                </Text>
-                <TextInput
-                  value={formData.requirements}
-                  onChangeText={text => handleInputChange('requirements', text)}
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Company Name / Logo</Text>
-                <TextInput
-                  value={formData.companyName}
-                  onChangeText={text => handleInputChange('companyName', text)}
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Job Location</Text>
-                <TextInput
-                  value={formData.jobLocation}
-                  onChangeText={text => handleInputChange('jobLocation', text)}
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>
-                  Experience Required (years)
-                </Text>
-                <TextInput
-                  value={formData.experienceRequired}
-                  onChangeText={text =>
-                    handleInputChange('experienceRequired', text)
-                  }
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Education Required</Text>
-                <TextInput
-                  value={formData.educationRequired}
-                  onChangeText={text =>
-                    handleInputChange('educationRequired', text)
-                  }
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Skills</Text>
-                <TextInput
-                  value={formData.skills}
-                  onChangeText={text => handleInputChange('skills', text)}
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Gender Preference</Text>
-                <TextInput
-                  value={formData.genderPreference}
-                  onChangeText={text =>
-                    handleInputChange('genderPreference', text)
-                  }
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Work Timing</Text>
-                <TextInput
-                  value={formData.workTiming}
-                  onChangeText={text => handleInputChange('workTiming', text)}
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Number of Vacancies</Text>
-                <TextInput
-                  value={formData.vacancies}
-                  onChangeText={text => handleInputChange('vacancies', text)}
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>
-                  Contract Duration (months)
-                </Text>
-                <TextInput
-                  value={formData.contractDuration}
-                  onChangeText={text =>
-                    handleInputChange('contractDuration', text)
-                  }
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Application Deadline</Text>
-                <TextInput
-                  value={formData.applicationDeadline}
-                  onChangeText={text =>
-                    handleInputChange('applicationDeadline', text)
-                  }
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Contact Method</Text>
-                <TextInput
-                  value={formData.contactMethod}
-                  onChangeText={text =>
-                    handleInputChange('contactMethod', text)
-                  }
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Salary (PKR/USD)</Text>
-                <TextInput
-                  value={formData.salary}
-                  onChangeText={text => handleInputChange('salary', text)}
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Salary Type</Text>
-                <TextInput
-                  value={formData.salaryType}
-                  onChangeText={text => handleInputChange('salaryType', text)}
-                  style={styles.input}
-                />
-              </View>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Benefits</Text>
-                <TextInput
-                  value={formData.benefits}
-                  onChangeText={text => handleInputChange('benefits', text)}
-                  style={styles.input}
-                />
-              </View>
-            </>
-          )}
-
           {/* Submit Button */}
           <MyButton
-            title={loading ? t('submitting') : t('Submit Ad')}
+            title={loading ? t('submitting') : t('submitProduct')}
             style={styles.submitButton}
             onPress={submitProduct}
             disabled={loading}>
             {loading ? (
               <ActivityIndicator color={colors.green} />
             ) : (
-              <Text style={styles.submitButtonText}>{t('Submit Ad')}</Text>
+              <Text style={styles.submitButtonText}>{t('submit')}</Text>
             )}
           </MyButton>
         </ScrollView>
