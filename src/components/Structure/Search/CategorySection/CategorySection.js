@@ -88,6 +88,7 @@ const CategorySection = ({}) => {
         horizontal
         showsHorizontalScrollIndicator={false}
         keyExtractor={(category, index) => index.toString()}
+        contentContainerStyle={{justifyContent: 'space-evenly', flexGrow: 1}}
         renderItem={({item}) => {
           const imageURL = item.image
             ? `${BASE_URL_Product}${item.image}`

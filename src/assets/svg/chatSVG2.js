@@ -2,7 +2,7 @@ import * as React from 'react';
 import Svg, {Path} from 'react-native-svg';
 import {colors} from '../../util/color';
 
-const ChatSVG2 = ({color = colors.black}) => (
+const ChatSVG2 = ({color = colors.red}) => (
   <Svg
     fill="none"
     width="24px"
