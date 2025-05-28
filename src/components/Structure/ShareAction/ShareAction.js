@@ -7,7 +7,13 @@ import {
   View,
 } from 'react-native';
 import {Share} from 'react-native';
-import {WhatsappSVG, EmailSvg, ChatSVG, CopyLinkSVG} from '../../../assets/svg';
+import {
+  WhatsappSVG,
+  EmailSvg,
+  ChatSVG,
+  CopyLinkSVG,
+  ChatSVG2,
+} from '../../../assets/svg';
 import styles from './style';
 import Regular from '../../../typography/RegularText';
 import Clipboard from '@react-native-clipboard/clipboard';
@@ -96,7 +102,7 @@ const ShareActions = ({productTitle, productLink, productId}) => {
           <EmailSvg width={30} height={30} style={styles.shareIcon} />
         </TouchableOpacity>
         <TouchableOpacity onPress={handleShareToSMS}>
-          <ChatSVG width={25} height={25} style={styles.shareIcon} />
+          <ChatSVG2 width={25} height={25} style={styles.shareIcon} />
         </TouchableOpacity>
         <TouchableOpacity onPress={handleCopyLink}>
           <CopyLinkSVG width={25} height={25} style={styles.shareIcon} />
