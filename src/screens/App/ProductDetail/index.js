@@ -32,6 +32,7 @@ import {Snackbar} from 'react-native-paper';
 import Loader from '../../../components/Loader';
 import {addItem} from '../../../redux/slices/cartSlice';
 import {getOrCreateConversation} from '../../../firebase/chatService';
+import DetailsTable from '../../../components/Structure/Details/DetailsTable';
 
 const {height} = Dimensions.get('window');
 
@@ -302,7 +303,7 @@ const ProductDetail = () => {
           />
           <ScrollView
             showsVerticalScrollIndicator={false}
-            contentContainerStyle={{paddingBottom: mvs(80)}}
+            contentContainerStyle={{paddingBottom: mvs(80),backgroundColor:'#fff'}}
             onScroll={onScroll}
             scrollEventThrottle={16}>
             <ProductImages images={product?.images || []} />
@@ -326,21 +327,26 @@ const ProductDetail = () => {
                 </View>
               }
             </View>
-            <ProductMenu
+            {/* <ProductMenu
               color={product.stock}
               condition={
                 product.discounts && Object.keys(product.discounts).length > 0
-                  ? JSON.stringify(product.discounts) // or format as needed
+                ? JSON.stringify(product.discounts) // or format as needed
                   : 'No Discount'
               }
               material={
                 product.condition === 2
-                  ? 'Used'
-                  : product.condition === 1
-                  ? 'New'
-                  : ''
+                ? 'Used'
+                : product.condition === 1
+                ? 'New'
+                : ''
               }
-            />
+              /> */}
+              <View style={{}}>
+
+              <Bold style={{fontSize: mvs(22),marginHorizontal:mvs(10)}}>Details</Bold>
+              <DetailsTable/>
+              </View>
             <View style={styles.descriptionContainer}>
               <Bold style={{fontSize: mvs(22)}}>Description</Bold>
               <Regular
