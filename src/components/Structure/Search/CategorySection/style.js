@@ -10,7 +10,7 @@ const styles = StyleSheet.create({
     // marginBottom: mvs(10),
     flexDirection: 'row',
     // backgroundColor: colors.white,
-    // justifyContent: 'space-evenly',
+    justifyContent: 'space-evenly',
   },
   categoryItem: {
     alignItems: 'center',
