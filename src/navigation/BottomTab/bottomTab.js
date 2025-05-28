@@ -5,6 +5,7 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   CartSVG,
+  ChatSVG,
   ChatSVG2,
   HeartSVG,
   HOMESVG,
@@ -79,10 +80,9 @@ const MyTabs = () => {
   }, [token, activeRole]);
 
   const handleTabPress = (e, route, navigation) => {
-
- if (route.name === 'Favourite') {
-    return navigation.navigate(route.name);
-  }
+    if (route.name === 'Favourite') {
+      return navigation.navigate(route.name);
+    }
 
     if (!token) {
       setIsModalVisible(true);
@@ -132,7 +132,7 @@ const MyTabs = () => {
       case 'Advertise':
         return <PlusSvg color={color} />;
       case 'Inbox':
-        return <ChatSVG2 color={color} />;
+        return <ChatSVG color={color} />;
       case 'Profile':
         return <ProfileSVG color={color} />;
       case 'Notification':
