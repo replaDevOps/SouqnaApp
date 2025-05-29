@@ -431,7 +431,7 @@ const CreateProduct = () => {
   return (
     <SafeAreaView style={{flex: 1}}>
       <StatusBar barStyle="dark-content" />
-      <MainHeader title={t('titleProduct')} showBackIcon={true} />
+      <MainHeader title={t('Post Your Ad')} showBackIcon={true} />
       <KeyboardAvoidingView
         style={{flex: 1}}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -722,14 +722,14 @@ const CreateProduct = () => {
           />
 
           <MyButton
-            title={loading ? t('submitting') : t('submitProduct')}
+            title={loading ? t('submitting') : t('Submit Ad')}
             style={styles.submitButton}
             onPress={submitProduct}
             disabled={loading}>
             {loading ? (
               <ActivityIndicator color={colors.green} />
             ) : (
-              <Text style={styles.submitButtonText}>{t('submit')}</Text>
+              <Text style={styles.submitButtonText}>{t('Submit Ad')}</Text>
             )}
           </MyButton>
         </ScrollView>

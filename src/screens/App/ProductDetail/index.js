@@ -287,7 +287,6 @@ const ProductDetail = () => {
     }
   };
 
-  
   return (
     <SafeAreaView style={styles.container}>
       {loading || !product ? (
@@ -305,7 +304,10 @@ const ProductDetail = () => {
           />
           <ScrollView
             showsVerticalScrollIndicator={false}
-            contentContainerStyle={{paddingBottom: mvs(80),backgroundColor:'#fff'}}
+            contentContainerStyle={{
+              paddingBottom: mvs(80),
+              backgroundColor: '#fff',
+            }}
             onScroll={onScroll}
             scrollEventThrottle={16}>
             <ProductImages images={product?.images || []} />
@@ -344,11 +346,12 @@ const ProductDetail = () => {
                 : ''
               }
               /> */}
-              <View style={{}}>
-
-              <Bold style={{fontSize: mvs(22),marginHorizontal:mvs(10)}}>Details</Bold>
-              <DetailsTable ProductData={product.custom_fields}/>
-              </View>
+            <View style={{}}>
+              <Bold style={{fontSize: mvs(22), marginHorizontal: mvs(10)}}>
+                Details
+              </Bold>
+              <DetailsTable ProductData={product.custom_fields} />
+            </View>
             <View style={styles.descriptionContainer}>
               <Bold style={{fontSize: mvs(22)}}>Description</Bold>
               <Regular
@@ -395,7 +398,6 @@ const ProductDetail = () => {
             handleDeletePress={handleDeletePress}
             sellerPhone="971501234567"
           />
-          {/* )} */}
 
           {isModalVisible && <AddModal onClose={onClose} />}
         </>
