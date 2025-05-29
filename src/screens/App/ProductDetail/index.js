@@ -286,6 +286,8 @@ const ProductDetail = () => {
       setHeaderTitleVisible(false);
     }
   };
+
+  
   return (
     <SafeAreaView style={styles.container}>
       {loading || !product ? (
@@ -345,7 +347,7 @@ const ProductDetail = () => {
               <View style={{}}>
 
               <Bold style={{fontSize: mvs(22),marginHorizontal:mvs(10)}}>Details</Bold>
-              <DetailsTable/>
+              <DetailsTable ProductData={product.custom_fields}/>
               </View>
             <View style={styles.descriptionContainer}>
               <Bold style={{fontSize: mvs(22)}}>Description</Bold>
