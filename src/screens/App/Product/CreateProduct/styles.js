@@ -261,8 +261,8 @@ export const styles = StyleSheet.create({
     backgroundColor: colors.green,
   },
   radioText: {
-    marginLeft: mvs(8),
-    fontSize: mvs(18),
+    marginLeft: mvs(5),
+    fontSize: mvs(15),
     color: colors.black,
   },
   fieldContainer: {
@@ -286,33 +286,5 @@ export const styles = StyleSheet.create({
     fontSize: 14,
     color: '#007AFF',
     marginRight: 10,
-  },
-  radioContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-  },
-  radioOption: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginRight: 10,
-  },
-  radioWrapper: {
-    borderWidth: 1,
-    borderColor: '#CCCCCC',
-    borderRadius: 15,
-    paddingVertical: 5,
-    paddingHorizontal: 10,
-    marginRight: 5,
-  },
-  radioInner: {
-    width: 15,
-    height: 15,
-    borderRadius: 7.5,
-    backgroundColor: '#007AFF',
-  },
-  radioText: {
-    fontSize: 14,
-    marginLeft: 5,
-    color: '#000000',
   },
 });
