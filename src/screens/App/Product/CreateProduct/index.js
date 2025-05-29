@@ -11,25 +11,25 @@ import {
   FlatList,
   KeyboardAvoidingView,
 } from 'react-native';
-import React, { useEffect, useState } from 'react';
-import { CommonActions, useNavigation, useRoute } from '@react-navigation/native';
+import React, {useEffect, useState} from 'react';
+import {CommonActions, useNavigation, useRoute} from '@react-navigation/native';
 import axios from 'axios';
-import { useSelector } from 'react-redux';
+import {useSelector} from 'react-redux';
 // import {launchImageLibrary} from 'react-native-image-picker';
 // import ImagePicker from 'react-native-image-crop-picker';
-import { Snackbar } from 'react-native-paper';
-import { styles } from './styles';
+import {Snackbar} from 'react-native-paper';
+import {styles} from './styles';
 import MainHeader from '../../../../components/Headers/MainHeader';
-import { MyButton } from '../../../../components/atoms/InputFields/MyButton';
-import { colors } from '../../../../util/color';
-import { mvs } from '../../../../util/metrices';
-import { UploadSVG } from '../../../../assets/svg';
+import {MyButton} from '../../../../components/atoms/InputFields/MyButton';
+import {colors} from '../../../../util/color';
+import {mvs} from '../../../../util/metrices';
+import {UploadSVG} from '../../../../assets/svg';
 import GooglePlacesSuggestion from '../../../../components/GooglePlacesSuggestion';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 import PriceInputWithDropdown from '../../../../components/atoms/InputFields/PriceInputWithCurrency';
 import API from '../../../../api/apiServices';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { launchImageLibrary } from 'react-native-image-picker';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import {launchImageLibrary} from 'react-native-image-picker';
 import PhotoManipulator from 'react-native-photo-manipulator';
 import ImageResizer from 'react-native-image-resizer';
 import CategoryFields from './CategoryFields';
@@ -44,9 +44,9 @@ const CreateProduct = () => {
     category,
     categoryImage,
   } = route.params;
-  const { token } = useSelector(state => state.user);
+  const {token} = useSelector(state => state.user);
   const navigation = useNavigation();
-  const { t } = useTranslation();
+  const {t} = useTranslation();
 
   const [formData, setFormData] = useState({
     name: '',
@@ -59,6 +59,9 @@ const CreateProduct = () => {
     location: '',
     lat: '',
     long: '',
+    contactInfo: '', // Additional field
+    negotiable: '', // Additional field
+    custom_fields: [],
   });
 
   const [loading, setLoading] = useState(false);
@@ -68,8 +71,8 @@ const CreateProduct = () => {
   const [categories, setCategories] = useState([]); // State to store fetched categories
   const [categoryFields, setCategoryFields] = useState([]); // State to store category fields
 
-  const conditionValue =
-    selectedCondition === 'New' ? 1 : selectedCondition === 'Used' ? 2 : null;
+  // const conditionValue =
+  //   selectedCondition === 'Yes' ? 1 : selectedCondition === 'No' ? 2 : null;
 
   const handleConditionSelect = condition => {
     setSelectedCondition(condition);
@@ -132,7 +135,7 @@ const CreateProduct = () => {
     new Promise((resolve, reject) => {
       Image.getSize(
         uri,
-        (width, height) => resolve({ width, height }),
+        (width, height) => resolve({width, height}),
         error => reject(error),
       );
     });
@@ -167,14 +170,14 @@ const CreateProduct = () => {
             0,
             undefined,
             false,
-            { mode: 'contain' }, // Optional: avoid upscaling too much
+            {mode: 'contain'}, // Optional: avoid upscaling too much
           );
 
           sourceUri = resized.uri.startsWith('file://')
             ? resized.uri
             : `file://${resized.uri}`;
 
-          const { width: actualWidth, height: actualHeight } = await getImageSize(
+          const {width: actualWidth, height: actualHeight} = await getImageSize(
             sourceUri,
           );
 
@@ -239,12 +242,19 @@ const CreateProduct = () => {
   };
 
   const submitProduct = async () => {
+    console.log('SUBMIT BUTTON PRESSED');
     const data = new FormData();
     data.append('name', formData.name);
     data.append('description', formData.description);
     data.append('price', formData.price);
     data.append('categoryID', categoryId);
     data.append('subCategoryID', subCategoryId);
+
+    // Prepare custom_fields array
+    const customFieldsArray = categoryFields.map(field => ({
+      name: field.name,
+      value: formData[field.name],
+    }));
 
     for (let i = 0; i < formData.images.length; i++) {
       const image = formData.images[i];
@@ -260,14 +270,9 @@ const CreateProduct = () => {
         name: image.fileName || `photo_${i}.jpg`,
         type: image.type || 'image/jpeg',
       });
-
-      categoryFields.forEach(field => {
-        const fieldValue = formData[field.name];
-        if (fieldValue) {
-          data.append(field.name, fieldValue);
-        }
-      });
     }
+    console.log('FORMDATA TILL NOW : ', data);
+    data.append('custom_fields', JSON.stringify(customFieldsArray));
 
     data.append('stock', formData.stock);
     data.append('discount', formData.discount);
@@ -275,8 +280,9 @@ const CreateProduct = () => {
     data.append('location', formData.location);
     data.append('lat', formData.lat);
     data.append('long', formData.long);
-    data.append('condition', conditionValue);
-
+    data.append('contactInfo', formData.contactInfo);
+    data.append('negotiable', selectedCondition);
+    console.log('FORMDATA BEING SENT : ', data);
     try {
       setLoading(true);
       const response = await API.post('createProduct', data, {
@@ -295,13 +301,15 @@ const CreateProduct = () => {
           description: '',
           price: '',
           stock: '',
-          discount: '',
-          specialOffer: '',
           images: [],
           location: '',
           lat: '',
           long: '',
-          condition: '',
+          discount: '',
+          specialOffer: '',
+          contactInfo: '', // Reset additional field
+          negotiable: '',
+          custom_fields: [],
         });
 
         navigation.dispatch(
@@ -421,11 +429,11 @@ const CreateProduct = () => {
   console.log(`{Fields}`, categoryFields);
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{flex: 1}}>
       <StatusBar barStyle="dark-content" />
       <MainHeader title={t('titleProduct')} showBackIcon={true} />
       <KeyboardAvoidingView
-        style={{ flex: 1 }}
+        style={{flex: 1}}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         keyboardVerticalOffset={Platform.OS === 'ios' ? 80 : 0} // Adjust if you have headers
       >
@@ -435,13 +443,13 @@ const CreateProduct = () => {
             paddingTop: mvs(25),
             backgroundColor: colors.white,
           }}
-          contentContainerStyle={{ paddingBottom: mvs(60) }}>
+          contentContainerStyle={{paddingBottom: mvs(60)}}>
           <View style={styles.sectionContainer}>
             <Text style={styles.sectionTitle}>{t('category')}</Text>
             <View style={styles.categoryBox}>
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <Image
-                  source={{ uri: categoryImage }}
+                  source={{uri: categoryImage}}
                   style={styles.categoryImage}
                 />
                 <View
@@ -486,12 +494,12 @@ const CreateProduct = () => {
                       <FlatList
                         horizontal
                         showsHorizontalScrollIndicator={false}
-                        data={[{ isUploadIcon: true }, ...formData.images]}
+                        data={[{isUploadIcon: true}, ...formData.images]}
                         keyExtractor={(item, index) => index.toString()}
-                        contentInset={{ right: 25 }}
+                        contentInset={{right: 25}}
                         contentContainerStyle={styles.flatListContainer}
                         // style
-                        renderItem={({ item, index }) =>
+                        renderItem={({item, index}) =>
                           item.isUploadIcon ? (
                             <TouchableOpacity
                               onPress={handleChooseImages}
@@ -508,7 +516,7 @@ const CreateProduct = () => {
                           ) : (
                             <View style={styles.imageWrapper}>
                               <Image
-                                source={{ uri: item.uri }}
+                                source={{uri: item.uri}}
                                 style={styles.imagePreview}
                               />
                               <TouchableOpacity
@@ -531,54 +539,11 @@ const CreateProduct = () => {
             </View>
           </View>
 
-          <View style={styles.sectionContainer}>
-            <Text style={styles.sectionTitle}>
-              {t('condition')}
-              <Text style={{ color: colors.red }}>*</Text>
-            </Text>
-
-            <View style={styles.radioContainer}>
-              <TouchableOpacity
-                style={styles.radioOption}
-                onPress={() => handleConditionSelect('New')}>
-                <View style={styles.radioWrapper}>
-                  <View
-                    style={[
-                      styles.radioOuter,
-                      selectedCondition === 'New' && styles.radioOuterSelected,
-                    ]}>
-                    {selectedCondition === 'New' && (
-                      <View style={styles.radioInner} />
-                    )}
-                  </View>
-                </View>
-                <Text style={styles.radioText}>{t('new')}</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={styles.radioOption}
-                onPress={() => handleConditionSelect('Used')}>
-                <View style={styles.radioWrapper}>
-                  <View
-                    style={[
-                      styles.radioOuter,
-                      selectedCondition === 'Used' && styles.radioOuterSelected,
-                    ]}>
-                    {selectedCondition === 'Used' && (
-                      <View style={styles.radioInner} />
-                    )}
-                  </View>
-                </View>
-                <Text style={styles.radioText}>{t('used')}</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-
           {/* Name Section */}
           <View style={styles.sectionContainer}>
             <Text style={styles.sectionTitle}>
               {t('name')}
-              <Text style={{ color: colors.red }}>*</Text>
+              <Text style={{color: colors.red}}>*</Text>
             </Text>
             <TextInput
               style={styles.input}
@@ -593,10 +558,10 @@ const CreateProduct = () => {
           <View style={styles.sectionContainer}>
             <Text style={styles.sectionTitle}>
               {t('description')}
-              <Text style={{ color: colors.red }}>*</Text>
+              <Text style={{color: colors.red}}>*</Text>
             </Text>
             <TextInput
-              style={[styles.input, { height: mvs(100) }]}
+              style={[styles.input, {height: mvs(100)}]}
               placeholder={t('descriptionPlaceholder')}
               placeholderTextColor={colors.grey}
               value={formData.description}
@@ -609,7 +574,7 @@ const CreateProduct = () => {
           <View style={styles.sectionContainer}>
             <Text style={styles.sectionTitle}>
               {t('location')}
-              <Text style={{ color: colors.red }}>*</Text>
+              <Text style={{color: colors.red}}>*</Text>
             </Text>
             <View style={styles.locationContainer}>
               <GooglePlacesSuggestion
@@ -623,7 +588,7 @@ const CreateProduct = () => {
           <View style={styles.sectionContainer}>
             <Text style={styles.sectionTitle}>
               {t('price')}
-              <Text style={{ color: colors.red }}>*</Text>
+              <Text style={{color: colors.red}}>*</Text>
             </Text>
             <PriceInputWithDropdown
               value={formData.price}
@@ -645,11 +610,67 @@ const CreateProduct = () => {
           /> */}
           </View>
 
+          <View style={styles.sectionContainer}>
+            <View style={styles.fieldContainer}>
+              <Text style={styles.sectionTitle}>{t('Contact Info')}</Text>
+              <TextInput
+                style={styles.input}
+                placeholder={t('Contact Info')}
+                placeholderTextColor={colors.grey}
+                keyboardType="numeric"
+                value={formData.contactInfo}
+                onChangeText={text => handleInputChange('contactInfo', text)}
+              />
+            </View>
+          </View>
+          <View style={styles.sectionContainer}>
+            <Text style={styles.sectionTitle}>
+              {t('Negotiable')}
+              <Text style={{color: colors.red}}>*</Text>
+            </Text>
+
+            <View style={styles.radioContainer}>
+              <TouchableOpacity
+                style={styles.radioOption}
+                onPress={() => handleConditionSelect('Yes')}>
+                <View style={styles.radioWrapper}>
+                  <View
+                    style={[
+                      styles.radioOuter,
+                      selectedCondition === 'Yes' && styles.radioOuterSelected,
+                    ]}>
+                    {selectedCondition === 'Yes' && (
+                      <View style={styles.radioInner} />
+                    )}
+                  </View>
+                </View>
+                <Text style={styles.radioText}>{t('Yes')}</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.radioOption}
+                onPress={() => handleConditionSelect('No')}>
+                <View style={styles.radioWrapper}>
+                  <View
+                    style={[
+                      styles.radioOuter,
+                      selectedCondition === 'No' && styles.radioOuterSelected,
+                    ]}>
+                    {selectedCondition === 'No' && (
+                      <View style={styles.radioInner} />
+                    )}
+                  </View>
+                </View>
+                <Text style={styles.radioText}>{t('No')}</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+
           {/* Discount Section */}
           <View style={styles.sectionContainer}>
             <Text style={styles.sectionTitle}>
               {t('discount')}
-              {/* <Text style={{color: colors.red}}>*</Text> */}
+              <Text style={{color: colors.red}}>*</Text>
             </Text>
             <TextInput
               style={styles.input}
@@ -680,7 +701,7 @@ const CreateProduct = () => {
           <View style={styles.sectionContainer}>
             <Text style={styles.sectionTitle}>
               {t('availableStock')}
-              <Text style={{ color: colors.red }}>*</Text>
+              <Text style={{color: colors.red}}>*</Text>
             </Text>
             <TextInput
               style={styles.input}
