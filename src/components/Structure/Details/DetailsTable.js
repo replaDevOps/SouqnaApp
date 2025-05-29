@@ -2,22 +2,71 @@ import React, {useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import {mvs} from '../../../util/metrices';
 
-const CarDetailsCard = () => {
+const CarDetailsCard = ({ProductData}) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
-  // All details data
-  const allDetails = [
-    {label: 'Make', value: 'Toyota'},
-    {label: 'Model', value: 'Corolla Altis'},
-    {label: 'Condition', value: 'Used'},
-    {label: 'Body Type', value: 'Sedan'},
-    {label: 'Color', value: 'Blue'},
-    {label: 'Number of seats', value: '5'},
-    {label: 'Number of Owners', value: '1'},
-    {label: 'Registration city', value: 'Islamabad'},
-    {label: 'Car documents', value: 'Original'},
-    {label: 'Assembly', value: 'Local'},
-  ];
+  // Parse custom fields data
+  const parseCustomFields = (customFieldsData) => {
+    if (!customFieldsData) return [];
+    
+    try {
+      // If it's already an array, return it
+      if (Array.isArray(customFieldsData)) {
+        return customFieldsData;
+      }
+      
+      // If it's a string, parse it
+      if (typeof customFieldsData === 'string') {
+        const parsed = JSON.parse(customFieldsData);
+        return Array.isArray(parsed) ? parsed : [];
+      }
+      
+      return [];
+    } catch (error) {
+      console.error('Error parsing custom fields:', error);
+      console.log('Custom fields data:', customFieldsData);
+      return [];
+    }
+  };
+
+  // Format field names for better display
+  const formatFieldName = (fieldName) => {
+    if (!fieldName) return '';
+    
+    // Handle camelCase and snake_case
+    const formatted = fieldName
+      .replace(/([a-z])([A-Z])/g, '$1 $2') // Split camelCase
+      .replace(/_/g, ' ') // Replace underscores with spaces
+      .replace(/\b\w/g, (char) => char.toUpperCase()); // Capitalize first letter of each word
+    
+    return formatted;
+  };
+
+  // Format field values for better display
+  const formatFieldValue = (value) => {
+    if (value === null || value === undefined) return 'N/A';
+    if (typeof value === 'boolean') return value ? 'Yes' : 'No';
+    if (typeof value === 'string' && value.trim() === '') return 'N/A';
+    return String(value);
+  };
+
+  // Get all details from custom fields
+  const customFields = parseCustomFields(ProductData);
+  const allDetails = customFields.map(field => ({
+    label: formatFieldName(field.name),
+    value: formatFieldValue(field.value)
+  }));
+
+  // If no custom fields, show a message
+  if (allDetails.length === 0) {
+    return (
+      <View style={styles.container}>
+        <View style={styles.noDataContainer}>
+          <Text style={styles.noDataText}>No details available</Text>
+        </View>
+      </View>
+    );
+  }
 
   const initialShowCount = 6;
   const visibleDetails = isExpanded
@@ -30,7 +79,7 @@ const CarDetailsCard = () => {
   };
 
   const DetailRow = ({label, value, isLast = false}) => (
-    <View style={[styles.detailRow, styles.borderBottom]}>
+    <View style={[styles.detailRow, !isLast && styles.borderBottom]}>
       <Text style={styles.label}>{label}</Text>
       <Text style={styles.value}>{value}</Text>
     </View>
@@ -38,17 +87,13 @@ const CarDetailsCard = () => {
 
   return (
     <View style={styles.container}>
-      {/* <View style={styles.header}>
-        <Text style={styles.headerText}>Details</Text>
-      </View> */}
-
       <View style={styles.detailsContainer}>
         {visibleDetails.map((detail, index) => (
           <DetailRow
             key={index}
             label={detail.label}
             value={detail.value}
-            isLast={index === visibleDetails.length - 1}
+            isLast={index === visibleDetails.length - 1 && remainingCount === 0}
           />
         ))}
       </View>
@@ -60,11 +105,10 @@ const CarDetailsCard = () => {
             style={styles.toggleButton}>
             <Text style={styles.toggleText}>
               {isExpanded ? 'View Less' : `View +${remainingCount} More`}
-              {isExpanded ? (
-                <Text style={styles.arrow}>▲</Text>
-              ) : (
-                <Text style={styles.arrow}>▼</Text>
-              )}
+              {' '}
+              <Text style={styles.arrow}>
+                {isExpanded ? '▲' : '▼'}
+              </Text>
             </Text>
           </TouchableOpacity>
         </View>
@@ -75,65 +119,49 @@ const CarDetailsCard = () => {
 
 const styles = StyleSheet.create({
   container: {
-    // backgroundColor: '#fafbfb',
     borderRadius: mvs(12),
     marginVertical: mvs(12),
     marginHorizontal: mvs(12),
-    // shadowColor: '#000',
-    // shadowOffset: {
-    //   width: 0,
-    //   height: 1,
-    // },
-    // shadowOpacity: 0.1,
-    // shadowRadius: 3,
-    // elevation: 3,
     borderWidth: 1,
     borderColor: 'rgba(17, 14, 14, 0.18)',
   },
-  header: {
-    paddingHorizontal: 16,
-    paddingTop: 16,
-    paddingBottom: 8,
+  detailsContainer: {
+    // Container for all detail rows
   },
-  headerText: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#111827',
-  },
-  //   detailsContainer: {
-  //     borderTopWidth: 1,
-  //     borderTopColor: '#000',
-  //   },
   detailRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    minHeight: mvs(44), // Ensure consistent row height
   },
   borderBottom: {
     borderBottomWidth: 1,
     borderBottomColor: 'rgba(17, 14, 14, 0.18)',
   },
   label: {
-    fontSize: 16,
-    paddingVertical: 8,
-    paddingLeft: 16,
+    fontSize: mvs(14),
+    paddingVertical: mvs(12),
+    paddingLeft: mvs(16),
     backgroundColor: '#F2F4F5',
     color: '#6b7280',
     fontWeight: '400',
-    flex: 0.5,
+    flex: 0.6, // Adjusted for better proportion
+    textAlignVertical: 'center',
   },
   value: {
-    paddingLeft: 16,
-    fontSize: 14,
+    paddingLeft: mvs(16),
+    paddingRight: mvs(16),
+    paddingVertical: mvs(12),
+    fontSize: mvs(14),
     color: '#111827',
     fontWeight: '600',
-    textAlign: 'right',
     flex: 1,
     textAlign: 'left',
+    textAlignVertical: 'center',
   },
   toggleContainer: {
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingHorizontal: mvs(16),
+    paddingVertical: mvs(12),
     borderTopWidth: 1,
     borderTopColor: '#f3f4f6',
     alignItems: 'center',
@@ -143,13 +171,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   toggleText: {
-    fontSize: 14,
+    fontSize: mvs(14),
     color: '#3b82f6',
     fontWeight: '500',
   },
   arrow: {
-    fontSize: 12,
+    fontSize: mvs(12),
     color: '#3b82f6',
+  },
+  noDataContainer: {
+    paddingVertical: mvs(20),
+    paddingHorizontal: mvs(16),
+    alignItems: 'center',
+  },
+  noDataText: {
+    fontSize: mvs(14),
+    color: '#6b7280',
+    fontStyle: 'italic',
   },
 });
 
