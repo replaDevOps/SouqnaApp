@@ -63,6 +63,9 @@ const CreateProduct = () => {
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [selectedCondition, setSelectedCondition] = useState('');
+  const [categories, setCategories] = useState([]); // State to store fetched categories
+  const [categoryFields, setCategoryFields] = useState([]); // State to store category fields
+
   const conditionValue =
     selectedCondition === 'New' ? 1 : selectedCondition === 'Used' ? 2 : null;
 
@@ -361,6 +364,52 @@ const CreateProduct = () => {
     );
   };
 
+  const fetchCategories = async () => {
+    setLoading(true);
+    try {
+      const res = await API.get(`viewCategories`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (res.data.success) {
+        const fetchedCategories = res.data.data;
+        console.log('CATEGORY DATA : ', fetchedCategories);
+        setCategories(fetchedCategories);
+
+        // Match category name from route
+        const matchedCategory = fetchedCategories.find(
+          cat =>
+            cat.name.trim().toLowerCase() === category.trim().toLowerCase(),
+        );
+
+        if (matchedCategory) {
+          console.log('MATCHED CATEGORY FIELDS: ', matchedCategory.fields);
+          setCategoryFields(matchedCategory.fields); // Set the dynamic fields
+        }
+      } else {
+        setSnackbarMessage('Failed to fetch categories.');
+        setSnackbarVisible(true);
+      }
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+      setSnackbarMessage('Something went wrong. Try again!');
+      setSnackbarVisible(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  const parseOptions = options => {
+    if (!options) return [];
+    return options.split(',').map(option => option.trim());
+  };
+
   return (
     <SafeAreaView style={{flex: 1}}>
       <StatusBar barStyle="dark-content" />
@@ -633,7 +682,65 @@ const CreateProduct = () => {
             />
           </View>
 
-          {/* Submit Button */}
+          {/* Additional Fields Section */}
+          {categoryFields.length > 0 && (
+            <View style={styles.sectionContainer}>
+              <Text style={styles.sectionTitle}>{t('Additional Fields')}</Text>
+              {categoryFields.map((field, index) => (
+                <View key={index} style={styles.fieldContainer}>
+                  <Text style={styles.sectionTitle}>{field.label}</Text>
+                  {field.type === 'text' && (
+                    <TextInput
+                      style={styles.input}
+                      placeholder={t(`placeholder_${field.name}`)}
+                      placeholderTextColor={colors.grey}
+                      value={formData[field.name] || ''}
+                      onChangeText={text =>
+                        handleInputChange(field.label, text)
+                      }
+                    />
+                  )}
+                  {field.type === 'select' && (
+                    <FlatList
+                      data={parseOptions(field.options)}
+                      keyExtractor={(item, idx) => idx.toString()}
+                      renderItem={({item}) => (
+                        <TouchableOpacity
+                          onPress={() => handleInputChange(field.name, item)}>
+                          <Text style={styles.selectText}>{item}</Text>
+                        </TouchableOpacity>
+                      )}
+                    />
+                  )}
+                  {field.type === 'radio' && (
+                    <View style={styles.radioContainer}>
+                      {parseOptions(field.options).map((option, idx) => (
+                        <TouchableOpacity
+                          key={idx}
+                          style={styles.radioOption}
+                          onPress={() => handleInputChange(field.name, option)}>
+                          <View style={styles.radioWrapper}>
+                            <View
+                              style={[
+                                styles.radioOuter,
+                                formData[field.name] === option &&
+                                  styles.radioOuterSelected,
+                              ]}>
+                              {formData[field.name] === option && (
+                                <View style={styles.radioInner} />
+                              )}
+                            </View>
+                          </View>
+                          <Text style={styles.radioText}>{option}</Text>
+                        </TouchableOpacity>
+                      ))}
+                    </View>
+                  )}
+                </View>
+              ))}
+            </View>
+          )}
+
           <MyButton
             title={loading ? t('submitting') : t('submitProduct')}
             style={styles.submitButton}

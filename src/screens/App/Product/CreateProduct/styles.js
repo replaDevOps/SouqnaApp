@@ -265,4 +265,54 @@ export const styles = StyleSheet.create({
     fontSize: mvs(18),
     color: colors.black,
   },
+  fieldContainer: {
+    // flexDirection: 'row',
+    // alignItems: 'center',
+    marginBottom: 10,
+    marginTop: 10,
+  },
+  fieldLabel: {
+    fontSize: 16,
+    marginRight: 10,
+  },
+  fieldInput: {
+    borderBottomWidth: 1,
+    borderBottomColor: '#CCCCCC',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    fontSize: 14,
+  },
+  selectText: {
+    fontSize: 14,
+    color: '#007AFF',
+    marginRight: 10,
+  },
+  radioContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  radioOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginRight: 10,
+  },
+  radioWrapper: {
+    borderWidth: 1,
+    borderColor: '#CCCCCC',
+    borderRadius: 15,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    marginRight: 5,
+  },
+  radioInner: {
+    width: 15,
+    height: 15,
+    borderRadius: 7.5,
+    backgroundColor: '#007AFF',
+  },
+  radioText: {
+    fontSize: 14,
+    marginLeft: 5,
+    color: '#000000',
+  },
 });
