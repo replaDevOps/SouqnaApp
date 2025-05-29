@@ -287,7 +287,6 @@ const ProductDetail = () => {
     }
   };
 
-  console.log('{product detail data}',product.custom_fields);
   
   return (
     <SafeAreaView style={styles.container}>
