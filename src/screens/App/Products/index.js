@@ -100,7 +100,9 @@ const Products = () => {
         />
         <View style={styles.recommendedTextContainer}>
           <Regular style={styles.recommendedTitle}>{item.name}</Regular>
-          <Regular style={styles.recommendedPrice}>${item.price} - USD</Regular>
+          <Regular style={styles.recommendedPrice}>
+            ${Number(item.price).toLocaleString()}
+          </Regular>
         </View>
         {role !== 2 && (
           <TouchableOpacity
@@ -119,7 +121,6 @@ const Products = () => {
       <StatusBar barStyle="dark-content" />
       <MainHeader title={name} showBackIcon />
 
-      
       {loading ? (
         <View style={styles.noListingsContainer}>
           <ActivityIndicator size="large" style={{marginTop: 20}} />
