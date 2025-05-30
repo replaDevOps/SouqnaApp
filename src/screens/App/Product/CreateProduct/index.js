@@ -734,7 +734,6 @@ const CreateProduct = () => {
           </MyButton>
         </ScrollView>
       </KeyboardAvoidingView>
-      {/* Snackbar */}
       <Snackbar
         visible={snackbarVisible}
         onDismiss={() => setSnackbarVisible(false)}
