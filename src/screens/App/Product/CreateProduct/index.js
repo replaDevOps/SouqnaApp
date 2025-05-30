@@ -61,6 +61,7 @@ const CreateProduct = () => {
     long: '',
     contactInfo: '', // Additional field
     negotiable: '', // Additional field
+    currency: '',
     custom_fields: [],
   });
 
@@ -247,6 +248,7 @@ const CreateProduct = () => {
     data.append('name', formData.name);
     data.append('description', formData.description);
     data.append('price', formData.price);
+    data.append('currency', formData.currency);
     data.append('categoryID', categoryId);
     data.append('subCategoryID', subCategoryId);
 
@@ -309,6 +311,7 @@ const CreateProduct = () => {
           specialOffer: '',
           contactInfo: '', // Reset additional field
           negotiable: '',
+          currency: '',
           custom_fields: [],
         });
 
@@ -426,8 +429,8 @@ const CreateProduct = () => {
     if (!options) return [];
     return options.split(',').map(option => option.trim());
   };
-  console.log(`{Fields}`, categoryFields);
-
+  // console.log(`{Fields}`, categoryFields);
+  // console.log('Currency Selected: ', formData.currency);
   return (
     <SafeAreaView style={{flex: 1}}>
       <StatusBar barStyle="dark-content" />

@@ -17,7 +17,10 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import MainHeader from '../../../components/Headers/MainHeader';
 import Bold from '../../../typography/BoldText';
 import {useSelector} from 'react-redux';
-import {fetchProducts} from '../../../api/apiServices';
+import {
+  fetchBuyerProducts,
+  fetchSellerProducts,
+} from '../../../api/apiServices';
 import ProductCard from '../../../components/Cards/ProductCard';
 
 const SearchResultsScreen = () => {
@@ -37,11 +40,21 @@ const SearchResultsScreen = () => {
   useEffect(() => {
     filterProducts(searchText);
   }, [searchText]);
-
+  const filters = {
+    productName: '',
+    fromDate: '',
+    toDate: '',
+    status: '',
+  };
   const loadProducts = async () => {
     try {
       setLoading(true);
-      const response = await fetchProducts(token, {}, role);
+
+      // const response = await fetchBuyerProducts(token, {}, role);
+      const response =
+        role === 2 || role === '2'
+          ? await fetchSellerProducts(token, filters)
+          : await fetchBuyerProducts(filters);
       console.log('API product response:', response);
 
       // Adjusting the response to access products inside the 'data' field
