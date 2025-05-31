@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Button,
   Linking,
@@ -18,12 +18,20 @@ import styles from './style';
 import Regular from '../../../typography/RegularText';
 import Clipboard from '@react-native-clipboard/clipboard';
 
-const ShareActions = ({productTitle, productLink, productId}) => {
+const ShareActions = ({productTitle, productLink, productId,onLinkGenerated}) => {
   if (!productId) {
     console.warn('Product ID is missing!');
     return null;
   }
   const appLink = `myapp://product/${productId}`;
+
+   useEffect(() => {
+    if (onLinkGenerated && typeof onLinkGenerated === 'function') {
+      onLinkGenerated(appLink);
+    }
+  }, [appLink, onLinkGenerated]);
+  
+
   const handleShareToWhatsApp = async () => {
     try {
       const message = `Check out this product: ${productTitle}. More details here: ${appLink}`;

@@ -58,6 +58,7 @@ const ProductDetail = () => {
   const navigation = useNavigation();
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [customProductLink, setCustomProductLink] = useState('');
 
   useEffect(() => {
     if (!productId) {
@@ -287,6 +288,12 @@ const ProductDetail = () => {
     }
   };
 
+ const handleCustomLinkGenerated = (link) => {
+    setCustomProductLink(link);
+  };
+
+  // console.log('{Link of the product}', customProductLink);
+  
   
   return (
     <SafeAreaView style={styles.container}>
@@ -383,6 +390,7 @@ const ProductDetail = () => {
               productTitle={product.name}
               productLink={product.productLink}
               productId={product.id}
+               onLinkGenerated={handleCustomLinkGenerated}
             />
           </ScrollView>
           {/* {role !== 2 && role !== 4 && token == null && ( */}
@@ -394,6 +402,7 @@ const ProductDetail = () => {
             handleUpdatePress={handleUpdatePress}
             handleDeletePress={handleDeletePress}
             sellerPhone="971501234567"
+            customProductLink={customProductLink}
           />
           {/* )} */}
 
