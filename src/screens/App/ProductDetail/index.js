@@ -402,7 +402,7 @@ const ProductDetail = () => {
             handleUpdatePress={handleUpdatePress}
             handleDeletePress={handleDeletePress}
             sellerPhone="971501234567"
-            customProductLink={customProductLink}
+            // customProductLink={customProductLink}
           />
           {/* )} */}
 
