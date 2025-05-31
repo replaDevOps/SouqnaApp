@@ -93,6 +93,31 @@ const ProductDetail = () => {
     fetchProductDetails();
   }, [productId, token, role, verificationStatus, dispatch]);
 
+  const getCurrencySymbol = (currency = 'USD') => {
+    switch (currency?.toUpperCase?.()) {
+      case 'TRY':
+        return '₺';
+      case 'USD':
+        return '$';
+      case 'SYP':
+        return '£';
+      default:
+        return '$';
+    }
+  };
+  const getCurrencyFlag = (currency = 'USD') => {
+    switch (currency?.toUpperCase?.()) {
+      case 'TRY':
+        return '🇹🇷';
+      case 'USD':
+        return '🇺🇸';
+      case 'SYP':
+        return '🇸🇾';
+      default:
+        return '🇺🇸';
+    }
+  };
+
   const handleHeartPress = id => {
     setLikedItems(prevState => ({
       ...prevState,
@@ -293,6 +318,7 @@ const ProductDetail = () => {
         <Loader width={mvs(160)} height={mvs(160)} />
       ) : (
         <>
+          {console.log('Product currency:', product.currency)}
           <ProductHeader
             title={product.name}
             filled={likedItems[product.id]}
@@ -314,7 +340,9 @@ const ProductDetail = () => {
 
             <View style={styles.itemContainer}>
               <Bold style={styles.productPrice}>
-                $ {Number(product.price).toLocaleString()}
+                {/* {getCurrencyFlag(product?.currency)} */}
+                {getCurrencySymbol(product?.currency)}{' '}
+                {Number(product.price).toLocaleString()}
               </Bold>
               <Bold style={styles.productTitle}>{product.name}</Bold>
               {
@@ -396,7 +424,7 @@ const ProductDetail = () => {
             onChatPress={handleChatPress}
             handleUpdatePress={handleUpdatePress}
             handleDeletePress={handleDeletePress}
-            sellerPhone="971501234567"
+            sellerPhone={product?.contactInfo}
           />
 
           {isModalVisible && <AddModal onClose={onClose} />}

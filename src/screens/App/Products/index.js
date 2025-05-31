@@ -42,7 +42,18 @@ const Products = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const {id: subCategoryId, name} = route.params;
-
+  const getCurrencySymbol = (currency = 'USD') => {
+    switch (currency?.toUpperCase?.()) {
+      case 'TRY':
+        return '₺';
+      case 'USD':
+        return '$';
+      case 'SYP':
+        return '£';
+      default:
+        return '$';
+    }
+  };
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -101,7 +112,8 @@ const Products = () => {
         <View style={styles.recommendedTextContainer}>
           <Regular style={styles.recommendedTitle}>{item.name}</Regular>
           <Regular style={styles.recommendedPrice}>
-            ${Number(item.price).toLocaleString()}
+            {getCurrencySymbol(item?.currency)}{' '}
+            {Number(item.price).toLocaleString()}
           </Regular>
         </View>
         {role !== 2 && (
