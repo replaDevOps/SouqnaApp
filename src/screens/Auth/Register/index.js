@@ -28,6 +28,7 @@ import API from '../../../api/apiServices';
 import {mvs} from '../../../util/metrices';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Snackbar} from 'react-native-paper';
+import {showSnackbar} from '../../../redux/slices/snackbarSlice';
 
 // import {setRole} from '../../../redux/slices/userSlice';
 
@@ -48,10 +49,10 @@ const Register = () => {
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const showSnackbar = message => {
-    setSnackbarMessage(message);
-    setSnackbarVisible(true);
-  };
+  // const showSnackbar = message => {
+  //   setSnackbarMessage(message);
+  //   setSnackbarVisible(true);
+  // };
 
   // const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -60,29 +61,38 @@ const Register = () => {
     console.log('Register button pressed');
 
     if (!profilename.trim()) {
-      showSnackbar('Please enter your name.');
+      dispatch(showSnackbar(t('Please enter your name.')));
+
+      // showSnackbar('Please enter your name.');
 
       return;
     }
     if (!isEmailValid(email)) {
-      showSnackbar('Please enter a valid email.');
+      dispatch(showSnackbar(t('Please enter a valid email.')));
+
+      // showSnackbar('Please enter a valid email.');
       return;
     } else {
       setEmailError('');
     }
 
     if (!isPasswordValid(password)) {
-      showSnackbar('Password must be at least 8 characters.');
+      dispatch(showSnackbar(t('Password must be at least 8 characters.')));
+
+      // showSnackbar('Password must be at least 8 characters.');
       return;
     } else {
       setPasswordError('');
     }
     if ((isSeller || (isSeller && isBuyer)) && !sellerType) {
-      showSnackbar('Please select a seller type.');
+      dispatch(showSnackbar(t('Please select a seller type.')));
+
+      // showSnackbar('Please select a seller type.');
       return;
     }
     if (!isSeller && !isBuyer) {
-      showSnackbar('Please select a role.');
+      dispatch(showSnackbar(t('Please select a role.')));
+      // showSnackbar('Please select a role.');
       return;
     }
     // if (isSeller && sellerType === 'Company' && !cardDetails) {
@@ -121,22 +131,40 @@ const Register = () => {
 
       // Ensure that you're only treating this as success if `data.success === true`
       if (data?.success === true) {
-        showSnackbar(data.message || 'Registration successful! Please login.');
+        dispatch(
+          showSnackbar(
+            t(data.message || 'Registration successful! Please login.'),
+          ),
+        );
+        // showSnackbar(data.message || 'Registration successful! Please login.');
         setTimeout(() => {
           navigation.replace('OTP', {email});
         }, 2000);
       } else {
-        showSnackbar(data.message || 'Registration failed. Please try again.');
+        dispatch(
+          showSnackbar(
+            t(data.message || 'Registration failed. Please try again.'),
+          ),
+        );
+        // showSnackbar(data.message || 'Registration failed. Please try again.');
       }
     } catch (error) {
       console.error(
         'Registration Error:',
         error?.response?.data || error.message,
       );
-      showSnackbar(
-        error?.response?.data?.message ||
-          'An error occurred during registration. Please try again.',
+      dispatch(
+        showSnackbar(
+          t(
+            error?.response?.data?.message ||
+              'An error occurred during registration. Please try again.',
+          ),
+        ),
       );
+      // showSnackbar(
+      //   error?.response?.data?.message ||
+      //     'An error occurred during registration. Please try again.',
+      // );
     } finally {
       setIsLoading(false); // Hide loader
     }
@@ -300,7 +328,7 @@ const Register = () => {
           </Regular>
         </View>
       </KeyboardAvoidingView>
-      <Snackbar
+      {/* <Snackbar
         visible={snackbarVisible}
         onDismiss={() => setSnackbarVisible(false)}
         duration={3000}
@@ -310,7 +338,7 @@ const Register = () => {
           onPress: () => setSnackbarVisible(false),
         }}>
         {snackbarMessage}
-      </Snackbar>
+      </Snackbar> */}
     </>
   );
 };

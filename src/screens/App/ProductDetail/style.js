@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
     color: 'rgba(36, 33, 33, 0.66)',
     fontSize: mvs(16),
     lineHeight: mvs(23),
-    paddingHorizontal: mvs(5),
+    // paddingHorizontal: mvs(5),
     paddingVertical: mvs(4),
   },
   providerContainer: {

@@ -182,8 +182,9 @@ const UpdateProduct = () => {
       }));
     } catch (err) {
       console.error('Image picker error:', err);
-      setSnackbarMessage('Failed to pick or upload images');
-      setSnackbarVisible(true);
+      dispatch(showSnackbar(t('Failed to pick or upload images')));
+      // setSnackbarMessage('Failed to pick or upload images');
+      // setSnackbarVisible(true);
     }
   };
 
@@ -211,19 +212,29 @@ const UpdateProduct = () => {
       });
 
       if (response.data.success) {
-        setSnackbarMessage(
-          response.data.message || 'Images uploaded successfully',
+        dispatch(
+          showSnackbar(
+            t(response.data.message || 'Images uploaded successfully'),
+          ),
         );
-        setSnackbarVisible(true);
+
+        // setSnackbarMessage(
+        //   response.data.message || 'Images uploaded successfully',
+        // );
+        // setSnackbarVisible(true);
         // navigation.replace('MainTabs')
       } else {
-        setSnackbarMessage('Image upload failed');
-        setSnackbarVisible(true);
+        dispatch(showSnackbar(t('Image upload failed')));
+
+        // setSnackbarMessage('Image upload failed');
+        // setSnackbarVisible(true);
       }
     } catch (error) {
       console.error('Upload image error:', error);
-      setSnackbarMessage('Error uploading images');
-      setSnackbarVisible(true);
+      dispatch(showSnackbar(t('Error uploading images')));
+
+      // setSnackbarMessage('Error uploading images');
+      // setSnackbarVisible(true);
     }
   };
 
@@ -252,16 +263,19 @@ const UpdateProduct = () => {
           ...prev,
           images: prev.images.filter((_, index) => index !== indexToRemove),
         }));
+        dispatch(showSnackbar(t('Image deleted successfully')));
 
-        setSnackbarMessage('Image deleted successfully');
-        setSnackbarVisible(true);
+        // setSnackbarMessage('Image deleted successfully');
+        // setSnackbarVisible(true);
       } catch (error) {
         console.error(
           'Failed to delete image:',
           error.response || error.message,
         );
-        setSnackbarMessage('Failed to delete image.');
-        setSnackbarVisible(true);
+        dispatch(showSnackbar(t('Failed to delete image.')));
+
+        // setSnackbarMessage('Failed to delete image.');
+        // setSnackbarVisible(true);
       } finally {
         setLoading(false);
       }
@@ -324,7 +338,7 @@ const UpdateProduct = () => {
       if (response.data.success) {
         // setSnackbarMessage(t('Product Updated'));
         // setSnackbarVisible(true);
-        dispatch(showSnackbar(t('Ad Updated')));
+        dispatch(showSnackbar(t('The Ad has been updated successfully')));
 
         navigation.dispatch(
           CommonActions.reset({
@@ -333,12 +347,16 @@ const UpdateProduct = () => {
           }),
         );
       } else {
-        setSnackbarMessage(
-          response.data.message || 'Failed to update product.',
+        dispatch(
+          showSnackbar(t(response.data.message || 'Failed to update product.')),
         );
+
+        // setSnackbarMessage(
+        //   response.data.message || 'Failed to update product.',
+        // );
       }
 
-      setSnackbarVisible(true);
+      // setSnackbarVisible(true);
     } catch (error) {
       if (error.response) {
         console.error('❌ Error Response:', error.response.data);
@@ -348,8 +366,10 @@ const UpdateProduct = () => {
         console.error('❌ Error Message:', error.message);
       }
 
-      setSnackbarMessage('Network Error: Unable to update product.');
-      setSnackbarVisible(true);
+      dispatch(showSnackbar(t('Network Error: Unable to update product.')));
+
+      // setSnackbarMessage('Network Error: Unable to update product.');
+      // setSnackbarVisible(true);
     } finally {
       setLoading(false);
     }

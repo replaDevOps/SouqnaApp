@@ -173,9 +173,9 @@ const RecommendedSection = ({
           renderItem={renderRecommendedItem}
           onEndReached={loadMoreProducts}
           onEndReachedThreshold={0.2}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
+          // refreshControl={
+          //   <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          // }
           ListFooterComponent={
             isEndOfResults ? (
               <Regular style={styles.endOfResultsText}>
