@@ -264,6 +264,9 @@ const ProductDetail = () => {
       lat: product.lat,
       long: product.long,
       condition: product.condition, // assuming it's 1 or 2
+      custom_fields: product.custom_fields,
+      currency: product.currency,
+      contactInfo: product.contactInfo,
     });
   };
 
@@ -425,6 +428,8 @@ const ProductDetail = () => {
             handleUpdatePress={handleUpdatePress}
             handleDeletePress={handleDeletePress}
             sellerPhone={product?.contactInfo}
+            sellerId={product?.seller?.id} // Pass sellerId
+            productId={product.id}
           />
 
           {isModalVisible && <AddModal onClose={onClose} />}

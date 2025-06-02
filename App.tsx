@@ -13,6 +13,8 @@ import i18n from './src/i18n/i18n';
 import RNRestart from 'react-native-restart';
 import messaging from '@react-native-firebase/messaging';
 import useNotificationListener from './src/util/NotificationService';
+import GlobalSnackbar from './src/components/Structure/GlobalSnackbar';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
 
 LogBox.ignoreAllLogs();
 
@@ -88,13 +90,16 @@ const App = () => {
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <GestureHandlerRootView style={{flex: 1}}>
-          <View style={{flex: 1, backgroundColor: '#fff'}}>
-            <NavigationContainer linking={linking}>
-              <AppNavigator />
-            </NavigationContainer>
-          </View>
-        </GestureHandlerRootView>
+        <SafeAreaProvider>
+          <GestureHandlerRootView style={{flex: 1}}>
+            <View style={{flex: 1, backgroundColor: '#fff'}}>
+              <NavigationContainer linking={linking}>
+                <AppNavigator />
+                <GlobalSnackbar />
+              </NavigationContainer>
+            </View>
+          </GestureHandlerRootView>
+        </SafeAreaProvider>
       </PersistGate>
     </Provider>
   );

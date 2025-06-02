@@ -1,11 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import {
   ActivityIndicator,
-  Dimensions,
   FlatList,
   Image,
   StatusBar,
-  StyleSheet,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -23,7 +21,6 @@ import {
   BASE_URL_Product,
   fetchProductsBySubCategory,
 } from '../../../api/apiServices';
-import {colors} from '../../../util/color';
 import {mvs} from '../../../util/metrices';
 import Regular from '../../../typography/RegularText';
 import {HeartSvg} from '../../../assets/svg';
