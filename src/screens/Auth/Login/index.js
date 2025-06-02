@@ -165,10 +165,6 @@ const LoginScreen = () => {
     navigation.navigate('Register');
   };
 
-  const togglePasswordVisibility = () => {
-    setSecurePassword(!securePassword);
-  };
-
   const handleClearEmail = () => {
     setEmail('');
   };

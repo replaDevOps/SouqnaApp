@@ -2,7 +2,6 @@ import React, {useState} from 'react';
 import {
   View,
   TextInput,
-  SafeAreaView,
   Text,
   TouchableOpacity,
   KeyboardAvoidingView,
@@ -11,6 +10,7 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
   Image,
+  StatusBar,
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {setUser} from '../../../redux/slices/userSlice';
@@ -20,6 +20,7 @@ import {useTranslation} from 'react-i18next';
 import {colors} from '../../../util/color';
 import {EYESVG} from '../../../assets/svg';
 import MainHeader from '../../../components/Headers/MainHeader';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const ChangePassword = () => {
   const dispatch = useDispatch();
@@ -50,6 +51,7 @@ const ChangePassword = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="dark-content" />
       <MainHeader title={'Change Password'} showBackIcon={true} />
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
