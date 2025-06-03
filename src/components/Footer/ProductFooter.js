@@ -31,10 +31,11 @@ const ProductFooter = ({
   handleDeletePress,
   loadingCall,
   sellerPhone,
-  customProductLink
+  sellerId,
+  productId,
 }) => {
   const [showBuy, setShowBuy] = useState(false);
-  const {token, role} = useSelector(state => state.user);
+  const {token, role, id: userId} = useSelector(state => state.user);
   const handleCallPress = () => {
     if (sellerPhone) {
       Linking.openURL(`tel:${sellerPhone}`);
@@ -42,16 +43,7 @@ const ProductFooter = ({
       console.warn('Seller phone number not available');
     }
   };
-
-// const onChatPress = () => {
-//   const message = `Hello! I’m interested in this product! \n ${customProductLink}`;
-//   // const url = `sms:${sellerPhone}?body=${encodeURIComponent(message)}`;
-//   const url = `https://wa.me/${sellerPhone}?text=${message}`;
-
-//   Linking.openURL(url).catch(err =>
-//     console.error('Failed to open SMS app:', err),
-//   );
-// };
+  const isCurrentUserSeller = sellerId === userId;
 
   const handleBuyPress = () => {
     setShowBuy(true);
@@ -62,24 +54,26 @@ const ProductFooter = ({
   let buttons = [];
 
   if (role === 3 || token === null) {
-    buttons = [
-      {
-        key: 'chat',
-        onPress: onChatPress,
-        loading: loadingChat,
-        text: 'Chat with Seller',
-        Icon: ChatSVG2,
-        // bgcolor:colors.lightgreen
-      },
-      {
-        key: 'call',
-        onPress: handleCallPress,
-        loading: loadingCall,
-        text: 'Call Seller',
-        Icon: CallSVG,
-        // bgcolor:colors.lightgreen
-      },
-    ];
+    if (!isCurrentUserSeller) {
+      buttons = [
+        {
+          key: 'chat',
+          onPress: onChatPress,
+          loading: loadingChat,
+          text: 'Chat with Seller',
+          Icon: ChatSVG2,
+          // bgcolor:colors.lightgreen
+        },
+        {
+          key: 'call',
+          onPress: handleCallPress,
+          loading: loadingCall,
+          text: 'Call Seller',
+          Icon: CallSVG,
+          // bgcolor:colors.lightgreen
+        },
+      ];
+    }
   } else {
     buttons = [
       {

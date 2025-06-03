@@ -55,6 +55,7 @@ const PriceInputWithDropdown = ({
           placeholder={placeholder}
           keyboardType="numeric"
           placeholderTextColor="#999"
+          maxLength={9}
         />
         <TouchableOpacity
           ref={buttonRef}

@@ -5,6 +5,7 @@ import {persistStore, persistReducer} from 'redux-persist';
 import favoritesReducer from './slices/favoritesSlice';
 import cartReducer from './slices/cartSlice';
 import categoryReducer from './slices/categorySlice';
+import snackbarReducer from './slices/snackbarSlice';
 
 const persistConfig = {
   key: 'root',
@@ -18,8 +19,16 @@ const cartPersistConfig = {
   key: 'cart',
   storage: AsyncStorage,
 };
+const snackbarConfig = {
+  key: 'snackbar',
+  storage: AsyncStorage,
+};
 
 const persistedUserReducer = persistReducer(persistConfig, userReducer);
+const persistedSnackbarReducer = persistReducer(
+  snackbarConfig,
+  snackbarReducer,
+);
 const persistedFavoritesReducer = persistReducer(
   favoritesPersistConfig,
   favoritesReducer,
@@ -32,6 +41,7 @@ const store = configureStore({
     favorites: persistedFavoritesReducer,
     cart: persistedCartReducer,
     category: categoryReducer,
+    snackbar: snackbarReducer,
   },
 });
 

@@ -52,7 +52,18 @@ const RecommendedSection = ({
   }, [favorites]);
 
   const {t} = useTranslation();
-
+  const getCurrencySymbol = (currency = 'USD') => {
+    switch (currency?.toUpperCase?.()) {
+      case 'TRY':
+        return '₺';
+      case 'USD':
+        return '$';
+      case 'SYP':
+        return '£';
+      default:
+        return '$';
+    }
+  };
   const loadProducts = useCallback(async () => {
     setProductsLoading(true);
 
@@ -98,7 +109,8 @@ const RecommendedSection = ({
           <Regular style={styles.recommendedTitle}>{item.name}</Regular>
           <Regular style={styles.recommendedPrice}>
             {' '}
-            ${Number(item.price).toLocaleString()}
+            {getCurrencySymbol(item?.currency)}{' '}
+            {Number(item.price).toLocaleString()}
           </Regular>
         </View>
         {role !== 2 && (
@@ -161,9 +173,9 @@ const RecommendedSection = ({
           renderItem={renderRecommendedItem}
           onEndReached={loadMoreProducts}
           onEndReachedThreshold={0.2}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
+          // refreshControl={
+          //   <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          // }
           ListFooterComponent={
             isEndOfResults ? (
               <Regular style={styles.endOfResultsText}>

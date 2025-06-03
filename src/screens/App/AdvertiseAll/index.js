@@ -47,6 +47,7 @@ const AdvertiseAll = () => {
       </View>
       <View style={styles.content}>
         <FlatList
+          showsVerticalScrollIndicator={false}
           data={subcategories}
           keyExtractor={item => item.id.toString()}
           renderItem={renderSubCategoryItem}

@@ -1,11 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import {
   ActivityIndicator,
-  Dimensions,
   FlatList,
   Image,
   StatusBar,
-  StyleSheet,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -23,7 +21,6 @@ import {
   BASE_URL_Product,
   fetchProductsBySubCategory,
 } from '../../../api/apiServices';
-import {colors} from '../../../util/color';
 import {mvs} from '../../../util/metrices';
 import Regular from '../../../typography/RegularText';
 import {HeartSvg} from '../../../assets/svg';
@@ -42,7 +39,18 @@ const Products = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const {id: subCategoryId, name} = route.params;
-
+  const getCurrencySymbol = (currency = 'USD') => {
+    switch (currency?.toUpperCase?.()) {
+      case 'TRY':
+        return '₺';
+      case 'USD':
+        return '$';
+      case 'SYP':
+        return '£';
+      default:
+        return '$';
+    }
+  };
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -100,7 +108,10 @@ const Products = () => {
         />
         <View style={styles.recommendedTextContainer}>
           <Regular style={styles.recommendedTitle}>{item.name}</Regular>
-          <Regular style={styles.recommendedPrice}>${item.price} - USD</Regular>
+          <Regular style={styles.recommendedPrice}>
+            {getCurrencySymbol(item?.currency)}{' '}
+            {Number(item.price).toLocaleString()}
+          </Regular>
         </View>
         {role !== 2 && (
           <TouchableOpacity
@@ -119,7 +130,6 @@ const Products = () => {
       <StatusBar barStyle="dark-content" />
       <MainHeader title={name} showBackIcon />
 
-      
       {loading ? (
         <View style={styles.noListingsContainer}>
           <ActivityIndicator size="large" style={{marginTop: 20}} />

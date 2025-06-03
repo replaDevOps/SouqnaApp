@@ -635,7 +635,7 @@ const VerificationScreen = () => {
             <Text style={styles.label}>ID Type</Text>
             <View style={[styles.radioGroup, {justifyContent: 'space-around'}]}>
               <RadioButton
-                label="cnic"
+                label="Cnic"
                 selected={idType === 'cnic'}
                 onPress={() => setIdType('cnic')}
               />

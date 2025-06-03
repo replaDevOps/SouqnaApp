@@ -28,6 +28,7 @@ import {loginUser} from '../../../api/authServices';
 import {colors} from '../../../util/color';
 import {Snackbar} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import {showSnackbar} from '../../../redux/slices/snackbarSlice';
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
@@ -62,16 +63,20 @@ const LoginScreen = () => {
 
   const handleLogin = async () => {
     if (!isEmailValid(email)) {
-      setSnackbarMessage('Please enter a valid email.');
-      setSnackbarVisible(true); // ✅ Show snackbar
+      dispatch(showSnackbar(t('Please enter a valid email.')));
+
+      // setSnackbarMessage('Please enter a valid email.');
+      // setSnackbarVisible(true); // ✅ Show snackbar
       return;
     } else {
       setEmailError('');
     }
 
     if (!isPasswordValid(password)) {
-      setSnackbarMessage('Password must be at least 8 characters.');
-      setSnackbarVisible(true); // ✅ Show snackbar
+      dispatch(showSnackbar(t('Password must be at least 8 characters.')));
+
+      // setSnackbarMessage('Password must be at least 8 characters.');
+      // setSnackbarVisible(true); // ✅ Show snackbar
       return;
     } else {
       setPasswordError('');
@@ -102,18 +107,34 @@ const LoginScreen = () => {
         if (user.role === 4) {
           // Show role selection modal if both
           setShowRoleSelection(true);
-        } else {
-          setSnackbarMessage(
-            user.role === 3
-              ? 'Buyer logged in successfully'
-              : 'Seller logged in successfully',
+          dispatch(
+            showSnackbar(
+              user.role === 3
+                ? 'Buyer logged in successfully'
+                : 'Seller logged in successfully',
+            ),
           );
-          setSnackbarVisible(true);
-          setTimeout(() => navigation.replace('MainTabs'), 1000);
+        } else {
+          dispatch(
+            showSnackbar(
+              user.role === 3
+                ? 'Buyer logged in successfully'
+                : 'Seller logged in successfully',
+            ),
+          );
+
+          // setSnackbarMessage(
+          //   user.role === 3
+          //     ? 'Buyer logged in successfully'
+          //     : 'Seller logged in successfully',
+          // );
+          // setSnackbarVisible(true);
+          setTimeout(() => navigation.replace('MainTabs'));
         }
       } else {
-        setSnackbarMessage('Invalid email or password');
-        setSnackbarVisible(true); // ✅ Show snackbar
+        dispatch(showSnackbar('Invalid email or password'));
+        // setSnackbarMessage('Invalid email or password');
+        // setSnackbarVisible(true); // ✅ Show snackbar
       }
     } catch (error) {
       console.log('Login error:', error);
@@ -144,10 +165,6 @@ const LoginScreen = () => {
     navigation.navigate('Register');
   };
 
-  const togglePasswordVisibility = () => {
-    setSecurePassword(!securePassword);
-  };
-
   const handleClearEmail = () => {
     setEmail('');
   };
@@ -171,7 +188,7 @@ const LoginScreen = () => {
             onChangeText={setEmail}
             placeholder="E-Mail"
             error={emailError}
-            clearText={handleClearEmail} // Pass clearText function to clear email input
+            clearText={handleClearEmail}
           />
 
           <View style={styles.passwordContainer}>
@@ -251,7 +268,7 @@ const LoginScreen = () => {
           )}
         </View>
       </TouchableWithoutFeedback>
-      <Snackbar
+      {/* <Snackbar
         visible={snackbarVisible}
         onDismiss={() => setSnackbarVisible(false)}
         duration={Snackbar.DURATION_SHORT}
@@ -269,7 +286,7 @@ const LoginScreen = () => {
           left: 30,
         }}>
         <Regular style={{textAlign: 'center'}}>{snackbarMessage}</Regular>
-      </Snackbar>
+      </Snackbar> */}
     </SafeAreaView>
   );
 };

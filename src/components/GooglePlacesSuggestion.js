@@ -7,11 +7,16 @@ import {
   TouchableOpacity,
   Text,
   ActivityIndicator,
+  Platform,
+  PermissionsAndroid,
+  Alert,
+  Linking,
 } from 'react-native';
 import {mvs} from '../util/metrices';
 import {CloseSvg, SearchSVG} from '../assets/svg';
 import {colors} from '../util/color';
 import config from '../util/config';
+import Geolocation from '@react-native-community/geolocation';
 
 const GOOGLE_PLACES_API_KEY = config.GOOGLE_PLACES_API_KEY;
 const AUTOCOMPLETE_URL =
@@ -28,6 +33,167 @@ const GooglePlacesSuggestion = ({
   const suppressFetchRef = useRef(false);
   const textInputRef = useRef(null);
   const [isPlaceSelected, setIsPlaceSelected] = useState(false);
+  const [isFetchingLocation, setIsFetchingLocation] = useState(false);
+  const suggestionData = [
+    {isCurrentLocation: true, key: 'current-location'},
+    ...suggestions,
+  ];
+
+  // const handleCurrentLocationPress = async () => {
+  //   try {
+  //     setIsFetchingLocation(true);
+  //     let permissionResult;
+
+  //     if (Platform.OS === 'android') {
+  //       const fineLocationGranted = await PermissionsAndroid.request(
+  //         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+  //         {
+  //           title: 'Location Permission',
+  //           message: 'This app needs access to your location.',
+  //           buttonNeutral: 'Ask Me Later',
+  //           buttonNegative: 'Cancel',
+  //           buttonPositive: 'OK',
+  //         },
+  //       );
+
+  //       if (fineLocationGranted !== PermissionsAndroid.RESULTS.GRANTED) {
+  //         setIsFetchingLocation(false);
+  //         Alert.alert(
+  //           'Permission Denied',
+  //           'Location permission is required to access your current location.',
+  //         );
+  //         return;
+  //       }
+
+  //       Geolocation.getCurrentPosition(
+  //         position => {
+  //           const {latitude, longitude} = position.coords;
+  //           const lat = latitude.toString();
+  //           const long = longitude.toString();
+
+  //           fetch(
+  //             `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${long}&key=${GOOGLE_PLACES_API_KEY}`,
+  //           )
+  //             .then(res => res.json())
+  //             .then(json => {
+  //               const location =
+  //                 json.results && json.results.length
+  //                   ? json.results[0].formatted_address
+  //                   : 'Current Location';
+
+  //               onPlaceSelected({location, lat, long});
+  //               setText(location);
+  //               setSuggestions([]);
+  //             })
+  //             .finally(() => {
+  //               setIsFetchingLocation(false);
+  //             });
+  //         },
+  //         error => {
+  //           setIsFetchingLocation(false);
+  //           if (error.code === 1) {
+  //             Alert.alert(
+  //               'Permission Denied',
+  //               'Location permission was denied.',
+  //             );
+  //           } else if (error.code === 2 || error.code === 3) {
+  //             Alert.alert(
+  //               'Location Unavailable',
+  //               'Please ensure location services (GPS) are turned ON.',
+  //               [
+  //                 {text: 'Cancel', style: 'cancel'},
+  //                 {
+  //                   text: 'Open Settings',
+  //                   onPress: () => Linking.openSettings(),
+  //                 },
+  //               ],
+  //             );
+  //           } else {
+  //             console.log('Geo Error:', error);
+  //             Alert.alert('Location Error', JSON.stringify(error));
+  //           }
+  //         },
+  //         {
+  //           enableHighAccuracy: true,
+  //           timeout: 20000,
+  //           maximumAge: 1000,
+  //           distanceFilter: 0,
+  //           forceRequestLocation: true,
+  //           showLocationDialog: true,
+  //         },
+  //       );
+  //     }
+  //   } catch (err) {
+  //     setIsFetchingLocation(false);
+  //     console.warn(err);
+  //   }
+  // };
+
+  const handleCurrentLocationPress = async () => {
+    try {
+      setIsFetchingLocation(true);
+
+      // Request permission
+      if (Platform.OS === 'ios') {
+        Geolocation.requestAuthorization();
+      }
+
+      if (Platform.OS === 'android') {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+          {
+            title: 'Location Permission',
+            message: 'This app needs access to your location.',
+            buttonNeutral: 'Ask Me Later',
+            buttonNegative: 'Cancel',
+            buttonPositive: 'OK',
+          },
+        );
+        if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
+          setIsFetchingLocation(false); // stop loading if permission is denied
+          return;
+        }
+      }
+
+      Geolocation.getCurrentPosition(
+        position => {
+          const {latitude, longitude} = position.coords;
+          const lat = latitude.toString();
+          const long = longitude.toString();
+
+          // Call reverse geocoding API to get address
+          fetch(
+            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${long}&key=${GOOGLE_PLACES_API_KEY}`,
+          )
+            .then(res => res.json())
+            .then(json => {
+              const location =
+                json.results && json.results.length
+                  ? json.results[0].formatted_address
+                  : 'Current Location';
+
+              onPlaceSelected({location, lat, long});
+              setText(location);
+              setSuggestions([]);
+            })
+            .catch(error => {
+              console.log('Reverse geocoding failed:', error);
+            })
+            .finally(() => {
+              setIsFetchingLocation(false); // always stop loading
+            });
+        },
+        error => {
+          console.log('Geolocation error:', error);
+          setIsFetchingLocation(false); // stop loading on geolocation error
+        },
+        {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
+      );
+    } catch (err) {
+      console.warn(err);
+      setIsFetchingLocation(false); // stop loading on general error
+    }
+  };
 
   useEffect(() => {
     setText(initialValue);
@@ -67,16 +233,16 @@ const GooglePlacesSuggestion = ({
     setIsPlaceSelected(true);
     setText(item.description);
     setSuggestions([]);
-    
+
     // After setting text, position cursor at beginning
     setTimeout(() => {
       if (textInputRef.current) {
         textInputRef.current.setNativeProps({
-          selection: { start: 0, end: 0 }
+          selection: {start: 0, end: 0},
         });
       }
     }, 50);
-    
+
     fetch(
       `https://maps.googleapis.com/maps/api/place/details/json?key=${GOOGLE_PLACES_API_KEY}&place_id=${item.place_id}&fields=geometry`,
     )
@@ -103,13 +269,52 @@ const GooglePlacesSuggestion = ({
     setIsPlaceSelected(false);
   };
 
-  const renderItem = ({item}) => (
-    <TouchableOpacity style={styles.suggestionItem} onPress={() => handleSelect(item)}>
-      <View style={styles.row}>
-        <Text style={styles.description}>{item.description}</Text>
-      </View>
-    </TouchableOpacity>
-  );
+  // In renderItem:
+  const renderItem = ({item}) => {
+    if (item.isCurrentLocation) {
+      return (
+        <TouchableOpacity
+          style={styles.suggestionItem}
+          onPress={handleCurrentLocationPress}>
+          {isFetchingLocation ? (
+            <ActivityIndicator size="small" color={colors.black} />
+          ) : (
+            <Text
+              style={[
+                styles.description,
+                {fontWeight: 'bold', marginVertical: 10, padding: 10},
+              ]}>
+              📍 Choose your current location
+            </Text>
+          )}
+        </TouchableOpacity>
+      );
+    }
+
+    return (
+      <TouchableOpacity
+        style={styles.suggestionItem}
+        onPress={() => handleSelect(item)}>
+        <View style={styles.row}>
+          <Text style={styles.description}>{item.description}</Text>
+        </View>
+      </TouchableOpacity>
+    );
+  };
+
+  {
+    (text.length >= 0 /* or 1 */ || suggestions.length > 0) && (
+      <FlatList
+        data={suggestionData}
+        keyExtractor={(item, index) =>
+          item.place_id || item.key || index.toString()
+        }
+        renderItem={renderItem}
+        style={styles.listView}
+        keyboardShouldPersistTaps="handled"
+      />
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -126,7 +331,7 @@ const GooglePlacesSuggestion = ({
           onChangeText={setText}
           onFocus={handleFocus}
           // Only apply selection when a place is selected, not during normal typing
-          selection={isPlaceSelected ? { start: 0, end: 0 } : null}
+          selection={isPlaceSelected ? {start: 0, end: 0} : null}
         />
         {text.length > 0 && (
           <TouchableOpacity
@@ -138,11 +343,31 @@ const GooglePlacesSuggestion = ({
           </TouchableOpacity>
         )}
       </View>
+
+      {/* Show 📍 Use my location when input is empty */}
+      {text.length < 1 && (
+        <TouchableOpacity
+          style={styles.useMyLocationButton}
+          onPress={handleCurrentLocationPress}>
+          {isFetchingLocation ? (
+            <ActivityIndicator size="small" color={colors.black} />
+          ) : (
+            <Text style={styles.useMyLocationText}>
+              📍 Use your current location
+            </Text>
+          )}
+        </TouchableOpacity>
+      )}
+
       {loading && <ActivityIndicator style={{marginTop: mvs(5)}} />}
-      {suggestions.length > 0 && (
+      {/* {suggestions.length > 0 && ( */}
+      {(text.length >= 2 || suggestions.length > 0) && (
         <FlatList
-          data={suggestions}
-          keyExtractor={item => item.place_id}
+          data={suggestionData}
+          keyExtractor={(item, index) =>
+            item.place_id || item.key || index.toString()
+          }
+          // keyExtractor={item => item.place_id}
           renderItem={renderItem}
           style={styles.listView}
           keyboardShouldPersistTaps="handled"
@@ -209,6 +434,20 @@ const styles = StyleSheet.create({
   },
   description: {
     fontSize: mvs(14),
+    color: colors.black,
+  },
+  useMyLocationButton: {
+    marginTop: mvs(8),
+    padding: mvs(12),
+    backgroundColor: colors.white,
+    borderWidth: 0.2,
+    borderColor: '#e0e0e0',
+    alignItems: 'center',
+  },
+
+  useMyLocationText: {
+    fontSize: mvs(14),
+    fontWeight: '600',
     color: colors.black,
   },
 });

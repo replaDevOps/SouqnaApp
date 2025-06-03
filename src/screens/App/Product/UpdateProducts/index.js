@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {CommonActions, useNavigation, useRoute} from '@react-navigation/native';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {Snackbar} from 'react-native-paper';
 import MainHeader from '../../../../components/Headers/MainHeader';
 import {MyButton} from '../../../../components/atoms/InputFields/MyButton';
@@ -27,11 +27,12 @@ import API from '../../../../api/apiServices';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {launchImageLibrary} from 'react-native-image-picker';
 import {styles} from '../CreateProduct/styles';
+import {showSnackbar} from '../../../../redux/slices/snackbarSlice';
 
 const UpdateProduct = () => {
   const route = useRoute();
   const {
-    // productId,
+    productId,
     id: subCategoryId,
     categoryId,
     name,
@@ -41,18 +42,22 @@ const UpdateProduct = () => {
   const {token} = useSelector(state => state.user);
   const navigation = useNavigation();
   const {t} = useTranslation();
+  const dispatch = useDispatch();
 
   const [formData, setFormData] = useState({
     name: '',
     description: '',
     price: '',
-    stock: '',
+    // stock: '',
     discount: '',
     specialOffer: '',
     images: [],
     location: '',
     lat: '',
     long: '',
+    custom_fields: [],
+    currency: '',
+    contactInfo: '',
   });
 
   const [loading, setLoading] = useState(false);
@@ -62,14 +67,14 @@ const UpdateProduct = () => {
 
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [selectedCondition, setSelectedCondition] = useState('');
-  const conditionValue =
-    selectedCondition === 'New' ? 1 : selectedCondition === 'Used' ? 2 : null;
+  // const [selectedCondition, setSelectedCondition] = useState('');
+  // const conditionValue =
+  //   selectedCondition === 'New' ? 1 : selectedCondition === 'Used' ? 2 : null;
 
-  const handleConditionSelect = condition => {
-    setSelectedCondition(condition);
-    handleInputChange('condition', condition);
-  };
+  // const handleConditionSelect = condition => {
+  //   setSelectedCondition(condition);
+  //   handleInputChange('condition', condition);
+  // };
 
   useEffect(() => {
     if (route.params) {
@@ -77,14 +82,17 @@ const UpdateProduct = () => {
         productName,
         description,
         price,
-        stock,
+        // stock,
         discount,
         specialOffer,
         images,
         location,
         lat,
         long,
-        condition,
+        custom_fields = [],
+        currency,
+        contactInfo,
+        // condition,
       } = route.params;
 
       const getImageUri = img => {
@@ -110,23 +118,41 @@ const UpdateProduct = () => {
           type: 'image/jpeg',
           fileSize: 1000,
         })) || [];
-
-      setFormData({
-        name: productName || '',
-        description: description || '',
-        price: price?.toString() || '',
-        stock: stock?.toString() || '',
-        discount: discount?.toString() || '',
-        specialOffer: specialOffer || '',
-        images: formattedImages,
-        location: location || '',
-        lat: lat || '',
-        long: long || '',
-        condition: condition === 1 ? 'New' : condition === 2 ? 'Used' : '',
-      });
-
-      if (condition === 1) setSelectedCondition('New');
-      else if (condition === 2) setSelectedCondition('Used');
+      try {
+        const parsedCustomFields = JSON.parse(custom_fields);
+        setFormData({
+          name: productName || '',
+          description: description || '',
+          price: price?.toString() || '',
+          // stock: stock?.toString() || '',
+          discount: discount?.toString() || '',
+          specialOffer: specialOffer || '',
+          images: formattedImages,
+          location: location || '',
+          lat: lat || '',
+          long: long || '',
+          custom_fields: parsedCustomFields, // Use the parsed array
+          currency: currency || '',
+          contactInfo: contactInfo || '',
+        });
+      } catch (error) {
+        console.error('Error parsing custom_fields:', error);
+        setFormData({
+          name: productName || '',
+          description: description || '',
+          price: price?.toString() || '',
+          // stock: stock?.toString() || '',
+          discount: discount?.toString() || '',
+          specialOffer: specialOffer || '',
+          images: formattedImages,
+          location: location || '',
+          lat: lat || '',
+          long: long || '',
+          custom_fields: [], // Default to an empty array if parsing fails
+          currency: currency || '',
+          contactInfo: contactInfo || '',
+        });
+      }
     }
   }, [route.params]);
 
@@ -156,8 +182,9 @@ const UpdateProduct = () => {
       }));
     } catch (err) {
       console.error('Image picker error:', err);
-      setSnackbarMessage('Failed to pick or upload images');
-      setSnackbarVisible(true);
+      dispatch(showSnackbar(t('Failed to pick or upload images')));
+      // setSnackbarMessage('Failed to pick or upload images');
+      // setSnackbarVisible(true);
     }
   };
 
@@ -185,19 +212,29 @@ const UpdateProduct = () => {
       });
 
       if (response.data.success) {
-        setSnackbarMessage(
-          response.data.message || 'Images uploaded successfully',
+        dispatch(
+          showSnackbar(
+            t(response.data.message || 'Images uploaded successfully'),
+          ),
         );
-        setSnackbarVisible(true);
+
+        // setSnackbarMessage(
+        //   response.data.message || 'Images uploaded successfully',
+        // );
+        // setSnackbarVisible(true);
         // navigation.replace('MainTabs')
       } else {
-        setSnackbarMessage('Image upload failed');
-        setSnackbarVisible(true);
+        dispatch(showSnackbar(t('Image upload failed')));
+
+        // setSnackbarMessage('Image upload failed');
+        // setSnackbarVisible(true);
       }
     } catch (error) {
       console.error('Upload image error:', error);
-      setSnackbarMessage('Error uploading images');
-      setSnackbarVisible(true);
+      dispatch(showSnackbar(t('Error uploading images')));
+
+      // setSnackbarMessage('Error uploading images');
+      // setSnackbarVisible(true);
     }
   };
 
@@ -226,16 +263,19 @@ const UpdateProduct = () => {
           ...prev,
           images: prev.images.filter((_, index) => index !== indexToRemove),
         }));
+        dispatch(showSnackbar(t('Image deleted successfully')));
 
-        setSnackbarMessage('Image deleted successfully');
-        setSnackbarVisible(true);
+        // setSnackbarMessage('Image deleted successfully');
+        // setSnackbarVisible(true);
       } catch (error) {
         console.error(
           'Failed to delete image:',
           error.response || error.message,
         );
-        setSnackbarMessage('Failed to delete image.');
-        setSnackbarVisible(true);
+        dispatch(showSnackbar(t('Failed to delete image.')));
+
+        // setSnackbarMessage('Failed to delete image.');
+        // setSnackbarVisible(true);
       } finally {
         setLoading(false);
       }
@@ -258,86 +298,6 @@ const UpdateProduct = () => {
     }));
   };
 
-  // const submitProduct = async () => {
-  //   const data = new FormData();
-  //   data.append('name', formData.name);
-  //   data.append('description', formData.description);
-  //   data.append('price', Number(formData.price));
-  //   data.append('id', route.params?.productId); // Important
-  //   data.append('categoryID', categoryId);
-  //   data.append('subCategoryID', subCategoryId);
-
-  //   data.append('stock', Number(formData.stock));
-  //   data.append('location', formData.location);
-  //   data.append('lat', formData.lat);
-  //   data.append('long', formData.long);
-  //   data.append('condition', conditionValue);
-  //   console.log('DATA BEING SENT :', data);
-  //   try {
-  //     setLoading(true);
-  //     console.log('Calling:', 'updateProduct', data);
-
-  //     const response = await API.post('updateProduct', data, {
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //         Authorization: `Bearer ${token}`,
-  //       },
-  //     });
-
-  //     console.log('✅ Response:', response.data);
-
-  //     if (response.data.success) {
-  //       setSnackbarMessage(t('Product Updated'));
-  //       // setFormData({
-  //       //   name: '',
-  //       //   description: '',
-  //       //   price: '',
-  //       //   stock: '',
-  //       //   discount: '',
-  //       //   specialOffer: '',
-  //       //   images: [],
-  //       //   location: '',
-  //       //   lat: '',
-  //       //   long: '',
-  //       //   condition: '',
-  //       // });
-
-  //       navigation.dispatch(
-  //         CommonActions.reset({
-  //           index: 0,
-  //           routes: [
-  //             {
-  //               name: 'MainTabs',
-  //             },
-  //           ],
-  //         }),
-  //       );
-  //     } else {
-  //       setSnackbarMessage(
-  //         response.data.message || 'Failed to update product.',
-  //       );
-  //     }
-
-  //     setSnackbarVisible(true);
-  //   } catch (error) {
-  //     if (error.response) {
-  //       // Request made and server responded
-  //       console.error('❌ Error Response:', error.response.data);
-  //     } else if (error.request) {
-  //       // Request made but no response received
-  //       console.error('❌ No response:', error.request);
-  //     } else {
-  //       // Something else
-  //       console.error('❌ Error Message:', error.message);
-  //     }
-
-  //     setSnackbarMessage('Network Error: Unable to update product.');
-  //     setSnackbarVisible(true);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
   const submitProduct = async () => {
     const payload = {
       name: formData.name,
@@ -346,11 +306,18 @@ const UpdateProduct = () => {
       id: route.params?.productId, // Important
       categoryID: categoryId,
       subCategoryID: subCategoryId,
-      stock: Number(formData.stock),
+      // stock: Number(formData.stock),
       location: formData.location,
       lat: formData.lat,
       long: formData.long,
-      condition: conditionValue,
+      discount: formData.discount,
+      // stock: formData.stock,
+      // condition: conditionValue,
+      // negotiable: formData.negotiable,
+      // contactInfo: formData.contactInfo,
+      custom_fields: formData.custom_fields,
+      currency: formData.currency,
+      contactInfo: formData.contactInfo,
     };
 
     console.log('DATA BEING SENT :', payload);
@@ -369,7 +336,9 @@ const UpdateProduct = () => {
       console.log('✅ Response:', response.data);
 
       if (response.data.success) {
-        setSnackbarMessage(t('Product Updated'));
+        // setSnackbarMessage(t('Product Updated'));
+        // setSnackbarVisible(true);
+        dispatch(showSnackbar(t('The Ad has been updated successfully')));
 
         navigation.dispatch(
           CommonActions.reset({
@@ -378,12 +347,16 @@ const UpdateProduct = () => {
           }),
         );
       } else {
-        setSnackbarMessage(
-          response.data.message || 'Failed to update product.',
+        dispatch(
+          showSnackbar(t(response.data.message || 'Failed to update product.')),
         );
+
+        // setSnackbarMessage(
+        //   response.data.message || 'Failed to update product.',
+        // );
       }
 
-      setSnackbarVisible(true);
+      // setSnackbarVisible(true);
     } catch (error) {
       if (error.response) {
         console.error('❌ Error Response:', error.response.data);
@@ -393,8 +366,10 @@ const UpdateProduct = () => {
         console.error('❌ Error Message:', error.message);
       }
 
-      setSnackbarMessage('Network Error: Unable to update product.');
-      setSnackbarVisible(true);
+      dispatch(showSnackbar(t('Network Error: Unable to update product.')));
+
+      // setSnackbarMessage('Network Error: Unable to update product.');
+      // setSnackbarVisible(true);
     } finally {
       setLoading(false);
     }
@@ -550,7 +525,7 @@ const UpdateProduct = () => {
           </View>
 
           {/* Condition Section - Updated to Radio Buttons */}
-          <View style={styles.sectionContainer}>
+          {/* <View style={styles.sectionContainer}>
             <Text style={styles.sectionTitle}>
               {t('condition')}
               <Text style={{color: colors.red}}>*</Text>
@@ -591,12 +566,12 @@ const UpdateProduct = () => {
                 <Text style={styles.radioText}>{t('used')}</Text>
               </TouchableOpacity>
             </View>
-          </View>
+          </View> */}
 
           {/* Name Section */}
           <View style={styles.sectionContainer}>
             <Text style={styles.sectionTitle}>
-              {t('name')}
+              {t('Ad Name')}
               <Text style={{color: colors.red}}>*</Text>
             </Text>
             <TextInput
@@ -695,8 +670,22 @@ const UpdateProduct = () => {
             />
           </View>
 
-          {/* Stock Section */}
           <View style={styles.sectionContainer}>
+            <Text style={styles.sectionTitle}>
+              {t('Contact Info')}
+              {/* <Text style={{color: colors.red}}>*</Text> */}
+            </Text>
+            <TextInput
+              style={styles.input}
+              placeholder={t('Enter Contact')}
+              placeholderTextColor={colors.grey}
+              value={formData.contactInfo}
+              onChangeText={text => handleInputChange('contactInfo', text)}
+            />
+          </View>
+
+          {/* Stock Section */}
+          {/* <View style={styles.sectionContainer}>
             <Text style={styles.sectionTitle}>
               {t('availableStock')}
               <Text style={{color: colors.red}}>*</Text>
@@ -709,6 +698,33 @@ const UpdateProduct = () => {
               value={formData.stock}
               onChangeText={text => handleInputChange('stock', text)}
             />
+          </View> */}
+
+          <View style={styles.sectionContainer}>
+            <Text style={styles.sectionTitle}>{t('Custom Fields')}</Text>
+            {Array.isArray(formData.custom_fields) ? (
+              formData.custom_fields.map((field, index) => (
+                <View key={index} style={styles.fieldContainer}>
+                  <Text style={styles.sectionTitle}>{field.name}</Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder={t('enterValue')}
+                    placeholderTextColor={colors.grey}
+                    value={field.value || ''}
+                    onChangeText={text => {
+                      const updatedFields = formData.custom_fields.map(
+                        (f, idx) => (idx === index ? {...f, value: text} : f),
+                      );
+                      handleInputChange('custom_fields', updatedFields);
+                    }}
+                  />
+                </View>
+              ))
+            ) : (
+              <Text style={styles.errorText}>
+                Custom fields are not available
+              </Text>
+            )}
           </View>
 
           {/* Submit Button */}

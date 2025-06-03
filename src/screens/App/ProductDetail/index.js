@@ -94,6 +94,31 @@ const ProductDetail = () => {
     fetchProductDetails();
   }, [productId, token, role, verificationStatus, dispatch]);
 
+  const getCurrencySymbol = (currency = 'USD') => {
+    switch (currency?.toUpperCase?.()) {
+      case 'TRY':
+        return '₺';
+      case 'USD':
+        return '$';
+      case 'SYP':
+        return '£';
+      default:
+        return '$';
+    }
+  };
+  const getCurrencyFlag = (currency = 'USD') => {
+    switch (currency?.toUpperCase?.()) {
+      case 'TRY':
+        return '🇹🇷';
+      case 'USD':
+        return '🇺🇸';
+      case 'SYP':
+        return '🇸🇾';
+      default:
+        return '🇺🇸';
+    }
+  };
+
   const handleHeartPress = id => {
     setLikedItems(prevState => ({
       ...prevState,
@@ -240,6 +265,9 @@ const ProductDetail = () => {
       lat: product.lat,
       long: product.long,
       condition: product.condition, // assuming it's 1 or 2
+      custom_fields: product.custom_fields,
+      currency: product.currency,
+      contactInfo: product.contactInfo,
     });
   };
 
@@ -288,19 +316,13 @@ const ProductDetail = () => {
     }
   };
 
- const handleCustomLinkGenerated = (link) => {
-    setCustomProductLink(link);
-  };
-
-  // console.log('{Link of the product}', customProductLink);
-  
-  
   return (
     <SafeAreaView style={styles.container}>
       {loading || !product ? (
         <Loader width={mvs(160)} height={mvs(160)} />
       ) : (
         <>
+          {console.log('Product currency:', product.currency)}
           <ProductHeader
             title={product.name}
             filled={likedItems[product.id]}
@@ -312,14 +334,19 @@ const ProductDetail = () => {
           />
           <ScrollView
             showsVerticalScrollIndicator={false}
-            contentContainerStyle={{paddingBottom: mvs(80),backgroundColor:'#fff'}}
+            contentContainerStyle={{
+              paddingBottom: mvs(80),
+              backgroundColor: '#fff',
+            }}
             onScroll={onScroll}
             scrollEventThrottle={16}>
             <ProductImages images={product?.images || []} />
 
             <View style={styles.itemContainer}>
               <Bold style={styles.productPrice}>
-                $ {Number(product.price).toLocaleString()}
+                {/* {getCurrencyFlag(product?.currency)} */}
+                {getCurrencySymbol(product?.currency)}{' '}
+                {Number(product.price).toLocaleString()}
               </Bold>
               <Bold style={styles.productTitle}>{product.name}</Bold>
               {
@@ -351,11 +378,12 @@ const ProductDetail = () => {
                 : ''
               }
               /> */}
-              <View style={{}}>
-
-              <Bold style={{fontSize: mvs(22),marginHorizontal:mvs(10)}}>Details</Bold>
-              <DetailsTable ProductData={product.custom_fields}/>
-              </View>
+            <View style={{}}>
+              <Bold style={{fontSize: mvs(22), marginHorizontal: mvs(10)}}>
+                Details
+              </Bold>
+              <DetailsTable ProductData={product.custom_fields} />
+            </View>
             <View style={styles.descriptionContainer}>
               <Bold style={{fontSize: mvs(22)}}>Description</Bold>
               <Regular
@@ -401,10 +429,10 @@ const ProductDetail = () => {
             onChatPress={handleChatPress}
             handleUpdatePress={handleUpdatePress}
             handleDeletePress={handleDeletePress}
-            sellerPhone="971501234567"
-            // customProductLink={customProductLink}
+            sellerPhone={product?.contactInfo}
+            sellerId={product?.seller?.id} // Pass sellerId
+            productId={product.id}
           />
-          {/* )} */}
 
           {isModalVisible && <AddModal onClose={onClose} />}
         </>
