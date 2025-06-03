@@ -429,6 +429,7 @@ const ProductDetail = () => {
             handleUpdatePress={handleUpdatePress}
             handleDeletePress={handleDeletePress}
             sellerPhone="971501234567"
+            customProductLink={customProductLink}
           />
 
           {isModalVisible && <AddModal onClose={onClose} />}

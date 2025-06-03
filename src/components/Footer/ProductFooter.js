@@ -21,7 +21,7 @@ import {useSelector} from 'react-redux';
 
 const ProductFooter = ({
   onBuyPress,
-  onChatPress,
+  // onChatPress,
   onCallPress,
   loadingChat,
   loadingBuy,
@@ -41,6 +41,16 @@ const ProductFooter = ({
       console.warn('Seller phone number not available');
     }
   };
+
+const onChatPress = () => {
+  const message = `Hello! I’m interested in this product! \n ${customProductLink}`;
+  // const url = `sms:${sellerPhone}?body=${encodeURIComponent(message)}`;
+  const url = `https://wa.me/${sellerPhone}?text=${message}`;
+
+  Linking.openURL(url).catch(err =>
+    console.error('Failed to open SMS app:', err),
+  );
+};
 
   const handleBuyPress = () => {
     setShowBuy(true);
