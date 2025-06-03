@@ -24,7 +24,7 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 
 const ChangePassword = () => {
   const dispatch = useDispatch();
-  const user = useSelector(state => state.user); // Fetch the current user data
+  const user = useSelector(state => state.user);
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');

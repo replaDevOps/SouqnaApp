@@ -104,7 +104,7 @@ export default function MyAccount() {
                 {renderEditableRow('Address', 'address')}
 
                 <View style={styles.row}>
-                  <Text>Seller</Text>
+                  <Text style={styles.label}>Seller</Text>
                   <TouchableOpacity
                     onPress={isEditing ? toggleMember : undefined}>
                     {editedData.isMember ? (
@@ -169,7 +169,7 @@ export default function MyAccount() {
   function renderEditableRow(label, field, keyboardType = 'default') {
     return (
       <View style={styles.row}>
-        <Text>{label}</Text>
+        <Text style={styles.label}>{label}</Text>
         {isEditing ? (
           <TextInput
             style={styles.input}
@@ -235,6 +235,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     flex: 1,
     marginLeft: 16,
+  },
+  label: {
+    fontSize: 18,
   },
   value: {
     fontSize: 18,
