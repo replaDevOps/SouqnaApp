@@ -32,7 +32,7 @@ const Products = () => {
   const [loading, setLoading] = useState(false);
   const [likedItems, setLikedItems] = useState({});
 
-  const {role} = useSelector(state => state.user);
+  const {role, id: userId} = useSelector(state => state.user);
   const favorites = useSelector(state => state.favorites.favorites);
 
   const dispatch = useDispatch();
@@ -56,7 +56,11 @@ const Products = () => {
       setLoading(true);
       const response = await fetchProductsBySubCategory(subCategoryId);
       if (response?.data) {
-        setProducts(response.data);
+        const filteredProducts = response.data.filter(
+          product => product.seller.id === userId,
+        );
+        setProducts(filteredProducts);
+        // setProducts(response.data);
         console.log('Fetch Products by subcategory:', response.data);
       }
       setLoading(false);

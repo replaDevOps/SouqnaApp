@@ -208,6 +208,7 @@ const Register = () => {
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.container}>
+        <View style={{padding: 10}}></View>
         <Header
           showBackButton
           onBackPress={() => navigation.goBack()}

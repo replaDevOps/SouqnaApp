@@ -120,9 +120,10 @@ const styles = StyleSheet.create({
     textAlign: 'left',
   },
   termsLink: {
+    fontSize: mvs(14),
     color: colors.green,
     textDecorationLine: 'underline',
-    lineHeight: mvs(10), // Match the lineHeight to the regular text
+    lineHeight: mvs(14), // Match the lineHeight to the regular text
     paddingTop: 0,
   },
 });
