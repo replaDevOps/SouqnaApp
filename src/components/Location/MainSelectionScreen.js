@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: colors.primary,
+    backgroundColor: colors.lightgreen,
     paddingVertical: mvs(15),
     paddingHorizontal: mvs(20),
     borderRadius: mvs(10),
@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
   manualButton: {
     backgroundColor: colors.white,
     borderWidth: 1,
-    borderColor: colors.primary,
+    borderColor: colors.lightgreen,
   },
   buttonText: {
     fontSize: mvs(16),

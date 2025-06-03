@@ -58,7 +58,6 @@ const ProductDetail = () => {
   const navigation = useNavigation();
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [customProductLink, setCustomProductLink] = useState('');
 
   useEffect(() => {
     if (!productId) {
@@ -316,6 +315,7 @@ const ProductDetail = () => {
     }
   };
 
+  
   return (
     <SafeAreaView style={styles.container}>
       {loading || !product ? (
@@ -418,7 +418,6 @@ const ProductDetail = () => {
               productTitle={product.name}
               productLink={product.productLink}
               productId={product.id}
-               onLinkGenerated={handleCustomLinkGenerated}
             />
           </ScrollView>
           {/* {role !== 2 && role !== 4 && token == null && ( */}
@@ -429,9 +428,7 @@ const ProductDetail = () => {
             onChatPress={handleChatPress}
             handleUpdatePress={handleUpdatePress}
             handleDeletePress={handleDeletePress}
-            sellerPhone={product?.contactInfo}
-            sellerId={product?.seller?.id} // Pass sellerId
-            productId={product.id}
+            sellerPhone="971501234567"
           />
 
           {isModalVisible && <AddModal onClose={onClose} />}
