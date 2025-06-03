@@ -60,6 +60,7 @@ const styles = StyleSheet.create({
   selectedRadioButton: {
     borderColor: colors.green,
   },
+
   radioButtonLabel: {
     fontSize: mvs(16),
     color: colors.black,
@@ -123,7 +124,7 @@ const styles = StyleSheet.create({
     fontSize: mvs(14),
     color: colors.green,
     textDecorationLine: 'underline',
-    lineHeight: mvs(14), // Match the lineHeight to the regular text
+    lineHeight: mvs(14),
     paddingTop: 0,
   },
 });

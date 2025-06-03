@@ -6,7 +6,6 @@ import {useDispatch, useSelector} from 'react-redux';
 import {
   CartSVG,
   ChatSVG,
-  ChatSVG2,
   HeartSVG,
   HOMESVG,
   NotificationSVG,
@@ -35,7 +34,7 @@ const MyTabs = () => {
     role: activeRole,
     actualRole,
     verificationStatus,
-  } = useSelector(state => state.user); // Token will indicate if the user is logged in
+  } = useSelector(state => state.user);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [verificationModalVisible, setVerificationModalVisible] =
     useState(false);
@@ -43,7 +42,6 @@ const MyTabs = () => {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Update isSeller state when role changes
   useEffect(() => {
     setIsSeller(activeRole === '2' || activeRole === 2);
   }, [activeRole]);
@@ -107,9 +105,7 @@ const MyTabs = () => {
   }, [activeRole]);
 
   const handleVerifyProfile = () => {
-    // Logic to handle profile verification
     setVerificationModalVisible(false);
-    // Navigate to the Verification screen
     navigation.navigate('Verification');
   };
 
