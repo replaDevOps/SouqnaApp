@@ -26,6 +26,7 @@ const GooglePlacesSuggestion = ({
   onPlaceSelected,
   initialValue = '',
   placeholder = 'Enter Location.....',
+  showlivelocation = true
 }) => {
   const [text, setText] = useState(initialValue);
   const [suggestions, setSuggestions] = useState([]);
@@ -34,10 +35,12 @@ const GooglePlacesSuggestion = ({
   const textInputRef = useRef(null);
   const [isPlaceSelected, setIsPlaceSelected] = useState(false);
   const [isFetchingLocation, setIsFetchingLocation] = useState(false);
-  const suggestionData = [
-    {isCurrentLocation: true, key: 'current-location'},
-    ...suggestions,
-  ];
+  const suggestionData = showlivelocation 
+    ? [
+        {isCurrentLocation: true, key: 'current-location'},
+        ...suggestions,
+      ]
+    : suggestions;
 
   // const handleCurrentLocationPress = async () => {
   //   try {
@@ -345,7 +348,7 @@ const GooglePlacesSuggestion = ({
       </View>
 
       {/* Show 📍 Use my location when input is empty */}
-      {text.length < 1 && (
+      {text.length < 1 && showlivelocation && (
         <TouchableOpacity
           style={styles.useMyLocationButton}
           onPress={handleCurrentLocationPress}>
@@ -356,8 +359,8 @@ const GooglePlacesSuggestion = ({
               📍 Use your current location
             </Text>
           )}
-        </TouchableOpacity>
-      )}
+        </TouchableOpacity>)
+      }
 
       {loading && <ActivityIndicator style={{marginTop: mvs(5)}} />}
       {/* {suggestions.length > 0 && ( */}

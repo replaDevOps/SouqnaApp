@@ -35,7 +35,6 @@ import {launchImageLibrary} from 'react-native-image-picker';
 import PhotoManipulator from 'react-native-photo-manipulator';
 import ImageResizer from 'react-native-image-resizer';
 import CategoryFields from './CategoryFields';
-import LocationSelector from '../../../../components/Location/LocationSelector';
 import EnhancedLocationSelector from '../../../../components/Location/EnhancedLocationSelector';
 // import EnhancedCategoryFields from './CategoryFields';
 

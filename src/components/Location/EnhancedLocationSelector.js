@@ -1,5 +1,5 @@
 // EnhancedLocationSelector.js (Parent Component)
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   StyleSheet,
@@ -7,10 +7,10 @@ import {
   Text,
   Modal,
 } from 'react-native';
-import {mvs} from '../../util/metrices';
+import { mvs } from '../../util/metrices';
 // import {CloseSvg, SearchSVG} from '../assets/svg';
-import {  CloseSvg, SearchSVG } from '../../assets/svg';
-import {colors} from '../../util/color';
+import { CloseSvg, SearchSVG } from '../../assets/svg';
+import { colors } from '../../util/color';
 import LocationModal from './LocationModal';
 
 const EnhancedLocationSelector = ({
@@ -34,14 +34,20 @@ const EnhancedLocationSelector = ({
   };
 
   const handleLocationSelected = (locationData) => {
-    setText(locationData.location);
-    onPlaceSelected(locationData);
+    // Use 'address' instead of 'location'
+    setText(locationData.address || locationData.location);
+    onPlaceSelected({
+      location: locationData.address,
+      lat: locationData.latitude,
+      long: locationData.longitude,
+      ...locationData
+    });
     closeModal();
   };
 
   const clearLocation = () => {
     setText('');
-    onPlaceSelected({location: '', lat: '', long: ''});
+    onPlaceSelected({ location: '', lat: '', long: '' });
   };
 
   return (
@@ -60,15 +66,11 @@ const EnhancedLocationSelector = ({
         )}
       </TouchableOpacity>
 
-      <Modal
+      <LocationModal
         visible={isModalVisible}
-        animationType="slide"
-        presentationStyle="pageSheet">
-        <LocationModal
-          onLocationSelected={handleLocationSelected}
-          onClose={closeModal}
-        />
-      </Modal>
+        onLocationSelected={handleLocationSelected}
+        onClose={closeModal}
+      />
     </View>
   );
 };

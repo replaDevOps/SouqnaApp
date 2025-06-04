@@ -21,7 +21,7 @@ import {useSelector} from 'react-redux';
 
 const ProductFooter = ({
   onBuyPress,
-  // onChatPress,
+  onChatPress,
   onCallPress,
   loadingChat,
   loadingBuy,
@@ -42,15 +42,7 @@ const ProductFooter = ({
     }
   };
 
-const onChatPress = () => {
-  const message = `Hello! I’m interested in this product! \n ${customProductLink}`;
-  // const url = `sms:${sellerPhone}?body=${encodeURIComponent(message)}`;
-  const url = `https://wa.me/${sellerPhone}?text=${message}`;
 
-  Linking.openURL(url).catch(err =>
-    console.error('Failed to open SMS app:', err),
-  );
-};
 
   const handleBuyPress = () => {
     setShowBuy(true);
@@ -61,7 +53,7 @@ const onChatPress = () => {
   let buttons = [];
 
   if (role === 3 || token === null) {
-    if (!isCurrentUserSeller) {
+    // if (!isCurrentUserSeller) {
       buttons = [
         {
           key: 'chat',
@@ -80,7 +72,7 @@ const onChatPress = () => {
           // bgcolor:colors.lightgreen
         },
       ];
-    }
+    // }
   } else {
     buttons = [
       {
