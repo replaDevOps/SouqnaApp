@@ -1,7 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {
   View,
-  KeyboardAvoidingView,
   ToastAndroid,
   Platform,
   Alert,
@@ -26,7 +25,6 @@ import Bold from '../../../typography/BoldText';
 import Header from '../../../components/Headers/Header';
 import {loginUser} from '../../../api/authServices';
 import {colors} from '../../../util/color';
-import {Snackbar} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {showSnackbar} from '../../../redux/slices/snackbarSlice';
 
@@ -39,12 +37,7 @@ const LoginScreen = () => {
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [snackbarVisible, setSnackbarVisible] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
   const [showRoleSelection, setShowRoleSelection] = useState(false);
-
-  // const email = 'jmubashir272@gmail.com';
-  // const password = 'admin123@'; // Static password for testing
 
   // Add animation value
   const slideAnim = useRef(new Animated.Value(1000)).current;

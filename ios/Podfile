@@ -1,0 +1,19 @@
+   require_relative '../node_modules/react-native/scripts/react_native_pods'
+   require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
+
+   platform :ios, '15.0' # Adjust '12.0' based on your project's requirement
+
+   target 'SouqnaApp' do
+     config = use_native_modules!
+     use_react_native!(
+       :path => config[:reactNativePath],
+       # Add any custom React Native podspec paths here, if required
+     )
+     # Add new dependencies below this line:
+
+     # Uncomment the next line if you're using Flipper
+     # use_flipper!
+
+     # Pods for SouqnaApp
+
+   end

@@ -5,6 +5,7 @@ import {
   RefreshControl,
   ScrollView,
   StatusBar,
+  Text,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -50,7 +51,7 @@ const SearchScreen = () => {
   const [categoriesLoading, setCategoriesLoading] = useState(true);
 
   const [modalVisible, setModalVisible] = useState(false);
-  const [refreshing, setRefreshing] = useState(false); // New state for pull-to-refresh
+  const [refreshing, setRefreshing] = useState(false);
   const isFocused = useIsFocused();
   const [hasFetchedVerification, setHasFetchedVerification] = useState(false);
   const [snackbarVisible, setSnackbarVisible] = useState(false);
@@ -74,9 +75,8 @@ const SearchScreen = () => {
           },
         });
 
-        // Only get the verification status from the API response
-        const apiStatus = response.data?.data?.status || 0; // Defaults to 0 if status is not available
-        dispatch(setVerificationStatus(apiStatus)); // Store status in Redux
+        const apiStatus = response.data?.data?.status || 0;
+        dispatch(setVerificationStatus(apiStatus));
 
         console.log('API verification status in search: ', apiStatus);
       } catch (error) {
