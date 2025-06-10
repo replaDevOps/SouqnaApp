@@ -1,0 +1,217 @@
+
+const ProductDashboard = () => {
+  return (
+    <>
+      <Text style={{color: 'red'}}>{error}</Text>
+
+      <Text>No data available</Text>
+
+      <Text>Total No. of Products</Text>
+      <Text>{dashboardData.total_ads}</Text>
+
+      <Text>No. of Products This Month</Text>
+      <Text>{dashboardData.ads_this_month}</Text>
+    </>
+  );
+};
+
+export default ProductDashboard;
+
+const ProductCard = ({product}) => {
+  return (
+    <>
+      <Regular numberOfLines={1}>
+        {product?.name}
+      </Regular>
+      <Regular>
+        ${Number(product?.price || 0).toLocaleString()} - USD
+      </Regular>
+    </>
+  );
+};
+
+export default ProductCard;
+
+const ProductFooter = () => {
+  return (
+    <>
+      <Text>Chat with Seller</Text>
+      <Text>Call Seller</Text>
+      <Text>Update Product</Text>
+      <Text>Delete Product</Text>
+    </>
+  );
+};
+
+export default ProductFooter;
+
+
+  <Text>
+        {/* Snackbar Dismiss Button */}
+        Dismiss
+      </Text>
+
+
+import React from 'react';
+import { Text } from 'react-native';
+import { t } from 'i18next';
+
+const AddModalTexts = () => {
+  return (
+    <>
+      <Text>{t('Help')}</Text>
+
+      <Text>{t('Souqna')}</Text>
+
+      <Text>{t('Register')}</Text>
+
+      <Text>{t('Login')}</Text>
+
+      <Text>
+        {t('Our Terms of Use apply. You can find information about the processing of your data in our Privacy Policy.')}
+      </Text>
+
+      <Text>{t('Terms of Use')}</Text>
+
+      <Text>{t('Privacy Policy')}</Text>
+    </>
+  );
+};
+
+export default AddModalTexts;
+
+
+import React from 'react';
+import { Text } from 'react-native';
+import { t } from 'i18next';
+
+const DeleteModalTexts = () => {
+  return (
+    <>
+      <Text>{t('The Account will be deleted permanently.')}</Text>
+      <Text>{t('Are you sure you want to delete your account?')}</Text>
+      <Text>{t('Delete Account')}</Text>
+    </>
+  );
+};
+
+export default DeleteModalTexts;
+
+import React from 'react';
+import { Text } from 'react-native';
+import { t } from 'i18next';
+
+const HelpModalTexts = () => {
+  return (
+    <>
+      <Text>{t('Settings')}</Text>
+      <Text>{t('Close')}</Text>
+      <Text>{t('Delete Search History')}</Text>
+      <Text>{t('Data Protection')}</Text>
+      <Text>{t('Design')}</Text>
+      <Text>{t('About Souqna')}</Text>
+      <Text>{t('Help and Feedback')}</Text>
+      <Text>{t('Search History Deleted')}</Text>
+    </>
+  );
+};
+
+export default HelpModalTexts;
+import React from 'react';
+import { Text } from 'react-native';
+import { t } from 'i18next';
+
+const PaymentModalTexts = () => {
+  return (
+    <>
+      <Text>{t('Select Payment Method')}</Text>
+      <Text>{t('Stripe')}</Text>
+      <Text>{t('Cash on Delivery')}</Text>
+      <Text>{t('Processing...')}</Text>
+      <Text>{t('Confirm')}</Text>
+    </>
+  );
+};
+
+export default PaymentModalTexts;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

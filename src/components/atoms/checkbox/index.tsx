@@ -6,7 +6,7 @@ import {mvs} from '../../../util/metrices';
 type IProps = {
   label?: string | number;
   checked?: boolean;
-  children?: JSX.Element | JSX.Element[];
+  children?: React.ReactNode;
   onPress: () => void;
   containerStyle: {};
   iconColor?: string;
