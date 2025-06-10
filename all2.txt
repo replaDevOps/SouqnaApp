@@ -1,33 +1,57 @@
-
-  <Text>
-        {/* Snackbar Dismiss Button */}
-        Dismiss
+   <Text style={{color: 'red'}}>{error}</Text>
+      <Text>No data available</Text>
+      <Text>Total No. of Products</Text>
+      <Text>{dashboardData.total_ads}</Text>
+      <Text>No. of Products This Month</Text>
+      <Text>{dashboardData.ads_this_month}</Text>
+      <Regular numberOfLines={1}>
+        {product?.name}
+      </Regular>
+      <Regular>
+        ${Number(product?.price || 0).toLocaleString()} - USD
+      </Regular>
+      <Text>Chat with Seller</Text>
+      <Text>Call Seller</Text>
+      <Text>Update Product</Text>
+      <Text>Delete Product</Text>
+  <Text>    Dismiss</Text>
+      <Text>{t('Help')}</Text>
+      <Text>{t('Souqna')}</Text>
+      <Text>{t('Register')}</Text>
+      <Text>{t('Login')}</Text>
+      <Text>
+        {t('Our Terms of Use apply. You can find information about the processing of your data in our Privacy Policy.')}
       </Text>
-
-import React from 'react';
-import { Text } from 'react-native';
-import { t } from 'i18next';
-
-const VerificationModalTexts = () => {
-  return (
-    <>
+      <Text>{t('Terms of Use')}</Text>
+      <Text>{t('Privacy Policy')}</Text>
+      <Text>{t('The Account will be deleted permanently.')}</Text>
+      <Text>{t('Are you sure you want to delete your account?')}</Text>
+      <Text>{t('Delete Account')}</Text>
+      <Text>{t('Settings')}</Text>
+      <Text>{t('Close')}</Text>
+      <Text>{t('Delete Search History')}</Text>
+      <Text>{t('Data Protection')}</Text>
+      <Text>{t('Design')}</Text>
+      <Text>{t('About Souqna')}</Text>
+      <Text>{t('Help and Feedback')}</Text>
+      <Text>{t('Search History Deleted')}</Text>
+      <Text>{t('Select Payment Method')}</Text>
+      <Text>{t('Stripe')}</Text>
+      <Text>{t('Cash on Delivery')}</Text>
+      <Text>{t('Processing...')}</Text>
+      <Text>{t('Confirm')}</Text>
+      <Text>{t('Switch to Buyer Account')}</Text>
+      <Text>{t('Switch to Seller Account')}</Text>
+      <Text>{t('Select Seller Type')}</Text>
+      <Text>{t('Private')}</Text>
+      <Text>{t('Company')}</Text>
+      <Text>{t('Please confirm your Password')}</Text>
+      <Text>{t('Password')}</Text>
+      <Text>{t('Passwords do not match')}</Text>
+      <Text>{t('Cancel')}</Text>
+      <Text>{t('Submit')}</Text>
       <Text>{t('Would you like to verify your profile now?')}</Text>
       <Text>{t('Verify')}</Text>
-    </>
-  );
-};
-
-export default VerificationModalTexts;
-
-
-
-import React from 'react';
-import { Text } from 'react-native';
-import { t } from 'i18next';
-
-const CarDetailsCardTexts = () => {
-  return (
-    <>
       <Text>{t('No details available')}</Text>
       <Text>{t('View Less')}</Text>
       <Text>{t('View')}</Text>
@@ -35,143 +59,33 @@ const CarDetailsCardTexts = () => {
       <Text>{t('Yes')}</Text>
       <Text>{t('No')}</Text>
       <Text>{t('N/A')}</Text>
-    </>
-  );
-};
-
-export default CarDetailsCardTexts;
-
-
 t('Provider')
 t('Seller')
 t('Buyer')
 t('Active Since')
-
-
-import React from 'react';
-import { Text } from 'react-native';
-import { t } from 'i18next';
-
-const CategorySectionTexts = () => {
-  return (
-    <>
-      {/* No static texts in your CategorySection but placeholder examples: */}
       <Text>{t('No categories available')}</Text>
       <Text>{t('Loading categories')}</Text>
       <Text>{t('View More')}</Text>
       <Text>{t('View Less')}</Text>
-    </>
-  );
-};
-
-export default CategorySectionTexts;
-
-import React from 'react';
-import { Text } from 'react-native';
-import { t } from 'i18next';
-
-const RecommendedSectionTexts = () => {
-  return (
-    <>
       <Text>{t('Your Listings')}</Text>
       <Text>{t('Recommended For You')}</Text>
       <Text>{t('endOfResults')}</Text>
       <Text>{t('noProductsFound')}</Text>
-    </>
-  );
-};
-
-export default RecommendedSectionTexts;
-
-import React from 'react';
-import { Text } from 'react-native';
-import { t } from 'i18next';
-
-const VerificationStatusTexts = () => {
-  return (
-    <>
       <Text>{t('verified')}</Text>
       <Text>{t('rejected')}</Text>
       <Text>{t('unverified')}</Text>
       <Text>{t('inProgress')}</Text>
-    </>
-  );
-};
-
-export default VerificationStatusTexts;
-
-import React from 'react';
-import { Text } from 'react-native';
-import { t } from 'i18next';
-
-const RecommendedSectionTexts = () => {
-  return (
-    <>
       <Text>{t('Your Listings')}</Text>
       <Text>{t('Recommended For You')}</Text>
       <Text>{t('endOfResults')}</Text>
       <Text>{t('noProductsFound')}</Text>
-    </>
-  );
-};
-
-export default RecommendedSectionTexts;
-
-import React from 'react';
-import { Text } from 'react-native';
-import { t } from 'i18next';
-
-const AdvertiseScreenTexts = () => {
-  return (
-    <>
       <Text>{t('Post Your Ad')}</Text>
       <Text>{t('No subcategories found')}</Text>
       <Text>{t('Other Categories')}</Text>
-    </>
-  );
-};
-
-export default AdvertiseScreenTexts;
-
-import React from 'react';
-import { Text } from 'react-native';
-import { t } from 'i18next';
-
-const AdvertiseAllTexts = () => {
-  return (
-    <>
-      {/* Dynamic category name is passed as prop, but static prefix "All" can be extracted */}
       <Text>{t('All')}</Text>
       <Text>{t('Advertise')} {/* for logging or UI use if needed */}</Text>
-      {/* You might add more static strings here if any appear in UI */}
-    </>
-  );
-};
-
-export default AdvertiseAllTexts;
-
-import React from 'react';
-import { Text } from 'react-native';
-import { t } from 'i18next';
-
-const NotificationTexts = () => {
-  return (
-    <>
       <Text>{t('titleNotification')}</Text>          {/* Header title */}
       <Text>{t('No Notifications Found')}</Text>     {/* Empty list message */}
-    </>
-  );
-};
-
-export default NotificationTexts;
-
-import React from 'react';
-import { Text } from 'react-native';
-import { t } from 'i18next';
-
-const ChangePasswordTexts = () => {
-  return (
-    <>
       <Text>{t('changePasswordTitle')}</Text>            {/* "Change Password" */}
       <Text>{t('resetPassword')}</Text>                   {/* "Reset Password" */}
       <Text>{t('oldPasswordLabel')}</Text>                {/* "Old Password" */}
@@ -183,19 +97,6 @@ const ChangePasswordTexts = () => {
       <Text>{t('resetButton')}</Text>                      {/* "Reset" */}
       <Text>{t('passwordUpdated')}</Text>                  {/* Alert message on success */}
       <Text>{t('passwordMismatch')}</Text>                 {/* Alert message on mismatch */}
-    </>
-  );
-};
-
-export default ChangePasswordTexts;
-
-import React from 'react';
-import { Text } from 'react-native';
-import { t } from 'i18next';
-
-const ChatTexts = () => {
-  return (
-    <>
       <Text>{t('chatAboutProduct')}</Text>            {/* "About: {{productName}}" */}
       <Text>{t('chatTitle')}</Text>                   {/* "Message" */}
       <Text>{t('chatPlaceholder')}</Text>             {/* "Type a message..." */}
@@ -205,68 +106,16 @@ const ChatTexts = () => {
       <Text>{t('chatErrorSelectImageFailed')}</Text> {/* "Failed to select image. Please try again." */}
       <Text>{t('chatInterestedInProduct')}</Text>    {/* "I'm interested in: {{productName}}" */}
       <Text>{t('chatErrorLoadFailed')}</Text>        {/* "Failed to load messages. Please try again later." */}
-    </>
-  );
-};
-
-export default ChatTexts;
-
-
-import React from 'react';
-import { Text } from 'react-native';
-import { t } from 'i18next';
-
-const FavouriteScreenTexts = () => {
-  return (
-    <>
       <Text>{t('favourites')}</Text>       {/* "Favourites" - used in MainHeader title */}
       <Text>{t('noFavourites')}</Text>     {/* "No favourites found." - shown when empty */}
-    </>
-  );
-};
-
-export default FavouriteScreenTexts;
-
-import React from 'react';
-import { Text } from 'react-native';
-import { t } from 'i18next';
-
-const InboxScreenTexts = () => {
-  return (
-    <>
       <Text>{'Messages'}</Text>                     {/* MainHeader title */}
       <Text>{'Messages'}</Text>                     {/* Section header */}
       <Text>{'Start a conversation...'}</Text>      {/* Placeholder if no last message */}
       <Text>{'No text recieved yet'}</Text>         {/* Empty inbox fallback */}
-    </>
-  );
-};
-
-export default InboxScreenTexts;
-
-import React from 'react';
-import { Text } from 'react-native';
-import { t } from 'i18next';
-
-const NotificationTexts = () => {
-  return (
-    <>
       <Text>{t('titleNotification')}</Text>              {/* Header title */}
       <Text>{item.title}</Text>                          {/* Notification title */}
       <Text>{item.message}</Text>                        {/* Notification message */}
       <Text>{t('No Notifications Found')}</Text>         {/* Empty list message */}
-    </>
-  );
-};
-
-export default NotificationTexts;
-
-import React from 'react';
-import { Text } from 'react-native';
-
-const OTPScreenTexts = () => {
-  return (
-    <>
       <Text>Email Verification</Text>                 {/* Header title */}
       <Text>Souqna</Text>                             {/* App Name */}
       <Text>Enter the code sent to your email</Text>  {/* Instructional text */}
@@ -276,21 +125,8 @@ const OTPScreenTexts = () => {
       <Text>Resend Code ({countdown} sec)</Text>      {/* Countdown format */}
       <Text>Close</Text>                              {/* Snackbar action */}
       <Text>{snackbarMessage}</Text>                  {/* Snackbar message */}
-    </>
-  );
-};
-
-export default OTPScreenTexts;
-
-import React from 'react';
-import { Text } from 'react-native';
-
-const PlansScreenTexts = () => {
-  return (
-    <>
       <Text>Choose Your Plan</Text>                         {/* Main header */}
-      <Text>Find the perfect plan for your selling needs</Text>  {/* Subheader */}
-      
+      <Text>Find the perfect plan for your selling needs</Text>  {/* Subheader */} 
       {/* Personal Seller Plan */}
       <Text>Personal Seller</Text>
       <Text>Free </Text>
@@ -301,7 +137,6 @@ const PlansScreenTexts = () => {
       <Text>🔹 Support: Basic Email Support</Text>
       <Text>Ideal for individuals with occasional selling needs</Text>
       <Text>Choose Plan</Text>
-
       {/* Starter Plan */}
       <Text>Starter Plan</Text>
       <Text>$5/month</Text>
@@ -313,7 +148,6 @@ const PlansScreenTexts = () => {
       <Text>🔸 Branding: Not included</Text>
       <Text>🔸 Employee Sub-accounts: 1</Text>
       <Text>Get Started</Text>
-
       {/* Premium Plan */}
       <Text>Premium Plan</Text>
       <Text>$15/month</Text>
@@ -325,76 +159,127 @@ const PlansScreenTexts = () => {
       <Text>🔸 Branding: Included</Text>
       <Text>🔸 Employee Sub-accounts: Unlimited</Text>
       <Text>Get Started</Text>
-    </>
-  );
-};
-
-export default PlansScreenTexts;
-
-import React from 'react';
-import { Text } from 'react-native';
-
-const CustomDropdownTexts = () => {
-  return (
-    <>
       <Text>Select an option</Text>  {/* Placeholder */}
       <Text>▼</Text>                 {/* Dropdown icon */}
       <Text>▲</Text>                 {/* Dropdown icon (if expanded) */}
       <Text>Dropdown Option</Text>   {/* Option text */}
-    </>
-  );
-};
-
-export default CustomDropdownTexts;
-
-
-import React from 'react';
-import { Text } from 'react-native';
-
-const CategoryFieldsTexts = () => {
-  return (
-    <>
       <Text>Click here for Additional Information ▲</Text>  {/* Toggle button (collapsed) */}
       <Text>Click here for Additional Information ▼</Text>  {/* Toggle button (collapsed) */}
       <Text>▲ Close Additional Info</Text>                 {/* Collapse button */}
-
       {/* These appear dynamically based on fields passed in */}
       <Text>Field Label</Text>                             {/* e.g., dynamic: field.label */}
       <Text>*</Text>                                       {/* Required marker */}
       <Text>Enter {`field.label.toLowerCase()`}</Text>     {/* Placeholder for text input */}
       <Text>Select {`field.label.toLowerCase()`}</Text>    {/* Placeholder for dropdown */}
       <Text>Option</Text>                                  {/* Option value for dropdown or radio */}
-    </>
-  );
-};
-
-export default CategoryFieldsTexts;
-
-
-import React from 'react';
-import { Text } from 'react-native';
-
-const ProductDetailTexts = ({
-  product,
-  snackbarMessage,
-  likedItems,
-}) => {
-  return (
-    <>
+      {/* Header */}
+      <Text>{t('Post Your Ad')}</Text>                            {/* Header title */}
+      {/* Category Section */}
+      <Text>{t('category')}</Text>                                {/* Section title */}
+      <Text>{category}</Text>                                     {/* Dynamic category name */}
+      <Text>{name}</Text>                                         {/* Dynamic subcategory name */}
+      <Text>{t('change')}</Text>                                   {/* Change category link */}
+      {/* Image Upload Section */}
+      <Text>{t('addImages')}</Text>                                {/* Button when no images */}
+      <Text>{t('uploadImage')}</Text>                              {/* Upload icon label */}
+      <Text>✕</Text>                                               {/* Remove image icon */}
+      <Text>{t('coverNote')}</Text>                                {/* Upload note */}
+      {/* Name Section */}
+      <Text>{t('name')}</Text>                                     {/* Field label */}
+      <Text>*</Text>                                              {/* Required field */}
+      <Text>{t('namePlaceholder')}</Text>                          {/* Placeholder */}
+      {/* Description Section */}
+      <Text>{t('description')}</Text>                              {/* Field label */}
+      <Text>*</Text>
+      <Text>{t('descriptionPlaceholder')}</Text>                   {/* Placeholder */}
+      {/* Location Section */}
+      <Text>{t('location')}</Text>                                 {/* Field label */}
+      <Text>*</Text>
+      {/* Price Section */}
+      <Text>{t('price')}</Text>                                    {/* Field label */}
+      <Text>*</Text>
+      <Text>{t('pricePlaceholder')}</Text>                         {/* Placeholder */}
+      {/* Contact Info Section */}
+      <Text>{t('Contact Info')}</Text>                             {/* Field label */}
+      <Text>{t('Contact Info')}</Text>                             {/* Placeholder */}
+      {/* Negotiable Section */}
+      <Text>{t('Negotiable')}</Text>                               {/* Section title */}
+      <Text>*</Text>
+      <Text>{t('Yes')}</Text>                                      {/* Radio option */}
+      <Text>{t('No')}</Text>                                       {/* Radio option */}
+      {/* Discount Section */}
+      <Text>{t('discount')}</Text>
+      <Text>*</Text>
+      <Text>{t('discountPlaceholder')}</Text>
+      {/* Special Offer Section */}
+      <Text>{t('specialOffer')}</Text>
+      <Text>{t('specialOfferPlaceholder')}</Text>
+      {/* Stock Section */}
+      <Text>{t('availableStock')}</Text>
+      <Text>*</Text>
+      <Text>{t('stockPlaceholder')}</Text>
+      {/* Submit Button */}
+      <Text>{t('submitting')}</Text>                               {/* Loading state */}
+      <Text>{t('Submit Ad')}</Text>                                {/* Submit label */}
+      <Text>{t('Submit Ad')}</Text>                                {/* Static fallback text */}
+      {/* Snackbar message */}
+      <Text>{snackbarMessage}</Text>                               {/* Snackbar */}
+      {/* Header */}
+      <Text>{t('Update Product')}</Text>                             {/* Header title */}
+      {/* Category Section */}
+      <Text>{t('category')}</Text>                                   {/* Section title */}
+      <Text>{category}</Text>                                       {/* Dynamic category name */}
+      <Text>{name}</Text>                                           {/* Dynamic subcategory name */}
+      <Text>{t('change')}</Text>                                     {/* Change category */}
+      {/* Image Upload Section */}
+      <Text>{t('addImages')}</Text>                                  {/* Button when no images */}
+      <Text>{t('uploadImage')}</Text>                                {/* Upload icon label */}
+      <Text>✕</Text>                                                {/* Remove image icon */}
+      <Text>{t('coverNote')}</Text>                                  {/* Upload note */}
+      {/* Name Section */}
+      <Text>{t('Ad Name')}</Text>                                    {/* Field label */}
+      <Text>*</Text>                                               {/* Required field */}
+      <Text>{t('namePlaceholder')}</Text>                            {/* Placeholder */}
+      {/* Description Section */}
+      <Text>{t('description')}</Text>                                {/* Field label */}
+      <Text>*</Text>                                               {/* Required field */}
+      <Text>{t('descriptionPlaceholder')}</Text>                     {/* Placeholder */}
+      {/* Location Section */}
+      <Text>{t('location')}</Text>                                   {/* Field label */}
+      <Text>*</Text>
+      {/* Price Section */}
+      <Text>{t('price')}</Text>                                      {/* Field label */}
+      <Text>*</Text>
+      <Text>{t('pricePlaceholder')}</Text>                           {/* Placeholder */}
+      {/* Discount Section */}
+      <Text>{t('discount')}</Text>
+      <Text>{t('discountPlaceholder')}</Text>
+      {/* Special Offer Section */}
+      <Text>{t('specialOffer')}</Text>
+      <Text>{t('specialOfferPlaceholder')}</Text>
+      {/* Contact Info Section */}
+      <Text>{t('Contact Info')}</Text>                               {/* Field label */}
+      <Text>{t('Enter Contact')}</Text>                              {/* Placeholder */}
+      {/* Custom Fields Section */}
+      <Text>{t('Custom Fields')}</Text>
+      <Text>{t('enterValue')}</Text>
+      <Text>{t('Custom fields are not available')}</Text>
+      {/* Submit Button */}
+      <Text>{t('submitting')}</Text>                                 {/* Loading state */}
+      <Text>{t('Update Product')}</Text>                             {/* Button label */}
+      {/* Snackbar */}
+      <Text>{snackbarMessage}</Text>
       {/* Buttons and labels */}
       <Text>{t('Confirm Delete')}</Text>
       <Text>{t('Are you sure you want to delete this product?')}</Text>
       <Text>{t('Cancel')}</Text>
       <Text>{t('Delete')}</Text>
-
       {/* Location modal */}
       <Text>{t('Product Location')}</Text>
       <Text>{t('View on Map')}</Text>
-
       {/* Buttons in Snackbar */}
       <Text>{t('View Cart')}</Text>
       <Text>{t('Product added to cart!')}</Text>
-
       {/* Labels and Headers */}
       <Text>{t('Details')}</Text>
       <Text>{t('Description')}</Text>
@@ -403,7 +288,6 @@ const ProductDetailTexts = ({
       <Text>{t('Show-ID')}</Text>
       <Text>{t('Used')}</Text>
       <Text>{t('New')}</Text>
-
       {/* Dynamic text placeholders */}
       <Text>{product?.name}</Text>
       <Text>{product?.price}</Text>
@@ -412,124 +296,44 @@ const ProductDetailTexts = ({
       <Text>{product?.id}</Text>
       <Text>{snackbarMessage}</Text>
       <Text>{likedItems && Object.keys(likedItems).length > 0 ? 'Liked' : 'Not Liked'}</Text>
-    </>
-  );
-};
-
-export default ProductDetailTexts;
-
-import React from 'react';
-import { Text } from 'react-native';
-
-// This component centralizes all user-visible texts from the Products screen,
-// including placeholders for dynamic values like `name` and currency symbols.
-// It can be used for localization, translation, or easier text management.
-
-const ProductsTexts = ({ name, productName, currencySymbol, price, noListingsText }) => {
-  return (
-    <>
       {/* Header Title (dynamic from route params) */}
       <Text>{name}</Text>
-
       {/* Loading Indicator accessibility or labels (if any) */}
       <Text>Loading...</Text> {/* Implied by ActivityIndicator */}
-
-      {/* No Listings Section */}
       <Text>No Listings Right Now</Text>
-
-      {/* Product Item details */}
       <Text>{productName /* dynamic product name */}</Text>
       <Text>
         {currencySymbol /* dynamic currency symbol */} {price /* dynamic product price */}
       </Text>
-
-      {/* Heart (favorite) accessibility label or alternative text */}
       <Text>Remove from favorites</Text>
       <Text>Add to favorites</Text>
-
-      {/* Empty image alt text (if needed) */}
       <Text>Empty listings image</Text>
-
-      {/* General UI literals (not explicit in your snippet but common) */}
       <Text>Back</Text>
-    </>
-  );
-};
-
-export default ProductsTexts;
-
-import React from 'react';
-import { Text } from 'react-native';
-
-const ProfileTexts = ({
-  verificationStatus, // number or null
-  language, // 'en' or 'ar'
-}) => {
-  return (
-    <>
-      {/* General Section Title */}
       <Text>general</Text>
-
-      {/* Menu Items */}
       <Text>myAccount</Text>
-
-      {/* Verification menu text conditional on verificationStatus */}
       {verificationStatus === 2 ? (
         <Text>updateProfile</Text>
       ) : (
         <Text>getVerified</Text>
       )}
-
       <Text>changePassword</Text>
-
-      {/* Language toggle text based on current language */}
       {language === 'en' ? (
         <Text>switchToArabic</Text>
       ) : (
         <Text>switchToEnglish</Text>
       )}
-
-      {/* Hardcoded text literals */}
       <Text>Subscription Plans</Text>
-
-      {/* Language toggle Alert titles and messages */}
       <Text>تم التغيير</Text> {/* Arabic: 'Changed' */}
       <Text>Language Changed</Text>
       <Text>سيتم إعادة تشغيل التطبيق لتطبيق اللغة العربية.</Text> {/* Arabic: 'App will reload to apply Arabic' */}
       <Text>App will reload to apply English language.</Text>
       <Text>موافق</Text> {/* Arabic: 'OK' */}
       <Text>OK</Text>
-
-      {/* Logging / console messages if needed */}
       <Text>Verification API error:</Text>
       <Text>Profile Refreshed</Text>
       <Text>Language toggle error:</Text>
-    </>
-  );
-};
-
-export default ProfileTexts;
-
-import React from 'react';
-import { Text } from 'react-native';
-
-const SearchScreenTexts = ({
-  snackbarMessage = '<snackbarMessage>',
-  productName = '<product.name>',
-  productId = '<product.id>',
-  searchText = '<searchText>',
-  verificationStatus = '<verificationStatus>',
-  role = '<role>',
-}) => {
-  return (
-    <>
-      {/* Snackbar action label */}
       <Text>OK</Text>
-
-      {/* Snackbar dynamic message */}
       <Text>{snackbarMessage}</Text>
-
-      {/* Log messages */}
       <Text>Verification API error:</Text>
       <Text>API verification status in search: {'<apiStatus>'}</Text>
       <Text>Unauthenticated: setting Unverified status</Text>
@@ -538,316 +342,196 @@ const SearchScreenTexts = ({
       <Text>Removed from favorites: {productName}</Text>
       <Text>Added to favorites: {productName}</Text>
       <Text>Log in as buyer</Text>
-
-      {/* Button labels or navigations */}
       <Text>Verification</Text> {/* Navigation target */}
       <Text>SearchResultsScreen</Text> {/* Navigation target */}
       <Text>ProductDetail</Text> {/* Navigation target */}
       <Text>Map</Text> {/* Navigation target */}
-
-      {/* Placeholder for search input */}
       <Text>{searchText}</Text>
-
-      {/* Comments about UI or components */}
-      {/* Map */}
-      {/* Show Location Icon: false */}
-
-      {/* Modal buttons */}
       <Text>Verify Profile</Text> {/* handleVerifyProfile */}
       <Text>Skip Verification</Text> {/* handleSkipVerification */}
-
-      {/* Other UI labels that may be rendered */}
       <Text>Loading...</Text>
       <Text>Refreshing...</Text>
-
-      {/* Dynamic status */}
       <Text>Verification Status: {verificationStatus}</Text>
       <Text>Role: {role}</Text>
-    </>
-  );
-};
-
-export default SearchScreenTexts;
-
-import React from 'react';
-import { Text } from 'react-native';
-
-const AllCategoriesTexts = () => {
-  return (
-    <>
-      {/* Translation keys */}
       <Text>{'<t("titleCategories")>'}</Text>
       <Text>{'<t("otherCategories")>'}</Text>
-
-      {/* Static visible text */}
       <Text>O{/* prefix before {t('otherCategories')} in the original */}</Text>
-
-      {/* Log messages */}
       <Text>Category {'<category.name>'} clicked</Text>
-
-      {/* UI labels */}
       <Text>Other Categories</Text>
       <Text>Category List</Text>
-    </>
-  );
-};
-
-export default AllCategoriesTexts;
-
-import React from 'react';
-import { Text } from 'react-native';
-
-const SearchResultsScreenTexts = () => {
-  return (
-    <>
-      {/* Header titles */}
       <Text>{'<t("Search")>'}</Text>
-
-      {/* Empty state messages */}
       <Text>{'<searchText ? t("No matching products found.") : t("Start Searching...")>'}</Text>
-
-      {/* Loader accessibility label or messages (if needed) */}
       <Text>{'<t("Loading...")>'}</Text>
-
-      {/* Search bar placeholder or button text if any (none in current code) */}
-
-      {/* Console/log placeholders */}
       <Text>Searching for: {'<query>'}</Text>
       <Text>API product response: {'<response>'}</Text>
       <Text>No products received or invalid format: {'<response>'}</Text>
       <Text>Error loading products: {'<err>'}</Text>
-    </>
-  );
-};
-
-export default SearchResultsScreenTexts;
-
-import React from 'react';
-import { Text } from 'react-native';
-
-const MyAccountTexts = () => {
-  return (
-    <>
-      {/* Header titles */}
       <Text>{'<t("My Account")>'}</Text>
-
-      {/* Section Titles */}
       <Text>{'<t("Personal Info")>'}</Text>
       <Text>{'<t("Contact Info")>'}</Text>
-
-      {/* Field Labels */}
       <Text>{'<t("Your name")>'}</Text>
       <Text>{'<t("Occupation")>'}</Text>
       <Text>{'<t("Address")>'}</Text>
       <Text>{'<t("Seller")>'}</Text>
       <Text>{'<t("Phone number")>'}</Text>
       <Text>{'<t("Email")>'}</Text>
-
-      {/* Button texts */}
       <Text>{'<t("Cancel")>'}</Text>
       <Text>{'<t("Save")>'}</Text>
       <Text>{'<t("Edit Profile")>'}</Text>
-
-      {/* Dynamic values placeholders */}
       <Text>{'<editedData.name>'}</Text>
       <Text>{'<editedData.occupation>'}</Text>
       <Text>{'<editedData.address>'}</Text>
       <Text>{'<editedData.phone>'}</Text>
       <Text>{'<editedData.email>'}</Text>
       <Text>{'<editedData.isMember ? "On" : "Off">'}</Text>
-    </>
-  );
-};
-
-export default MyAccountTexts;
-
-import React from 'react';
-import { Text } from 'react-native';
-
-const SubCategoryScreenTexts = () => {
-  return (
-    <>
-      {/* Dynamic title passed as prop */}
       <Text>{'<category>'}</Text>
-
-      {/* Header text with translation and dynamic category */}
       <Text>
-        {/* t('subcategoryScreen.allIn') */}
         {'<t("subcategoryScreen.allIn")>'} {'<category>'}
       </Text>
-
-      {/* Subcategory item placeholder */}
       <Text>{'<subcategory name>'}</Text>
-    </>
-  );
-};
-
-export default SubCategoryScreenTexts;
-
-import React from 'react';
-import { Text } from 'react-native';
-
-const SubCategoryMainTexts = () => {
-  return (
-    <>
-      {/* Dynamic category title */}
       <Text>{'<category>'}</Text>
-
-      {/* Header text with dynamic category */}
       <Text>{'All '} {'<category>'}</Text>
-
-      {/* Subcategory item name placeholder */}
       <Text>{'<subcategory.name>'}</Text>
-    </>
-  );
-};
-
-export default SubCategoryMainTexts;
-
-import React from 'react';
-import { Text } from 'react-native';
-
-const CategoryTexts = () => {
-  return (
-    <>
-      {/* MainHeader title */}
-      <Text>{'Update Category'}</Text> 
-      {/* from translation: t('Update Category') */}
-
-      {/* Category item name placeholder */}
+<Text>{'Update Category'}</Text> 
       <Text>{'<category.name>'}</Text>
-
-      {/* Loading state aria-label / accessibility text could be added here if needed */}
       <Text>{'Loading...'}</Text>
-
-      {/* Warning text for no subcategories - used in console.warn */}
       <Text>{'No subcategories found'}</Text>
-
-      {/* Error messages - typically shown in console.error */}
       <Text>{'Error fetching categories: <error.message>'}</Text>
       <Text>{'Error fetching subcategories: <error.message>'}</Text>
-    </>
-  );
-};
-
-export default CategoryTexts;
-
-import React from 'react';
-import { Text } from 'react-native';
-
-const SubCategoryTexts = () => {
-  return (
-    <>
-      {/* CategoryHeader title (dynamic) */}
       <Text>{'<category>'}</Text>
-
-      {/* Header text with dynamic category */}
       <Text>{'In All <category>'}</Text>
-
-      {/* Subcategory item name placeholder */}
       <Text>{'<subcategory.name>'}</Text>
-    </>
-  );
-};
-
-export default SubCategoryTexts;
-
-
-
-
-import React from 'react';
-import { View, Text } from 'react-native';
-
-const AboutTexts = () => {
-  return (
-    <View>
-      {/* Screen Title */}
-      <Text>About Souqna</Text>
-
-      {/* Menu items */}
-      <Text>Imprint</Text>
+  <Text>Help</Text>
+      <Text>Souqna</Text>
+      <Text>E-Mail</Text>
+      <Text>Password</Text>
+      <Text>Login</Text>
+      <Text>Don’t have an account? </Text>
+      <Text>{'Register'}</Text>
+      <Text>{'<snackbarMessage or t(...)>'}</Text>
+      <Text>Please enter a valid email.</Text>
+      <Text>Password must be at least 8 characters.</Text>
+      <Text>Buyer logged in successfully</Text>
+      <Text>Seller logged in successfully</Text>
+      <Text>Invalid email or password</Text>
+      <Text>Choose Role</Text>
+      <Text>Do you want to login as a Buyer or Seller?</Text>
+      <Text>Login as Buyer</Text>
+      <Text>Login as Seller</Text>
+<Text>Help</Text>
+      <Text>Souqna</Text>
+      <Text>How do you want to use Souqna?</Text>
+      <Text>Seller</Text>
+      <Text>Buyer</Text>
+      <Text>Both</Text>
+      <Text>Private</Text>
+      <Text>Company</Text>
+      <Text>Name</Text>
+      <Text>E-Mail</Text>
+      <Text>Password</Text>
+      <Text>
+        Yes, I look forward to receiving regular email updates from the group of companies - you can unsubscribe at any time.
+      </Text>
+      <Text>Register For Free</Text>
+      <Text>Our </Text>
+      <Text>Terms of Use</Text>
+      <Text> apply. You can find information about the processing of your data in our </Text>
+      <Text>Privacy Policy</Text>
+      <Text>.</Text>
+      <Text>{'<t("Please enter your name.")>'}</Text>
+      <Text>{'<t("Please enter a valid email.")>'}</Text>
+      <Text>{'<t("Password must be at least 8 characters.")>'}</Text>
+      <Text>{'<t("Please select a seller type.")>'}</Text>
+      <Text>{'<t("Please select a role.")>'}</Text>
+      <Text>{'<t(data.message || "Registration successful! Please login.")>'}</Text>
+      <Text>{'<t(data.message || "Registration failed. Please try again.")>'}</Text>
+      <Text>{'<t(error?.response?.data?.message || "An error occurred during registration. Please try again.")>'}</Text>
+      <Text>{'<snackbarMessage>'}</Text>
+   <Text>Verification</Text>
+      <Text>Success</Text>
+      <Text>Verification completed!</Text>
+      <Text>Your document is still Pending</Text>
+      <Text>Close</Text>
+      <Text>Full Name</Text> {/* t('fullName') */}
+      <Text>Enter Full Name</Text> {/* t('enterFullName') */}
+      <Text>Date of Birth</Text> {/* t('dateOfBirth') */}
+      <Text>Enter DOB</Text> {/* t('enterDOB') */}
+      <Text>Gender</Text> {/* t('gender') */}
+      <Text>Male</Text> {/* t('male') */}
+      <Text>Female</Text> {/* t('female') */}
+      <Text>Other</Text> {/* t('other') */}
+      <Text>Country</Text> {/* static */}
+      <Text>Select Country</Text> {/* placeholder for DropDownPicker */}
+      <Text>Address</Text> {/* t('address') */}
+      <Text>Enter Address</Text> {/* placeholder */}
+      <Text>ID Type</Text> {/* static */}
+      <Text>Cnic</Text> {/* static */}
+      <Text>Driving License</Text> {/* static */}
+      <Text>ID Number</Text> {/* static */}
+      <Text>Enter ID Number</Text> {/* placeholder */}
+      <Text>Issue Date</Text> {/* t('issueDate') */}
+      <Text>Enter Issue Date</Text> {/* t('enterIssueDate') */}
+      <Text>Exp Date</Text> 
+      <Text>Enter Exp Date</Text> 
+      <Text>Upload Front ID</Text> 
+      <Text>Upload Back ID</Text> 
+      <Text>Upload Selfie</Text> 
+      <Text>Update Verification</Text> 
+      <Text>Submit Verification</Text> 
+      <Text>Verification failed.</Text>
+      <Text>{'{product.name}'}</Text> 
+      <Text>{'{snackbarMessage}'}</Text> 
+<Text>Checkout</Text>
+      <Text>Delivery Details</Text>
+      <Text>Full Name</Text>
+      <Text>Phone Number</Text>
+      <Text>Street Address</Text>
+      <Text>City</Text>
+      <Text>Select a region</Text> 
+      <Text>Postal Code</Text>
+      <Text>Notes (optional)</Text>
+      <Text>Payment Method</Text>
+      <Text>Select a method</Text>
+      <Text>Cash on Delivery</Text>
+      <Text>Stripe</Text>
+      <Text>Riyadh</Text>
+      <Text>Makkah</Text>
+      <Text>Madinah</Text>
+      <Text>Eastern Province</Text>
+      <Text>Asir</Text>
+      <Text>Tabuk</Text>
+      <Text>Hail</Text>
+      <Text>Northern Borders</Text>
+      <Text>Jazan</Text>
+      <Text>Najran</Text>
+      <Text>Al-Bahah</Text>
+      <Text>Al-Jawf</Text>
+      <Text>Al-Qassim</Text>
+      <Text>Processing...</Text>
+      <Text>Confirm Order</Text>
+      <Text>Please fill in all required fields.</Text>
+      <Text>Close</Text>
+      <Text>{'{snackbarMsg}'}</Text>
+      <Text>{'{loading ? "Processing..." : "Confirm Order"}'}</Text> 
+ <Text>About Souqna</Text>
+<Text>Imprint</Text>
       <Text>Career Page</Text>
-
-      {/* Placeholders for dynamic variables if any */}
-      {/* None in this file */}
-    </View>
-  );
-};
-
-export default AboutTexts;
-
-import React from 'react';
-import { View, Text } from 'react-native';
-
-const DataTexts = () => {
-  return (
-    <View>
-      {/* Screen Title */}
-      <Text>Data</Text>
-
-      {/* Menu items */}
+<Text>Data</Text>
       <Text>Privacy settings, measurement & analysis</Text>
       <Text>Privacy Policy</Text>
       <Text>Terms of use</Text>
-
-      {/* Placeholders for dynamic variables if any */}
-      {/* None in this file */}
-    </View>
-  );
-};
-
-export default DataTexts;
-
-import React from 'react';
-import { View, Text } from 'react-native';
-
-const DesignTexts = () => {
-  return (
-    <View>
-      {/* Screen Title */}
-      <Text>Design</Text>
-
-      {/* Description */}
-      <Text>
+ <Text>Design</Text>
+     <Text>
         The dark design protects your battery and saves a lot of energy. Good
         for you, good for the environment.
       </Text>
-
-      {/* Menu Options */}
       <Text>System Default</Text>
       <Text>Dark Design</Text>
       <Text>Light Design</Text>
-
-      {/* Placeholders for dynamic variables if any */}
-      {/* None in this file */}
-    </View>
-  );
-};
-
-export default DesignTexts;
-
-import React from 'react';
-import { View, Text } from 'react-native';
-
-const HelpTexts = () => {
-  return (
-    <View>
-      {/* Screen Title */}
-      <Text>Help and Feedback</Text>
-
-      {/* Menu Items */}
+ <Text>Help and Feedback</Text>
       <Text>Help Area</Text>
       <Text>Report a Problem</Text>
       <Text>Give us Feedback</Text>
-
-      {/* Placeholders for dynamic variables if any */}
-      {/* None in this file */}
-    </View>
-  );
-};
-
-export default HelpTexts;
-
 
 
 

@@ -59,7 +59,7 @@ const ProductFooter = ({
           key: 'chat',
           onPress: onChatPress,
           loading: loadingChat,
-          text: 'Chat with Seller',
+          text: t('chatWithSeller'),
           Icon: ChatSVG2,
           // bgcolor:colors.lightgreen
         },
@@ -67,7 +67,7 @@ const ProductFooter = ({
           key: 'call',
           onPress: handleCallPress,
           loading: loadingCall,
-          text: 'Call Seller',
+          text: t('callSeller'),
           Icon: CallSVG,
           // bgcolor:colors.lightgreen
         },
@@ -79,7 +79,7 @@ const ProductFooter = ({
         key: 'update',
         onPress: handleUpdatePress,
         loading: loadingUpdate,
-        text: 'Update Product',
+        text: t('updateProduct'),
         Icon: UpdateSVG,
         // textclr:colors.black,
         // bgcolor:colors.lightorange
@@ -88,7 +88,7 @@ const ProductFooter = ({
         key: 'delete',
         onPress: handleDeletePress,
         loading: loadingDelete,
-        text: 'Delete Product',
+        text: t('deleteProduct'),
         Icon: TrashSVG,
         // textclr:'rgba(240, 149, 3, 0.92)',
         // bgcolor:colors.red

@@ -30,15 +30,15 @@ const DeleteModal = ({visible, onClose}) => {
           </View>
 
           <Text style={styles.text}>
-            The Account will be deleted permanently.
+            {t('accountWillBeDeleted')}
           </Text>
           <Text style={styles.text2}>
-            Are you sure you want to delete your account?
+            {t('confirmDeleteAccount')}
           </Text>
 
           <View style={{marginTop: 10, width: '100%', alignSelf: 'center'}}>
             <TouchableOpacity style={styles.redButton} onPress={onClose}>
-              <Text style={styles.buttonText}>Delete Account</Text>
+              <Text style={styles.buttonText}>{t('deleteAccount')}</Text>
             </TouchableOpacity>
           </View>
         </View>

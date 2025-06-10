@@ -69,7 +69,7 @@ const PaymentModal = ({visible, onClose, onSelectPaymentMethod}) => {
           <TouchableOpacity onPress={onClose} style={styles.closeButton}>
             <CloseSvg />
           </TouchableOpacity>
-          <Text style={styles.title}>Select Payment Method</Text>
+          <Text style={styles.title}>{t('selectPaymentMethod')}</Text>
 
           <View style={styles.content}>
             <TouchableOpacity
@@ -83,7 +83,7 @@ const PaymentModal = ({visible, onClose, onSelectPaymentMethod}) => {
                 color={colors.green}
                 status={selectedMethod === 'CARD' ? 'checked' : 'unchecked'}
               />
-              <Text style={styles.label}>Stripe</Text>
+              <Text style={styles.label}>{t('stripe')}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -97,13 +97,13 @@ const PaymentModal = ({visible, onClose, onSelectPaymentMethod}) => {
                 color={colors.green}
                 status={selectedMethod === 'COD' ? 'checked' : 'unchecked'}
               />
-              <Text style={styles.label}>Cash on Delivery</Text>
+              <Text style={styles.label}>{t('cashOnDelivery')}</Text>
             </TouchableOpacity>
           </View>
 
           <TouchableOpacity onPress={handleOrderSubmit} style={styles.button}>
             <Text style={styles.buttonText}>
-              {loading ? 'Processing...' : 'Confirm'}
+              {loading ? t('processing') : t('confirm')}
             </Text>
           </TouchableOpacity>
         </View>
