@@ -114,7 +114,8 @@ const MyTabs = () => {
   };
 
   const getIconComponent = React.useCallback((routeName, focused) => {
-    const activeColor = 'rgba(70, 80, 45, 1)';
+    // const activeColor = 'rgba(70, 80, 45, 1)';
+    const activeColor = colors.green;
     const inactiveColor = colors.grey;
     const color = focused ? activeColor : inactiveColor;
 
