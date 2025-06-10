@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {useEffect, useState} from 'react';
-import {View, Dimensions, ScrollView, Text, Alert} from 'react-native';
+import {View, Dimensions, ScrollView, Text, Alert, TouchableOpacity} from 'react-native';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import Bold from '../../../typography/BoldText';
 import Regular from '../../../typography/RegularText';
@@ -33,6 +33,7 @@ import Loader from '../../../components/Loader';
 import {addItem} from '../../../redux/slices/cartSlice';
 import {getOrCreateConversation} from '../../../firebase/chatService';
 import DetailsTable from '../../../components/Structure/Details/DetailsTable';
+import LocationMapModal from '../../../components/Modals/LocationMapModal';
 
 const {height} = Dimensions.get('window');
 
@@ -58,6 +59,7 @@ const ProductDetail = () => {
   const navigation = useNavigation();
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [isLocationModal, setLocationModal] = useState(false);
 
   useEffect(() => {
     if (!productId) {
@@ -315,6 +317,14 @@ const ProductDetail = () => {
     }
   };
 
+   const handleLocationPress = () => {
+    setLocationModal(true);
+    
+  };
+  
+  // console.log('{product latitude}',product.lat);
+  // console.log('{product longitude}',product.long);
+
   return (
     <SafeAreaView style={styles.container}>
       {loading || !product ? (
@@ -355,11 +365,20 @@ const ProductDetail = () => {
                     height={mvs(20)}
                     fill={colors.red1}
                   />
-                  <Regular style={styles.productLocation}>
+                  {/* <Regular style={styles.productLocation}>
                     <Regular>{product.location}</Regular>
                     {/* {product.location} */}
-                  </Regular>
+                  {/* </Regular> */} 
+                  <TouchableOpacity style={styles.productLocation}
+                   onPress={()=>handleLocationPress()}
+    //                onPress={()=>
+    // console.log('{modal triggered sucessfully}')}
+                   >
+                    <Text style={{color:'blue',textDecorationLine:'underline'}}>View on Map</Text>
+                    {/* {product.location} */}
+                  </TouchableOpacity>
                 </View>
+                
               }
             </View>
             {/* <ProductMenu
@@ -427,12 +446,20 @@ const ProductDetail = () => {
             onChatPress={handleChatPress}
             handleUpdatePress={handleUpdatePress}
             handleDeletePress={handleDeletePress}
-            sellerPhone={product?.contactInfo}
-            sellerId={product?.seller?.id} // Pass sellerId
-            productId={product.id}
+            sellerPhone="971501234567"
+            // customProductLink={customProductLink}
           />
 
           {isModalVisible && <AddModal onClose={onClose} />}
+          {isLocationModal &&
+           <LocationMapModal
+        visible={isLocationModal}
+        onClose={()=>setLocationModal(false)}
+        latitude={product.lat}
+        longitude={product.long}
+        title="Product Location"
+      />
+       } 
         </>
       )}
 
