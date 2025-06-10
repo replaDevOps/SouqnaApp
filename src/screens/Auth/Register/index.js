@@ -12,7 +12,6 @@ import {
   Image,
   ActivityIndicator,
 } from 'react-native';
-// import {useDispatch} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
 import Regular from '../../../typography/RegularText';
 import styles from './styles';
@@ -27,12 +26,14 @@ import {MyButton} from '../../../components/atoms/InputFields/MyButton';
 import API from '../../../api/apiServices';
 import {mvs} from '../../../util/metrices';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Snackbar} from 'react-native-paper';
 import {showSnackbar} from '../../../redux/slices/snackbarSlice';
+import {useDispatch} from 'react-redux';
+import {useTranslation} from 'react-i18next';
 
 // import {setRole} from '../../../redux/slices/userSlice';
 
 const Register = () => {
+  const dispatch = useDispatch();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [securePassword, setSecurePassword] = useState(true);
@@ -45,16 +46,17 @@ const Register = () => {
   const [isSubscribed, setIsSubscribed] = useState(false);
   const profileNameOpacity = useRef(new Animated.Value(0)).current;
   const [sellerType, setSellerType] = useState('');
-  const [snackbarVisible, setSnackbarVisible] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
+  // const [snackbarVisible, setSnackbarVisible] = useState(false);
+  // const [snackbarMessage, setSnackbarMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+
+  const {t} = useTranslation();
 
   // const showSnackbar = message => {
   //   setSnackbarMessage(message);
   //   setSnackbarVisible(true);
   // };
 
-  // const dispatch = useDispatch();
   const navigation = useNavigation();
 
   const handleRegister = async () => {
@@ -62,14 +64,14 @@ const Register = () => {
 
     if (!profilename.trim()) {
       dispatch(showSnackbar(t('Please enter your name.')));
-
+      console.log('Dispatch:', dispatch);
       // showSnackbar('Please enter your name.');
 
       return;
     }
     if (!isEmailValid(email)) {
       dispatch(showSnackbar(t('Please enter a valid email.')));
-
+      console.log('Dispatch:', dispatch);
       // showSnackbar('Please enter a valid email.');
       return;
     } else {
@@ -78,7 +80,7 @@ const Register = () => {
 
     if (!isPasswordValid(password)) {
       dispatch(showSnackbar(t('Password must be at least 8 characters.')));
-
+      console.log('Dispatch:', dispatch);
       // showSnackbar('Password must be at least 8 characters.');
       return;
     } else {
@@ -86,12 +88,13 @@ const Register = () => {
     }
     if ((isSeller || (isSeller && isBuyer)) && !sellerType) {
       dispatch(showSnackbar(t('Please select a seller type.')));
-
+      console.log('Dispatch:', dispatch);
       // showSnackbar('Please select a seller type.');
       return;
     }
     if (!isSeller && !isBuyer) {
       dispatch(showSnackbar(t('Please select a role.')));
+      console.log('Dispatch:', dispatch);
       // showSnackbar('Please select a role.');
       return;
     }

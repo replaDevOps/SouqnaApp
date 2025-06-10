@@ -330,12 +330,15 @@ const SearchScreen = () => {
 
       {isModalVisible && !token && <AddModal onClose={onClose} />}
 
-      <VerificationModal
-        visible={modalVisible}
-        onVerify={handleVerifyProfile}
-        onSkip={handleSkipVerification}
-        onClose={() => setModalVisible(false)}
-      />
+      {(role !== 3 || !token) && (
+        <VerificationModal
+          visible={modalVisible}
+          onVerify={handleVerifyProfile}
+          onSkip={handleSkipVerification}
+          onClose={() => setModalVisible(false)}
+        />
+      )}
+
       <Snackbar
         visible={snackbarVisible}
         onDismiss={() => setSnackbarVisible(false)}
