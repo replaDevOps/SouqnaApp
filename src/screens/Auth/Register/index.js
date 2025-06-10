@@ -136,7 +136,7 @@ const Register = () => {
       if (data?.success === true) {
         dispatch(
           showSnackbar(
-            t(data.message || 'Registration successful! Please login.'),
+            t(data.message || 'registrationSuccess'),
           ),
         );
         // showSnackbar(data.message || 'Registration successful! Please login.');
@@ -146,7 +146,7 @@ const Register = () => {
       } else {
         dispatch(
           showSnackbar(
-            t(data.message || 'Registration failed. Please try again.'),
+            t(data.message || 'registrationFailed'),
           ),
         );
         // showSnackbar(data.message || 'Registration failed. Please try again.');
@@ -160,7 +160,7 @@ const Register = () => {
         showSnackbar(
           t(
             error?.response?.data?.message ||
-              'An error occurred during registration. Please try again.',
+              'registrationError',
           ),
         ),
       );
@@ -215,7 +215,7 @@ const Register = () => {
         <Header
           showBackButton
           onBackPress={() => navigation.goBack()}
-          title={'Help'}
+          title={t('Help')}
         />
         <View style={styles.HeaderContainer}>
           <Image
@@ -224,12 +224,12 @@ const Register = () => {
           />
           <Bold style={styles.title}>Souqna</Bold>
         </View>
-        <Bold style={styles.howText}>How do you want to use Souqna?</Bold>
+        <Bold style={styles.howText}>{t('How do you want to use Souqna?')}</Bold>
         <RadioGroup
           options={[
-            {value: 'Seller', label: 'Seller'},
-            {value: 'Buyer', label: 'Buyer'},
-            {value: 'Both', label: 'Both'},
+            {value: 'Seller', label: t('seller')},
+            {value: 'Buyer', label: t('buyer')},
+            {value: 'Both', label: t('both')},
           ]}
           selectedOption={
             isSeller && isBuyer
@@ -258,8 +258,8 @@ const Register = () => {
           <View style={{marginTop: 16}}>
             <RadioGroup
               options={[
-                {value: 'Private', label: 'Private'},
-                {value: 'Company', label: 'Company'},
+                {value: 'Private', label: t('Private')},
+                {value: 'Company', label: t('Company')},
               ]}
               selectedOption={sellerType}
               onSelect={value => {
@@ -273,12 +273,12 @@ const Register = () => {
         <PrimaryPasswordInput
           value={profilename}
           onChangeText={setProfilename}
-          placeholder="Name"
+          placeholder={t('Name')}
         />
         <PrimaryPasswordInput
           value={email}
           onChangeText={setEmail}
-          placeholder="E-Mail"
+          placeholder={t('E-Mail')}
           error={emailError}
           clearText={handleClearEmail}
         />
@@ -286,7 +286,7 @@ const Register = () => {
           <PrimaryPasswordInput
             value={password}
             onChangeText={setPassword}
-            placeholder="Password"
+            placeholder={t('Password')}
             rightIcon={<EYESVG />}
             secureTextEntry={securePassword}
             error={passwordError}
@@ -300,8 +300,7 @@ const Register = () => {
             thumbColor={isSubscribed ? colors.white : '#f4f3f4'}
           />
           <Regular style={styles.switchText}>
-            Yes, I look forward to receiving regular email updates from the
-            group of companies - you can unsubscribe at any time.
+           {t('emailUpdates')}
           </Regular>
         </View>
         <View style={styles.buttonContainer}>
@@ -315,18 +314,17 @@ const Register = () => {
           </MyButton>
 
           <Regular style={styles.termsText}>
-            Our{' '}
+            {t('ourTermsApplyPart1')}{' '}
             <TouchableOpacity
               onPress={() => Linking.openURL('https://www.example.com/terms')}>
-              <Regular style={styles.termsLink}>Terms of Use</Regular>
+              <Regular style={styles.termsLink}>{t('ourTermsApplyPart3')}Terms of Use</Regular>
             </TouchableOpacity>{' '}
-            apply. You can find information about the processing of your data in
-            our{' '}
+            {t('ourTermsApplyPart2')}{' '}
             <TouchableOpacity
               onPress={() =>
                 Linking.openURL('https://www.example.com/privacy-policy')
               }>
-              <Regular style={styles.termsLink}>Privacy Policy</Regular>
+              <Regular style={styles.termsLink}>{t('ourTermsApplyPart4')}Privacy Policy</Regular>
             </TouchableOpacity>
             .
           </Regular>

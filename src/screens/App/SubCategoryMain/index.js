@@ -19,11 +19,6 @@ const SubCategoryMain = () => {
       id: subcategory.id,
       name: subcategory.name,
     });
-    // navigation.navigate('CreateProduct', {
-    //   categoryId: categoryId,
-    //   id: subcategory.id,
-    //   name: subcategory.name,
-    // });
   };
 
   const handleBack = () => {

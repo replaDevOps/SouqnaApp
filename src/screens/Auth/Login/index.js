@@ -56,7 +56,7 @@ const LoginScreen = () => {
 
   const handleLogin = async () => {
     if (!isEmailValid(email)) {
-      dispatch(showSnackbar(t('Please enter a valid email.')));
+      dispatch(showSnackbar(t('enterValidEmail')));
 
       // setSnackbarMessage('Please enter a valid email.');
       // setSnackbarVisible(true); // ✅ Show snackbar
@@ -66,7 +66,7 @@ const LoginScreen = () => {
     }
 
     if (!isPasswordValid(password)) {
-      dispatch(showSnackbar(t('Password must be at least 8 characters.')));
+      dispatch(showSnackbar(t('passwordMinLength')));
 
       // setSnackbarMessage('Password must be at least 8 characters.');
       // setSnackbarVisible(true); // ✅ Show snackbar
@@ -103,16 +103,16 @@ const LoginScreen = () => {
           dispatch(
             showSnackbar(
               user.role === 3
-                ? 'Buyer logged in successfully'
-                : 'Seller logged in successfully',
+                ? t('buyerLoginSuccess')
+                : t('sellerLoginSuccess'),
             ),
           );
         } else {
           dispatch(
             showSnackbar(
               user.role === 3
-                ? 'Buyer logged in successfully'
-                : 'Seller logged in successfully',
+                ? t('buyerLoginSuccess')
+                : t('sellerLoginSuccess'),
             ),
           );
 
@@ -125,7 +125,7 @@ const LoginScreen = () => {
           setTimeout(() => navigation.replace('MainTabs'));
         }
       } else {
-        dispatch(showSnackbar('Invalid email or password'));
+        dispatch(showSnackbar(t('invalidCredentials')));
         // setSnackbarMessage('Invalid email or password');
         // setSnackbarVisible(true); // ✅ Show snackbar
       }
@@ -137,7 +137,7 @@ const LoginScreen = () => {
     }
   };
 
-  const showErrorMessage = (customMessage = 'Invalid email or password') => {
+  const showErrorMessage = (customMessage = t('invalidCredentials')) => {
     if (Platform.OS === 'android') {
       ToastAndroid.show(customMessage, ToastAndroid.SHORT);
     } else {
@@ -169,7 +169,7 @@ const LoginScreen = () => {
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <View style={{flex: 1}}>
           <StatusBar barStyle="dark-content" />
-          <Header title={'Help'} />
+          <Header title={t('Help')} />
 
           <View style={styles.HeaderContainer}>
             <SouqnaLogo width={50} height={50} />
@@ -179,7 +179,7 @@ const LoginScreen = () => {
           <PrimaryPasswordInput
             value={email}
             onChangeText={setEmail}
-            placeholder="E-Mail"
+            placeholder={t('E-Mail')}
             error={emailError}
             clearText={handleClearEmail}
           />
@@ -188,7 +188,7 @@ const LoginScreen = () => {
             <PrimaryPasswordInput
               value={password}
               onChangeText={setPassword}
-              placeholder="Password"
+              placeholder={t('Password')}
               rightIcon={<EYESVG />}
               secureTextEntry={securePassword}
               error={passwordError}
@@ -200,7 +200,7 @@ const LoginScreen = () => {
                 loading ? (
                   <ActivityIndicator size="large" color={colors.green} />
                 ) : (
-                  'Login'
+                  t('Login')
                 )
               }
               onPress={handleLogin}
@@ -209,7 +209,7 @@ const LoginScreen = () => {
             <Regular style={styles.registerText}>
               Don’t have an account?{' '}
               <Regular style={styles.registerLink} onPress={navigateToRegister}>
-                Register
+                {t('Register')}
               </Regular>
             </Regular>
           </View>

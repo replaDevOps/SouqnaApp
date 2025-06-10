@@ -78,14 +78,14 @@ const ProductFooter = ({
         key: 'update',
         onPress: handleUpdatePress,
         loading: loadingUpdate,
-        text: 'Update Product',
+        text: t('updateProduct'),
         Icon: UpdateSVG,
       },
       {
         key: 'delete',
         onPress: handleDeletePress,
         loading: loadingDelete,
-        text: 'Delete Product',
+        text: t('deleteProduct'),
         Icon: TrashSVG,
       },
     );

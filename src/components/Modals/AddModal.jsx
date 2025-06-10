@@ -76,7 +76,7 @@ const AddModal = ({visible, onClose, title, message}) => {
               <CloseSvg width={mvs(24)} height={mvs(24)} />
             </TouchableOpacity>
             <TouchableOpacity onPress={openHelp}>
-              <Text style={styles.helpText}>Help</Text>
+              <Text style={styles.helpText}>{t('Help')}</Text>
             </TouchableOpacity>
           </View>
 
@@ -126,31 +126,30 @@ const AddModal = ({visible, onClose, title, message}) => {
             <TouchableOpacity
               style={styles.closeButton}
               onPress={handleRegister}>
-              <Regular style={styles.closeButtonText}>Register</Regular>
+              <Regular style={styles.closeButtonText}>{t('Register')}</Regular>
             </TouchableOpacity>
             <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-              <Regular style={styles.LoginButtonText}>Login</Regular>
+              <Regular style={styles.LoginButtonText}>{t('Login')}</Regular>
             </TouchableOpacity>
 
             <Text style={styles.termsText}>
-              Our{' '}
+              {t('ourTermsApplyPart1')}{' '}
               <TouchableOpacity
                 onPress={() =>
                   openUrl(
                     'https://themen.kleinanzeigen.de/nutzungsbedingungen/',
                   )
                 }>
-                <Text style={styles.termsLink}>Terms of Use</Text>
+                <Text style={styles.termsLink}> {t('ourTermsApplyPart3')}</Text>
               </TouchableOpacity>{' '}
-              apply. You can find information about the processing of your data
-              in our{' '}
+               {t('ourTermsApplyPart2')}{' '}
               <TouchableOpacity
                 onPress={() =>
                   openUrl(
                     'https://themen.kleinanzeigen.de/datenschutzerklaerung/',
                   )
                 }>
-                <Text style={styles.termsLink}>Privacy Policy</Text>
+                <Text style={styles.termsLink}> {t('ourTermsApplyPart4')}</Text>
               </TouchableOpacity>
               .
             </Text>

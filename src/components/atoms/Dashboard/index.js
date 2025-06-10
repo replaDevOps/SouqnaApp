@@ -13,6 +13,7 @@ import {colors} from '../../../util/color';
 import {useSelector} from 'react-redux';
 import API from '../../../api/apiServices';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useTranslation } from 'react-i18next';
 
 const ProductDashboard = () => {
   const [activeView, setActiveView] = useState('total'); // 'total' or 'monthly'
@@ -21,6 +22,7 @@ const ProductDashboard = () => {
   const [error, setError] = useState(null);
   const [categoryColorMap, setCategoryColorMap] = useState({});
 
+  const {t} = useTranslation();
   // Color palette for categories - we'll use this as our base palette
   const colorPalette = [
     // '#adbd6e', // base color
@@ -333,7 +335,7 @@ const ProductDashboard = () => {
           styles.container,
           {justifyContent: 'center', alignItems: 'center'},
         ]}>
-        <Text>No data available</Text>
+        <Text>{t('noDataAvailable')}</Text>
       </View>
     );
   }
@@ -357,7 +359,7 @@ const ProductDashboard = () => {
               styles.statLabel,
               activeView === 'total' && {color: '#000'},
             ]}>
-            Total No. of Products
+            {t('totalProducts')}
           </Text>
           <Text style={[styles.statValue]}>{dashboardData.total_ads}</Text>
         </TouchableOpacity>
@@ -376,7 +378,7 @@ const ProductDashboard = () => {
               styles.statLabel,
               activeView === 'monthly' && {color: '#000'},
             ]}>
-            No. of Products This Month
+            {t('productsThisMonth')}
           </Text>
           <Text
             style={[

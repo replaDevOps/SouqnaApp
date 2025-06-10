@@ -31,9 +31,9 @@ const HelpModal = ({visible, onClose}) => {
       <View style={styles.modalOverlay}>
         <View style={styles.modalContainer}>
           <View style={styles.headerSection}>
-            <Text style={styles.title}>Settings</Text>
+            <Text style={styles.title}>{t('Settings')}</Text>
             <TouchableOpacity onPress={onClose}>
-              <Regular style={styles.closeText}>Close</Regular>
+              <Regular style={styles.closeText}>{t('close')}</Regular>
             </TouchableOpacity>
           </View>
 
@@ -44,7 +44,7 @@ const HelpModal = ({visible, onClose}) => {
                 ToastAndroid.show('Search History Deleted', ToastAndroid.SHORT);
               }}>
               <TrashSVG width={24} height={24} />
-              <Regular style={styles.menuText}>Delete Search History</Regular>
+              <Regular style={styles.menuText}>{t('Delete Search History')}</Regular>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.menuItem}
@@ -52,7 +52,7 @@ const HelpModal = ({visible, onClose}) => {
                 navigation.navigate('Data');
               }}>
               <LockSVG width={24} height={24} />
-              <Text style={styles.menuText}>Data Protection</Text>
+              <Text style={styles.menuText}>{t('Data Protection')}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.menuItem}
@@ -60,7 +60,7 @@ const HelpModal = ({visible, onClose}) => {
                 navigation.navigate('Design');
               }}>
               <SunSVG width={24} height={24} />
-              <Text style={styles.menuText}>Design</Text>
+              <Text style={styles.menuText}>{t('Design')}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.menuItem}
@@ -68,7 +68,7 @@ const HelpModal = ({visible, onClose}) => {
                 navigation.navigate('About');
               }}>
               <StarSVG width={24} height={24} />
-              <Text style={styles.menuText}>About Souqna</Text>
+              <Text style={styles.menuText}>{t('About Souqna')}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.menuItem}
@@ -76,7 +76,7 @@ const HelpModal = ({visible, onClose}) => {
                 navigation.navigate('Help');
               }}>
               <HelpSVG width={24} height={24} />
-              <Text style={styles.menuText}>Help and Feedback</Text>
+              <Text style={styles.menuText}>{t('Help and Feedback')}</Text>
             </TouchableOpacity>
           </View>
         </View>
