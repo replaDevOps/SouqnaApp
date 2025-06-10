@@ -104,9 +104,9 @@ const styles = StyleSheet.create({
     borderRadius: mvs(4),
   },
   closeButton: {
-    position: 'absolute',
-    top: mvs(5),
-    right: mvs(5),
+    // position: 'absolute',
+    // top: mvs(5),
+    // right: mvs(5),
     width: mvs(24),
     height: mvs(24),
     borderRadius: mvs(12),
@@ -229,7 +229,7 @@ const styles = StyleSheet.create({
   productGroupHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     marginBottom: 10,
     paddingHorizontal: 5,
   },

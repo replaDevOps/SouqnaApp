@@ -136,7 +136,7 @@ const LocationModal = ({ visible, onLocationSelected, onClose }) => {
         },
         {
           enableHighAccuracy: true,
-          timeout: 15000,
+          timeout: 10000,
           maximumAge: 10000,
         },
       );
@@ -262,7 +262,7 @@ const LocationModal = ({ visible, onLocationSelected, onClose }) => {
       <View style={styles.searchBarContainer}>
         <GooglePlacesSuggestion
           onPlaceSelected={handlePlaceSelected}
-          placeholder=""
+          // placeholder=""
           initialValue={searchQuery}
           showlivelocation={false}
         />
@@ -391,13 +391,13 @@ const LocationModal = ({ visible, onLocationSelected, onClose }) => {
   // Render footer with action buttons
   const renderFooter = () => (
     <View style={styles.footer}>
-      <TouchableOpacity
+      {/* <TouchableOpacity
         onPress={() => setCurrentView(currentView === 'map' ? 'manual' : 'map')}
         style={styles.toggleViewButton}>
         <Text style={styles.toggleViewText}>
           {currentView === 'map' ? '✏️ Manual Entry' : '🗺️ Map View'}
         </Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
 
       <TouchableOpacity
         onPress={handleConfirmLocation}
