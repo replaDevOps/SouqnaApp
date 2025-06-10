@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet } from 'react-native';
 import React from 'react';
-import { mvs } from '../../../util/metrices';
-import { colors } from '../../../util/color';
+import {mvs} from '../../../util/metrices';
+import {colors} from '../../../util/color';
 
 const styles = StyleSheet.create({
   container: {

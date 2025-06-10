@@ -1,6 +1,13 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {useEffect, useState} from 'react';
-import {View, Dimensions, ScrollView, Text, Alert, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Dimensions,
+  ScrollView,
+  Text,
+  Alert,
+  TouchableOpacity,
+} from 'react-native';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import Bold from '../../../typography/BoldText';
 import Regular from '../../../typography/RegularText';
@@ -317,11 +324,10 @@ const ProductDetail = () => {
     }
   };
 
-   const handleLocationPress = () => {
+  const handleLocationPress = () => {
     setLocationModal(true);
-    
   };
-  
+
   // console.log('{product latitude}',product.lat);
   // console.log('{product longitude}',product.long);
 
@@ -368,17 +374,20 @@ const ProductDetail = () => {
                   {/* <Regular style={styles.productLocation}>
                     <Regular>{product.location}</Regular>
                     {/* {product.location} */}
-                  {/* </Regular> */} 
-                  <TouchableOpacity style={styles.productLocation}
-                   onPress={()=>handleLocationPress()}
-    //                onPress={()=>
-    // console.log('{modal triggered sucessfully}')}
-                   >
-                    <Text style={{color:'blue',textDecorationLine:'underline'}}>View on Map</Text>
+                  {/* </Regular> */}
+                  <TouchableOpacity
+                    style={styles.productLocation}
+                    onPress={() => handleLocationPress()}
+                    //                onPress={()=>
+                    // console.log('{modal triggered sucessfully}')}
+                  >
+                    <Text
+                      style={{color: 'blue', textDecorationLine: 'underline'}}>
+                      View on Map
+                    </Text>
                     {/* {product.location} */}
                   </TouchableOpacity>
                 </View>
-                
               }
             </View>
             {/* <ProductMenu
@@ -447,19 +456,20 @@ const ProductDetail = () => {
             handleUpdatePress={handleUpdatePress}
             handleDeletePress={handleDeletePress}
             sellerPhone="971501234567"
+            productOwnerId={product.seller?.id}
             // customProductLink={customProductLink}
           />
 
           {isModalVisible && <AddModal onClose={onClose} />}
-          {isLocationModal &&
-           <LocationMapModal
-        visible={isLocationModal}
-        onClose={()=>setLocationModal(false)}
-        latitude={product.lat}
-        longitude={product.long}
-        title="Product Location"
-      />
-       } 
+          {isLocationModal && (
+            <LocationMapModal
+              visible={isLocationModal}
+              onClose={() => setLocationModal(false)}
+              latitude={product.lat}
+              longitude={product.long}
+              title="Product Location"
+            />
+          )}
         </>
       )}
 
