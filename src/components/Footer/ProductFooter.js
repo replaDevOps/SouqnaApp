@@ -31,9 +31,12 @@ const ProductFooter = ({
   handleDeletePress,
   loadingCall,
   sellerPhone,
+  productOwnerId,
 }) => {
   const [showBuy, setShowBuy] = useState(false);
   const {token, role, id: userId} = useSelector(state => state.user);
+  const isOwner = userId === productOwnerId; // or compare emails if needed
+
   const handleCallPress = () => {
     if (sellerPhone) {
       Linking.openURL(`tel:${sellerPhone}`);
@@ -41,8 +44,6 @@ const ProductFooter = ({
       console.warn('Seller phone number not available');
     }
   };
-
-
 
   const handleBuyPress = () => {
     setShowBuy(true);
@@ -52,37 +53,33 @@ const ProductFooter = ({
   // Declare buttons based on role
   let buttons = [];
 
-  if (role === 3 || token === null) {
-    // if (!isCurrentUserSeller) {
-      buttons = [
-        {
-          key: 'chat',
-          onPress: onChatPress,
-          loading: loadingChat,
-          text: t('chatWithSeller'),
-          Icon: ChatSVG2,
-          // bgcolor:colors.lightgreen
-        },
-        {
-          key: 'call',
-          onPress: handleCallPress,
-          loading: loadingCall,
-          text: t('callSeller'),
-          Icon: CallSVG,
-          // bgcolor:colors.lightgreen
-        },
-      ];
-    // }
-  } else {
-    buttons = [
+  if (!token || (role === 3 && !isOwner)) {
+    buttons.push(
+      {
+        key: 'chat',
+        onPress: onChatPress,
+        loading: loadingChat,
+        text: 'Chat with Seller',
+        Icon: ChatSVG2,
+      },
+      {
+        key: 'call',
+        onPress: handleCallPress,
+        loading: loadingCall,
+        text: 'Call Seller',
+        Icon: CallSVG,
+      },
+    );
+  }
+
+  if (role === 2 || isOwner) {
+    buttons.push(
       {
         key: 'update',
         onPress: handleUpdatePress,
         loading: loadingUpdate,
         text: t('updateProduct'),
         Icon: UpdateSVG,
-        // textclr:colors.black,
-        // bgcolor:colors.lightorange
       },
       {
         key: 'delete',
@@ -90,10 +87,11 @@ const ProductFooter = ({
         loading: loadingDelete,
         text: t('deleteProduct'),
         Icon: TrashSVG,
-        // textclr:'rgba(240, 149, 3, 0.92)',
-        // bgcolor:colors.red
       },
-    ];
+    );
+  }
+  if (role === 3 && isOwner) {
+    return null; // Hide footer entirely
   }
 
   return (

@@ -30,14 +30,19 @@ import {useSelector} from 'react-redux';
 import {colors} from '../../../util/color';
 
 // Memoized Marker Component to prevent unnecessary re-renders
-const MarkerComponent = React.memo(({ item, onPress }) => (
+const MarkerComponent = React.memo(({item, onPress}) => (
   <Marker
     key={item.key}
     coordinate={item.coordinate}
     onPress={() => onPress(item.key)}>
-    <View style={[markerStyles.container, item.isMultiple ? markerStyles.multiple : markerStyles.single]}>
+    <View
+      style={[
+        markerStyles.container,
+        item.isMultiple ? markerStyles.multiple : markerStyles.single,
+      ]}>
       {!item.isMultiple && <Text style={markerStyles.dollarSign}>$</Text>}
-      <Text style={[markerStyles.priceText, { fontSize: item.isMultiple ? 10 : 12 }]}>
+      <Text
+        style={[markerStyles.priceText, {fontSize: item.isMultiple ? 10 : 12}]}>
         {item.formattedPrice}
       </Text>
       {item.isMultiple && (
@@ -57,8 +62,8 @@ const markerStyles = {
     borderColor: '#ccc',
     justifyContent: 'center',
   },
-  single: { width: 35, height: 35 },
-  multiple: { width: 35, height: 35 },
+  single: {width: 35, height: 35},
+  multiple: {width: 35, height: 35},
   dollarSign: {
     fontSize: 12,
     fontWeight: 'bold',
@@ -102,7 +107,7 @@ export default function MapScreen() {
   const categories = useSelector(state => state.category.categories);
 
   // Memoize format price function
-  const formatPrice = useCallback((price) => {
+  const formatPrice = useCallback(price => {
     if (price >= 1000000) {
       return (price / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
     } else if (price >= 1000) {
@@ -160,21 +165,27 @@ export default function MapScreen() {
 
   // Optimized marker data calculation
   const markerData = useMemo(() => {
-    return Object.entries(filteredGroupedProducts).map(([locationKey, products]) => {
-      const [lat, long] = locationKey.split(',').map(parseFloat);
-      if (isNaN(lat) || isNaN(long)) return null;
-      
-      const averagePrice = products.reduce((sum, product) => sum + parseFloat(product.price), 0) / products.length;
-      
-      return {
-        key: locationKey,
-        coordinate: { latitude: lat, longitude: long },
-        products,
-        averagePrice,
-        formattedPrice: formatPrice(averagePrice),
-        isMultiple: products.length > 1
-      };
-    }).filter(Boolean);
+    return Object.entries(filteredGroupedProducts)
+      .map(([locationKey, products]) => {
+        const [lat, long] = locationKey.split(',').map(parseFloat);
+        if (isNaN(lat) || isNaN(long)) return null;
+
+        const averagePrice =
+          products.reduce(
+            (sum, product) => sum + parseFloat(product.price),
+            0,
+          ) / products.length;
+
+        return {
+          key: locationKey,
+          coordinate: {latitude: lat, longitude: long},
+          products,
+          averagePrice,
+          formattedPrice: formatPrice(averagePrice),
+          isMultiple: products.length > 1,
+        };
+      })
+      .filter(Boolean);
   }, [filteredGroupedProducts, formatPrice]);
 
   // Optimized visible products calculation with larger threshold for better performance
@@ -190,33 +201,52 @@ export default function MapScreen() {
     return allProducts.filter(product => {
       const lat = parseFloat(product.lat);
       const lng = parseFloat(product.long);
-      
-      return !isNaN(lat) && !isNaN(lng) && 
-             lat >= latMin && lat <= latMax && 
-             lng >= lngMin && lng <= lngMax &&
-             (!activeCategory || (product.category?.name === activeCategory));
+
+      return (
+        !isNaN(lat) &&
+        !isNaN(lng) &&
+        lat >= latMin &&
+        lat <= latMax &&
+        lng >= lngMin &&
+        lng <= lngMax &&
+        (!activeCategory || product.category?.name === activeCategory)
+      );
     });
-  }, [region?.latitude, region?.longitude, region?.latitudeDelta, region?.longitudeDelta, allProducts, activeCategory, isAnimating]);
+  }, [
+    region?.latitude,
+    region?.longitude,
+    region?.latitudeDelta,
+    region?.longitudeDelta,
+    allProducts,
+    activeCategory,
+    isAnimating,
+  ]);
 
   // Static MapView props to prevent unnecessary updates
-  const mapViewProps = useMemo(() => ({
-    provider: PROVIDER_GOOGLE,
-    showsUserLocation: false,
-    showsMyLocationButton: false,
-    showsCompass: false,
-    showsScale: false,
-    rotateEnabled: true, // Keep enabled for better UX
-    pitchEnabled: false, // Disable for better performance
-  }), []);
+  const mapViewProps = useMemo(
+    () => ({
+      provider: PROVIDER_GOOGLE,
+      showsUserLocation: false,
+      showsMyLocationButton: false,
+      showsCompass: false,
+      showsScale: false,
+      rotateEnabled: true, // Keep enabled for better UX
+      pitchEnabled: false, // Disable for better performance
+    }),
+    [],
+  );
 
   // FlatList optimization functions
-  const getItemLayout = useCallback((data, index) => ({
-    length: 200, // Fixed item width
-    offset: 200 * index,
-    index,
-  }), []);
+  const getItemLayout = useCallback(
+    (data, index) => ({
+      length: 200, // Fixed item width
+      offset: 200 * index,
+      index,
+    }),
+    [],
+  );
 
-  const keyExtractor = useCallback((item) => item.id.toString(), []);
+  const keyExtractor = useCallback(item => item.id.toString(), []);
 
   // Close dropdown when clicking outside
   const closeDropdownOnOutsidePress = () => {
@@ -293,19 +323,19 @@ export default function MapScreen() {
   // PRESERVED GEOLOCATION LOGIC - No changes to location functionality
   const getCurrentLocation = useCallback(() => {
     if (isLocationLoading) return;
-    
+
     setIsLocationLoading(true);
-    
+
     Geolocation.getCurrentPosition(
-      (position) => {
+      position => {
         setIsLocationLoading(false);
-        const { latitude, longitude } = position.coords;
-        focusUserLocation({ latitude, longitude });
+        const {latitude, longitude} = position.coords;
+        focusUserLocation({latitude, longitude});
       },
-      (error) => {
+      error => {
         setIsLocationLoading(false);
         console.log('Location error:', error);
-        
+
         // Better error handling
         switch (error.code) {
           case 1: // PERMISSION_DENIED
@@ -326,19 +356,20 @@ export default function MapScreen() {
         enableHighAccuracy: false, // Start with less accuracy for faster response
         timeout: 10000,
         maximumAge: 30000,
-      }
+      },
     );
   }, [isLocationLoading, focusUserLocation, setDefaultRegion]);
 
   // PRESERVED GEOLOCATION LOGIC
   const requestLocationPermission = async () => {
     try {
-      const permission = Platform.OS === 'ios' 
-        ? PERMISSIONS.IOS.LOCATION_WHEN_IN_USE 
-        : PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION;
-      
+      const permission =
+        Platform.OS === 'ios'
+          ? PERMISSIONS.IOS.LOCATION_WHEN_IN_USE
+          : PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION;
+
       const result = await request(permission);
-      
+
       switch (result) {
         case RESULTS.GRANTED:
           getCurrentLocation();
@@ -348,7 +379,10 @@ export default function MapScreen() {
           setDefaultRegion();
           break;
         case RESULTS.BLOCKED:
-          Alert.alert('Permission Blocked', 'Please enable location in settings');
+          Alert.alert(
+            'Permission Blocked',
+            'Please enable location in settings',
+          );
           setDefaultRegion();
           break;
         default:
@@ -377,7 +411,7 @@ export default function MapScreen() {
       authorizationLevel: 'whenInUse',
       locationProvider: 'playServices', // More reliable on Android
     });
-    
+
     requestLocationPermission();
 
     return () => {
@@ -501,50 +535,49 @@ export default function MapScreen() {
   };
 
   // Optimized product card renderer
-  const renderProductCard = useCallback(({item}) => (
-    <TouchableOpacity
-      onPress={() => navigateToProductDetails(item.id)}
-      style={styles.productCardContainer}>
-      <View style={styles.productImageContainer}>
-        {item.images && item.images.length > 0 ? (
-          <Image
-            source={{
-              uri: `https://backend.souqna.net${item.images[0].path}`,
-            }}
-            style={styles.productImage}
-            resizeMode="cover"
-          />
-        ) : (
-          <View
-            style={[
-              styles.productImage,
-              styles.noImagePlaceholder,
-            ]}>
-            <Text>No Image</Text>
-          </View>
-        )}
-      </View>
-      <View style={styles.productInfo}>
-        <Text style={styles.productTitle} numberOfLines={1}>
-          {item.name}
-        </Text>
-        <Text
-          style={styles.productLocation}
-          numberOfLines={1}
-          ellipsizeMode="tail">
-          {item.location}
-        </Text>
-        <View style={styles.priceTagContainer}>
-          <Text style={styles.priceTag}>{item.price} - USD</Text>
-          {item.condition != 2 ? (
-            <Text style={styles.conditionTag}>New</Text>
+  const renderProductCard = useCallback(
+    ({item}) => (
+      <TouchableOpacity
+        onPress={() => navigateToProductDetails(item.id)}
+        style={styles.productCardContainer}>
+        <View style={styles.productImageContainer}>
+          {item.images && item.images.length > 0 ? (
+            <Image
+              source={{
+                uri: `https://backend.souqna.net${item.images[0].path}`,
+              }}
+              style={styles.productImage}
+              resizeMode="cover"
+            />
           ) : (
-            <Text style={styles.conditionTag}>Used</Text>
+            <View style={[styles.productImage, styles.noImagePlaceholder]}>
+              <Text>No Image</Text>
+            </View>
           )}
         </View>
-      </View>
-    </TouchableOpacity>
-  ), []);
+        <View style={styles.productInfo}>
+          <Text style={styles.productTitle} numberOfLines={1}>
+            {item.name}
+          </Text>
+          <Text
+            style={styles.productLocation}
+            numberOfLines={1}
+            ellipsizeMode="tail">
+            {item.location}
+          </Text>
+          <View style={styles.priceTagContainer}>
+            <Text style={styles.priceTag}>{item.price} - USD</Text>
+            {item.condition != 2 ? (
+              <Text style={styles.conditionTag}>New</Text>
+            ) : (
+              <Text style={styles.conditionTag}>Used</Text>
+            )}
+          </View>
+        </View>
+      </TouchableOpacity>
+    ),
+    [],
+  );
 
   return (
     <SafeAreaView style={styles.container}>
@@ -578,8 +611,12 @@ export default function MapScreen() {
               setDropdownVisible(false);
             }}>
             <RadioButton selected={activeCategory === null} />
-            <Text style={styles.dropdownText} numberOfLines={1}
-                    ellipsizeMode="tail">All Categories</Text>
+            <Text
+              style={styles.dropdownText}
+              numberOfLines={1}
+              ellipsizeMode="tail">
+              All Categories
+            </Text>
           </TouchableOpacity>
 
           {categories.map(category => (
@@ -591,10 +628,12 @@ export default function MapScreen() {
                 setDropdownVisible(false);
               }}>
               <RadioButton selected={activeCategory === category.name} />
-              <Text 
-              style={styles.dropdownText} 
-              numberOfLines={1}
-              ellipsizeMode="tail">{category.name}</Text>
+              <Text
+                style={styles.dropdownText}
+                numberOfLines={1}
+                ellipsizeMode="tail">
+                {category.name}
+              </Text>
             </TouchableOpacity>
           ))}
         </ScrollView>
@@ -619,7 +658,7 @@ export default function MapScreen() {
             <FlatList
               data={selectedProductsGroup}
               horizontal
-              showsHorizontalScrollIndicator={true}
+              showsHorizontalScrollIndicator={false}
               keyExtractor={keyExtractor}
               renderItem={renderProductCard}
               getItemLayout={getItemLayout}
@@ -651,7 +690,7 @@ export default function MapScreen() {
           onRegionChangeComplete={handleRegionChangeComplete}
           onMapReady={handleMapReady}>
           {/* Optimized markers rendering */}
-          {markerData.map((item) => (
+          {markerData.map(item => (
             <MarkerComponent
               key={item.key}
               item={item}
