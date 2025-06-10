@@ -31,8 +31,6 @@ const ProductFooter = ({
   handleDeletePress,
   loadingCall,
   sellerPhone,
-  sellerId,
-  productId,
 }) => {
   const [showBuy, setShowBuy] = useState(false);
   const {token, role, id: userId} = useSelector(state => state.user);
@@ -43,7 +41,8 @@ const ProductFooter = ({
       console.warn('Seller phone number not available');
     }
   };
-  const isCurrentUserSeller = sellerId === userId;
+
+
 
   const handleBuyPress = () => {
     setShowBuy(true);
@@ -54,7 +53,7 @@ const ProductFooter = ({
   let buttons = [];
 
   if (role === 3 || token === null) {
-    if (!isCurrentUserSeller) {
+    // if (!isCurrentUserSeller) {
       buttons = [
         {
           key: 'chat',
@@ -73,7 +72,7 @@ const ProductFooter = ({
           // bgcolor:colors.lightgreen
         },
       ];
-    }
+    // }
   } else {
     buttons = [
       {

@@ -35,6 +35,7 @@ import {launchImageLibrary} from 'react-native-image-picker';
 import PhotoManipulator from 'react-native-photo-manipulator';
 import ImageResizer from 'react-native-image-resizer';
 import CategoryFields from './CategoryFields';
+import EnhancedLocationSelector from '../../../../components/Location/EnhancedLocationSelector';
 // import EnhancedCategoryFields from './CategoryFields';
 
 const CreateProduct = () => {
@@ -583,7 +584,11 @@ const CreateProduct = () => {
                 <Text style={{color: colors.red}}>*</Text>
               </Text>
               <View style={styles.locationContainer}>
-                <GooglePlacesSuggestion
+                {/* <GooglePlacesSuggestion
+                  initialValue={formData.location}
+                  onPlaceSelected={handlePlaceSelected}
+                  /> */}
+                <EnhancedLocationSelector
                   initialValue={formData.location}
                   onPlaceSelected={handlePlaceSelected}
                 />
