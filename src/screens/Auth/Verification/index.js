@@ -461,7 +461,7 @@ const VerificationScreen = () => {
         setModalVisible(true); // Open modal if the document is still pending
       } else {
         ToastAndroid.show(
-          response?.data?.message || 'Verification failed.',
+          response?.data?.message || t('verificationFailed'),
           ToastAndroid.SHORT,
         );
       }
@@ -581,7 +581,7 @@ const VerificationScreen = () => {
             </View>
           </View>
           <View style={styles.inputContainer}>
-            <Text style={styles.label}>Country</Text>
+            <Text style={styles.label}>{t('country')}</Text>
             <DropDownPicker
               open={countryOpen}
               value={formData.country}
@@ -632,7 +632,7 @@ const VerificationScreen = () => {
             );
           })}
           <View style={styles.inputContainer}>
-            <Text style={styles.label}>ID Type</Text>
+            <Text style={styles.label}>{t('idType')}</Text>
             <View style={[styles.radioGroup, {justifyContent: 'space-around'}]}>
               <RadioButton
                 label="Cnic"
@@ -649,7 +649,7 @@ const VerificationScreen = () => {
           </View>
 
           <View style={styles.inputContainer}>
-            <Text style={styles.label}>ID Number</Text>
+            <Text style={styles.label}>{t('idNumber')}</Text>
 
             <TextInput
               style={styles.input}
@@ -781,7 +781,7 @@ const VerificationScreen = () => {
               <ActivityIndicator size="large" color={colors.green} />
             ) : (
               <Text style={{color: '#fff', fontWeight: 'bold'}}>
-                {isVerified ? 'Update Verification' : 'Submit Verification'}
+                {isVerified ? t('updateVerification') : t('submitVerification')}
               </Text>
             )}
           </MyButton>
@@ -798,7 +798,7 @@ const VerificationScreen = () => {
               <TouchableOpacity
                 style={styles.modalButton}
                 onPress={() => setModalVisible(false)}>
-                <Regular style={styles.modalButtonText}>{t('close')}</Regular>
+                <Regular style={styles.modalButtonText}>{t('Close')}</Regular>
               </TouchableOpacity>
             </View>
           </View>

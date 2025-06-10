@@ -30,7 +30,7 @@ const SearchHeader = ({
         <TextInput
           style={styles.searchBar}
           onPressIn={onFocusSearch}
-          placeholder={t('placeholder')}
+          placeholder={t('SearchBarplaceholder')}
           placeholderTextColor={colors.grey}
           keyboardType="default"
           value={searchText}

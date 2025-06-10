@@ -396,7 +396,7 @@ const UpdateProduct = () => {
   return (
     <SafeAreaView style={{flex: 1}}>
       <StatusBar barStyle="dark-content" />
-      <MainHeader title={'Update Product'} showBackIcon={true} />
+      <MainHeader title={t('updateProduct')} showBackIcon={true} />
       <KeyboardAvoidingView
         style={{flex: 1}}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -410,7 +410,7 @@ const UpdateProduct = () => {
           }}
           contentContainerStyle={{paddingBottom: mvs(60)}}>
           <View style={styles.sectionContainer}>
-            <Text style={styles.sectionTitle}>{t('category')}</Text>
+            <Text style={styles.sectionTitle}>{t('Category')}</Text>
             <View style={styles.categoryBox}>
               <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <Image
@@ -439,7 +439,7 @@ const UpdateProduct = () => {
                   </View>
 
                   <TouchableOpacity onPress={handleChange}>
-                    <Text style={styles.changeText}>{t('change')}</Text>
+                    <Text style={styles.changeText}>{t('Change')}</Text>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -672,12 +672,12 @@ const UpdateProduct = () => {
 
           <View style={styles.sectionContainer}>
             <Text style={styles.sectionTitle}>
-              {t('Contact Info')}
+              {t('contactInfo')}
               {/* <Text style={{color: colors.red}}>*</Text> */}
             </Text>
             <TextInput
               style={styles.input}
-              placeholder={t('Enter Contact')}
+              placeholder={t('contactInfo')}
               placeholderTextColor={colors.grey}
               value={formData.contactInfo}
               onChangeText={text => handleInputChange('contactInfo', text)}
@@ -701,7 +701,7 @@ const UpdateProduct = () => {
           </View> */}
 
           <View style={styles.sectionContainer}>
-            <Text style={styles.sectionTitle}>{t('Custom Fields')}</Text>
+            <Text style={styles.sectionTitle}>{t('customFields')}</Text>
             {Array.isArray(formData.custom_fields) ? (
               formData.custom_fields.map((field, index) => (
                 <View key={index} style={styles.fieldContainer}>
@@ -729,14 +729,14 @@ const UpdateProduct = () => {
 
           {/* Submit Button */}
           <MyButton
-            title={loading ? t('submitting') : t('Update Product')}
+            title={loading ? t('submitting') : t('updateProduct')}
             style={styles.submitButton}
             onPress={submitProduct}
             disabled={loading}>
             {loading ? (
               <ActivityIndicator color={colors.green} />
             ) : (
-              <Text style={styles.submitButtonText}>{t('Update Product')}</Text>
+              <Text style={styles.submitButtonText}>{t('updateProduct')}</Text>
             )}
           </MyButton>
         </ScrollView>

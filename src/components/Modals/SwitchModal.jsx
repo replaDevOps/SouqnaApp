@@ -64,7 +64,7 @@ export default function SwitchModal({
            setError('');
            setNewPassword('');
        }else{
-        setError('Passwords do not match');
+        setError(t('passwordsDoNotMatch'));
        }
 
     };
@@ -86,18 +86,18 @@ export default function SwitchModal({
                     <View style={styles.modalContainer}>
                         <Text style={styles.modalTitle}>
                             {(role === '2' || role === 2)
-                                ? t('Switch to Buyer Account')
-                                : t('Switch to Seller Account')}
+                                ? t('switchToBuyerAccount')
+                                : t('switchToSellerAccount')}
                         </Text>
 
                         {/* Show RadioGroup only for role 3 (buyer switching to seller) */}
                         {(role === '3' || role === 3) && (
                             <View style={styles.sellerTypeContainer}>
-                                <Text style={styles.sellerTypeLabel}>{t('Select Seller Type')}</Text>
+                                <Text style={styles.sellerTypeLabel}>{t('selectSellerType')}</Text>
                                 <RadioGroup
                                     options={[
-                                        { value: '1', label: t('Private') },
-                                        { value: '2', label: t('Company') },
+                                        { value: '1', label: t('private') },
+                                        { value: '2', label: t('company') },
                                     ]}
                                     selectedOption={sellerType}
                                     onSelect={(value) => {
@@ -109,7 +109,7 @@ export default function SwitchModal({
                         )}
 
                         <View style={styles.inputContainer}>
-                            <Text style={styles.inputLabel}>{t('Please confirm your Password')}</Text>
+                            <Text style={styles.inputLabel}>{t('confirmPassword')}</Text>
                             <TextInput
                                 style={styles.input}
                                 value={NewPassword}
