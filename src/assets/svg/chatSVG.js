@@ -17,7 +17,7 @@ const ChatSVG = ({color = colors.black}) => (
       stroke={color}
       strokeLinecap="round"
       strokeLinejoin="round"
-      strokeWidth={2}
+      strokeWidth={1.5}
     />
   </Svg>
 );

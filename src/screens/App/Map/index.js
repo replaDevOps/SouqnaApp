@@ -597,10 +597,15 @@ export default function MapScreen() {
           onPress={toggleDropdown}
           style={styles.dropdownButton}>
           <BarsSVG width={24} height={24} />
-          <Text style={{fontSize: mvs(18), fontWeight: 'bold'}}>
-            {' '}
-            Categories
-          </Text>
+          <View style={{flexShrink: 1}}>
+            <Text
+              numberOfLines={1}
+              ellipsizeMode="tail"
+              style={{fontSize: mvs(18), fontWeight: 'bold', flexShrink: 1}}>
+              {' '}
+              {activeCategory ? `${activeCategory}` : 'Categories'}
+            </Text>
+          </View>
         </TouchableOpacity>
       </View>
 
@@ -654,7 +659,7 @@ export default function MapScreen() {
           <View style={styles.productGroupContainer}>
             <View style={styles.productGroupHeader}>
               <Text style={styles.productGroupTitle}>
-                {selectedProductsGroup.length} Product
+                {selectedProductsGroup.length} Ad
                 {selectedProductsGroup.length > 1 ? 's' : ''} Available
               </Text>
               <TouchableOpacity
@@ -712,7 +717,7 @@ export default function MapScreen() {
         <TouchableOpacity
           style={[
             styles.myLocationButton,
-            {bottom: mvs(selectedProductsGroup ? 240 : 110)}, // conditional bottom
+            {bottom: mvs(selectedProductsGroup ? 300 : 110)}, // conditional bottom
           ]}
           onPress={goToMyLocation}
           disabled={isLocationLoading}>

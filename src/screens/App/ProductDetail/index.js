@@ -40,7 +40,7 @@ import {addItem} from '../../../redux/slices/cartSlice';
 import {getOrCreateConversation} from '../../../firebase/chatService';
 import DetailsTable from '../../../components/Structure/Details/DetailsTable';
 import LocationMapModal from '../../../components/Modals/LocationMapModal';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 
 const {height} = Dimensions.get('window');
 
@@ -67,7 +67,7 @@ const ProductDetail = () => {
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [isLocationModal, setLocationModal] = useState(false);
-    const {t} = useTranslation();
+  const {t} = useTranslation();
 
   useEffect(() => {
     if (!productId) {
@@ -281,39 +281,31 @@ const ProductDetail = () => {
   };
 
   const handleDeletePress = () => {
-    Alert.alert(
-      'Confirm Delete',
-      'Are you sure you want to delete this product?',
-      [
-        {text: 'Cancel', style: 'cancel'},
-        {
-          text: 'Delete',
-          style: 'destructive',
-          onPress: async () => {
-            try {
-              const response = await deleteProduct(productId, token);
-              if (response.success) {
-                setSnackbarMessage('Product deleted successfully.');
-                setSnackbarVisible(true);
-                navigation.replace('MainTabs');
-              } else {
-                console.warn('Failed to delete product:', response.message);
-                setSnackbarMessage(
-                  response.message || 'Failed to delete product.',
-                );
-                setSnackbarVisible(true);
-              }
-            } catch (error) {
-              console.error('Error deleting product:', error.message || error);
-              setSnackbarMessage(
-                'An error occurred while deleting the product.',
-              );
+    Alert.alert('Confirm Delete', 'Are you sure you want to delete this Ad?', [
+      {text: 'Cancel', style: 'cancel'},
+      {
+        text: 'Delete',
+        style: 'destructive',
+        onPress: async () => {
+          try {
+            const response = await deleteProduct(productId, token);
+            if (response.success) {
+              setSnackbarMessage('Ad deleted successfully.');
+              setSnackbarVisible(true);
+              navigation.replace('MainTabs');
+            } else {
+              console.warn('Failed to delete Ad:', response.message);
+              setSnackbarMessage(response.message || 'Failed to delete Ad.');
               setSnackbarVisible(true);
             }
-          },
+          } catch (error) {
+            console.error('Error deleting Ad:', error.message || error);
+            setSnackbarMessage('An error occurred while deleting the Ad.');
+            setSnackbarVisible(true);
+          }
         },
-      ],
-    );
+      },
+    ]);
   };
 
   const onScroll = event => {
@@ -333,7 +325,7 @@ const ProductDetail = () => {
   // console.log('{product longitude}',product.long);
 
   return (
-   <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container}>
       {loading || !product ? (
         <Loader width={mvs(160)} height={mvs(160)} />
       ) : (
