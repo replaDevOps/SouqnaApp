@@ -97,7 +97,7 @@ const Notification = () => {
                 }}
               />
               <Text style={{textAlign: 'center', marginTop: mvs(20)}}>
-                {t('No Notifications Found')}
+                {t('noNotificationsFound')}
               </Text>
             </View>
           }

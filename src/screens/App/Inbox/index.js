@@ -19,10 +19,12 @@ import {mvs} from '../../../util/metrices';
 import MainHeader from '../../../components/Headers/MainHeader';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import InboxSkeleton from './InboxSkeleton';
+import { useTranslation } from 'react-i18next';
 
 const InboxScreen = () => {
   const navigation = useNavigation();
   const {token, id: userId, role} = useSelector(state => state.user);
+    const {t} = useTranslation();
 
   const [searchText, setSearchText] = useState('');
   const [conversations, setConversations] = useState([]);
@@ -258,7 +260,7 @@ const InboxScreen = () => {
               style={{width: '90%', resizeMode: 'contain', height: mvs(200)}}
             />
             {/* <Bold style={styles.emptyCartText}>{t('empty')}</Bold> */}
-            <Text style={styles.emptyInboxText}>No text recieved yet</Text>
+            <Text style={styles.emptyInboxText}>{t('noTextReceived')}</Text>
           </View>
   );
 console.log('{FilteredConverations}',filteredConversations);
@@ -268,10 +270,10 @@ console.log('{FilteredConverations}',filteredConversations);
       <StatusBar barStyle="dark-content" />
       <ScrollView
         style={{flex: 1, backgroundColor: '#fbfbfb', paddingBottom: mvs(40)}}>
-        <MainHeader title={'Messages'} />
+        <MainHeader title={t('messages')} />
         {/* {filteredConversations.length > 0 ? ( */}
           <View style={styles.messagesWrapper}>
-            <Text style={styles.header}>Messages</Text>
+            <Text style={styles.header}>{t('messages')}</Text>
 
             {isLoading ? (
               <InboxSkeleton count={5} />

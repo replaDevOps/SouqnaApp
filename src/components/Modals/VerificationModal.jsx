@@ -3,8 +3,11 @@ import {Modal, View, TouchableOpacity} from 'react-native';
 import styles from '../../screens/Auth/Verification/styles';
 import Regular from '../../typography/RegularText';
 import {CloseSvg, VerifySVG} from '../../assets/svg';
+import { useTranslation } from 'react-i18next';
 
 const VerificationModal = ({visible, onVerify, onSkip, onClose}) => {
+  const {t} = useTranslation();
+
   return (
     <Modal
       animationType="slide"
@@ -22,11 +25,11 @@ const VerificationModal = ({visible, onVerify, onSkip, onClose}) => {
             <VerifySVG style={{marginBottom: 10}} />
           </View>
           <Regular style={styles.modalText}>
-            Would you like to verify your profile now?
+            {t('verifyProfileNow')}
           </Regular>
           <View style={styles.modalButtonContainer}>
             <TouchableOpacity style={styles.modalButton} onPress={onVerify}>
-              <Regular style={styles.modalButtonText}>Verify</Regular>
+              <Regular style={styles.modalButtonText}>{t('Verify')}</Regular>
             </TouchableOpacity>
           </View>
         </View>

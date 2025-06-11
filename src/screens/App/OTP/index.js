@@ -18,6 +18,7 @@ import Bold from '../../../typography/BoldText';
 import {resendOtp, verifyOtp} from '../../../api/apiServices';
 import {Snackbar} from 'react-native-paper';
 import {useRoute} from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 
 const OTPScreen = ({navigation}) => {
   const route = useRoute();
@@ -27,6 +28,7 @@ const OTPScreen = ({navigation}) => {
   const [code, setCode] = useState(['', '', '', '']);
   const [countdown, setCountdown] = useState(60);
   const [resendEnabled, setResendEnabled] = useState(false);
+    const {t} = useTranslation();
   // New state for showing resend loading
   const [resendLoading, setResendLoading] = useState(false);
   const inputRefs = useRef([]);
@@ -138,10 +140,10 @@ const OTPScreen = ({navigation}) => {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <SafeAreaView style={styles.container}>
+     <SafeAreaView style={styles.container}>
         <StatusBar backgroundColor="#FFFFFF" barStyle="dark-content" />
 
-        <MainHeader title={'Email Verification'} showBackIcon={true} />
+        <MainHeader title={t('emailVerification')} showBackIcon={true} />
         <View style={styles.content}>
           <View
             style={{
@@ -155,10 +157,10 @@ const OTPScreen = ({navigation}) => {
             <Bold style={styles.title}>Souqna</Bold>
           </View>
           <Text style={styles.instruction}>
-            Enter the code sent to your email
+            {t('enterCodeSent')}
           </Text>
 
-          <Text style={styles.phoneNumber}>Sent to ({email})</Text>
+          <Text style={styles.phoneNumber}>{t('sentTo')} ({email})</Text>
 
           <View style={styles.codeContainer}>
             {code.map((digit, index) => (
@@ -187,7 +189,7 @@ const OTPScreen = ({navigation}) => {
             {loading ? (
               <ActivityIndicator color="#fff" size="small" />
             ) : (
-              <Text style={styles.continueButtonText}>Continue</Text>
+              <Text style={styles.continueButtonText}>{t('continue')}</Text>
             )}
           </TouchableOpacity>
 
@@ -207,7 +209,7 @@ const OTPScreen = ({navigation}) => {
                   styles.resendButtonText,
                   !resendEnabled && {color: 'gray'},
                 ]}>
-                Resend Code{!resendEnabled ? ` (${countdown} sec)` : ''}
+                {t('resendCode')}{!resendEnabled ? ` (${countdown} ${t('sec')})` : ''}
               </Text>
             )}
           </TouchableOpacity>
@@ -218,7 +220,7 @@ const OTPScreen = ({navigation}) => {
           onDismiss={() => setSnackbarVisible(false)}
           duration={3000}
           action={{
-            label: 'Close',
+            label: t('Close'),
             onPress: () => setSnackbarVisible(false),
           }}
           style={{backgroundColor: '#333'}}>

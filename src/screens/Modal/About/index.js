@@ -5,9 +5,11 @@ import ModalHeader from '../../../components/Headers/ModalHeader';
 import {OpenSVG} from '../../../assets/svg';
 import styles from './style';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 
 const AboutScreen = () => {
   const navigation = useNavigation();
+    const {t} = useTranslation();
   const handleBack = () => {
     navigation.goBack();
   };
@@ -17,14 +19,14 @@ const AboutScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" />
-      <ModalHeader title="About Souqna" onBack={handleBack} />
+      <ModalHeader title={t('About Souqna')} onBack={handleBack} />
       <View style={styles.menuContainer}>
         <TouchableOpacity
           style={styles.menuItem}
           onPress={() => {
             openUrl('https://www.kleinanzeigen.de/impressum.html');
           }}>
-          <Text style={styles.menuText}>Imprint</Text>
+          <Text style={styles.menuText}>{t('Imprint')}</Text>
           <OpenSVG width={20} height={20} />
         </TouchableOpacity>
         <TouchableOpacity
@@ -32,7 +34,7 @@ const AboutScreen = () => {
           onPress={() => {
             openUrl('https://themen.kleinanzeigen.de/careers/');
           }}>
-          <Text style={styles.menuText}>Career Page</Text>
+          <Text style={styles.menuText}>{t('Career Page')}</Text>
           <OpenSVG width={20} height={20} />
         </TouchableOpacity>
       </View>

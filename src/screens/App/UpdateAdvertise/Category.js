@@ -136,7 +136,7 @@ const Category = () => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" />
-      <MainHeader title={t('Update Category')} showBackIcon={true} />
+      <MainHeader title={t('updateCategory')} showBackIcon={true} />
       {loading ? (
         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
           <ActivityIndicator size="large" color="#adbd6e" />

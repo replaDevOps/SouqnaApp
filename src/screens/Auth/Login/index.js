@@ -27,6 +27,7 @@ import {loginUser} from '../../../api/authServices';
 import {colors} from '../../../util/color';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {showSnackbar} from '../../../redux/slices/snackbarSlice';
+import { useTranslation } from 'react-i18next';
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
@@ -38,6 +39,7 @@ const LoginScreen = () => {
   const [passwordError, setPasswordError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showRoleSelection, setShowRoleSelection] = useState(false);
+    const {t} = useTranslation();
 
   // Add animation value
   const slideAnim = useRef(new Animated.Value(1000)).current;

@@ -52,7 +52,7 @@ const ChangePassword = () => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" />
-      <MainHeader title={'Change Password'} showBackIcon={true} />
+      <MainHeader title={t('changePasswordTitle')} showBackIcon={true} />
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{flex: 1}}
@@ -68,13 +68,13 @@ const ChangePassword = () => {
                   style={styles.logo}
                 />
               </View>
-              <Text style={styles.title}>Reset Password</Text>
+              <Text style={styles.title}>{t('resetPassword')}</Text>
 
-              <Text style={styles.label}>Old Password</Text>
+              <Text style={styles.label}>{t('oldPasswordLabel')}</Text>
               <View style={styles.inputWrapper}>
                 <TextInput
                   style={styles.input}
-                  placeholder="Enter your Old Password"
+                  placeholder={t('enterOldPasswordPlaceholder')}
                   placeholderTextColor="#CCCCCC"
                   secureTextEntry={!showOldPassword}
                   value={oldPassword}
@@ -87,11 +87,11 @@ const ChangePassword = () => {
                 </TouchableOpacity>
               </View>
 
-              <Text style={styles.label}>New Password</Text>
+              <Text style={styles.label}>{t('newPasswordLabel')}</Text>
               <View style={styles.inputWrapper}>
                 <TextInput
                   style={styles.input}
-                  placeholder="Enter new password"
+                  placeholder={t('enterNewPasswordPlaceholder')}
                   placeholderTextColor="#CCCCCC"
                   secureTextEntry={!showNewPassword}
                   value={newPassword}
@@ -104,11 +104,11 @@ const ChangePassword = () => {
                 </TouchableOpacity>
               </View>
 
-              <Text style={styles.label}>Confirm Password</Text>
+              <Text style={styles.label}>{t('confirmPasswordLabel')}</Text>
               <View style={styles.inputWrapper}>
                 <TextInput
                   style={styles.input}
-                  placeholder="Confirm new password"
+                  placeholder={t('confirmNewPasswordPlaceholder')}
                   placeholderTextColor="#CCCCCC"
                   secureTextEntry={!showConfirmPassword}
                   value={confirmPassword}
@@ -124,7 +124,7 @@ const ChangePassword = () => {
               <TouchableOpacity
                 style={styles.resetButton}
                 onPress={handleResetPassword}>
-                <Text style={styles.resetButtonText}>Reset</Text>
+                <Text style={styles.resetButtonText}>{t('resetButton')}</Text>
               </TouchableOpacity>
             </View>
           </ScrollView>

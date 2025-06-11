@@ -34,6 +34,7 @@ import {
 import {getStorage, ref, uploadBytes, getDownloadURL} from 'firebase/storage';
 import {app} from '../../../firebase';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 
 const Chat = () => {
   const route = useRoute();
@@ -49,6 +50,7 @@ const Chat = () => {
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isUploading, setIsUploading] = useState(false);
+    const {t} = useTranslation();
 
   // Only need to track the messages listener
   const messagesListenerRef = useRef(null);
@@ -57,11 +59,11 @@ const Chat = () => {
   useEffect(() => {
     if (productInfo && productInfo.name) {
       navigation.setOptions({
-        title: `About: ${productInfo.name}`,
+        title: `${t('chatAboutProduct')} ${productInfo.name}`,
       });
     } else if (userName) {
       navigation.setOptions({
-        title: 'Message',
+        title: t('Message'),
       });
     }
   }, [navigation, userName, productInfo]);
@@ -158,7 +160,7 @@ const Chat = () => {
             _id: userId,
             name: currentUserName || 'User',
           },
-          text: `I'm interested in: ${productInfo.name}`,
+          text: `${t('chatInterestedInProduct')} ${productInfo.name}`,
           product: productInfo,
         };
 
@@ -208,7 +210,7 @@ const Chat = () => {
         // Message will be added via the Firestore listener
       } catch (error) {
         console.error('Error sending message:', error);
-        Alert.alert('Error', 'Failed to send message. Please try again.');
+        Alert.alert('Error', t('chatErrorSendFailed'));
       }
     },
     [conversationId, userId, token, currentUserName],
@@ -241,7 +243,7 @@ const Chat = () => {
     } catch (error) {
       console.error('Error uploading image:', error);
       setIsUploading(false);
-      Alert.alert('Error', 'Failed to upload image. Please try again.');
+      Alert.alert('Error', t('chatErrorUploadFailed'));
       return null;
     }
   };
@@ -271,7 +273,7 @@ const Chat = () => {
       }
     } catch (error) {
       console.error('Error picking image:', error);
-      Alert.alert('Error', 'Failed to select image. Please try again.');
+      Alert.alert('Error', t('chatErrorSelectImageFailed'));
     }
   }, [conversationId, userId, currentUserName]);
 
@@ -358,7 +360,7 @@ const Chat = () => {
         {isUploading ? (
           <ActivityIndicator size="small" color="#fff" />
         ) : (
-          <Text style={{color: '#fff', fontWeight: 'bold'}}>Send</Text>
+          <Text style={{color: '#fff', fontWeight: 'bold'}}>{t('chatSend')}</Text>
         )}
       </View>
     </Send>
@@ -437,7 +439,7 @@ const Chat = () => {
               _id: userId,
               name: currentUserName || 'User',
             }}
-            placeholder="Type a message..."
+            placeholder={t('chatPlaceholder')}
             alwaysShowSend
             showUserAvatar={false}
             renderAvatar={null} // Hide avatars

@@ -1,29 +1,3 @@
-// import React from 'react';
-// import { View, Text, StyleSheet } from 'react-native';
-
-// const MyAccount = () => {
-//   return (
-//     <View style={styles.container}>
-//       <Text style={styles.text}>My Account Screen</Text>
-//     </View>
-//   );
-// };
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//     backgroundColor: '#fff',
-//   },
-//   text: {
-//     fontSize: 20,
-//     fontWeight: 'bold',
-//   },
-// });
-
-// export default MyAccount;
-
 import {
   View,
   Text,
@@ -83,7 +57,7 @@ export default function MyAccount() {
       <SafeAreaView style={{flex: 1}}>
         <View style={styles.flexOne}>
           <ScrollView contentContainerStyle={styles.scrollContainer}>
-            <MainHeader title={'My Account'} showBackIcon={true} />
+            <MainHeader title={t('My Account')} showBackIcon={true} />
             <View>
               {/* Profile Image */}
               <View style={styles.profileImageContainer}>
@@ -97,14 +71,14 @@ export default function MyAccount() {
 
               {/* Personal Info */}
               <View style={styles.card}>
-                <Text style={styles.cardTitle}>Personal Info</Text>
+                <Text style={styles.cardTitle}>{t('Personal Info')}</Text>
 
-                {renderEditableRow('Your name', 'name')}
-                {renderEditableRow('Occupation', 'occupation')}
-                {renderEditableRow('Address', 'address')}
+                {renderEditableRow(t('yourName'), 'name')}
+                {renderEditableRow(t('occupation'), 'occupation')}
+                {renderEditableRow(t('address'), 'address')}
 
                 <View style={styles.row}>
-                  <Text style={styles.label}>Seller</Text>
+                  <Text style={styles.label}>{t('seller')}</Text>
                   <TouchableOpacity
                     onPress={isEditing ? toggleMember : undefined}>
                     {editedData.isMember ? (
@@ -128,10 +102,10 @@ export default function MyAccount() {
 
               {/* Contact Info */}
               <View style={[styles.card, {marginTop: 16, marginBottom: 24}]}>
-                <Text style={styles.cardTitle}>Contact Info</Text>
+                <Text style={styles.cardTitle}>{t('Contact Info')}</Text>
 
-                {renderEditableRow('Phone number', 'phone', 'phone-pad')}
-                {renderEditableRow('Email', 'email', 'email-address')}
+                {renderEditableRow(t('phoneNumber'), 'phone', 'phone-pad')}
+                {renderEditableRow(t('Email'), 'email', 'email-address')}
               </View>
             </View>
 
@@ -143,19 +117,19 @@ export default function MyAccount() {
                     <TouchableOpacity
                       style={styles.cancelBtn}
                       onPress={handleCancel}>
-                      <Text style={styles.cancelText}>Cancel</Text>
+                      <Text style={styles.cancelText}>{t('Cancel')}</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
                       style={styles.saveBtn}
                       onPress={handleEditToggle}>
-                      <Text style={styles.saveText}>Save</Text>
+                      <Text style={styles.saveText}>{t('save')}</Text>
                     </TouchableOpacity>
                   </>
                 ) : (
                   <TouchableOpacity
                     style={styles.editBtn}
                     onPress={handleEditToggle}>
-                    <Text style={styles.editText}>Edit Profile</Text>
+                    <Text style={styles.editText}>{t('editProfile')}</Text>
                   </TouchableOpacity>
                 )}
               </View>

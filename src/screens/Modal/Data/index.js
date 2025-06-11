@@ -6,9 +6,11 @@ import {OpenSVG} from '../../../assets/svg';
 import Regular from '../../../typography/RegularText';
 import styles from './style';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 
 const DataScreen = () => {
   const navigation = useNavigation();
+    const {t} = useTranslation();
   const handleBack = () => {
     navigation.goBack();
   };
@@ -19,7 +21,7 @@ const DataScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" />
-      <ModalHeader title="Data" onBack={handleBack} />
+      <ModalHeader title={t('Dark')} onBack={handleBack} />
       <View style={styles.menuContainer}>
         <TouchableOpacity
           style={styles.menuItem}
@@ -27,7 +29,7 @@ const DataScreen = () => {
             console.log('Privacy Settings Pressed');
           }}>
           <Regular style={styles.menuText}>
-            Privacy settings, measurement & analysis
+           {t('privacySettingsMeasurement')}
           </Regular>
         </TouchableOpacity>
         <TouchableOpacity
@@ -35,7 +37,7 @@ const DataScreen = () => {
           onPress={() => {
             openUrl('https://themen.kleinanzeigen.de/datenschutzerklaerung/');
           }}>
-          <Text style={styles.menuText}>Privacy Policy</Text>
+          <Text style={styles.menuText}>{t('Privacy Policy')}</Text>
           <OpenSVG width={20} height={20} />
         </TouchableOpacity>
         <TouchableOpacity
@@ -43,7 +45,7 @@ const DataScreen = () => {
           onPress={() => {
             openUrl('https://themen.kleinanzeigen.de/nutzungsbedingungen/');
           }}>
-          <Text style={styles.menuText}>Terms of use</Text>
+          <Text style={styles.menuText}>{t('Terms of use')}</Text>
           <OpenSVG width={20} height={20} />
         </TouchableOpacity>
       </View>

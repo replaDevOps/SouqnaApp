@@ -41,6 +41,7 @@ import {addItem} from '../../../redux/slices/cartSlice';
 import {getOrCreateConversation} from '../../../firebase/chatService';
 import DetailsTable from '../../../components/Structure/Details/DetailsTable';
 import LocationMapModal from '../../../components/Modals/LocationMapModal';
+import { useTranslation } from 'react-i18next';
 
 const {height} = Dimensions.get('window');
 
@@ -67,6 +68,7 @@ const ProductDetail = () => {
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [isLocationModal, setLocationModal] = useState(false);
+    const {t} = useTranslation();
 
   useEffect(() => {
     if (!productId) {
@@ -332,7 +334,7 @@ const ProductDetail = () => {
   // console.log('{product longitude}',product.long);
 
   return (
-    <SafeAreaView style={styles.container}>
+   <SafeAreaView style={styles.container}>
       {loading || !product ? (
         <Loader width={mvs(160)} height={mvs(160)} />
       ) : (
@@ -383,7 +385,7 @@ const ProductDetail = () => {
                   >
                     <Text
                       style={{color: 'blue', textDecorationLine: 'underline'}}>
-                      View on Map
+                      {t('viewOnMap')}
                     </Text>
                     {/* {product.location} */}
                   </TouchableOpacity>
@@ -395,24 +397,24 @@ const ProductDetail = () => {
               condition={
                 product.discounts && Object.keys(product.discounts).length > 0
                 ? JSON.stringify(product.discounts) // or format as needed
-                  : 'No Discount'
+                  : t('No Discount')
               }
               material={
                 product.condition === 2
-                ? 'Used'
+                ? t('Used')
                 : product.condition === 1
-                ? 'New'
+                ? t('New')
                 : ''
               }
               /> */}
             <View style={{}}>
               <Bold style={{fontSize: mvs(22), marginHorizontal: mvs(10)}}>
-                Details
+                {t('details')}
               </Bold>
               <DetailsTable ProductData={product.custom_fields} />
             </View>
             <View style={styles.descriptionContainer}>
-              <Bold style={{fontSize: mvs(22)}}>Description</Bold>
+              <Bold style={{fontSize: mvs(22)}}>{t('Description')}</Bold>
               <Regular
                 style={styles.description}
                 numberOfLines={isReadMore ? 3 : 0}>
@@ -427,7 +429,7 @@ const ProductDetail = () => {
                     textAlign: 'right',
                   }}
                   onPress={() => setIsReadMore(!isReadMore)}>
-                  {isReadMore ? 'Read More' : 'Show Less'}
+                  {isReadMore ? t('readMore') : t('showLess')}
                 </Text>
               )}
             </View>
@@ -436,7 +438,7 @@ const ProductDetail = () => {
 
             <View style={styles.providerContainer}>
               <Row>
-                <Regular>Show-ID</Regular>
+                <Regular>{t('showId')}</Regular>
                 <Regular>{product.id}</Regular>
               </Row>
             </View>
@@ -467,7 +469,7 @@ const ProductDetail = () => {
               onClose={() => setLocationModal(false)}
               latitude={product.lat}
               longitude={product.long}
-              title="Product Location"
+              title={t('productLocation')}
             />
           )}
         </>
@@ -485,12 +487,12 @@ const ProductDetail = () => {
           borderRadius: 8,
         }}
         action={{
-          label: 'View Cart',
+          label: t('viewCart'),
           onPress: () => {
             navigation.navigate('MainTabs', {screen: 'CartScreen'});
           },
         }}>
-        Product added to cart!
+        {t('productAddedToCart')}
       </Snackbar>
       <Snackbar
         visible={snackbarVisible}

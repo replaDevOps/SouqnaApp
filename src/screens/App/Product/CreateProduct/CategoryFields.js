@@ -9,16 +9,18 @@ import {
 } from 'react-native';
 import { colors } from '../../../../util/color';
 import { mvs } from '../../../../util/metrices';
+import { useTranslation } from 'react-i18next';
 
 // Simple Dropdown Component
 const CustomDropdown = ({ 
   options, 
   selectedValue, 
   onSelect, 
-  placeholder = "Select an option",
+  placeholder = t('selectOption'),
   label 
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+    const {t} = useTranslation();
 
   const handleSelect = (option) => {
     onSelect(option);
@@ -179,7 +181,7 @@ const CategoryFields = ({ categoryFields, formData, handleInputChange, t }) => {
         style={fieldStyles.toggleButton}
         onPress={() => setIsExpanded(!isExpanded)}
       >
-        <Text style={fieldStyles.toggleButtonText}>Click here for Additional Information {isExpanded ? '▲' : '▼'}
+        <Text style={fieldStyles.toggleButtonText}>{t('clickAdditionalInfo')} {isExpanded ? '▲' : '▼'}
         </Text>
       </TouchableOpacity>
 )}
@@ -195,7 +197,7 @@ const CategoryFields = ({ categoryFields, formData, handleInputChange, t }) => {
             onPress={() => setIsExpanded(false)}
           >
             <Text style={fieldStyles.closeButtonText}>
-              ▲ Close Additional Info
+              ▲ {t('closeAdditionalInfo')}
             </Text>
           </TouchableOpacity>
         </View>

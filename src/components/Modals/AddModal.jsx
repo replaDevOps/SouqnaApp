@@ -17,6 +17,7 @@ import {mvs} from '../../util/metrices';
 import dummyData from '../../util/dummyData';
 import {useNavigation} from '@react-navigation/native';
 import HelpModal from './HelpModal';
+import { useTranslation } from 'react-i18next';
 
 const AddModal = ({visible, onClose, title, message}) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -24,6 +25,7 @@ const AddModal = ({visible, onClose, title, message}) => {
   const [showHelp, setShowHelp] = useState(false);
   const navigation = useNavigation();
   const {width: SCREEN_WIDTH} = Dimensions.get('window');
+  const {t} = useTranslation();
 
   const renderItem = ({item}) => (
     // <View style={[styles.imageContainer, {width: SCREEN_WIDTH}]}>
