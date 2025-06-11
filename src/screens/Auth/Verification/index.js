@@ -51,6 +51,7 @@ const VerificationScreen = () => {
   // console.log(token);
   const [loading, setLoading] = useState(false);
   const {t} = useTranslation();
+  const today = new Date();
 
   const [formData, setFormData] = useState({
     fullName: '',
@@ -70,6 +71,7 @@ const VerificationScreen = () => {
   const [originalData, setOriginalData] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [showSubmit, setShowSubmit] = useState(false);
+  const [isEditable, setIsEditable] = useState(true);
   // States for date pickers
   const [openDob, setOpenDob] = useState(false);
   const [openIssueDate, setOpenIssueDate] = useState(false);
@@ -99,7 +101,10 @@ const VerificationScreen = () => {
         });
         // console.log('API CALLED:', res);
 
-        if (res?.data?.data?.status === 2 && res?.data?.data) {
+        if (
+          res?.data?.data?.status === 2 ||
+          (res?.data?.data?.status === 1 && res?.data?.data)
+        ) {
           const data = res?.data?.data;
           console.log('API VERIFICATION DATA: ', res.data);
           setVerificationData(res.data.data);
@@ -166,9 +171,18 @@ const VerificationScreen = () => {
               : null,
             selfie: data.selfie ? `${BASE_URL}${data.selfie}` : null,
           });
+          // Disable submit button and input fields if status is 1
+          if (res?.data?.data?.status === 1) {
+            setShowSubmit(false);
+            setIsEditable(false);
+          } else {
+            setShowSubmit(true);
+            setIsEditable(true);
+          }
         } else {
           setIsVerified(false);
           setShowSubmit(true);
+          setIsEditable(true);
         }
       } catch (error) {
         console.error('Error fetching verification data:', error);
@@ -450,7 +464,12 @@ const VerificationScreen = () => {
       }
       console.log('API Response:', response.data);
       if (response.status === 200 && response.data.success) {
-        Alert.alert('Success', 'Verification completed!');
+        if (isVerified) {
+          Alert.alert('Success', 'Verification in progress!');
+        } else {
+          Alert.alert('Success', 'Verification completed!');
+        }
+
         navigation.navigate('MainTabs', {
           screen: 'Profile',
         });
@@ -539,7 +558,7 @@ const VerificationScreen = () => {
           <View style={styles.inputContainer}>
             <Text style={styles.label}>{t('fullName')}</Text>
             <TextInput
-              // editable={!isVerified}
+              editable={isEditable}
               style={styles.input}
               placeholder={t('enterFullName')}
               value={formData.fullName}
@@ -672,8 +691,12 @@ const VerificationScreen = () => {
                 openIssueDate,
                 setOpenIssueDate,
                 handleIssueDateChange,
-                null, // No maximum date for issue date
-                minIssueDate, // Minimum date is 20 years ago
+                today, // ⛔ Issue date cannot be in future
+                new Date(
+                  today.getFullYear() - 30,
+                  today.getMonth(),
+                  today.getDate(),
+                ),
               )}
             </View>
             <View>
@@ -684,8 +707,8 @@ const VerificationScreen = () => {
                 openExpDate,
                 setOpenExpDate,
                 handleExpDateChange,
-                null, // No maximum date for expiry date
-                minExpDate, // Minimum date is today (can't expire in the past)
+                null, // ⛔ No max limit for expiry (can be far in future)
+                today, // ✅ Expiry can't be in the past
               )}
             </View>
           </View>
