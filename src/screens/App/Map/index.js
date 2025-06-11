@@ -103,7 +103,7 @@ export default function MapScreen() {
   const initialLocationRequestedRef = useRef(false);
   const focusLocationOnNextReadyRef = useRef(false);
   const maxRetries = 3;
-
+  const flatListRef = useRef(null);
   const categories = useSelector(state => state.category.categories);
 
   // Memoize format price function
@@ -221,6 +221,15 @@ export default function MapScreen() {
     activeCategory,
     isAnimating,
   ]);
+
+  useEffect(() => {
+    if (selectedProductsGroup && flatListRef.current) {
+      // Small delay to ensure FlatList has rendered
+      setTimeout(() => {
+        flatListRef.current.scrollToOffset({offset: 0, animated: false});
+      }, 100);
+    }
+  }, [selectedProductsGroup]);
 
   // Static MapView props to prevent unnecessary updates
   const mapViewProps = useMemo(
@@ -656,6 +665,7 @@ export default function MapScreen() {
             </View>
 
             <FlatList
+              ref={flatListRef}
               data={selectedProductsGroup}
               horizontal
               showsHorizontalScrollIndicator={false}
