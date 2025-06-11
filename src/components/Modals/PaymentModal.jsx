@@ -13,11 +13,13 @@ import {CloseSvg} from '../../assets/svg';
 import {placeOrder} from '../../api/apiServices';
 import {useSelector} from 'react-redux';
 import {colors} from '../../util/color';
+import { useTranslation } from 'react-i18next';
 
 const PaymentModal = ({visible, onClose, onSelectPaymentMethod}) => {
   const {token} = useSelector(state => state.user);
   const [loading, setLoading] = useState(false);
   const [selectedMethod, setSelectedMethod] = useState('CARD');
+const {t} = useTranslation();
 
   const handleOrderSubmit = async () => {
     setLoading(true);

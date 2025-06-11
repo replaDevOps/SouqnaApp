@@ -5,10 +5,12 @@ import {useNavigation} from '@react-navigation/native';
 import Regular from '../../../typography/RegularText';
 import styles from './style';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 
 const DesignScreen = () => {
   const navigation = useNavigation();
   const [selectedOption, setSelectedOption] = useState('light');
+  const {t} = useTranslation();
 
   const handleBack = () => {
     navigation.goBack();
@@ -21,12 +23,11 @@ const DesignScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" />
-      <ModalHeader title="Design" onBack={handleBack} />
+      <ModalHeader title={t('Design')} onBack={handleBack} />
 
       <View style={styles.menuContainer}>
         <Regular style={styles.regularText}>
-          The dark design protects your battery and saves a lot of energy. Good
-          for you, good for the environment.
+         {t('designDescription')}
         </Regular>
 
         <TouchableOpacity
@@ -34,7 +35,7 @@ const DesignScreen = () => {
           onPress={() => {
             console.log('System Default Pressed');
           }}>
-          <Regular style={styles.menuText}>System Default</Regular>
+          <Regular style={styles.menuText}>{t('System Default')}</Regular>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -47,7 +48,7 @@ const DesignScreen = () => {
             ]}>
             {selectedOption === 'dark' && <View style={styles.radioDot} />}
           </View>
-          <Text style={styles.menuText}>Dark Design</Text>
+          <Text style={styles.menuText}>{t('Dark Design')}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -60,7 +61,7 @@ const DesignScreen = () => {
             ]}>
             {selectedOption === 'light' && <View style={styles.radioDot} />}
           </View>
-          <Text style={styles.menuText}>Light Design</Text>
+          <Text style={styles.menuText}>{t('Light Design')}</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>

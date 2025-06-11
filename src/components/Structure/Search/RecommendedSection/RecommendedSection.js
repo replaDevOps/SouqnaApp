@@ -148,9 +148,9 @@ const RecommendedSection = ({
       {!hideTitle && (
         <Bold style={[{marginVertical: mvs(20)}, styles.recommendedText]}>
           {role === 2
-            ? t('Your Listings')
+            ? t('yourListings')
             : role === 3
-            ? t('Recommended For You')
+            ? t('recommendedForYou')
             : ''}
         </Bold>
       )}

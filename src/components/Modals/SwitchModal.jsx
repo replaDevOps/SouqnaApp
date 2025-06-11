@@ -14,6 +14,7 @@ import { colors } from '../../util/color';
 import { mvs } from '../../util/metrices';
 import { t } from 'i18next';
 import { useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 
 // RadioGroup component for seller type selection
 const RadioGroup = ({ options, selectedOption, onSelect }) => {
@@ -48,6 +49,9 @@ export default function SwitchModal({
     const [NewPassword, setNewPassword] = useState('');
     const currentRole = role;
     const { actualRole } = useSelector(state => state.user);
+    const {t} = useTranslation();
+    
+    
 
     const handleSubmit = () => {
        if(password===NewPassword){

@@ -26,11 +26,13 @@ import Regular from '../../../typography/RegularText';
 import {HeartSvg} from '../../../assets/svg';
 import Bold from '../../../typography/BoldText';
 import styles from './styles';
+import { useTranslation } from 'react-i18next';
 
 const Products = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [likedItems, setLikedItems] = useState({});
+    const {t} = useTranslation();
 
   const {role, id: userId} = useSelector(state => state.user);
   const favorites = useSelector(state => state.favorites.favorites);
@@ -144,7 +146,7 @@ const Products = () => {
             source={require('../../../assets/img/empty.png')}
             style={{width: '90%', resizeMode: 'contain', height: mvs(200)}}
           />
-          <Bold>No Listings Right Now</Bold>
+          <Bold>{t('No Listings Right Now')}</Bold>
         </View>
       ) : (
         <FlatList

@@ -13,6 +13,7 @@ import {colors} from '../../config/colors';
 import {mvs} from '../../config/metrices';
 
 const DeleteModal = ({visible, onClose}) => {
+    const {t} = useTranslation();
   return (
     <Modal
       visible={visible}

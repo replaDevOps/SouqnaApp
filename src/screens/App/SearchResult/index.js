@@ -101,7 +101,7 @@ const SearchResultsScreen = () => {
         resizeMode="contain"
       />
       <Bold style={styles.emptyText}>
-        {searchText ? 'No matching products found.' : 'Start Searching...'}
+        {searchText ? t('noMatchingProducts') : t('startSearching')}
       </Bold>
     </View>
   );
@@ -109,7 +109,7 @@ const SearchResultsScreen = () => {
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
       <StatusBar barStyle="dark-content" translucent backgroundColor="#fff" />
-      <MainHeader title={'Search'} onClose={handleClose} showBackIcon />
+      <MainHeader title={t('search')} onClose={handleClose} showBackIcon />
       <SearchHeader
         onFocusSearch={() => {}}
         isSearchMode={true}

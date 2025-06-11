@@ -19,9 +19,12 @@ import {colors} from '../../util/color';
 import {mvs} from '../../util/metrices';
 import Regular from '../../typography/RegularText';
 import {useNavigation} from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 
 const HelpModal = ({visible, onClose}) => {
   const navigation = useNavigation();
+  const {t} = useTranslation();
+  
   return (
     <Modal
       animationType="slide"

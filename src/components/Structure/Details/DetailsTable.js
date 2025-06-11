@@ -1,8 +1,10 @@
 import React, {useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import {mvs} from '../../../util/metrices';
+import { useTranslation } from 'react-i18next';
 
 const CarDetailsCard = ({ProductData}) => {
+  const {t} = useTranslation();
   const [isExpanded, setIsExpanded] = useState(false);
 
   // Parse custom fields data
@@ -45,8 +47,8 @@ const CarDetailsCard = ({ProductData}) => {
   // Format field values for better display
   const formatFieldValue = (value) => {
     if (value === null || value === undefined) return 'N/A';
-    if (typeof value === 'boolean') return value ? 'Yes' : 'No';
-    if (typeof value === 'string' && value.trim() === '') return 'N/A';
+    if (typeof value === 'boolean') return value ? t('Yes') : t('No');
+    if (typeof value === 'string' && value.trim() === '') return t('N/A');
     return String(value);
   };
 
@@ -59,13 +61,7 @@ const CarDetailsCard = ({ProductData}) => {
 
   // If no custom fields, show a message
   if (allDetails.length === 0) {
-    return (
-      <View style={styles.container}>
-        <View style={styles.noDataContainer}>
-          <Text style={styles.noDataText}>No details available</Text>
-        </View>
-      </View>
-    );
+    return ;
   }
 
   const initialShowCount = 6;
@@ -104,7 +100,7 @@ const CarDetailsCard = ({ProductData}) => {
             onPress={toggleExpansion}
             style={styles.toggleButton}>
             <Text style={styles.toggleText}>
-              {isExpanded ? 'View Less' : `View +${remainingCount} More`}
+              {isExpanded ? t('viewLess') :  `${t('view')} +${remainingCount} ${t('more')}`}
               {' '}
               <Text style={styles.arrow}>
                 {isExpanded ? '▲' : '▼'}

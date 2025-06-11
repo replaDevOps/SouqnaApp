@@ -33,7 +33,7 @@ const SubCategoryScreen = () => {
     <View style={styles.container}>
       <CategoryHeader title={category} onBack={handleBack} />
       <View style={styles.headerContainer}>
-        <Regular style={styles.header}>{t('subcategoryScreen.allIn')}{category}</Regular>
+        <Regular style={styles.header}>{t('subcategoryAllIn')}{category}</Regular>
       </View>
       <View style={styles.content}>
         <FlatList
