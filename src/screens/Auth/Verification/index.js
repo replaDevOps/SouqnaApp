@@ -526,7 +526,7 @@ const VerificationScreen = () => {
       <Text style={styles.label}>{label}</Text>
       <TouchableOpacity
         style={styles.dateInput}
-        onPress={() => setOpenState(true)}>
+        onPress={isEditable ? () => setOpenState(true) : undefined}>
         <Text style={formData[key] ? styles.dateText : styles.datePlaceholder}>
           {formData[key] || placeholder}
         </Text>
@@ -581,20 +581,27 @@ const VerificationScreen = () => {
           {/* Gender Radio Buttons */}
           <View style={styles.inputContainer}>
             <Text style={styles.label}>{t('gender')}</Text>
+
             <View style={styles.radioGroup}>
               <RadioButton
                 selected={formData.gender === 'male'}
-                onPress={() => handleGenderSelect('male')}
+                onPress={
+                  isEditable ? () => handleGenderSelect('male') : undefined
+                }
                 label={t('male')}
               />
               <RadioButton
                 selected={formData.gender === 'female'}
-                onPress={() => handleGenderSelect('female')}
+                onPress={
+                  isEditable ? () => handleGenderSelect('female') : undefined
+                }
                 label={t('female')}
               />
               <RadioButton
                 selected={formData.gender === 'other'}
-                onPress={() => handleGenderSelect('other')}
+                onPress={
+                  isEditable ? () => handleGenderSelect('other') : undefined
+                }
                 label={t('other')}
               />
             </View>
@@ -622,6 +629,7 @@ const VerificationScreen = () => {
                 borderWidth: 1,
                 borderColor: '#ccc', // Optional: match dropdown container too
               }}
+              disabled={!isEditable}
             />
           </View>
 
@@ -641,7 +649,7 @@ const VerificationScreen = () => {
               <View key={key} style={styles.inputContainer}>
                 <Text style={styles.label}>{t(`${key}`)}</Text>
                 <TextInput
-                  // editable={!isVerified}
+                  editable={isEditable}
                   style={styles.input}
                   placeholder={placeholderMap[key]}
                   value={formData[key]}
@@ -656,12 +664,14 @@ const VerificationScreen = () => {
               <RadioButton
                 label="Cnic"
                 selected={idType === 'cnic'}
-                onPress={() => setIdType('cnic')}
+                onPress={isEditable ? () => setIdType('cnic') : undefined}
               />
               <RadioButton
                 label="Driving License"
                 selected={idType === 'drivingLicense'}
-                onPress={() => setIdType('drivingLicense')}
+                onPress={
+                  isEditable ? () => setIdType('drivingLicense') : undefined
+                }
                 style={{marginLeft: 'auto'}}
               />
             </View>
@@ -671,6 +681,7 @@ const VerificationScreen = () => {
             <Text style={styles.label}>{t('idNumber')}</Text>
 
             <TextInput
+              editable={isEditable}
               style={styles.input}
               value={formData.idNumber}
               onChangeText={text => handleInputChange('idNumber', text)}
