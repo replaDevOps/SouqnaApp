@@ -470,7 +470,7 @@ const VerificationScreen = () => {
           Alert.alert('Success', 'Verification completed!');
         }
 
-        navigation.navigate('MainTabs', {
+        navigation.replace('MainTabs', {
           screen: 'Profile',
         });
       } else if (

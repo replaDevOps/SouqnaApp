@@ -21,6 +21,7 @@ import {CommonActions, useNavigation} from '@react-navigation/native';
 import SwitchModal from '../Modals/SwitchModal';
 import {switchUserRole} from '../../api/apiServices'; // Updated to match the import from your document
 import {SafeAreaView} from 'react-native-safe-area-context';
+import {showSnackbar} from '../../redux/slices/snackbarSlice';
 // const {height} = Dimensions.get('window');
 
 // const headerHeight = height * 0.28;
@@ -70,7 +71,7 @@ export default function ProfileHeader({OnPressLogout, onRoleSwitch}) {
         ? t('Switched to Seller Account')
         : t('Switched to Buyer Account');
 
-      setSnackbarMessage(message);
+      dispatch(showSnackbar(message));
       setSnackbarVisible(true);
     } else if (
       actualRole === '2' ||
@@ -81,9 +82,7 @@ export default function ProfileHeader({OnPressLogout, onRoleSwitch}) {
       // Only show modal for standard buyer/seller switching
       setModalVisible(true);
     } else {
-      // Fallback (optional)
-      setSnackbarMessage(t('Role switching not permitted.'));
-      setSnackbarVisible(true);
+      dispatch(showSnackbar(t('Role switching not permitted.')));
     }
   };
 
@@ -101,14 +100,11 @@ export default function ProfileHeader({OnPressLogout, onRoleSwitch}) {
         setModalVisible(false);
         updateRole();
       } else {
-        // Show error message in snackbar
-        setSnackbarMessage(response.error || t('Failed to switch account'));
-        setSnackbarVisible(true);
+        dispatch(showSnackbar(response.error || t('Failed to switch account')));
       }
     } catch (error) {
       console.error('Error in handleModalSubmit:', error);
-      setSnackbarMessage(t('An error occurred. Please try again.'));
-      setSnackbarVisible(true);
+      dispatch(showSnackbar(t('An error occurred. Please try again.')));
     } finally {
       setIsLoading(false);
     }
@@ -126,8 +122,8 @@ export default function ProfileHeader({OnPressLogout, onRoleSwitch}) {
         ? t('Switched to Buyer Account')
         : t('Switched to Seller Account');
     // Update snackbar message and show it
-    setSnackbarMessage(message);
-    setSnackbarVisible(true);
+    dispatch(showSnackbar(message));
+
     // Update local state for the toggle button
     setIsSellerOn(activeRole === '3' || activeRole === 3); // Reset since we're now role 4
     // Fade-out animation
