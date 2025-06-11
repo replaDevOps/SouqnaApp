@@ -101,7 +101,7 @@ const Chat = () => {
         const messagesData = querySnapshot.docs.map(doc => {
           const firebaseData = doc.data();
 
-          // Convert Firestore timestamp to Date
+          
           const createdAt = firebaseData.createdAt
             ? firebaseData.createdAt.toDate()
             : new Date();
@@ -119,7 +119,7 @@ const Chat = () => {
           };
         });
 
-        // Sort messages by date (newest first)
+      
         const sortedMessages = messagesData.sort(
           (a, b) => b.createdAt.getTime() - a.createdAt.getTime(),
         );
@@ -127,20 +127,14 @@ const Chat = () => {
         setMessages(sortedMessages);
         setIsLoading(false);
       },
-      // (error) => {
-      //   console.error('Error loading messages:', error);
-      //   setIsLoading(false);
-      //   Alert.alert('Error', 'Failed to load messages. Please try again later.');
-      // },
-      null, // No need for startAfter parameter
-      1000, // Get a large number of messages since we're loading all at once
+     
+      null,
+      1000, 
     );
 
-    // Store the unsubscribe function
     messagesListenerRef.current = unsubscribe;
 
     return () => {
-      // Clean up listener on unmount
       if (messagesListenerRef.current) {
         messagesListenerRef.current();
       }
@@ -149,8 +143,6 @@ const Chat = () => {
 
   useEffect(() => {
   const sendProductInfoMessage = async () => {
-    // Send product info message whenever the chat is opened with product info
-    // Remove the condition checking for messages.length === 0
     if (productInfo && !isLoading) {
       try {
         const productMessage = {
@@ -172,7 +164,6 @@ const Chat = () => {
     }
   };
 
-  // Small delay to ensure the messages have been loaded
   const timer = setTimeout(sendProductInfoMessage, 1000);
   return () => clearTimeout(timer);
 }, [
@@ -181,19 +172,21 @@ const Chat = () => {
   conversationId,
   userId,
   currentUserName,
-  // Remove messages.length from dependencies
 ]);
-  // Remove loadEarlierMessages function as we're loading all messages at once
 
   const onSend = useCallback(
     async (newMessages = []) => {
-      if (!conversationId || !userId || !token || newMessages.length === 0|| newMessages.trim() === ''|| !newMessages) {
-        return;
-      }
+    if (!conversationId || !userId || !token || newMessages.length === 0) {
+      return;
+    }
 
-      const messageToSend = newMessages[0];
+    const messageToSend = newMessages[0];
+    
+    if (!messageToSend.text || messageToSend.text.trim() === '') {
+      return;
+    }
 
-      try {
+      try {S
         // Optimistically update UI before Firebase confirms
         setMessages(previousMessages =>
           GiftedChat.append(previousMessages, newMessages),
