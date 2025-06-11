@@ -20,6 +20,7 @@ import {
   fetchSellerProducts,
 } from '../../../api/apiServices';
 import ProductCard from '../../../components/Cards/ProductCard';
+import { useTranslation } from 'react-i18next';
 
 const SearchResultsScreen = () => {
   const route = useRoute();
@@ -30,6 +31,7 @@ const SearchResultsScreen = () => {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const {token, role} = useSelector(state => state.user);
+  const {t} = useTranslation();
 
   useEffect(() => {
     loadProducts();
