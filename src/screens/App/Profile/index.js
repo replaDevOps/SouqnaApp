@@ -224,7 +224,7 @@ const Profile = () => {
                     </View>
                     <Regular style={styles.menuText}>
                       {verificationStatus === 2 || verificationStatus === 1
-                        ? t('updateProfile')
+                        ? t('Update Information')
                         : t('getVerified')}
                     </Regular>
                   </View>
