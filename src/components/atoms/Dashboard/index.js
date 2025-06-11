@@ -9,7 +9,6 @@ import {
 import Svg, {Path, G, Text as SvgText} from 'react-native-svg';
 import styles from './styles';
 import {mvs} from '../../../util/metrices';
-import {colors} from '../../../util/color';
 import {useSelector} from 'react-redux';
 import API from '../../../api/apiServices';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -90,10 +89,12 @@ const ProductDashboard = () => {
 
     // Get all currently used colors to avoid duplicates
     const usedColors = new Set(Object.values(updatedColorMap));
-    
+
     // Create a shuffled copy of available colors to ensure better distribution
-    const availableColors = colorPalette.filter(color => !usedColors.has(color));
-    
+    const availableColors = colorPalette.filter(
+      color => !usedColors.has(color),
+    );
+
     // If we've run out of unique colors, we'll need to reuse some
     // But we'll try to pick colors that are least recently used
     let colorIndex = 0;
@@ -102,7 +103,7 @@ const ProductDashboard = () => {
     categories.forEach(category => {
       if (!updatedColorMap[category.name]) {
         let assignedColor;
-        
+
         if (availableColors.length > 0) {
           // Use an available unique color
           assignedColor = availableColors.shift();
@@ -112,7 +113,7 @@ const ProductDashboard = () => {
           assignedColor = colorPalette[colorIndex % colorPalette.length];
           colorIndex++;
         }
-        
+
         updatedColorMap[category.name] = assignedColor;
         usedColors.add(assignedColor);
         hasNewCategories = true;

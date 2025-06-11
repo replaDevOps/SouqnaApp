@@ -10,7 +10,7 @@ import {
   Linking,
   Dimensions,
 } from 'react-native';
-import {CloseSvg, SouqnaLogo} from '../../assets/svg';
+import {CloseSvg} from '../../assets/svg';
 import {colors} from '../../util/color';
 import Regular from '../../typography/RegularText';
 import {mvs} from '../../util/metrices';

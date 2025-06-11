@@ -1,11 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import {
   View,
-  ScrollView,
   StatusBar,
   StyleSheet,
   Image,
-  Text,
   ActivityIndicator,
   FlatList,
 } from 'react-native';

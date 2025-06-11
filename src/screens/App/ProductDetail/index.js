@@ -24,7 +24,6 @@ import {
 } from '../../../redux/slices/favoritesSlice';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {mvs} from '../../../util/metrices';
-import ProductMenu from '../../../components/Structure/ProductMenu/ProductMenu';
 import {colors} from '../../../util/color';
 import {MarkerSVG} from '../../../assets/svg';
 import ShareActions from '../../../components/Structure/ShareAction/ShareAction';

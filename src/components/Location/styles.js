@@ -1,7 +1,6 @@
-import { View, Text, StyleSheet } from 'react-native'
-import React from 'react'
-import { mvs } from '../../util/metrices';
-import { colors } from '../../util/color';
+import {StyleSheet} from 'react-native';
+import {mvs} from '../../util/metrices';
+import {colors} from '../../util/color';
 
 export const styles = StyleSheet.create({
   container: {
@@ -18,7 +17,7 @@ export const styles = StyleSheet.create({
   map: {
     flex: 1,
   },
-  
+
   // Search Bar Styles (Google Maps style)
   searchBarContainer: {
     position: 'absolute',
@@ -36,7 +35,7 @@ export const styles = StyleSheet.create({
     paddingVertical: mvs(12),
     elevation: 5,
     shadowColor: colors.black,
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.2,
     shadowRadius: 4,
   },
@@ -80,7 +79,7 @@ export const styles = StyleSheet.create({
     borderRadius: mvs(10),
     elevation: 3,
     shadowColor: colors.black,
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.1,
     shadowRadius: 3,
   },
@@ -102,7 +101,7 @@ export const styles = StyleSheet.create({
     marginBottom: mvs(10),
     elevation: 3,
     shadowColor: colors.black,
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.2,
     shadowRadius: 3,
   },
@@ -118,7 +117,7 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     elevation: 3,
     shadowColor: colors.black,
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.2,
     shadowRadius: 3,
   },
@@ -134,7 +133,7 @@ export const styles = StyleSheet.create({
     padding: mvs(15),
     elevation: 3,
     shadowColor: colors.black,
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.2,
     shadowRadius: 3,
   },
@@ -258,4 +257,3 @@ export const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
-  

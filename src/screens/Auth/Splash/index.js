@@ -2,7 +2,6 @@ import React, {useEffect} from 'react';
 import {View, Animated, Image} from 'react-native';
 import {mvs} from '../../../util/metrices';
 import styles from './styles';
-import SouqnaLogo1 from '../../../assets/svg/logo-svg';
 
 const SplashScreen = ({navigation}) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps

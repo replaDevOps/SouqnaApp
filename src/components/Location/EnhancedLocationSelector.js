@@ -1,16 +1,10 @@
 // EnhancedLocationSelector.js (Parent Component)
-import React, { useState, useEffect } from 'react';
-import {
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  Text,
-  Modal,
-} from 'react-native';
-import { mvs } from '../../util/metrices';
+import React, {useState, useEffect} from 'react';
+import {View, StyleSheet, TouchableOpacity, Text} from 'react-native';
+import {mvs} from '../../util/metrices';
 // import {CloseSvg, SearchSVG} from '../assets/svg';
-import { CloseSvg, SearchSVG } from '../../assets/svg';
-import { colors } from '../../util/color';
+import {CloseSvg, SearchSVG} from '../../assets/svg';
+import {colors} from '../../util/color';
 import LocationModal from './LocationModal';
 
 const EnhancedLocationSelector = ({
@@ -33,21 +27,21 @@ const EnhancedLocationSelector = ({
     setIsModalVisible(false);
   };
 
-  const handleLocationSelected = (locationData) => {
+  const handleLocationSelected = locationData => {
     // Use 'address' instead of 'location'
     setText(locationData.address || locationData.location);
     onPlaceSelected({
       location: locationData.address,
       lat: locationData.latitude,
       long: locationData.longitude,
-      ...locationData
+      ...locationData,
     });
     closeModal();
   };
 
   const clearLocation = () => {
     setText('');
-    onPlaceSelected({ location: '', lat: '', long: '' });
+    onPlaceSelected({location: '', lat: '', long: ''});
   };
 
   return (

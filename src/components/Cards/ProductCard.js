@@ -2,7 +2,6 @@ import React from 'react';
 import {View, TouchableOpacity, Image, StyleSheet} from 'react-native';
 import {useSelector} from 'react-redux';
 import Regular from '../../typography/RegularText';
-import {HeartSvg} from '../../assets/svg';
 import {mvs} from '../../util/metrices';
 import {colors} from '../../util/color';
 import {BASE_URL_Product} from '../../api/apiServices';
