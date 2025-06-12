@@ -12,6 +12,7 @@ import {colors} from '../../util/color';
 import {CallSVG, ChatSVG2, TrashSVG, UpdateSVG} from '../../assets/svg';
 import {useSelector} from 'react-redux';
 import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 const ProductFooter = ({
   onBuyPress,
@@ -29,7 +30,7 @@ const ProductFooter = ({
   const {token, role, id: userId} = useSelector(state => state.user);
   const isOwner = userId === productOwnerId; // or compare emails if needed
   const {t} = useTranslation();
-  
+
   const handleCallPress = () => {
     if (sellerPhone) {
       Linking.openURL(`tel:${sellerPhone}`);

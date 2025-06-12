@@ -1,14 +1,179 @@
 import axios from 'axios';
+import { store } from '../redux/store'; // Import your store
+import { updateTokens, logoutUser,setUser } from '../redux/slices/userSlice';
+import { useSelector } from 'react-redux';
+import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+import utc from 'dayjs/plugin/utc';
+
+dayjs.extend(customParseFormat);
+dayjs.extend(utc);
 
 const API = axios.create({
   baseURL: 'https://backend.souqna.net/api/',
   timeout: 10000,
   withCredentials: true,
 });
+
 export const BASE_URL = 'https://backend.souqna.net/';
 export const BASE_URL_Product = 'https://backend.souqna.net';
 
-// api/uploadProductImages.js
+let isRefreshing = false;
+let failedQueue = [];
+
+// Process queued requests after token refresh
+const processQueue = (error, token = null) => {
+  failedQueue.forEach(({ resolve, reject }) => {
+    if (error) {
+      reject(error);
+    } else {
+      resolve(token);
+    }
+  });
+  
+  failedQueue = [];
+};
+
+
+const refreshTokenAPI = async (refreshToken) => {
+  try {
+    const response = await axios.post(
+      'https://backend.souqna.net/api/refreshToken',
+      { refreshToken },
+      {
+        headers: { 'Content-Type': 'application/json' },
+      }
+    );
+    console.log('{Refresh token Sucess}', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Refresh token error:', error);
+    throw error;
+  }
+};
+
+// Enhanced token validation and refresh logic with queue support
+const handleTokenRefresh = async () => {
+  console.log('🔍 Checking token status...');
+
+  const state = store.getState();
+  const { tokens } = state.user;
+
+  if (!tokens.accessToken || !tokens.refreshToken) {
+    console.log('❌ No tokens found');
+    return null;
+  }
+
+  const currentTime = dayjs.utc();
+  const accessTokenExpiry = dayjs.utc(tokens.accessTokenExpiry, 'YYYY-MM-DD HH:mm:ss');
+console.log('🕒 Current UTC:', currentTime.format());
+console.log('📅 Expiry UTC:', accessTokenExpiry.format());
+
+
+const shouldRefresh = currentTime.isAfter(accessTokenExpiry.subtract(1, 'minute'));
+
+  if (shouldRefresh) {
+    console.log('🔄 Access token expired/expiring soon, attempting refresh...');
+
+    if (isRefreshing) {
+      console.log('⏳ Token refresh in progress, queuing request...');
+      return new Promise((resolve, reject) => {
+        failedQueue.push({ resolve, reject });
+      });
+    }
+
+    isRefreshing = true;
+
+    try {
+      const refreshResponse = await refreshTokenAPI(tokens.refreshToken);
+
+      if (refreshResponse.success) {
+        store.dispatch(updateTokens({
+          accessToken: refreshResponse.accessToken,
+          refreshToken: refreshResponse.refreshToken || tokens.refreshToken,
+          accessTokenExpiry: refreshResponse.tokenExpire,
+        }));
+
+        // store.dispatch(setUser({
+        //   token: refreshResponse.accessToken,
+        // }));
+
+        console.log('✅ Tokens refreshed successfully');
+        processQueue(null, refreshResponse.accessToken);
+        return refreshResponse.accessToken;
+      } else {
+        console.log('❌ Token refresh failed, logging out...');
+        store.dispatch(logoutUser());
+        processQueue(new Error('Token refresh failed'), null);
+        return null;
+      }
+    } catch (error) {
+      console.error('❌ Token refresh failed:', error);
+      store.dispatch(logoutUser());
+      processQueue(error, null);
+      return null;
+    } finally {
+      isRefreshing = false;
+    }
+  }
+
+  console.log('✅ Access token is still valid');
+  return tokens.accessToken;
+};
+
+
+// REQUEST INTERCEPTOR with queue support
+API.interceptors.request.use(
+  async (config) => {
+    if (!config.headers.Authorization) {
+      const validToken = await handleTokenRefresh();
+      if (validToken) {
+        config.headers.Authorization = `Bearer ${validToken}`;
+      }
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+// RESPONSE INTERCEPTOR with enhanced queue handling
+API.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+
+      // If refresh is in progress, queue the retry request
+      if (isRefreshing) {
+        console.log('⏳ Queuing 401 retry request...');
+        return new Promise((resolve, reject) => {
+          failedQueue.push({
+            resolve: (token) => {
+              if (token) {
+                originalRequest.headers.Authorization = `Bearer ${token}`;
+                resolve(API(originalRequest));
+              } else {
+                reject(new Error('Token refresh failed'));
+              }
+            },
+            reject
+          });
+        });
+      }
+
+      const validToken = await handleTokenRefresh();
+
+      if (validToken) {
+        originalRequest.headers.Authorization = `Bearer ${validToken}`;
+        return API(originalRequest);
+      }
+    }
+
+    return Promise.reject(error);
+  }
+);
 
 export const uploadProductImages = async (productId, imageFiles, token) => {
   const formData = new FormData();
@@ -41,7 +206,7 @@ export const uploadProductImages = async (productId, imageFiles, token) => {
     return response.data;
   } catch (error) {
     console.error('Upload error:', error.response?.data || error.message);
-    return {success: false, message: error.message};
+    return { success: false, message: error.message };
   }
 };
 
@@ -49,7 +214,7 @@ export const fetchCategories = async token => {
   try {
     const response = await API.get('viewCategories', {
       headers: {
-        ...(token && {Authorization: `Bearer ${token}`}),
+        ...(token && { Authorization: `Bearer ${token}` }),
       },
     });
     return response.data;
@@ -227,9 +392,9 @@ export const getProduct = async (
         ? `getProduct/${productId}`
         : `productDetails/${productId}`;
 
-    const headers = token ? {Authorization: `Bearer ${token}`} : {};
+    const headers = token ? { Authorization: `Bearer ${token}` } : {};
 
-    const response = await API.get(endpoint, {headers});
+    const response = await API.get(endpoint, { headers });
     return response.data;
   } catch (error) {
     console.error(
@@ -324,7 +489,7 @@ export const fetchNotifications = async (token, role) => {
       endpoint = 'viewAllNotificaionsSeller';
       response = await API.get(
         endpoint,
-        {amount: 200},
+        { amount: 200 },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -359,7 +524,7 @@ export const submitCardDetails = async (cardData, token) => {
     const response = await API.post('subscription', cardData, {
       headers: {
         'Content-Type': 'application/json',
-        ...(token && {Authorization: `Bearer ${token}`}),
+        ...(token && { Authorization: `Bearer ${token}` }),
       },
     });
     return response.data;
@@ -395,7 +560,7 @@ export const resendOtp = async email => {
   try {
     const response = await API.post(
       'resendOtp', // replace with actual base URL
-      {email},
+      { email },
       {
         headers: {
           'Content-Type': 'application/json',
@@ -427,16 +592,16 @@ export const deleteProduct = async (productId, token) => {
   }
 };
 
-API.interceptors.request.use(
-  async config => {
-    // Example: Get token from AsyncStorage if needed
-    // const token = await AsyncStorage.getItem('token');
-    // if (token) {
-    //   config.headers.Authorization = `Bearer ${token}`;
-    // }
-    return config;
-  },
-  error => Promise.reject(error),
-);
+// API.interceptors.request.use(
+//   async config => {
+//     // Example: Get token from AsyncStorage if needed
+//     // const token = await AsyncStorage.getItem('token');
+//     // if (token) {
+//     //   config.headers.Authorization = `Bearer ${token}`;
+//     // }
+//     return config;
+//   },
+//   error => Promise.reject(error),
+// );
 
 export default API;
