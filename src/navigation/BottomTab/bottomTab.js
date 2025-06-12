@@ -38,7 +38,7 @@ const MyTabs = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [verificationModalVisible, setVerificationModalVisible] =
     useState(false);
-
+const {tokens} = useSelector(state => state.user);
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -51,6 +51,7 @@ const MyTabs = () => {
   const [isSeller, setIsSeller] = useState(
     activeRole === '2' || activeRole === 2,
   );
+console.log('{Tokens}',tokens);
 
   useEffect(() => {
     console.log('TOKEN: ', token);
