@@ -9,23 +9,15 @@ import {
 } from 'react-native';
 import {mvs} from '../../util/metrices';
 import {colors} from '../../util/color';
-import {
-  CallSVG,
-  CartSVG,
-  ChatSVG,
-  ChatSVG2,
-  TrashSVG,
-  UpdateSVG,
-} from '../../assets/svg';
+import {CallSVG, ChatSVG2, TrashSVG, UpdateSVG} from '../../assets/svg';
 import {useSelector} from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { useTranslation } from 'react-i18next';
 
 const ProductFooter = ({
   onBuyPress,
   onChatPress,
-  onCallPress,
   loadingChat,
-  loadingBuy,
   loadingUpdate,
   loadingDelete,
   handleUpdatePress,

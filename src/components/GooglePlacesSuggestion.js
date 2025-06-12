@@ -9,8 +9,6 @@ import {
   ActivityIndicator,
   Platform,
   PermissionsAndroid,
-  Alert,
-  Linking,
 } from 'react-native';
 import {mvs} from '../util/metrices';
 import {CloseSvg, SearchSVG} from '../assets/svg';
@@ -26,7 +24,7 @@ const GooglePlacesSuggestion = ({
   onPlaceSelected,
   initialValue = '',
   placeholder = 'Enter Location.....',
-  showlivelocation = true
+  showlivelocation = true,
 }) => {
   const [text, setText] = useState(initialValue);
   const [suggestions, setSuggestions] = useState([]);
@@ -35,11 +33,8 @@ const GooglePlacesSuggestion = ({
   const textInputRef = useRef(null);
   const [isPlaceSelected, setIsPlaceSelected] = useState(false);
   const [isFetchingLocation, setIsFetchingLocation] = useState(false);
-  const suggestionData = showlivelocation 
-    ? [
-        {isCurrentLocation: true, key: 'current-location'},
-        ...suggestions,
-      ]
+  const suggestionData = showlivelocation
+    ? [{isCurrentLocation: true, key: 'current-location'}, ...suggestions]
     : suggestions;
 
   // const handleCurrentLocationPress = async () => {
@@ -359,8 +354,8 @@ const GooglePlacesSuggestion = ({
               📍 Use your current location
             </Text>
           )}
-        </TouchableOpacity>)
-      }
+        </TouchableOpacity>
+      )}
 
       {loading && <ActivityIndicator style={{marginTop: mvs(5)}} />}
       {/* {suggestions.length > 0 && ( */}

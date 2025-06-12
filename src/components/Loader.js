@@ -1,13 +1,12 @@
-import React, { useEffect, useRef } from 'react';
-import { Animated, View, StyleSheet, Image } from 'react-native';
-import { mvs } from '../util/metrices';
+import React, {useEffect, useRef} from 'react';
+import {Animated, View, StyleSheet} from 'react-native';
 
-export default function Loader({ width, height, containerStyle }) {
+export default function Loader({width, height, containerStyle}) {
   const spinAnim = useRef(new Animated.Value(0)).current;
 
   const loaderWidth = width;
   const loaderHeight = height;
-  
+
   useEffect(() => {
     // Create continuous spinning animation
     Animated.loop(
@@ -16,21 +15,21 @@ export default function Loader({ width, height, containerStyle }) {
         duration: 500,
         useNativeDriver: true,
         isInteraction: false,
-      })
+      }),
     ).start();
-    
+
     // Clean up animation when component unmounts
     return () => {
       spinAnim.stopAnimation();
     };
   }, [spinAnim]);
-  
+
   // Map animation value to rotation degrees
   const spin = spinAnim.interpolate({
     inputRange: [0, 1],
     outputRange: ['0deg', '360deg'],
   });
-  
+
   return (
     <View style={styles.overlay}>
       <View style={[styles.container, containerStyle]}>
@@ -39,9 +38,9 @@ export default function Loader({ width, height, containerStyle }) {
           style={{
             width: loaderWidth,
             height: loaderHeight,
-            transform: [{ rotate: spin }],
+            transform: [{rotate: spin}],
             opacity: 0.9, // Reduced opacity for the loader image
-          }} 
+          }}
           resizeMode="contain"
         />
       </View>

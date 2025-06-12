@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';
 import React from 'react';
 import {mvs} from '../../../util/metrices';
 import {colors} from '../../../util/color';
@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
     borderColor: colors.primary,
     borderTopColor: 'transparent',
     backgroundColor: 'transparent',
-    transform: [{ rotate: '45deg' }],
+    transform: [{rotate: '45deg'}],
     opacity: 0.7,
   },
   productDetailContainer: {
@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ddd',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
+    shadowOffset: {width: 0, height: 1},
     shadowOpacity: 0.2,
     shadowRadius: 1.5,
     elevation: 2,
@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
     elevation: 1,
     shadowColor: '#000',
     shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 1 },
+    shadowOffset: {width: 0, height: 1},
     shadowRadius: 2,
   },
 
@@ -195,6 +195,7 @@ const styles = StyleSheet.create({
   // Keep these existing styles
   dropdownButton: {
     padding: 14,
+    paddingHorizontal: 10,
     left: 0,
     marginTop: mvs(3),
     position: 'absolute',
@@ -310,14 +311,14 @@ const styles = StyleSheet.create({
   loadingModal: {
     width: '30%',
     height: 70,
-    flexDirection:'row',
+    flexDirection: 'row',
     backgroundColor: 'white',
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 5,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
   },

@@ -9,11 +9,10 @@ import {
 import Svg, {Path, G, Text as SvgText} from 'react-native-svg';
 import styles from './styles';
 import {mvs} from '../../../util/metrices';
-import {colors} from '../../../util/color';
 import {useSelector} from 'react-redux';
 import API from '../../../api/apiServices';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 
 const ProductDashboard = () => {
   const [activeView, setActiveView] = useState('total'); // 'total' or 'monthly'
@@ -24,39 +23,45 @@ const ProductDashboard = () => {
 
   const {t} = useTranslation();
   // Color palette for categories - we'll use this as our base palette
+  // const colorPalette = [
+  // '#adbd6e', // base color
+  // '#c4da6a',
+  // '#d3e38a',
+  // '#a1c349',
+  // '#c1dc72',
+  // '#d8e8a7',
+  // '#b4ca59',
+  // '#9dbd3b',
+  // '#e3efb0',
+  // '#c9db7d',
+  //   '#2F4B7C',
+  //   '#665191',
+  //   '#A05195',
+  //   '#D45087',
+  //   '#F95D6A',
+  //   '#FF7C43',
+  //   '#FFA600',
+  //   '#003F5C',
+  //   '#58508D',
+  //   '#BC5090',
+  //   '#FF6361',
+  //   '#FFA600',
+  //   '#488F31',
+  //   '#DE425B',
+  //   '#0BB4FF',
+  //   '#8BD3C7',
+  //   '#7D8CC4',
+  //   '#D3A294',
+  //   '#A5BD78',
+  //   '#C47DCC',
+  // ];
   const colorPalette = [
-    // '#adbd6e', // base color
-    // '#c4da6a',
-    // '#d3e38a',
-    // '#a1c349',
-    // '#c1dc72',
-    // '#d8e8a7',
-    // '#b4ca59',
-    // '#9dbd3b',
-    // '#e3efb0',
-    // '#c9db7d',
-    '#2F4B7C',
-    '#665191',
-    '#A05195',
-    '#D45087',
-    '#F95D6A',
-    '#FF7C43',
-    '#FFA600',
-    '#003F5C',
-    '#58508D',
-    '#BC5090',
-    '#FF6361',
-    '#FFA600',
-    '#488F31',
-    '#DE425B',
-    '#0BB4FF',
-    '#8BD3C7',
-    '#7D8CC4',
-    '#D3A294',
-    '#A5BD78',
-    '#C47DCC',
+    '#003f5c', // Dark Teal
+    '#58508d', // Slate Purple
+    '#bc5090', // Plum Pink
+    '#ff6361', // Coral Red
+    '#ffa600', // Amber Yellow
   ];
-
   const {token} = useSelector(state => state.user);
 
   // Load saved category color mappings
@@ -90,10 +95,12 @@ const ProductDashboard = () => {
 
     // Get all currently used colors to avoid duplicates
     const usedColors = new Set(Object.values(updatedColorMap));
-    
+
     // Create a shuffled copy of available colors to ensure better distribution
-    const availableColors = colorPalette.filter(color => !usedColors.has(color));
-    
+    const availableColors = colorPalette.filter(
+      color => !usedColors.has(color),
+    );
+
     // If we've run out of unique colors, we'll need to reuse some
     // But we'll try to pick colors that are least recently used
     let colorIndex = 0;
@@ -102,7 +109,7 @@ const ProductDashboard = () => {
     categories.forEach(category => {
       if (!updatedColorMap[category.name]) {
         let assignedColor;
-        
+
         if (availableColors.length > 0) {
           // Use an available unique color
           assignedColor = availableColors.shift();
@@ -112,7 +119,7 @@ const ProductDashboard = () => {
           assignedColor = colorPalette[colorIndex % colorPalette.length];
           colorIndex++;
         }
-        
+
         updatedColorMap[category.name] = assignedColor;
         usedColors.add(assignedColor);
         hasNewCategories = true;

@@ -26,7 +26,6 @@ import {MyButton} from '../../../../components/atoms/InputFields/MyButton';
 import {colors} from '../../../../util/color';
 import {mvs} from '../../../../util/metrices';
 import {UploadSVG} from '../../../../assets/svg';
-import GooglePlacesSuggestion from '../../../../components/GooglePlacesSuggestion';
 import {useTranslation} from 'react-i18next';
 import PriceInputWithDropdown from '../../../../components/atoms/InputFields/PriceInputWithCurrency';
 import API from '../../../../api/apiServices';

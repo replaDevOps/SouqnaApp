@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 import {View, Image, Dimensions, StyleSheet} from 'react-native';
 import Carousel from 'react-native-reanimated-carousel';
-import ProductDashboard from './Dashboard';
 
 const {width} = Dimensions.get('window');
 

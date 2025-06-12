@@ -1,7 +1,6 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import {
   View,
-  StyleSheet,
   Text,
   TouchableOpacity,
   Alert,
@@ -15,23 +14,23 @@ import {
   SafeAreaView,
   Dimensions,
 } from 'react-native';
-import { colors } from '../../util/color';
+import {colors} from '../../util/color';
 import config from '../../util/config';
 import Geolocation from '@react-native-community/geolocation';
 import GooglePlacesSuggestion from '../GooglePlacesSuggestion';
 import i18n from '../../i18n/i18n';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 
 // For map functionality
-import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-import { CurrentLocationSVG } from '../../assets/svg';
-import { styles } from './styles';
+import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
+import {CurrentLocationSVG} from '../../assets/svg';
+import {styles} from './styles';
 
-const { width, height } = Dimensions.get('window');
+const {width, height} = Dimensions.get('window');
 const GOOGLE_PLACES_API_KEY = config.GOOGLE_PLACES_API_KEY;
 
-const LocationModal = ({ visible, onLocationSelected, onClose }) => {
-  const { t } = useTranslation();
+const LocationModal = ({visible, onLocationSelected, onClose}) => {
+  const {t} = useTranslation();
 
   // UI state
   const [currentView, setCurrentView] = useState('map');
@@ -91,7 +90,7 @@ const LocationModal = ({ visible, onLocationSelected, onClose }) => {
 
       Geolocation.getCurrentPosition(
         position => {
-          const { latitude, longitude } = position.coords;
+          const {latitude, longitude} = position.coords;
           const newLocation = {
             ...selectedLocation,
             latitude,
@@ -103,12 +102,15 @@ const LocationModal = ({ visible, onLocationSelected, onClose }) => {
 
           // Center map on new location with street level zoom
           if (mapRef.current) {
-            mapRef.current.animateToRegion({
-              latitude,
-              longitude,
-              latitudeDelta: 0.005, // Street level zoom
-              longitudeDelta: 0.005,
-            }, 1000);
+            mapRef.current.animateToRegion(
+              {
+                latitude,
+                longitude,
+                latitudeDelta: 0.005, // Street level zoom
+                longitudeDelta: 0.005,
+              },
+              1000,
+            );
           }
 
           // Get address for this location
@@ -121,17 +123,13 @@ const LocationModal = ({ visible, onLocationSelected, onClose }) => {
           if (error.code === 1) {
             Alert.alert(t('permissionDenied'), t('locationPermissionMessage'));
           } else if (error.code === 2 || error.code === 3) {
-            Alert.alert(
-              t('locationUnavailable'),
-              t('enableGPS'),
-              [
-                { text: 'Cancel', style: 'cancel' },
-                {
-                  text: t('openSettings'),
-                  onPress: () => Linking.openSettings(),
-                },
-              ],
-            );
+            Alert.alert(t('locationUnavailable'), t('enableGPS'), [
+              {text: 'Cancel', style: 'cancel'},
+              {
+                text: t('openSettings'),
+                onPress: () => Linking.openSettings(),
+              },
+            ]);
           }
         },
         {
@@ -152,7 +150,9 @@ const LocationModal = ({ visible, onLocationSelected, onClose }) => {
       setIsLoadingAddress(true);
       const currentLanguage = i18n.language;
       const response = await fetch(
-        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${GOOGLE_PLACES_API_KEY}&language=${currentLanguage === 'ar' ? 'ar' : 'en'}`,
+        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${GOOGLE_PLACES_API_KEY}&language=${
+          currentLanguage === 'ar' ? 'ar' : 'en'
+        }`,
       );
       const json = await response.json();
 
@@ -180,8 +180,8 @@ const LocationModal = ({ visible, onLocationSelected, onClose }) => {
   };
 
   // Handle map tap
-  const handleMapPress = (event) => {
-    const { latitude, longitude } = event.nativeEvent.coordinate;
+  const handleMapPress = event => {
+    const {latitude, longitude} = event.nativeEvent.coordinate;
     const newLocation = {
       ...selectedLocation,
       latitude,
@@ -192,8 +192,8 @@ const LocationModal = ({ visible, onLocationSelected, onClose }) => {
   };
 
   // Handle marker drag
-  const handleMarkerDragEnd = (event) => {
-    const { latitude, longitude } = event.nativeEvent.coordinate;
+  const handleMarkerDragEnd = event => {
+    const {latitude, longitude} = event.nativeEvent.coordinate;
     const newLocation = {
       ...selectedLocation,
       latitude,
@@ -204,7 +204,7 @@ const LocationModal = ({ visible, onLocationSelected, onClose }) => {
   };
 
   // Handle place selection from search
-  const handlePlaceSelected = (place) => {
+  const handlePlaceSelected = place => {
     if (place.lat && place.long) {
       const latitude = parseFloat(place.lat);
       const longitude = parseFloat(place.long);
@@ -221,12 +221,15 @@ const LocationModal = ({ visible, onLocationSelected, onClose }) => {
 
       // Center map on selected place with street level zoom
       if (mapRef.current) {
-        mapRef.current.animateToRegion({
-          latitude,
-          longitude,
-          latitudeDelta: 0.005,
-          longitudeDelta: 0.005,
-        }, 1000);
+        mapRef.current.animateToRegion(
+          {
+            latitude,
+            longitude,
+            latitudeDelta: 0.005,
+            longitudeDelta: 0.005,
+          },
+          1000,
+        );
       }
     }
     setShowSuggestions(false);
@@ -257,7 +260,6 @@ const LocationModal = ({ visible, onLocationSelected, onClose }) => {
   // Render the search bar (similar to Google Maps)
   const renderSearchBar = () => (
     <View style={styles.searchBarContainer}>
-
       {/* {showSuggestions && ( */}
       <View style={styles.searchBarContainer}>
         <GooglePlacesSuggestion
@@ -287,12 +289,15 @@ const LocationModal = ({ visible, onLocationSelected, onClose }) => {
       <TouchableOpacity
         style={styles.currentLocationButton}
         onPress={handleFindMyLocation}
-        disabled={isLoadingLocation}
-      >
+        disabled={isLoadingLocation}>
         {isLoadingLocation ? (
           <ActivityIndicator size="small" color={colors.lightgreen} />
         ) : (
-          <CurrentLocationSVG width={24} height={24} color={colors.lightgreen} />
+          <CurrentLocationSVG
+            width={24}
+            height={24}
+            color={colors.lightgreen}
+          />
         )}
       </TouchableOpacity>
     </View>
@@ -317,8 +322,7 @@ const LocationModal = ({ visible, onLocationSelected, onClose }) => {
         showsUserLocation={true}
         showsMyLocationButton={false}
         mapType="standard"
-        followsUserLocation={false}
-      >
+        followsUserLocation={false}>
         <Marker
           coordinate={{
             latitude: selectedLocation.latitude,
@@ -337,14 +341,17 @@ const LocationModal = ({ visible, onLocationSelected, onClose }) => {
       <View style={styles.locationInfo}>
         <Text style={styles.dragToSelectText}>{t('tapOrDragToSelect')}</Text>
         <View style={styles.selectedLocationContainer}>
-          <Text style={styles.selectedLocationLabel}>{t('selectedLocation')}</Text>
+          <Text style={styles.selectedLocationLabel}>
+            {t('selectedLocation')}
+          </Text>
           {isLoadingAddress ? (
             <View style={styles.loadingContainer}>
               <ActivityIndicator size="small" color={colors.black} />
               <Text style={styles.loadingText}>{t('loadingAddress')}</Text>
             </View>
           ) : (
-            <Text style={styles.selectedLocationText}
+            <Text
+              style={styles.selectedLocationText}
               numberOfLines={1}
               ellipsizeMode="tail">
               {selectedLocation.address || t('unknownLocation')}
@@ -357,12 +364,12 @@ const LocationModal = ({ visible, onLocationSelected, onClose }) => {
 
   // Render manual entry view
   const renderManualView = () => (
-    <ScrollView style={styles.manualContainer} contentContainerStyle={styles.manualContent}>
+    <ScrollView
+      style={styles.manualContainer}
+      contentContainerStyle={styles.manualContent}>
       <View style={styles.manualSection}>
         <Text style={styles.manualTitle}>{t('manualEntry')}</Text>
-        <Text style={styles.manualDescription}>
-          {t('noInternetDesc')}
-        </Text>
+        <Text style={styles.manualDescription}>{t('noInternetDesc')}</Text>
 
         <View style={styles.inputContainer}>
           <Text style={styles.inputLabel}>{t('manualNote')}</Text>
@@ -380,8 +387,12 @@ const LocationModal = ({ visible, onLocationSelected, onClose }) => {
 
         {selectedLocation.address && (
           <View style={styles.currentLocationContainer}>
-            <Text style={styles.currentLocationLabel}>{t('selectedLocation')}</Text>
-            <Text style={styles.currentLocationText}>{selectedLocation.address}</Text>
+            <Text style={styles.currentLocationLabel}>
+              {t('selectedLocation')}
+            </Text>
+            <Text style={styles.currentLocationText}>
+              {selectedLocation.address}
+            </Text>
           </View>
         )}
       </View>
@@ -428,6 +439,5 @@ const LocationModal = ({ visible, onLocationSelected, onClose }) => {
     </Modal>
   );
 };
-
 
 export default LocationModal;

@@ -7,7 +7,8 @@
     "ios": "react-native run-ios",
     "lint": "eslint .",
     "start": "react-native start",
-    "test": "jest"
+    "test": "jest",
+    "install": "yarn install"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^2.1.2",
@@ -44,6 +45,7 @@
     "react-native-image-picker": "^8.2.1",
     "react-native-image-resizer": "^1.4.5",
     "react-native-keyboard-aware-scroll-view": "^0.9.5",
+    "react-native-keyboard-controller": "^1.17.4",
     "react-native-localize": "^3.4.1",
     "react-native-maps": "^1.23.8",
     "react-native-paper": "^5.13.5",

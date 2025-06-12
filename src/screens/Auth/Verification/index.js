@@ -51,6 +51,7 @@ const VerificationScreen = () => {
   // console.log(token);
   const [loading, setLoading] = useState(false);
   const {t} = useTranslation();
+  const today = new Date();
 
   const [formData, setFormData] = useState({
     fullName: '',
@@ -70,6 +71,7 @@ const VerificationScreen = () => {
   const [originalData, setOriginalData] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [showSubmit, setShowSubmit] = useState(false);
+  const [isEditable, setIsEditable] = useState(true);
   // States for date pickers
   const [openDob, setOpenDob] = useState(false);
   const [openIssueDate, setOpenIssueDate] = useState(false);
@@ -99,7 +101,10 @@ const VerificationScreen = () => {
         });
         // console.log('API CALLED:', res);
 
-        if (res?.data?.data?.status === 2 && res?.data?.data) {
+        if (
+          res?.data?.data?.status === 2 ||
+          (res?.data?.data?.status === 1 && res?.data?.data)
+        ) {
           const data = res?.data?.data;
           console.log('API VERIFICATION DATA: ', res.data);
           setVerificationData(res.data.data);
@@ -166,9 +171,18 @@ const VerificationScreen = () => {
               : null,
             selfie: data.selfie ? `${BASE_URL}${data.selfie}` : null,
           });
+          // Disable submit button and input fields if status is 1
+          if (res?.data?.data?.status === 1) {
+            setShowSubmit(false);
+            setIsEditable(false);
+          } else {
+            setShowSubmit(true);
+            setIsEditable(true);
+          }
         } else {
           setIsVerified(false);
           setShowSubmit(true);
+          setIsEditable(true);
         }
       } catch (error) {
         console.error('Error fetching verification data:', error);
@@ -450,8 +464,13 @@ const VerificationScreen = () => {
       }
       console.log('API Response:', response.data);
       if (response.status === 200 && response.data.success) {
-        Alert.alert('Success', 'Verification completed!');
-        navigation.navigate('MainTabs', {
+        if (isVerified) {
+          Alert.alert('Success', 'Verification in progress!');
+        } else {
+          Alert.alert('Success', 'Verification completed!');
+        }
+
+        navigation.replace('MainTabs', {
           screen: 'Profile',
         });
       } else if (
@@ -507,7 +526,7 @@ const VerificationScreen = () => {
       <Text style={styles.label}>{label}</Text>
       <TouchableOpacity
         style={styles.dateInput}
-        onPress={() => setOpenState(true)}>
+        onPress={isEditable ? () => setOpenState(true) : undefined}>
         <Text style={formData[key] ? styles.dateText : styles.datePlaceholder}>
           {formData[key] || placeholder}
         </Text>
@@ -539,7 +558,7 @@ const VerificationScreen = () => {
           <View style={styles.inputContainer}>
             <Text style={styles.label}>{t('fullName')}</Text>
             <TextInput
-              // editable={!isVerified}
+              editable={isEditable}
               style={styles.input}
               placeholder={t('enterFullName')}
               value={formData.fullName}
@@ -562,20 +581,27 @@ const VerificationScreen = () => {
           {/* Gender Radio Buttons */}
           <View style={styles.inputContainer}>
             <Text style={styles.label}>{t('gender')}</Text>
+
             <View style={styles.radioGroup}>
               <RadioButton
                 selected={formData.gender === 'male'}
-                onPress={() => handleGenderSelect('male')}
+                onPress={
+                  isEditable ? () => handleGenderSelect('male') : undefined
+                }
                 label={t('male')}
               />
               <RadioButton
                 selected={formData.gender === 'female'}
-                onPress={() => handleGenderSelect('female')}
+                onPress={
+                  isEditable ? () => handleGenderSelect('female') : undefined
+                }
                 label={t('female')}
               />
               <RadioButton
                 selected={formData.gender === 'other'}
-                onPress={() => handleGenderSelect('other')}
+                onPress={
+                  isEditable ? () => handleGenderSelect('other') : undefined
+                }
                 label={t('other')}
               />
             </View>
@@ -603,6 +629,7 @@ const VerificationScreen = () => {
                 borderWidth: 1,
                 borderColor: '#ccc', // Optional: match dropdown container too
               }}
+              disabled={!isEditable}
             />
           </View>
 
@@ -622,7 +649,7 @@ const VerificationScreen = () => {
               <View key={key} style={styles.inputContainer}>
                 <Text style={styles.label}>{t(`${key}`)}</Text>
                 <TextInput
-                  // editable={!isVerified}
+                  editable={isEditable}
                   style={styles.input}
                   placeholder={placeholderMap[key]}
                   value={formData[key]}
@@ -637,12 +664,14 @@ const VerificationScreen = () => {
               <RadioButton
                 label="Cnic"
                 selected={idType === 'cnic'}
-                onPress={() => setIdType('cnic')}
+                onPress={isEditable ? () => setIdType('cnic') : undefined}
               />
               <RadioButton
                 label="Driving License"
                 selected={idType === 'drivingLicense'}
-                onPress={() => setIdType('drivingLicense')}
+                onPress={
+                  isEditable ? () => setIdType('drivingLicense') : undefined
+                }
                 style={{marginLeft: 'auto'}}
               />
             </View>
@@ -652,6 +681,7 @@ const VerificationScreen = () => {
             <Text style={styles.label}>{t('idNumber')}</Text>
 
             <TextInput
+              editable={isEditable}
               style={styles.input}
               value={formData.idNumber}
               onChangeText={text => handleInputChange('idNumber', text)}
@@ -672,8 +702,12 @@ const VerificationScreen = () => {
                 openIssueDate,
                 setOpenIssueDate,
                 handleIssueDateChange,
-                null, // No maximum date for issue date
-                minIssueDate, // Minimum date is 20 years ago
+                today, // ⛔ Issue date cannot be in future
+                new Date(
+                  today.getFullYear() - 30,
+                  today.getMonth(),
+                  today.getDate(),
+                ),
               )}
             </View>
             <View>
@@ -684,8 +718,8 @@ const VerificationScreen = () => {
                 openExpDate,
                 setOpenExpDate,
                 handleExpDateChange,
-                null, // No maximum date for expiry date
-                minExpDate, // Minimum date is today (can't expire in the past)
+                null, // ⛔ No max limit for expiry (can be far in future)
+                today, // ✅ Expiry can't be in the past
               )}
             </View>
           </View>

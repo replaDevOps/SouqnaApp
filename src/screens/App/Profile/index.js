@@ -223,8 +223,8 @@ const Profile = () => {
                       <VerifiedSVG width={22} height={22} />
                     </View>
                     <Regular style={styles.menuText}>
-                      {verificationStatus === 2
-                        ? t('updateProfile')
+                      {verificationStatus === 2 || verificationStatus === 1
+                        ? t('Update Information')
                         : t('getVerified')}
                     </Regular>
                   </View>

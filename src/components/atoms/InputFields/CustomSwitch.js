@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, TouchableOpacity, Text} from 'react-native';
+import {View, TouchableOpacity} from 'react-native';
 import {mvs} from '../../../util/metrices';
 
 const CustomSwitch = ({value, onValueChange, trackColor, thumbColor}) => {

@@ -1,5 +1,4 @@
-import {View, Text, StyleSheet} from 'react-native';
-import React from 'react';
+import {StyleSheet} from 'react-native';
 import {mvs} from '../../../util/metrices';
 import {colors} from '../../../util/color';
 

@@ -5,7 +5,6 @@ import {
   RefreshControl,
   ScrollView,
   StatusBar,
-  Text,
   TouchableOpacity,
   View,
 } from 'react-native';

@@ -7,14 +7,7 @@ import {
   StyleSheet,
   ToastAndroid,
 } from 'react-native';
-import {
-  CloseSvg,
-  HelpSVG,
-  LockSVG,
-  StarSVG,
-  SunSVG,
-  TrashSVG,
-} from '../../assets/svg';
+import {HelpSVG, LockSVG, StarSVG, SunSVG, TrashSVG} from '../../assets/svg';
 import {colors} from '../../util/color';
 import {mvs} from '../../util/metrices';
 import Regular from '../../typography/RegularText';
