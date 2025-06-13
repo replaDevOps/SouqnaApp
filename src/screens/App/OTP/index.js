@@ -19,10 +19,11 @@ import {resendOtp, verifyOtp} from '../../../api/apiServices';
 import {Snackbar} from 'react-native-paper';
 import {useRoute} from '@react-navigation/native';
 import {useTranslation} from 'react-i18next';
+import {useSelector} from 'react-redux';
 
 const OTPScreen = ({navigation}) => {
   const route = useRoute();
-  const {email} = route.params || {}; // safely get the email param
+  const {email, resetPassword} = route.params || {}; // safely get the email param
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [code, setCode] = useState(['', '', '', '']);
@@ -37,6 +38,7 @@ const OTPScreen = ({navigation}) => {
     setSnackbarMessage(message);
     setSnackbarVisible(true);
   };
+  const user = useSelector(state => state.user);
 
   // Focus first input when screen loads
   useEffect(() => {
@@ -112,23 +114,37 @@ const OTPScreen = ({navigation}) => {
   const handleContinue = async () => {
     const verificationCode = code.join('');
     console.log('Verification code submitted:', verificationCode);
-    setLoading(true); // show loader
+
+    if (!verificationCode || verificationCode.length !== 4) {
+      showSnackbar('Please enter a valid 6-digit OTP.');
+      return;
+    }
+
+    setLoading(true); // Show loader
+
     try {
       const response = await verifyOtp(verificationCode);
 
-      if (response.success) {
-        console.log('OTP Verified:', response);
+      if (response?.success) {
         showSnackbar(response.message || 'OTP verified successfully.');
-        navigation.replace('Login'); // Replace with your actual screen
+
+        if (resetPassword) {
+          navigation.navigate('ChangePassword', {resetToken: response.token});
+        } else {
+          navigation.replace('Login');
+        }
       } else {
-        console.warn('OTP verification failed:', response.error);
-        showSnackbar(response.error || 'Invalid OTP, please try again.');
+        console.warn('OTP verification failed:', response?.error);
+        showSnackbar(response?.error || 'Invalid OTP, please try again.');
       }
     } catch (error) {
       console.error('Verification error:', error);
-      showSnackbar('Something went wrong. Please try again.');
+      showSnackbar(
+        error?.response?.data?.message ||
+          'Something went wrong. Please try again.',
+      );
     } finally {
-      setLoading(false); // hide loader
+      setLoading(false); // Hide loader
     }
   };
 

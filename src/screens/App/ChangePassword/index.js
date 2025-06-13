@@ -14,16 +14,22 @@ import {
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {setUser} from '../../../redux/slices/userSlice';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import styles from './style';
 import {useTranslation} from 'react-i18next';
 import {colors} from '../../../util/color';
 import {EYESVG} from '../../../assets/svg';
 import MainHeader from '../../../components/Headers/MainHeader';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import {resetPassword, ChangePasswords} from '../../../api/apiServices';
+import {Snackbar} from 'react-native-paper';
 
 const ChangePassword = () => {
+  const navigation = useNavigation();
+  const route = useRoute();
+  const {resetToken} = route.params || {};
   const dispatch = useDispatch();
+  const {token} = useSelector(state => state.user);
   const user = useSelector(state => state.user);
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -31,22 +37,52 @@ const ChangePassword = () => {
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const navigation = useNavigation();
+  const [snackbarVisible, setSnackbarVisible] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState(t('passwordUpdated'));
   const {t} = useTranslation();
 
-  const handleResetPassword = () => {
-    if (newPassword === confirmPassword) {
-      // Update password in Redux
-      dispatch(setUser({...user, password: newPassword}));
-      alert(t('passwordUpdated'));
-      navigation.goBack();
-    } else {
+  const handleResetPassword = async () => {
+    if (newPassword !== confirmPassword) {
       alert(t('passwordMismatch'));
+      return;
     }
-  };
 
-  const dismissKeyboard = () => {
-    Keyboard.dismiss();
+    if (!token) {
+      try {
+        const response = await resetPassword(
+          newPassword,
+          confirmPassword,
+          resetToken,
+        );
+
+        if (response?.success) {
+          dispatch(setUser({...user, password: newPassword}));
+          alert(t('passwordUpdated'));
+          navigation.replace('Login');
+        } else {
+          alert(t('somethingWentWrong'));
+        }
+      } catch (error) {
+        console.error('Change Password Error:', error);
+        alert(t('somethingWentWrong'));
+      }
+    } else {
+      try {
+        const response = await ChangePasswords(oldPassword, newPassword, token);
+
+        if (response?.success) {
+          dispatch(setUser({...user, password: newPassword}));
+          alert(t('passwordUpdated'));
+
+          navigation.replace('MainTabs');
+        } else {
+          alert(t('somethingWentWrong'));
+        }
+      } catch (error) {
+        console.error('Change Password Error:', error);
+        alert(t('somethingWentWrong'));
+      }
+    }
   };
 
   return (
@@ -57,7 +93,7 @@ const ChangePassword = () => {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{flex: 1}}
         keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
-        <TouchableWithoutFeedback onPress={dismissKeyboard}>
+        <TouchableWithoutFeedback onPress={() => {}}>
           <ScrollView
             contentContainerStyle={{flexGrow: 1, padding: 20}}
             showsVerticalScrollIndicator={false}>
@@ -69,23 +105,26 @@ const ChangePassword = () => {
                 />
               </View>
               <Text style={styles.title}>{t('resetPassword')}</Text>
-
-              <Text style={styles.label}>{t('oldPasswordLabel')}</Text>
-              <View style={styles.inputWrapper}>
-                <TextInput
-                  style={styles.input}
-                  placeholder={t('enterOldPasswordPlaceholder')}
-                  placeholderTextColor="#CCCCCC"
-                  secureTextEntry={!showOldPassword}
-                  value={oldPassword}
-                  onChangeText={setOldPassword}
-                />
-                <TouchableOpacity
-                  style={styles.eyeButton}
-                  onPress={() => setShowOldPassword(!showOldPassword)}>
-                  <EYESVG />
-                </TouchableOpacity>
-              </View>
+              {token && (
+                <>
+                  <Text style={styles.label}>{t('oldPasswordLabel')}</Text>
+                  <View style={styles.inputWrapper}>
+                    <TextInput
+                      style={styles.input}
+                      placeholder={t('enterOldPasswordPlaceholder')}
+                      placeholderTextColor="#CCCCCC"
+                      secureTextEntry={!showOldPassword}
+                      value={oldPassword}
+                      onChangeText={setOldPassword}
+                    />
+                    <TouchableOpacity
+                      style={styles.eyeButton}
+                      onPress={() => setShowOldPassword(!showOldPassword)}>
+                      <EYESVG />
+                    </TouchableOpacity>
+                  </View>
+                </>
+              )}
 
               <Text style={styles.label}>{t('newPasswordLabel')}</Text>
               <View style={styles.inputWrapper}>
@@ -127,6 +166,12 @@ const ChangePassword = () => {
                 <Text style={styles.resetButtonText}>{t('resetButton')}</Text>
               </TouchableOpacity>
             </View>
+            <Snackbar
+              visible={snackbarVisible}
+              onDismiss={() => setSnackbarVisible(false)}
+              duration={2000}>
+              {snackbarMessage}
+            </Snackbar>
           </ScrollView>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>

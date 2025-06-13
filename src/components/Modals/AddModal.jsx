@@ -17,7 +17,7 @@ import {mvs} from '../../util/metrices';
 import dummyData from '../../util/dummyData';
 import {useNavigation} from '@react-navigation/native';
 import HelpModal from './HelpModal';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 
 const AddModal = ({visible, onClose, title, message}) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -44,10 +44,10 @@ const AddModal = ({visible, onClose, title, message}) => {
   });
 
   const handleRegister = () => {
-    navigation.replace('Register');
+    navigation.navigate('Register');
   };
   const handleLogin = () => {
-    navigation.replace('Login');
+    navigation.navigate('Login');
   };
 
   const viewabilityConfig = {
@@ -144,7 +144,7 @@ const AddModal = ({visible, onClose, title, message}) => {
                 }>
                 <Text style={styles.termsLink}> {t('ourTermsApplyPart3')}</Text>
               </TouchableOpacity>{' '}
-               {t('ourTermsApplyPart2')}{' '}
+              {t('ourTermsApplyPart2')}{' '}
               <TouchableOpacity
                 onPress={() =>
                   openUrl(
