@@ -18,7 +18,7 @@ import Bold from '../../../typography/BoldText';
 import {resendOtp, verifyOtp} from '../../../api/apiServices';
 import {Snackbar} from 'react-native-paper';
 import {useRoute} from '@react-navigation/native';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 
 const OTPScreen = ({navigation}) => {
   const route = useRoute();
@@ -28,7 +28,7 @@ const OTPScreen = ({navigation}) => {
   const [code, setCode] = useState(['', '', '', '']);
   const [countdown, setCountdown] = useState(60);
   const [resendEnabled, setResendEnabled] = useState(false);
-    const {t} = useTranslation();
+  const {t} = useTranslation();
   // New state for showing resend loading
   const [resendLoading, setResendLoading] = useState(false);
   const inputRefs = useRef([]);
@@ -140,7 +140,7 @@ const OTPScreen = ({navigation}) => {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-     <SafeAreaView style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <StatusBar backgroundColor="#FFFFFF" barStyle="dark-content" />
 
         <MainHeader title={t('emailVerification')} showBackIcon={true} />
@@ -156,18 +156,18 @@ const OTPScreen = ({navigation}) => {
             16
             <Bold style={styles.title}>Souqna</Bold>
           </View>
-          <Text style={styles.instruction}>
-            {t('enterCodeSent')}
+          <Text style={styles.instruction}>{t('enterCodeSent')}</Text>
+
+          <Text style={styles.phoneNumber}>
+            {t('sentTo')} ({email})
           </Text>
 
-          <Text style={styles.phoneNumber}>{t('sentTo')} ({email})</Text>
-
-          <View style={styles.codeContainer}>
+          <View style={[styles.codeContainer, styles.ltrContainer]}>
             {code.map((digit, index) => (
               <View key={index} style={styles.codeBoxWrapper}>
                 <TextInput
                   ref={ref => (inputRefs.current[index] = ref)}
-                  style={styles.codeBox}
+                  style={[styles.codeBox, styles.ltrInput]}
                   value={digit}
                   onChangeText={text => handleCodeChange(text, index)}
                   onKeyPress={e => handleKeyPress(e, index)}
@@ -209,7 +209,8 @@ const OTPScreen = ({navigation}) => {
                   styles.resendButtonText,
                   !resendEnabled && {color: 'gray'},
                 ]}>
-                {t('resendCode')}{!resendEnabled ? ` (${countdown} ${t('sec')})` : ''}
+                {t('resendCode')}
+                {!resendEnabled ? ` (${countdown} ${t('sec')})` : ''}
               </Text>
             )}
           </TouchableOpacity>
@@ -322,6 +323,14 @@ const styles = StyleSheet.create({
     color: colors.lightgreen,
     fontWeight: '600',
     fontSize: 16,
+  },
+  ltrContainer: {
+    direction: 'ltr',
+    writingDirection: 'ltr',
+  },
+  ltrInput: {
+    textAlign: 'center',
+    writingDirection: 'ltr',
   },
 });
 
