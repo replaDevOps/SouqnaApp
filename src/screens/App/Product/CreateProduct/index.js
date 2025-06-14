@@ -46,7 +46,7 @@ const CreateProduct = () => {
     category,
     categoryImage,
   } = route.params;
-  const {token} = useSelector(state => state.user);
+  const {token, phoneNo} = useSelector(state => state.user);
   const navigation = useNavigation();
   const {t} = useTranslation();
 
@@ -61,7 +61,7 @@ const CreateProduct = () => {
     location: '',
     lat: '',
     long: '',
-    contactInfo: '', // Additional field
+    contactInfo: phoneNo, // Additional field
     negotiable: '', // Additional field
     currency: '',
     custom_fields: [],
@@ -73,7 +73,7 @@ const CreateProduct = () => {
   const [selectedCondition, setSelectedCondition] = useState('');
   const [categories, setCategories] = useState([]); // State to store fetched categories
   const [categoryFields, setCategoryFields] = useState([]); // State to store category fields
-
+  console.log('{stored phone no:}', phoneNo);
   // const conditionValue =
   //   selectedCondition === 'Yes' ? 1 : selectedCondition === 'No' ? 2 : null;
 

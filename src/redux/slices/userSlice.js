@@ -13,8 +13,9 @@ const initialState = {
   actualRole: '', // Add actualRole to initialState
   password: '',
   sellerType: '',
+  phoneNo: '',
 
-   tokens: {
+  tokens: {
     accessToken: null,
     refreshToken: null,
     accessTokenExpiry: null,
@@ -33,12 +34,12 @@ const userSlice = createSlice({
       // Ensure actualRole is set when user data is loaded
       state.actualRole = userData.role || userData.actualRole || '';
     },
-     // Separate action for token management
+    // Separate action for token management
     setTokens: (state, action) => {
       const {
-        accessToken,           // ✅ Consistent
-        refreshToken,          // ✅ Consistent
-        accessTokenExpiry,     // ✅ Consistent
+        accessToken, // ✅ Consistent
+        refreshToken, // ✅ Consistent
+        accessTokenExpiry, // ✅ Consistent
       } = action.payload;
 
       state.tokens = {
@@ -50,13 +51,9 @@ const userSlice = createSlice({
 
     // Action to update tokens after refresh
     updateTokens: (state, action) => {
-      const {
-        accessToken,
-        refreshToken,
-        accessTokenExpiry,
-      } = action.payload;
-      
-       if (accessToken) state.tokens.accessToken = accessToken;
+      const {accessToken, refreshToken, accessTokenExpiry} = action.payload;
+
+      if (accessToken) state.tokens.accessToken = accessToken;
       if (refreshToken) state.tokens.refreshToken = refreshToken;
       if (accessTokenExpiry) state.tokens.accessTokenExpiry = accessTokenExpiry;
 
@@ -64,7 +61,7 @@ const userSlice = createSlice({
     },
 
     // Clear tokens only
-    clearTokens: (state) => {
+    clearTokens: state => {
       state.tokens = {
         accessToken: null,
         refreshToken: null,
@@ -72,8 +69,7 @@ const userSlice = createSlice({
       };
     },
 
-   
-    logoutUser: (state) => {
+    logoutUser: state => {
       // Clear everything
       return {
         id: null,
@@ -84,6 +80,7 @@ const userSlice = createSlice({
         password: '',
         sellerType: '',
         verificationStatus: null,
+        phoneNo: '',
         tokens: {
           accessToken: null,
           refreshToken: null,
@@ -108,8 +105,8 @@ const userSlice = createSlice({
       }
     },
     resetUser: () => initialState,
-  },}
-);
+  },
+});
 
 export const {
   setUser,

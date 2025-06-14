@@ -15,7 +15,7 @@ import {
 } from 'react-native';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {useNavigation} from '@react-navigation/native';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import DatePicker from 'react-native-date-picker';
 import styles from './styles';
 import Regular from '../../../typography/RegularText';
@@ -27,6 +27,7 @@ import {colors} from '../../../util/color';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useTranslation} from 'react-i18next';
 import DropDownPicker from 'react-native-dropdown-picker';
+import {setUser} from '../../../redux/slices/userSlice';
 
 // Radio Button Component
 const RadioButton = ({selected, onPress, label}) => {
@@ -48,6 +49,8 @@ const RadioButton = ({selected, onPress, label}) => {
 const VerificationScreen = () => {
   const navigation = useNavigation();
   const {token} = useSelector(state => state.user);
+  const user = useSelector(state => state.user);
+  const dispatch = useDispatch();
   // console.log(token);
   const [loading, setLoading] = useState(false);
   const {t} = useTranslation();
@@ -72,6 +75,7 @@ const VerificationScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [showSubmit, setShowSubmit] = useState(false);
   const [isEditable, setIsEditable] = useState(true);
+  const [PhoneNo, setPhoneNo] = useState('');
   // States for date pickers
   const [openDob, setOpenDob] = useState(false);
   const [openIssueDate, setOpenIssueDate] = useState(false);
@@ -365,7 +369,7 @@ const VerificationScreen = () => {
 
   const handleSubmit = async () => {
     console.log('Submit button pressed ✅');
-
+    dispatch(setUser({...user, phoneNo: PhoneNo}));
     const {
       fullName,
       dob,
@@ -408,6 +412,7 @@ const VerificationScreen = () => {
     if (expDate) data.append('expDate', expDate);
     if (idFrontSide) data.append('idFrontSide', idFrontSide);
     if (idBackSide) data.append('idBackSide', idBackSide);
+    if (PhoneNo) data.append('phoneNo', PhoneNo);
     if (selfie) {
       data.append('selfie', {
         uri: selfie.uri,
@@ -597,7 +602,10 @@ const VerificationScreen = () => {
               value={formData.country}
               items={countryItems}
               setOpen={setCountryOpen}
-              setValue={val => handleInputChange('country', val())}
+              setValue={callback => {
+                const selectedValue = callback();
+                handleInputChange('country', selectedValue);
+              }}
               setItems={setCountryItems}
               placeholder="Select Country"
               zIndex={3000}
@@ -605,15 +613,32 @@ const VerificationScreen = () => {
               style={{
                 marginTop: 10,
                 borderWidth: 1,
-                borderColor: '#ccc', // Match with your input borderColor
+                borderColor: '#ccc',
                 borderRadius: 8,
               }}
               dropDownContainerStyle={{
                 marginTop: 10,
                 borderWidth: 1,
-                borderColor: '#ccc', // Optional: match dropdown container too
+                borderColor: '#ccc',
               }}
               disabled={!isEditable}
+            />
+          </View>
+
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Phone No</Text>
+            <TextInput
+              style={styles.input}
+              placeholder={
+                formData.country === 'Syria'
+                  ? '+963 944000000'
+                  : formData.country === 'Turkey'
+                  ? '+90 5300000000'
+                  : '+___ _________'
+              }
+              value={PhoneNo}
+              keyboardType="number-pad"
+              onChangeText={value => setPhoneNo(value)}
             />
           </View>
 
@@ -642,6 +667,7 @@ const VerificationScreen = () => {
               </View>
             );
           })}
+
           <View style={styles.inputContainer}>
             <Text style={styles.label}>{t('idType')}</Text>
             <View style={[styles.radioGroup, {justifyContent: 'space-around'}]}>
