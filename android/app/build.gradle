@@ -76,15 +76,13 @@ android {
         versionCode 1
         versionName "1.0"
     }
-     signingConfigs {
-      release {
-          if (project.hasProperty('MYAPP_RELEASE_STORE_FILE')) {
-              storeFile file(MYAPP_RELEASE_STORE_FILE)
-              storePassword MYAPP_RELEASE_STORE_PASSWORD
-              keyAlias MYAPP_RELEASE_KEY_ALIAS
-              keyPassword MYAPP_RELEASE_KEY_PASSWORD
-          }
-      }
+    signingConfigs {
+            release {
+      storeFile file('your_key_name.keystore')
+      storePassword 'mubi123'
+      keyAlias 'your_key_alias'
+      keyPassword 'mubi123'
+    }
         debug {
             storeFile file('debug.keystore')
             storePassword 'android'
@@ -97,11 +95,11 @@ android {
             signingConfig signingConfigs.debug
         }
         release {
-          signingConfig signingConfigs.release
-          shrinkResources true
-          minifyEnabled true
-          proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-      }
+            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
+            minifyEnabled enableProguardInReleaseBuilds
+            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+        }
     }
 }
 
