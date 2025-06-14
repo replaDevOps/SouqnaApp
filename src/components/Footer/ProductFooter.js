@@ -39,10 +39,6 @@ const ProductFooter = ({
     }
   };
 
-  const handleBuyPress = () => {
-    setShowBuy(true);
-    onBuyPress && onBuyPress();
-  };
 
   // Declare buttons based on role
   let buttons = [];
