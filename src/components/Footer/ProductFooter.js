@@ -13,6 +13,7 @@ import {CallSVG, ChatSVG2, TrashSVG, UpdateSVG} from '../../assets/svg';
 import {useSelector} from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
+
 const ProductFooter = ({
   onBuyPress,
   onChatPress,

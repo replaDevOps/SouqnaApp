@@ -126,6 +126,14 @@ const styles = StyleSheet.create({
     marginBottom: mvs(20),
     fontFamily: 'DMSans-Bold',
   },
+  ForgetPassword: {
+    textAlign: 'right',
+    fontWeight: 'bold',
+    color: colors.green,
+    marginRight: mvs(20),
+    fontFamily: 'DMSans-Bold',
+    textDecorationLine: 'underline',
+  },
 });
 
 export default styles;

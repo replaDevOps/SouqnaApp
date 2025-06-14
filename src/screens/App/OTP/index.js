@@ -18,17 +18,18 @@ import Bold from '../../../typography/BoldText';
 import {resendOtp, verifyOtp} from '../../../api/apiServices';
 import {Snackbar} from 'react-native-paper';
 import {useRoute} from '@react-navigation/native';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
+import {useSelector} from 'react-redux';
 
 const OTPScreen = ({navigation}) => {
   const route = useRoute();
-  const {email} = route.params || {}; // safely get the email param
+  const {email, resetPassword} = route.params || {}; // safely get the email param
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [code, setCode] = useState(['', '', '', '']);
   const [countdown, setCountdown] = useState(60);
   const [resendEnabled, setResendEnabled] = useState(false);
-    const {t} = useTranslation();
+  const {t} = useTranslation();
   // New state for showing resend loading
   const [resendLoading, setResendLoading] = useState(false);
   const inputRefs = useRef([]);
@@ -37,6 +38,7 @@ const OTPScreen = ({navigation}) => {
     setSnackbarMessage(message);
     setSnackbarVisible(true);
   };
+  const user = useSelector(state => state.user);
 
   // Focus first input when screen loads
   useEffect(() => {
@@ -112,23 +114,37 @@ const OTPScreen = ({navigation}) => {
   const handleContinue = async () => {
     const verificationCode = code.join('');
     console.log('Verification code submitted:', verificationCode);
-    setLoading(true); // show loader
+
+    if (!verificationCode || verificationCode.length !== 4) {
+      showSnackbar('Please enter a valid 6-digit OTP.');
+      return;
+    }
+
+    setLoading(true); // Show loader
+
     try {
       const response = await verifyOtp(verificationCode);
 
-      if (response.success) {
-        console.log('OTP Verified:', response);
+      if (response?.success) {
         showSnackbar(response.message || 'OTP verified successfully.');
-        navigation.replace('Login'); // Replace with your actual screen
+
+        if (resetPassword) {
+          navigation.navigate('ChangePassword', {resetToken: response.token});
+        } else {
+          navigation.replace('Login');
+        }
       } else {
-        console.warn('OTP verification failed:', response.error);
-        showSnackbar(response.error || 'Invalid OTP, please try again.');
+        console.warn('OTP verification failed:', response?.error);
+        showSnackbar(response?.error || 'Invalid OTP, please try again.');
       }
     } catch (error) {
       console.error('Verification error:', error);
-      showSnackbar('Something went wrong. Please try again.');
+      showSnackbar(
+        error?.response?.data?.message ||
+          'Something went wrong. Please try again.',
+      );
     } finally {
-      setLoading(false); // hide loader
+      setLoading(false); // Hide loader
     }
   };
 
@@ -140,7 +156,7 @@ const OTPScreen = ({navigation}) => {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-     <SafeAreaView style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <StatusBar backgroundColor="#FFFFFF" barStyle="dark-content" />
 
         <MainHeader title={t('emailVerification')} showBackIcon={true} />
@@ -156,18 +172,18 @@ const OTPScreen = ({navigation}) => {
             16
             <Bold style={styles.title}>Souqna</Bold>
           </View>
-          <Text style={styles.instruction}>
-            {t('enterCodeSent')}
+          <Text style={styles.instruction}>{t('enterCodeSent')}</Text>
+
+          <Text style={styles.phoneNumber}>
+            {t('sentTo')} ({email})
           </Text>
 
-          <Text style={styles.phoneNumber}>{t('sentTo')} ({email})</Text>
-
-          <View style={styles.codeContainer}>
+          <View style={[styles.codeContainer, styles.ltrContainer]}>
             {code.map((digit, index) => (
               <View key={index} style={styles.codeBoxWrapper}>
                 <TextInput
                   ref={ref => (inputRefs.current[index] = ref)}
-                  style={styles.codeBox}
+                  style={[styles.codeBox, styles.ltrInput]}
                   value={digit}
                   onChangeText={text => handleCodeChange(text, index)}
                   onKeyPress={e => handleKeyPress(e, index)}
@@ -209,7 +225,8 @@ const OTPScreen = ({navigation}) => {
                   styles.resendButtonText,
                   !resendEnabled && {color: 'gray'},
                 ]}>
-                {t('resendCode')}{!resendEnabled ? ` (${countdown} ${t('sec')})` : ''}
+                {t('resendCode')}
+                {!resendEnabled ? ` (${countdown} ${t('sec')})` : ''}
               </Text>
             )}
           </TouchableOpacity>
@@ -322,6 +339,14 @@ const styles = StyleSheet.create({
     color: colors.lightgreen,
     fontWeight: '600',
     fontSize: 16,
+  },
+  ltrContainer: {
+    direction: 'ltr',
+    writingDirection: 'ltr',
+  },
+  ltrInput: {
+    textAlign: 'center',
+    writingDirection: 'ltr',
   },
 });
 
