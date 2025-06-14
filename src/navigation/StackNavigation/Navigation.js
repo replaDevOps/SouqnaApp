@@ -36,6 +36,7 @@ import UpdateProduct from '../../screens/App/Product/UpdateProducts';
 import ImagePreview from '../../screens/App/Product/ImagePreview';
 import Category from '../../screens/App/UpdateAdvertise/Category';
 import SubCategory from '../../screens/App/UpdateAdvertise/SubCategory';
+import ForgetPassword from '../../screens/App/ForgetPassword';
 
 const Stack = createStackNavigator();
 
@@ -45,10 +46,10 @@ const AppNavigator = () => {
       <Stack.Navigator
         initialRouteName="Splash"
         screenOptions={{headerShown: false}}>
-        <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen name="Register" component={Register} />
         <Stack.Screen name="Splash" component={SplashScreen} />
         <Stack.Screen name="MainTabs" component={MyTabs} />
+        <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="Register" component={Register} />
 
         <Stack.Screen name="Data" component={DataScreen} />
         <Stack.Screen name="Design" component={DesignScreen} />
@@ -92,6 +93,7 @@ const AppNavigator = () => {
         <Stack.Screen name="ImagePreview" component={ImagePreview} />
         <Stack.Screen name="Category" component={Category} />
         <Stack.Screen name="SubCategory" component={SubCategory} />
+        <Stack.Screen name="ForgotPassword" component={ForgetPassword} />
       </Stack.Navigator>
     </View>
   );
