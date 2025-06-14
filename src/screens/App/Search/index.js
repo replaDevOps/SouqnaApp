@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {
   RefreshControl,
   ScrollView,
@@ -41,6 +41,7 @@ const SearchScreen = () => {
   const [loading, setLoading] = useState(false);
   const [allProducts, setAllProducts] = useState([]);
   const [allRecommendedProducts, setAllRecommendedProducts] = useState([]);
+const dashboardRefreshRef = useRef(null);
 
   const [isEndOfResults, setIsEndOfResults] = useState(false);
   const {token, verificationStatus, role} = useSelector(state => state.user);
@@ -245,19 +246,24 @@ const SearchScreen = () => {
   };
 
   const onRefresh = async () => {
+      console.log('Refreshing...');
+
     setRefreshing(true);
     try {
+          dashboardRefreshRef.current?.(); // 👈 refresh dashboard
+
       setCategoriesLoading(true);
       const categoriesResponse = await fetchCategories(token);
       if (categoriesResponse?.success) {
         setApiCategories(categoriesResponse.data);
       }
       setCategoriesLoading(false);
-
+ 
       const productsResponse = await fetchBuyerProducts(token, {}, role);
       if (productsResponse?.success) {
         const products = productsResponse.data;
         setAllRecommendedProducts(products.slice(0, 6));
+        setAllProducts(products);
         setApiProducts(products);
         setIsEndOfResults(false);
       }
@@ -265,6 +271,8 @@ const SearchScreen = () => {
       console.error('Error refreshing data:', error);
     } finally {
       setRefreshing(false);
+          console.log('Refresh complete');
+
     }
   };
 
@@ -305,7 +313,7 @@ const SearchScreen = () => {
         <CategorySection categories={apiCategories} />
 
         {/* {!isModalVisible && hasFetchedVerification && <BannerSlider />} */}
-        {!token ? null : role === 3 ? <BannerSlider /> : <ProductDashboard />}
+        {!token ? null : role === 3 ? <BannerSlider /> : <ProductDashboard onRefresh={onRefresh}/>}
 
         {/* <BannerSlider /> */}
 

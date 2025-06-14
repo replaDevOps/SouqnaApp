@@ -14,6 +14,7 @@ import OnSVG from '../../../../assets/svg/OnSVG';
 import {OffSVG} from '../../../../assets/svg';
 import MainHeader from '../../../../components/Headers/MainHeader';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 
 export default function MyAccount() {
   const [isEditing, setIsEditing] = useState(false);
@@ -26,6 +27,8 @@ export default function MyAccount() {
     isMember: true,
   });
   const [editedData, setEditedData] = useState(originalData);
+    const { t } = useTranslation();
+  
 
   const handleEditToggle = () => {
     if (isEditing) {
