@@ -294,7 +294,7 @@ const dashboardRefreshRef = useRef(null);
         </TouchableOpacity>
       )}
       <ScrollView
-        contentContainerStyle={{backgroundColor: '#fbfbfb'}}
+        contentContainerStyle={{backgroundColor: '#fbfbfb', flexGrow: 1}}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }>

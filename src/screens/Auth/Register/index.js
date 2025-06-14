@@ -29,6 +29,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {showSnackbar} from '../../../redux/slices/snackbarSlice';
 import {useDispatch} from 'react-redux';
 import {useTranslation} from 'react-i18next';
+import { ScrollView } from 'react-native';
 
 // import {setRole} from '../../../redux/slices/userSlice';
 
@@ -208,9 +209,15 @@ const Register = () => {
 
   return (
     <>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.container}>
+<KeyboardAvoidingView
+  style={{flex: 1}}
+  behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+  keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0} // adjust based on your header
+>
+  <ScrollView
+    contentContainerStyle={styles.container}
+    keyboardShouldPersistTaps="handled"
+  >
         <View style={{padding: 10}}></View>
         <Header
           showBackButton
@@ -317,30 +324,20 @@ const Register = () => {
             {t('ourTermsApplyPart1')}{' '}
             <TouchableOpacity
               onPress={() => Linking.openURL('https://www.example.com/terms')}>
-              <Regular style={styles.termsLink}>{t('ourTermsApplyPart3')}Terms of Use</Regular>
+              <Regular style={styles.termsLink}>{t('ourTermsApplyPart3')}</Regular>
             </TouchableOpacity>{' '}
             {t('ourTermsApplyPart2')}{' '}
             <TouchableOpacity
               onPress={() =>
                 Linking.openURL('https://www.example.com/privacy-policy')
               }>
-              <Regular style={styles.termsLink}>{t('ourTermsApplyPart4')}Privacy Policy</Regular>
+              <Regular style={styles.termsLink}>{t('ourTermsApplyPart4')}</Regular>
             </TouchableOpacity>
             .
           </Regular>
         </View>
+      </ScrollView>
       </KeyboardAvoidingView>
-      {/* <Snackbar
-        visible={snackbarVisible}
-        onDismiss={() => setSnackbarVisible(false)}
-        duration={3000}
-        style={{position: 'absolute', bottom: Platform.OS === 'ios' ? 30 : 30}}
-        action={{
-          label: 'OK',
-          onPress: () => setSnackbarVisible(false),
-        }}>
-        {snackbarMessage}
-      </Snackbar> */}
     </>
   );
 };
