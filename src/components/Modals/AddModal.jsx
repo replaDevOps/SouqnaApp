@@ -9,8 +9,10 @@ import {
   FlatList,
   Linking,
   Dimensions,
+  I18nManager,
+  Alert,
 } from 'react-native';
-import {CloseSvg} from '../../assets/svg';
+import {CloseSvg, LanguageSVG} from '../../assets/svg';
 import {colors} from '../../util/color';
 import Regular from '../../typography/RegularText';
 import {mvs} from '../../util/metrices';
@@ -18,6 +20,9 @@ import dummyData from '../../util/dummyData';
 import {useNavigation} from '@react-navigation/native';
 import HelpModal from './HelpModal';
 import {useTranslation} from 'react-i18next';
+import i18n from '../../i18n/i18n';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import RNRestart from 'react-native-restart';
 
 const AddModal = ({visible, onClose, title, message}) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -61,6 +66,39 @@ const AddModal = ({visible, onClose, title, message}) => {
     setShowHelp(false);
   };
 
+  const toggleLanguage = async () => {
+    const newLang = i18n.language === 'en' ? 'ar' : 'en';
+    const isArabic = newLang === 'ar';
+
+    try {
+      await AsyncStorage.setItem('appLanguage', newLang); // Save selected language
+
+      const shouldForceRTL = I18nManager.isRTL !== isArabic;
+
+      if (shouldForceRTL) {
+        I18nManager.allowRTL(isArabic);
+        I18nManager.forceRTL(isArabic);
+      }
+
+      i18n.changeLanguage(newLang).then(() => {
+        Alert.alert(
+          isArabic ? 'تم التغيير' : 'Language Changed',
+          isArabic
+            ? 'سيتم إعادة تشغيل التطبيق لتطبيق اللغة العربية.'
+            : 'App will reload to apply English language.',
+          [
+            {
+              text: isArabic ? 'موافق' : 'OK',
+              onPress: () => RNRestart.restart(),
+            },
+          ],
+        );
+      });
+    } catch (error) {
+      console.error('Language toggle error:', error);
+    }
+  };
+
   const openUrl = url => {
     Linking.openURL(url);
   };
@@ -77,9 +115,19 @@ const AddModal = ({visible, onClose, title, message}) => {
             <TouchableOpacity onPress={onClose}>
               <CloseSvg width={mvs(24)} height={mvs(24)} />
             </TouchableOpacity>
-            <TouchableOpacity onPress={openHelp}>
-              <Text style={styles.helpText}>{t('Help')}</Text>
-            </TouchableOpacity>
+            <View style={{flexDirection: 'column', alignItems: 'flex-end'}}>
+              <TouchableOpacity onPress={openHelp}>
+                <Text style={styles.helpText}>{t('Help')}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={toggleLanguage}
+                style={{flexDirection: 'row'}}>
+                <LanguageSVG height={24} width={24} />
+                <Text style={[styles.helpText, {fontSize: 16, marginLeft: 5}]}>
+                  {i18n.language === 'en' ? 'Arabic' : 'English'}
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
 
           <View style={styles.logoAndTitleContainer}>

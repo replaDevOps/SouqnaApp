@@ -22,7 +22,7 @@ import {EYESVG} from '../../../assets/svg';
 import MainHeader from '../../../components/Headers/MainHeader';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {resetPassword, ChangePasswords} from '../../../api/apiServices';
-import {Snackbar} from 'react-native-paper';
+// import {Snackbar} from 'react-native-paper';
 
 const ChangePassword = () => {
   const navigation = useNavigation();
@@ -37,8 +37,8 @@ const ChangePassword = () => {
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [snackbarVisible, setSnackbarVisible] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState(t('passwordUpdated'));
+  // const [snackbarVisible, setSnackbarVisible] = useState(false);
+  // const [snackbarMessage, setSnackbarMessage] = useState(t('passwordUpdated'));
   const {t} = useTranslation();
 
   const handleResetPassword = async () => {
@@ -166,12 +166,12 @@ const ChangePassword = () => {
                 <Text style={styles.resetButtonText}>{t('resetButton')}</Text>
               </TouchableOpacity>
             </View>
-            <Snackbar
+            {/* <Snackbar
               visible={snackbarVisible}
               onDismiss={() => setSnackbarVisible(false)}
               duration={2000}>
               {snackbarMessage}
-            </Snackbar>
+            </Snackbar> */}
           </ScrollView>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>

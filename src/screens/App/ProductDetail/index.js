@@ -53,6 +53,7 @@ const ProductDetail = () => {
     token,
     role,
     verificationStatus,
+    phoneNo,
     id: userId,
   } = useSelector(state => state.user);
   const route = useRoute();
@@ -448,7 +449,7 @@ const ProductDetail = () => {
             onChatPress={handleChatPress}
             handleUpdatePress={handleUpdatePress}
             handleDeletePress={handleDeletePress}
-            sellerPhone="971501234567"
+            sellerPhone={product.contactInfo}
             productOwnerId={product.seller?.id}
             // customProductLink={customProductLink}
           />
