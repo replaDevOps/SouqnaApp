@@ -3,7 +3,7 @@ import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import {mvs} from '../../util/metrices';
 import {colors} from '../../util/color';
 import {BackSVG} from '../../assets/svg';
-const CategoryHeader = ({title, onBack, backText = 'Back'}) => {
+const CategoryHeader = ({title, onBack, backText = ''}) => {
   return (
     <View style={styles.headerContainer}>
       <TouchableOpacity onPress={onBack} style={styles.backButton}>

@@ -436,7 +436,7 @@ const CreateProduct = () => {
   return (
     <SafeAreaView style={{flex: 1}}>
       <StatusBar barStyle="dark-content" />
-      <MainHeader title={t('Post Your Ad')} showBackIcon={true} />
+      <MainHeader title={t('titleProduct')} showBackIcon={true} />
       <KeyboardAvoidingView
         style={{flex: 1}}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -622,10 +622,10 @@ const CreateProduct = () => {
 
             <View style={styles.sectionContainer}>
               <View style={styles.fieldContainer}>
-                <Text style={styles.sectionTitle}>{t('Contact Info')}</Text>
+                <Text style={styles.sectionTitle}>{t('contactInfo')}</Text>
                 <TextInput
                   style={styles.input}
-                  placeholder={t('Contact Info')}
+                  placeholder={t('contactInfo')}
                   placeholderTextColor={colors.grey}
                   keyboardType="numeric"
                   value={formData.contactInfo}
@@ -635,7 +635,7 @@ const CreateProduct = () => {
             </View>
             <View style={styles.sectionContainer}>
               <Text style={styles.sectionTitle}>
-                {t('Negotiable')}
+                {t('negotiable')}
                 <Text style={{color: colors.red}}>*</Text>
               </Text>
 
@@ -655,7 +655,7 @@ const CreateProduct = () => {
                       )}
                     </View>
                   </View>
-                  <Text style={styles.radioText}>{t('Yes')}</Text>
+                  <Text style={styles.radioText}>{t('yes')}</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
@@ -672,7 +672,7 @@ const CreateProduct = () => {
                       )}
                     </View>
                   </View>
-                  <Text style={styles.radioText}>{t('No')}</Text>
+                  <Text style={styles.radioText}>{t('no')}</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -733,14 +733,14 @@ const CreateProduct = () => {
             />
 
             <MyButton
-              title={loading ? t('submitting') : t('Submit Ad')}
+              title={loading ? t('Posting') : t('Posted')}
               style={styles.submitButton}
               onPress={submitProduct}
               disabled={loading}>
               {loading ? (
                 <ActivityIndicator color={colors.green} />
               ) : (
-                <Text style={styles.submitButtonText}>{t('Submit Ad')}</Text>
+                <Text style={styles.submitButtonText}>{t('Post Ad')}</Text>
               )}
             </MyButton>
           </ScrollView>

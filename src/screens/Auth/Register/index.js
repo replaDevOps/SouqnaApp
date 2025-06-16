@@ -134,21 +134,13 @@ const Register = () => {
 
       // Ensure that you're only treating this as success if `data.success === true`
       if (data?.success === true) {
-        dispatch(
-          showSnackbar(
-            t(data.message || 'registrationSuccess'),
-          ),
-        );
+        dispatch(showSnackbar(t(data.message || 'registrationSuccess')));
         // showSnackbar(data.message || 'Registration successful! Please login.');
         setTimeout(() => {
           navigation.replace('OTP', {email});
         }, 2000);
       } else {
-        dispatch(
-          showSnackbar(
-            t(data.message || 'registrationFailed'),
-          ),
-        );
+        dispatch(showSnackbar(t(data.message || 'registrationFailed')));
         // showSnackbar(data.message || 'Registration failed. Please try again.');
       }
     } catch (error) {
@@ -157,12 +149,7 @@ const Register = () => {
         error?.response?.data || error.message,
       );
       dispatch(
-        showSnackbar(
-          t(
-            error?.response?.data?.message ||
-              'registrationError',
-          ),
-        ),
+        showSnackbar(t(error?.response?.data?.message || 'registrationError')),
       );
       // showSnackbar(
       //   error?.response?.data?.message ||
@@ -224,7 +211,9 @@ const Register = () => {
           />
           <Bold style={styles.title}>Souqna</Bold>
         </View>
-        <Bold style={styles.howText}>{t('How do you want to use Souqna?')}</Bold>
+        <Bold style={styles.howText}>
+          {t('How do you want to use Souqna?')}
+        </Bold>
         <RadioGroup
           options={[
             {value: 'Seller', label: t('seller')},
@@ -299,13 +288,11 @@ const Register = () => {
             trackColor={{false: colors.grey, true: colors.green}}
             thumbColor={isSubscribed ? colors.white : '#f4f3f4'}
           />
-          <Regular style={styles.switchText}>
-           {t('emailUpdates')}
-          </Regular>
+          <Regular style={styles.switchText}>{t('emailUpdates')}</Regular>
         </View>
         <View style={styles.buttonContainer}>
           <MyButton
-            title={isLoading ? '' : 'Register For Free'}
+            title={isLoading ? '' : t('Register For Free')}
             onPress={handleRegister}
             disabled={isLoading || !email || !password}
             style={{justifyContent: 'center', alignItems: 'center'}} // optional
@@ -317,14 +304,18 @@ const Register = () => {
             {t('ourTermsApplyPart1')}{' '}
             <TouchableOpacity
               onPress={() => Linking.openURL('https://www.example.com/terms')}>
-              <Regular style={styles.termsLink}>{t('ourTermsApplyPart3')}Terms of Use</Regular>
+              <Regular style={styles.termsLink}>
+                {t('ourTermsApplyPart3')}
+              </Regular>
             </TouchableOpacity>{' '}
             {t('ourTermsApplyPart2')}{' '}
             <TouchableOpacity
               onPress={() =>
                 Linking.openURL('https://www.example.com/privacy-policy')
               }>
-              <Regular style={styles.termsLink}>{t('ourTermsApplyPart4')}Privacy Policy</Regular>
+              <Regular style={styles.termsLink}>
+                {t('ourTermsApplyPart4')}
+              </Regular>
             </TouchableOpacity>
             .
           </Regular>

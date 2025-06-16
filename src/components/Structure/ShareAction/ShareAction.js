@@ -17,8 +17,10 @@ import {
 import styles from './style';
 import Regular from '../../../typography/RegularText';
 import Clipboard from '@react-native-clipboard/clipboard';
+import {useTranslation} from 'react-i18next';
 
 const ShareActions = ({productTitle, productLink, productId}) => {
+  const {t} = useTranslation();
   if (!productId) {
     console.warn('Product ID is missing!');
     return null;
@@ -93,7 +95,7 @@ const ShareActions = ({productTitle, productLink, productId}) => {
 
   return (
     <View style={styles.shareContainer}>
-      <Regular style={styles.shareTitle}>Share This Ad</Regular>
+      <Regular style={styles.shareTitle}>{t('Share This Ad')}</Regular>
       <View style={styles.shareIconsRow}>
         <TouchableOpacity onPress={handleShareToWhatsApp}>
           <WhatsappSVG width={25} height={25} style={styles.shareIcon} />

@@ -34,7 +34,7 @@ import {
 import {getStorage, ref, uploadBytes, getDownloadURL} from 'firebase/storage';
 import {app} from '../../../firebase';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 
 const Chat = () => {
   const route = useRoute();
@@ -50,7 +50,7 @@ const Chat = () => {
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isUploading, setIsUploading] = useState(false);
-    const {t} = useTranslation();
+  const {t} = useTranslation();
 
   // Only need to track the messages listener
   const messagesListenerRef = useRef(null);
@@ -101,7 +101,6 @@ const Chat = () => {
         const messagesData = querySnapshot.docs.map(doc => {
           const firebaseData = doc.data();
 
-          
           const createdAt = firebaseData.createdAt
             ? firebaseData.createdAt.toDate()
             : new Date();
@@ -119,7 +118,6 @@ const Chat = () => {
           };
         });
 
-      
         const sortedMessages = messagesData.sort(
           (a, b) => b.createdAt.getTime() - a.createdAt.getTime(),
         );
@@ -127,9 +125,9 @@ const Chat = () => {
         setMessages(sortedMessages);
         setIsLoading(false);
       },
-     
+
       null,
-      1000, 
+      1000,
     );
 
     messagesListenerRef.current = unsubscribe;
@@ -142,51 +140,45 @@ const Chat = () => {
   }, [conversationId, userId, token]);
 
   useEffect(() => {
-  const sendProductInfoMessage = async () => {
-    if (productInfo && !isLoading) {
-      try {
-        const productMessage = {
-          _id: new Date().getTime().toString(),
-          createdAt: new Date(),
-          user: {
-            _id: userId,
-            name: currentUserName || 'User',
-          },
-          text: `${t('chatInterestedInProduct')} ${productInfo.name}`,
-          product: productInfo,
-        };
+    const sendProductInfoMessage = async () => {
+      if (productInfo && !isLoading) {
+        try {
+          const productMessage = {
+            _id: new Date().getTime().toString(),
+            createdAt: new Date(),
+            user: {
+              _id: userId,
+              name: currentUserName || 'User',
+            },
+            text: `${t('chatInterestedInProduct')} ${productInfo.name}`,
+            product: productInfo,
+          };
 
-        await sendMessage(conversationId, productMessage);
-        console.log('Product info message sent');
-      } catch (error) {
-        console.error('Error sending product info message:', error);
+          await sendMessage(conversationId, productMessage);
+          console.log('Product info message sent');
+        } catch (error) {
+          console.error('Error sending product info message:', error);
+        }
       }
-    }
-  };
+    };
 
-  const timer = setTimeout(sendProductInfoMessage, 1000);
-  return () => clearTimeout(timer);
-}, [
-  productInfo,
-  isLoading,
-  conversationId,
-  userId,
-  currentUserName,
-]);
+    const timer = setTimeout(sendProductInfoMessage, 1000);
+    return () => clearTimeout(timer);
+  }, [productInfo, isLoading, conversationId, userId, currentUserName]);
 
   const onSend = useCallback(
     async (newMessages = []) => {
-    if (!conversationId || !userId || !token || newMessages.length === 0) {
-      return;
-    }
+      if (!conversationId || !userId || !token || newMessages.length === 0) {
+        return;
+      }
 
-    const messageToSend = newMessages[0];
-    
-    if (!messageToSend.text || messageToSend.text.trim() === '') {
-      return;
-    }
+      const messageToSend = newMessages[0];
 
-      try {S
+      if (!messageToSend.text || messageToSend.text.trim() === '') {
+        return;
+      }
+
+      try {
         // Optimistically update UI before Firebase confirms
         setMessages(previousMessages =>
           GiftedChat.append(previousMessages, newMessages),
@@ -298,26 +290,26 @@ const Chat = () => {
   };
 
   const renderBubble = props => (
-  <Bubble
-    {...props}
-    wrapperStyle={{
-      right: {
-        backgroundColor: '#ADBD6E',
-        padding: mvs(2),
-        marginRight: mvs(0),
-      },
-      left: {
-        backgroundColor: '#F0F0F0',
-        padding: mvs(2),
-        marginLeft: mvs(4),
-      },
-    }}
-    textStyle={{
-      right: {color: '#fff',fontSize:17},
-      left: {color: '#000',fontSize:17},
-    }}
-  />
-);
+    <Bubble
+      {...props}
+      wrapperStyle={{
+        right: {
+          backgroundColor: '#ADBD6E',
+          padding: mvs(2),
+          marginRight: mvs(0),
+        },
+        left: {
+          backgroundColor: '#F0F0F0',
+          padding: mvs(2),
+          marginLeft: mvs(4),
+        },
+      }}
+      textStyle={{
+        right: {color: '#fff', fontSize: 17},
+        left: {color: '#000', fontSize: 17},
+      }}
+    />
+  );
 
   const renderMessageImage = props => {
     return (
@@ -353,7 +345,9 @@ const Chat = () => {
         {isUploading ? (
           <ActivityIndicator size="small" color="#fff" />
         ) : (
-          <Text style={{color: '#fff', fontWeight: 'bold'}}>{t('chatSend')}</Text>
+          <Text style={{color: '#fff', fontWeight: 'bold'}}>
+            {t('chatSend')}
+          </Text>
         )}
       </View>
     </Send>
@@ -439,7 +433,7 @@ const Chat = () => {
             renderAvatarOnTop={false} // Hide avatars
             renderUsernameOnMessage={false} // Hide usernames
             scrollToBottom
-            scrollToBottomStyle={{backgroundColor:colors.gray}}
+            scrollToBottomStyle={{backgroundColor: colors.gray}}
             isTyping={false} // Disable typing indicator
             renderBubble={renderBubble}
             renderSend={renderSend}
