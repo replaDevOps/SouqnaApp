@@ -38,9 +38,9 @@ const Register = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [securePassword, setSecurePassword] = useState(true);
-  const [selectedOption, setSelectedOption] = useState('');
-  const [isSeller, setIsSeller] = useState(false);
-  const [isBuyer, setIsBuyer] = useState(false);
+const [isSeller, setIsSeller] = useState(true); 
+const [isBuyer, setIsBuyer] = useState(true);   
+const [selectedOption, setSelectedOption] = useState('Both'); 
   const [profilename, setProfilename] = useState('');
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
@@ -87,32 +87,25 @@ const Register = () => {
     } else {
       setPasswordError('');
     }
-    if ((isSeller || (isSeller && isBuyer)) && !sellerType) {
-      dispatch(showSnackbar(t('Please select a seller type.')));
-      console.log('Dispatch:', dispatch);
-      // showSnackbar('Please select a seller type.');
-      return;
-    }
-    if (!isSeller && !isBuyer) {
-      dispatch(showSnackbar(t('Please select a role.')));
-      console.log('Dispatch:', dispatch);
-      // showSnackbar('Please select a role.');
-      return;
-    }
+    // if ((isSeller || (isSeller && isBuyer)) && !sellerType) {
+    //   dispatch(showSnackbar(t('Please select a seller type.')));
+    //   console.log('Dispatch:', dispatch);
+    //   // showSnackbar('Please select a seller type.');
+    //   return;
+    // }
+    // if (!isSeller && !isBuyer) {
+    //   dispatch(showSnackbar(t('Please select a role.')));
+    //   console.log('Dispatch:', dispatch);
+    //   // showSnackbar('Please select a role.');
+    //   return;
+    // }
     // if (isSeller && sellerType === 'Company' && !cardDetails) {
     //   setShowCardModal(true);
     //   return;
     // }
     const storedFcmToken = await AsyncStorage.getItem('fcmToken');
     console.log('Stored FCM Token: ', storedFcmToken);
-    let role = 0;
-    if (isSeller && isBuyer) {
-      role = 4;
-    } else if (isSeller) {
-      role = 2;
-    } else if (isBuyer) {
-      role = 3;
-    }
+    let role = 4;
 
     const payload = {
       name: profilename.trim(),
@@ -232,7 +225,7 @@ const Register = () => {
           <Bold style={styles.title}>Souqna</Bold>
         </View>
         <Bold style={styles.howText}>{t('How do you want to use Souqna?')}</Bold>
-        <RadioGroup
+        {/* <RadioGroup
           options={[
             {value: 'Seller', label: t('seller')},
             {value: 'Buyer', label: t('buyer')},
@@ -260,8 +253,8 @@ const Register = () => {
               setIsBuyer(true);
             }
           }}
-        />
-        {isSeller && (
+        /> */}
+        {(
           <View style={{marginTop: 16}}>
             <RadioGroup
               options={[

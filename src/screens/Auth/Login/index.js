@@ -42,7 +42,7 @@ const LoginScreen = () => {
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [showRoleSelection, setShowRoleSelection] = useState(false);
+  // const [showRoleSelection, setShowRoleSelection] = useState(false);
   const {t} = useTranslation();
 
   // Add animation value
@@ -53,16 +53,16 @@ const LoginScreen = () => {
   };
 
   // Animate modal in when `showRoleModal` is true
-  useEffect(() => {
-    if (showRoleSelection) {
-      Animated.timing(slideAnim, {
-        toValue: 0,
-        duration: 400,
-        easing: Easing.out(Easing.exp),
-        useNativeDriver: true,
-      }).start();
-    }
-  }, [showRoleSelection]);
+  // useEffect(() => {
+  //   if (showRoleSelection) {
+  //     Animated.timing(slideAnim, {
+  //       toValue: 0,
+  //       duration: 400,
+  //       easing: Easing.out(Easing.exp),
+  //       useNativeDriver: true,
+  //     }).start();
+  //   }
+  // }, [showRoleSelection]);
 
   const handleLogin = async () => {
     if (!isEmailValid(email)) {
@@ -114,13 +114,14 @@ const LoginScreen = () => {
 
         if (user.role === 4) {
           // Show role selection modal if both
-          setShowRoleSelection(true);
+          // setShowRoleSelection(true);
           dispatch(
-            showSnackbar(
-              user.role === 3
-                ? t('buyerLoginSuccess')
-                : t('sellerLoginSuccess'),
+            showSnackbar(t('buyerLoginSuccess')
+              // user.role === 3
+                // ? t('buyerLoginSuccess')
+                // : t('sellerLoginSuccess'),
             ),
+            navigation.replace('MainTabs'),
           );
         } else {
           dispatch(
@@ -242,7 +243,7 @@ const LoginScreen = () => {
             </Regular>
           </View>
 
-          {showRoleSelection && (
+          {/* {showRoleSelection && (
             <Modal transparent visible={showRoleSelection} animationType="none">
               <View style={styles.modalOverlay}>
                 <Animated.View
@@ -262,7 +263,7 @@ const LoginScreen = () => {
                       onPress={() => {
                         dispatch(setRole(3)); // Buyer
                         console.log('Role set as 3 (Buyer)');
-                        setShowRoleSelection(false);
+                        // setShowRoleSelection(false);
                         navigation.replace('MainTabs');
                       }}>
                       <Regular style={styles.modalButtonText}>
@@ -275,7 +276,7 @@ const LoginScreen = () => {
                       onPress={() => {
                         dispatch(setRole(2)); // Seller
                         console.log('Role set as 2 (Seller)');
-                        setShowRoleSelection(false);
+                        // setShowRoleSelection(false);
                         navigation.replace('MainTabs');
                       }}>
                       <Regular style={styles.modalButtonText}>
@@ -286,7 +287,7 @@ const LoginScreen = () => {
                 </Animated.View>
               </View>
             </Modal>
-          )}
+          )} */}
         </View>
       </TouchableWithoutFeedback>
       {/* <Snackbar
