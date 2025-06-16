@@ -1,7 +1,6 @@
 import axios from 'axios';
-import {store} from '../redux/store'; // Import your store
-import {updateTokens, logoutUser, setUser} from '../redux/slices/userSlice';
-import {useSelector} from 'react-redux';
+import {store} from '../redux/store';
+import {updateTokens, logoutUser} from '../redux/slices/userSlice';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import utc from 'dayjs/plugin/utc';
@@ -12,7 +11,6 @@ dayjs.extend(utc);
 const API = axios.create({
   baseURL: 'https://backend.souqna.net/api/',
   timeout: 10000,
-  withCredentials: true,
 });
 
 export const BASE_URL = 'https://backend.souqna.net/';

@@ -284,7 +284,6 @@ const dashboardRefreshRef = useRef(null);
         <LogoHeader />
       </View>
 
-      {/* Map */}
       {role !== 2 && (
         <TouchableOpacity
           onPress={() => navigation.navigate('Map', {allProducts})}
