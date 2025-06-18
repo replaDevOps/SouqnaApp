@@ -9,7 +9,6 @@ import {
   FlatList,
   Linking,
   Dimensions,
-  I18nManager,
   Alert,
 } from 'react-native';
 import {CloseSvg, LanguageSVG} from '../../assets/svg';
@@ -22,7 +21,6 @@ import HelpModal from './HelpModal';
 import {useTranslation} from 'react-i18next';
 import i18n from '../../i18n/i18n';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import RNRestart from 'react-native-restart';
 
 const AddModal = ({visible, onClose, title, message}) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -68,7 +66,6 @@ const AddModal = ({visible, onClose, title, message}) => {
   const toggleLanguage = async () => {
     const newLang = i18n.language === 'en' ? 'ar' : 'en';
     const isArabic = newLang === 'ar';
-    I18nManager.allowRTL(false);
 
     try {
       await AsyncStorage.setItem('appLanguage', newLang); // Save selected language

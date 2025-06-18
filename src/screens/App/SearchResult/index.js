@@ -79,7 +79,7 @@ const SearchResultsScreen = () => {
       return;
     }
     const filtered = allProducts.filter(product =>
-      product.name?.toLowerCase().includes(query.toLowerCase()),
+      product.name?.toLowerCase().startsWith(query.toLowerCase()),
     );
     setFilteredProducts(filtered);
   };
