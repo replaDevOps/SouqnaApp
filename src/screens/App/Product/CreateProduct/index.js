@@ -12,6 +12,7 @@ import {
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
   Keyboard,
+  Platform,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {CommonActions, useNavigation, useRoute} from '@react-navigation/native';
@@ -246,6 +247,13 @@ const CreateProduct = () => {
 
   const submitProduct = async () => {
     console.log('SUBMIT BUTTON PRESSED');
+
+    if (!formData.stock || Number(formData.stock) <= 0) {
+  setSnackbarMessage('Stock cannot be 0');
+  setSnackbarVisible(true);
+  return;
+}
+
     const data = new FormData();
     data.append('name', formData.name);
     data.append('description', formData.description);
