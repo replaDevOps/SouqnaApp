@@ -27,8 +27,15 @@ import {HeartSvg} from '../../../assets/svg';
 import Bold from '../../../typography/BoldText';
 import styles from './styles';
 import { useTranslation } from 'react-i18next';
+import CarFilters from '../../../components/atoms/CarFilters';
 
 const Products = () => {
+  const [filters, setFilters] = useState({
+  minPrice: '',
+  maxPrice: '',
+  brand: '',
+  buildYear: '',
+});
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [likedItems, setLikedItems] = useState({});
@@ -58,11 +65,25 @@ const Products = () => {
       setLoading(true);
       const response = await fetchProductsBySubCategory(subCategoryId);
       if (response?.data) {
-        const filteredProducts = response.data.filter(
-          // product => product.seller.id === userId,
-          product =>product,
-        );
-        setProducts(filteredProducts);
+const parsedProducts = response.data.map(product => {
+  try {
+    const customFields = JSON.parse(product.custom_fields || '[]');
+    const yearField = customFields.find(f => f.name === 'yearofManufacture');
+    const brandField = customFields.find(f => f.name === 'make_Brand');
+
+    return {
+      ...product,
+      buildYear: yearField?.value || '',
+      brand: brandField?.value || '',
+    };
+  } catch (e) {
+    console.warn('Failed to parse custom fields:', e);
+    return product;
+  }
+});
+
+setProducts(parsedProducts);
+
         // setProducts(response.data);
         console.log('Fetch Products by subcategory:', response.data);
       }
@@ -103,6 +124,29 @@ const Products = () => {
       console.log('Added to favorites:', product);
     }
   };
+  const filteredProducts = useMemo(() => {
+  return products.filter(product => {
+    if (name !== 'Cars') return true;
+
+    const price = Number(product.price);
+    const min = Number(filters.minPrice || 0);
+    const max = Number(filters.maxPrice || Infinity);
+    const brandMatch = filters.brand
+      ? product.brand?.toLowerCase().startsWith(filters.brand.toLowerCase())
+      : true;
+    const yearMatch = filters.buildYear
+      ? String(product.buildYear)?.startsWith(filters.buildYear)
+      : true;
+
+    return (
+      price >= min &&
+      price <= max &&
+      brandMatch &&
+      yearMatch
+    );
+  });
+}, [filters, products, name]);
+
 
   const renderRecommendedItem = useCallback(
     ({item}) => (
@@ -150,13 +194,19 @@ const Products = () => {
           <Bold>{t('No Listings Right Now')}</Bold>
         </View>
       ) : (
+      <>
+        {name?.toLowerCase() === 'cars' && (
+          <CarFilters filters={filters} setFilters={setFilters} />
+        )}
+
         <FlatList
-          data={products}
+          data={filteredProducts}
           renderItem={renderRecommendedItem}
           keyExtractor={item => item.id.toString()}
           contentContainerStyle={styles.recommendedContainer}
           numColumns={2}
         />
+        </>
       )}
     </SafeAreaView>
   );

@@ -5,7 +5,6 @@ import {
   TouchableOpacity,
   ScrollView,
   RefreshControl,
-  I18nManager,
   Alert,
   Animated,
 } from 'react-native';
@@ -156,12 +155,7 @@ const Profile = () => {
       console.error('Language toggle error:', error);
     }
   };
-  const renderDirectionalIcon = () => {
-    if (I18nManager.isRTL) {
-      return <BackwardSVG width={24} height={24} fill={colors.green} />;
-    }
-    return <ForwardSVG width={24} height={24} fill={colors.green} />;
-  };
+  
 
   return (
     <Animated.View style={{flex: 1, transform: [{translateX: translateXAnim}]}}>
