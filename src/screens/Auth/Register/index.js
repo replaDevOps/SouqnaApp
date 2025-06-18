@@ -29,6 +29,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {showSnackbar} from '../../../redux/slices/snackbarSlice';
 import {useDispatch} from 'react-redux';
 import {useTranslation} from 'react-i18next';
+import { ScrollView } from 'react-native';
 
 // import {setRole} from '../../../redux/slices/userSlice';
 
@@ -37,9 +38,9 @@ const Register = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [securePassword, setSecurePassword] = useState(true);
-  const [selectedOption, setSelectedOption] = useState('');
-  const [isSeller, setIsSeller] = useState(false);
-  const [isBuyer, setIsBuyer] = useState(false);
+const [isSeller, setIsSeller] = useState(true); 
+const [isBuyer, setIsBuyer] = useState(true);   
+const [selectedOption, setSelectedOption] = useState('Both'); 
   const [profilename, setProfilename] = useState('');
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
@@ -86,32 +87,25 @@ const Register = () => {
     } else {
       setPasswordError('');
     }
-    if ((isSeller || (isSeller && isBuyer)) && !sellerType) {
-      dispatch(showSnackbar(t('Please select a seller type.')));
-      console.log('Dispatch:', dispatch);
-      // showSnackbar('Please select a seller type.');
-      return;
-    }
-    if (!isSeller && !isBuyer) {
-      dispatch(showSnackbar(t('Please select a role.')));
-      console.log('Dispatch:', dispatch);
-      // showSnackbar('Please select a role.');
-      return;
-    }
+    // if ((isSeller || (isSeller && isBuyer)) && !sellerType) {
+    //   dispatch(showSnackbar(t('Please select a seller type.')));
+    //   console.log('Dispatch:', dispatch);
+    //   // showSnackbar('Please select a seller type.');
+    //   return;
+    // }
+    // if (!isSeller && !isBuyer) {
+    //   dispatch(showSnackbar(t('Please select a role.')));
+    //   console.log('Dispatch:', dispatch);
+    //   // showSnackbar('Please select a role.');
+    //   return;
+    // }
     // if (isSeller && sellerType === 'Company' && !cardDetails) {
     //   setShowCardModal(true);
     //   return;
     // }
     const storedFcmToken = await AsyncStorage.getItem('fcmToken');
     console.log('Stored FCM Token: ', storedFcmToken);
-    let role = 0;
-    if (isSeller && isBuyer) {
-      role = 4;
-    } else if (isSeller) {
-      role = 2;
-    } else if (isBuyer) {
-      role = 3;
-    }
+    let role = 4;
 
     const payload = {
       name: profilename.trim(),
@@ -195,9 +189,15 @@ const Register = () => {
 
   return (
     <>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.container}>
+<KeyboardAvoidingView
+  style={{flex: 1}}
+  behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+  keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0} // adjust based on your header
+>
+  <ScrollView
+    contentContainerStyle={styles.container}
+    keyboardShouldPersistTaps="handled"
+  >
         <View style={{padding: 10}}></View>
         <Header
           showBackButton
@@ -211,10 +211,9 @@ const Register = () => {
           />
           <Bold style={styles.title}>Souqna</Bold>
         </View>
-        <Bold style={styles.howText}>
-          {t('How do you want to use Souqna?')}
-        </Bold>
-        <RadioGroup
+        <Bold style={styles.howText}>{t('How do you want to use Souqna?')}</Bold>
+        {/* <RadioGroup
+
           options={[
             {value: 'Seller', label: t('seller')},
             {value: 'Buyer', label: t('buyer')},
@@ -242,8 +241,8 @@ const Register = () => {
               setIsBuyer(true);
             }
           }}
-        />
-        {isSeller && (
+        /> */}
+        {(
           <View style={{marginTop: 16}}>
             <RadioGroup
               options={[
@@ -304,34 +303,20 @@ const Register = () => {
             {t('ourTermsApplyPart1')}{' '}
             <TouchableOpacity
               onPress={() => Linking.openURL('https://www.example.com/terms')}>
-              <Regular style={styles.termsLink}>
-                {t('ourTermsApplyPart3')}
-              </Regular>
+              <Regular style={styles.termsLink}>{t('ourTermsApplyPart3')}</Regular>
             </TouchableOpacity>{' '}
             {t('ourTermsApplyPart2')}{' '}
             <TouchableOpacity
               onPress={() =>
                 Linking.openURL('https://www.example.com/privacy-policy')
               }>
-              <Regular style={styles.termsLink}>
-                {t('ourTermsApplyPart4')}
-              </Regular>
+              <Regular style={styles.termsLink}>{t('ourTermsApplyPart4')}</Regular>
             </TouchableOpacity>
             .
           </Regular>
         </View>
+      </ScrollView>
       </KeyboardAvoidingView>
-      {/* <Snackbar
-        visible={snackbarVisible}
-        onDismiss={() => setSnackbarVisible(false)}
-        duration={3000}
-        style={{position: 'absolute', bottom: Platform.OS === 'ios' ? 30 : 30}}
-        action={{
-          label: 'OK',
-          onPress: () => setSnackbarVisible(false),
-        }}>
-        {snackbarMessage}
-      </Snackbar> */}
     </>
   );
 };

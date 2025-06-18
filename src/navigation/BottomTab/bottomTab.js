@@ -25,37 +25,46 @@ import {fetchNotifications} from '../../api/apiServices';
 import {setRole} from '../../redux/slices/userSlice';
 import AddModal from '../../components/Modals/AddModal';
 import VerificationModal from '../../components/Modals/VerificationModal';
+import { useNavigation } from '@react-navigation/native';
 
 const Tab = createBottomTabNavigator();
 
 const MyTabs = () => {
   const {
     token,
-    role: activeRole,
+    role,
     actualRole,
     verificationStatus,
   } = useSelector(state => state.user);
+  const activeRole = role ?? 3;
+
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [verificationModalVisible, setVerificationModalVisible] =
     useState(false);
 const {tokens} = useSelector(state => state.user);
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigation = useNavigation();
 
-  useEffect(() => {
-    setIsSeller(activeRole === '2' || activeRole === 2);
-  }, [activeRole]);
+  // useEffect(() => {
+  //   setIsSeller(activeRole === '2' || activeRole === 2);
+  // }, [activeRole]);
 
   const dispatch = useDispatch();
   // Track if we're in seller mode (needed for role 4 users)
-  const [isSeller, setIsSeller] = useState(
-    activeRole === '2' || activeRole === 2,
-  );
+  // const [isSeller, setIsSeller] = useState(
+  //   activeRole === '2' || activeRole === 2,
+  // );
 console.log('{Tokens}',tokens);
 
   useEffect(() => {
     console.log('TOKEN: ', token);
   }, [token]);
+useEffect(() => {
+  if (role == null) {
+    dispatch(setRole(3));
+  }
+}, [dispatch, role]);
 
   const handleLoginSuccess = () => {
     setIsModalVisible(false);
@@ -99,11 +108,11 @@ console.log('{Tokens}',tokens);
     }
   };
 
-  useEffect(() => {
-    if (activeRole === 4) {
-      dispatch(setRole(2));
-    }
-  }, [activeRole]);
+  // useEffect(() => {
+  //   if (activeRole === 4) {
+  //     dispatch(setRole(2));
+  //   }
+  // }, [activeRole]);
 
   const handleVerifyProfile = () => {
     setVerificationModalVisible(false);
@@ -141,7 +150,7 @@ console.log('{Tokens}',tokens);
   }, []);
 
   const renderTabs = () => {
-    if ((activeRole == 2 || (actualRole == 4 && isSeller)) && token) {
+    if ((activeRole == 2 ) && token) {
       // Seller: Home, Inbox, Advertise, Profile
       return (
         <>
@@ -176,7 +185,7 @@ console.log('{Tokens}',tokens);
           />
         </>
       );
-    } else if (activeRole == 3 || (actualRole == 4 && !isSeller)) {
+    } else if (activeRole == 3 ) {
       // Buyer: Home, Inbox, Favourites, Cart, Profile
       return (
         <>

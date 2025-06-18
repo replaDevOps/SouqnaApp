@@ -33,8 +33,8 @@ const styles = StyleSheet.create({
     top: mvs(15),
   },
   container: {
-    flex: 1,
-    paddingHorizontal: mvs(30),
+    flexGrow: 1,
+    paddingHorizontal: mvs(20),
     backgroundColor: colors.white,
   },
   title: {

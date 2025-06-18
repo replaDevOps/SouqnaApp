@@ -284,7 +284,6 @@ const dashboardRefreshRef = useRef(null);
         <LogoHeader />
       </View>
 
-      {/* Map */}
       {role !== 2 && (
         <TouchableOpacity
           onPress={() => navigation.navigate('Map', {allProducts})}
@@ -294,7 +293,7 @@ const dashboardRefreshRef = useRef(null);
         </TouchableOpacity>
       )}
       <ScrollView
-        contentContainerStyle={{backgroundColor: '#fbfbfb'}}
+        contentContainerStyle={{backgroundColor: '#fbfbfb', flexGrow: 1}}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }>

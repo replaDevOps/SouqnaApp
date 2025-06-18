@@ -59,7 +59,8 @@ const Products = () => {
       const response = await fetchProductsBySubCategory(subCategoryId);
       if (response?.data) {
         const filteredProducts = response.data.filter(
-          product => product.seller.id === userId,
+          // product => product.seller.id === userId,
+          product =>product,
         );
         setProducts(filteredProducts);
         // setProducts(response.data);
