@@ -47,7 +47,7 @@ const Products = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const route = useRoute();
-  const {id: subCategoryId, name} = route.params;
+  const {id: subCategoryId, name, category} = route.params;
   const getCurrencySymbol = (currency = 'USD') => {
     switch (currency?.toUpperCase?.()) {
       case 'TRY':
@@ -126,7 +126,7 @@ setProducts(parsedProducts);
   };
   const filteredProducts = useMemo(() => {
   return products.filter(product => {
-    if (name !== 'Cars') return true;
+    if (category !== 'Vehicle') return true;
 
     const price = Number(product.price);
     const min = Number(filters.minPrice || 0);
@@ -145,7 +145,7 @@ setProducts(parsedProducts);
       yearMatch
     );
   });
-}, [filters, products, name]);
+}, [filters, products, category]);
 
 
   const renderRecommendedItem = useCallback(
@@ -195,7 +195,7 @@ setProducts(parsedProducts);
         </View>
       ) : (
       <>
-        {name?.toLowerCase() === 'cars' && (
+        {category?.toLowerCase() === 'vehicle' && (
           <CarFilters filters={filters} setFilters={setFilters} />
         )}
 
