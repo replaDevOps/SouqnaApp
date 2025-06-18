@@ -212,6 +212,23 @@ export const uploadProductImages = async (productId, imageFiles, token) => {
   }
 };
 
+export const GetSeller = async ( token) => {
+  try {
+    const response = await API.get('get-seller', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error(
+      'Error fetching seller details:',
+      error?.response?.data || error.message,
+    );
+    return null;
+  }
+};
+
 export const fetchCategories = async token => {
   try {
     const response = await API.get('viewCategories', {
