@@ -39,7 +39,7 @@ const CarFilters = ({filters, setFilters}) => {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    paddingHorizontal: 10,
+    paddingHorizontal: 12,
     marginVertical: 10,
     gap: 5,
     flexWrap: 'wrap',

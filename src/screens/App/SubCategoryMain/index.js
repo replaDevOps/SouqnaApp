@@ -18,6 +18,7 @@ const SubCategoryMain = () => {
       categoryId: categoryId,
       id: subcategory.id,
       name: subcategory.name,
+      category: category,
     });
   };
 

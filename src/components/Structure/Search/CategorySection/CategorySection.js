@@ -68,6 +68,7 @@ const CategorySection = ({}) => {
           categoryId: categoryId,
           subcategories,
         });
+    console.log(`Category ${categoryName} clicked`);
       } else {
         console.warn('No subcategories found');
       }
