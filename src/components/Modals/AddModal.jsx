@@ -65,35 +65,22 @@ const AddModal = ({visible, onClose, title, message}) => {
   const closeHelp = () => {
     setShowHelp(false);
   };
-
   const toggleLanguage = async () => {
     const newLang = i18n.language === 'en' ? 'ar' : 'en';
     const isArabic = newLang === 'ar';
+    I18nManager.allowRTL(false);
 
     try {
       await AsyncStorage.setItem('appLanguage', newLang); // Save selected language
 
-      const shouldForceRTL = I18nManager.isRTL !== isArabic;
+      // const shouldForceRTL = I18nManager.isRTL !== isArabic;
 
-      if (shouldForceRTL) {
-        I18nManager.allowRTL(isArabic);
-        I18nManager.forceRTL(isArabic);
-      }
+      // if (shouldForceRTL) {
+      //   I18nManager.allowRTL(isArabic);
+      //   I18nManager.forceRTL(isArabic);
+      // }
 
-      i18n.changeLanguage(newLang).then(() => {
-        Alert.alert(
-          isArabic ? 'تم التغيير' : 'Language Changed',
-          isArabic
-            ? 'سيتم إعادة تشغيل التطبيق لتطبيق اللغة العربية.'
-            : 'App will reload to apply English language.',
-          [
-            {
-              text: isArabic ? 'موافق' : 'OK',
-              onPress: () => RNRestart.restart(),
-            },
-          ],
-        );
-      });
+      i18n.changeLanguage(newLang).then(() => {});
     } catch (error) {
       console.error('Language toggle error:', error);
     }

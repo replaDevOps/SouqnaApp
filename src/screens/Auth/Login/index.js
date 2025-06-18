@@ -212,16 +212,10 @@ const LoginScreen = () => {
               secureTextEntry={securePassword}
               error={passwordError}
             />
-            {/*
-           <Regular style={styles.registerText}>
-              Have you Forgotten Password?{' '}
-           */}
+
             <Regular style={styles.ForgetPassword} onPress={navigateToForget}>
               {t('Forget Password?')}
             </Regular>
-            {/*
-            </Regular>
-             */}
           </View>
           <View style={styles.buttonContainer}>
             <MyButton
@@ -236,7 +230,7 @@ const LoginScreen = () => {
               disabled={loading || !isFormValid}
             />
             <Regular style={styles.registerText}>
-              Don’t have an account?{' '}
+              {t('Don’t have an account?')}{' '}
               <Regular style={styles.registerLink} onPress={navigateToRegister}>
                 {t('Register')}
               </Regular>
@@ -251,9 +245,9 @@ const LoginScreen = () => {
                     styles.modalContainer,
                     {transform: [{translateY: slideAnim}]},
                   ]}>
-                  <Bold style={styles.modalTitle}>Choose Role</Bold>
+                  <Bold style={styles.modalTitle}>{t('chooseRole')}</Bold>
                   <Regular style={styles.modalText}>
-                    Do you want to login as a Buyer or Seller?
+                    {t('loginBuyerOrSeller')}
                   </Regular>
 
                   <View
@@ -267,7 +261,7 @@ const LoginScreen = () => {
                         navigation.replace('MainTabs');
                       }}>
                       <Regular style={styles.modalButtonText}>
-                        Login as Buyer
+                        {t('loginAsBuyerButton')}
                       </Regular>
                     </TouchableOpacity>
 
@@ -280,7 +274,7 @@ const LoginScreen = () => {
                         navigation.replace('MainTabs');
                       }}>
                       <Regular style={styles.modalButtonText}>
-                        Login as Seller
+                        {t('loginAsSellerButton')}
                       </Regular>
                     </TouchableOpacity>
                   </View>

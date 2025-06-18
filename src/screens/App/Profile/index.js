@@ -144,32 +144,18 @@ const Profile = () => {
     try {
       await AsyncStorage.setItem('appLanguage', newLang); // Save selected language
 
-      const shouldForceRTL = I18nManager.isRTL !== isArabic;
+      // const shouldForceRTL = I18nManager.isRTL !== isArabic;
 
-      if (shouldForceRTL) {
-        I18nManager.allowRTL(isArabic);
-        I18nManager.forceRTL(isArabic);
-      }
+      // if (shouldForceRTL) {
+      //   I18nManager.allowRTL(isArabic);
+      //   I18nManager.forceRTL(isArabic);
+      // }
 
-      i18n.changeLanguage(newLang).then(() => {
-        Alert.alert(
-          isArabic ? 'تم التغيير' : 'Language Changed',
-          isArabic
-            ? 'سيتم إعادة تشغيل التطبيق لتطبيق اللغة العربية.'
-            : 'App will reload to apply English language.',
-          [
-            {
-              text: isArabic ? 'موافق' : 'OK',
-              onPress: () => RNRestart.restart(),
-            },
-          ],
-        );
-      });
+      i18n.changeLanguage(newLang).then(() => {});
     } catch (error) {
       console.error('Language toggle error:', error);
     }
   };
-
   const renderDirectionalIcon = () => {
     if (I18nManager.isRTL) {
       return <BackwardSVG width={24} height={24} fill={colors.green} />;
@@ -211,7 +197,7 @@ const Profile = () => {
                   </View>
                   <Regular style={styles.menuText}>{t('myAccount')}</Regular>
                 </View>
-                {renderDirectionalIcon()}
+                <ForwardSVG width={24} height={24} fill={colors.green} />
               </TouchableOpacity>
 
               {activeRole === '2' || activeRole === 2 ? (
@@ -224,11 +210,11 @@ const Profile = () => {
                     </View>
                     <Regular style={styles.menuText}>
                       {verificationStatus === 2 || verificationStatus === 1
-                        ? t('Update Information')
+                        ? t('UpdateInformation')
                         : t('getVerified')}
                     </Regular>
                   </View>
-                  {renderDirectionalIcon()}
+                  <ForwardSVG width={24} height={24} fill={colors.green} />
                 </TouchableOpacity>
               ) : (
                 ''
@@ -245,7 +231,7 @@ const Profile = () => {
                     {t('changePassword')}
                   </Regular>
                 </View>
-                {renderDirectionalIcon()}
+                <ForwardSVG width={24} height={24} fill={colors.green} />
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -261,7 +247,7 @@ const Profile = () => {
                       : t('switchToEnglish')}
                   </Regular>
                 </View>
-                {renderDirectionalIcon()}
+                <ForwardSVG width={24} height={24} fill={colors.green} />
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -271,9 +257,11 @@ const Profile = () => {
                   <View style={styles.iconWrapper}>
                     <ChangePassSVG width={22} height={22} />
                   </View>
-                  <Regular style={styles.menuText}>Subscription Plans</Regular>
+                  <Regular style={styles.menuText}>
+                    {t('subscriptionPlans')}
+                  </Regular>
                 </View>
-                {renderDirectionalIcon()}
+                <ForwardSVG width={24} height={24} fill={colors.green} />
               </TouchableOpacity>
 
               {/* <TouchableOpacity

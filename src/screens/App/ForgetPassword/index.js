@@ -69,7 +69,7 @@ const ForgetPassword = () => {
             <PrimaryPasswordInput
               value={email}
               onChangeText={setEmail}
-              placeholder={t('Confirm your e-mail address')}
+              placeholder={t('ConfirmEmailAddress')}
               //error={emailError}
               clearText={() => setEmail('')}
             />

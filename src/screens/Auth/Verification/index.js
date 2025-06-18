@@ -266,7 +266,6 @@ const VerificationScreen = () => {
     setShowSubmit(isFormChanged || isImageChanged);
   }, [formData, idFrontSide, idBackSide, selfie, originalData]);
 
-
   const handleInputChange = (key, value) => {
     if (key === 'idNumber') {
       const digits = value.replace(/\D/g, ''); // Only keep digits
@@ -541,7 +540,7 @@ const VerificationScreen = () => {
   return (
     <SafeAreaView>
       <ScrollView>
-        <MainHeader title={'Verification'} showBackIcon={true} />
+        <MainHeader title={t('verification')} showBackIcon={true} />
         <View style={styles.container}>
           {/* Full Name input (first field) */}
           <View style={styles.inputContainer}>
@@ -626,7 +625,7 @@ const VerificationScreen = () => {
           </View>
 
           <View style={styles.inputContainer}>
-            <Text style={styles.label}>Phone No</Text>
+            <Text style={styles.label}>{t('Phone No')}</Text>
             <TextInput
               style={styles.input}
               placeholder={
@@ -672,7 +671,7 @@ const VerificationScreen = () => {
             <Text style={styles.label}>{t('idType')}</Text>
             <View style={[styles.radioGroup, {justifyContent: 'space-around'}]}>
               <RadioButton
-                label="Cnic"
+                label="NIN"
                 selected={idType === 'cnic'}
                 onPress={isEditable ? () => setIdType('cnic') : undefined}
               />

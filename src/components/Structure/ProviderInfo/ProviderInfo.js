@@ -7,8 +7,10 @@ import Bold from '../../../typography/BoldText';
 import Regular from '../../../typography/RegularText';
 import styles from './style';
 import {BASE_URL_Product} from '../../../api/apiServices';
+import {useTranslation} from 'react-i18next';
 
 const ProviderInfo = ({provider}) => {
+  const {t} = useTranslation();
   const roleText =
     provider?.user?.role === '2'
       ? 'Seller'
@@ -17,7 +19,7 @@ const ProviderInfo = ({provider}) => {
       : 'Seller';
   return (
     <View style={styles.providerContainer}>
-      <Bold style={styles.providerTitle}>Provider</Bold>
+      <Bold style={styles.providerTitle}>{t('Provider')}</Bold>
       <Line />
       <Bold style={styles.providerName}>
         {provider.user?.name || provider.seller?.name}

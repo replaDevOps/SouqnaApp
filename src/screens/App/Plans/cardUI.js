@@ -21,6 +21,7 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
 import {submitCardDetails} from '../../../api/apiServices';
+import {useTranslation} from 'react-i18next';
 
 const CardUI = () => {
   const navigation = useNavigation();
@@ -33,6 +34,7 @@ const CardUI = () => {
   const [cvc, setCvc] = useState('');
   const [saveInfo, setSaveInfo] = useState(false);
   const [loading, setLoading] = useState(false);
+  const {t} = useTranslation();
 
   // Parse expiry MM/YY to month and year numbers
   const parseExpiry = expiryStr => {
@@ -124,7 +126,7 @@ const CardUI = () => {
               style={{width: 120, height: 120, resizeMode: 'cover'}}
             />
           </View>
-          <Text style={styles.header}>Payment method</Text>
+          <Text style={styles.header}>{t('paymentMethod')}</Text>
 
           <View style={styles.paymentOption}>
             <View style={styles.radioRow}>
@@ -132,10 +134,10 @@ const CardUI = () => {
                 <View style={styles.radioInner} />
               </View>
               <CardSVG width={24} height={24} />
-              <Text style={styles.optionText}>Card</Text>
+              <Text style={styles.optionText}>{t('Card')}</Text>
             </View>
 
-            <Text style={styles.sectionTitle}>Card information</Text>
+            <Text style={styles.sectionTitle}>{t('Card information')}</Text>
             <View style={styles.cardNumberContainer}>
               <TextInput
                 style={styles.cardNumberInput}
@@ -175,15 +177,15 @@ const CardUI = () => {
               </View>
             </View>
 
-            <Text style={styles.sectionTitle}>Cardholder name</Text>
+            <Text style={styles.sectionTitle}>{t('Cardholder name')}</Text>
             <TextInput
               style={styles.fullInput}
-              placeholder="Full name on card"
+              placeholder={t('Enter name on card')}
               value={cardName}
               onChangeText={setCardName}
             />
 
-            <Text style={styles.sectionTitle}>Country or region</Text>
+            <Text style={styles.sectionTitle}>{t('Country or Region')}</Text>
             <TouchableOpacity style={styles.countrySelector}>
               <Text>Pakistan</Text>
               <DownArrowSvg width={30} height={20} fill={colors.black} />
@@ -202,7 +204,7 @@ const CardUI = () => {
             </TouchableOpacity>
             <View style={styles.checkboxTextContainer}>
               <Text style={styles.checkboxTitle}>
-                Yes, I agree with terms and conditions
+                {t('Yes, I agree with terms and conditions')}
               </Text>
               {/* <Text style={styles.checkboxSubtitle}>
               Pay faster on Blackbox and everywhere Link is accepted.
@@ -220,7 +222,7 @@ const CardUI = () => {
           <TouchableOpacity
             style={styles.startTrialButton}
             onPress={handleSave}>
-            <Text style={styles.startTrialText}>Save</Text>
+            <Text style={styles.startTrialText}>{t('save')}</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>

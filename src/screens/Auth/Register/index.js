@@ -128,21 +128,13 @@ const [selectedOption, setSelectedOption] = useState('Both');
 
       // Ensure that you're only treating this as success if `data.success === true`
       if (data?.success === true) {
-        dispatch(
-          showSnackbar(
-            t(data.message || 'registrationSuccess'),
-          ),
-        );
+        dispatch(showSnackbar(t(data.message || 'registrationSuccess')));
         // showSnackbar(data.message || 'Registration successful! Please login.');
         setTimeout(() => {
           navigation.replace('OTP', {email});
         }, 2000);
       } else {
-        dispatch(
-          showSnackbar(
-            t(data.message || 'registrationFailed'),
-          ),
-        );
+        dispatch(showSnackbar(t(data.message || 'registrationFailed')));
         // showSnackbar(data.message || 'Registration failed. Please try again.');
       }
     } catch (error) {
@@ -151,12 +143,7 @@ const [selectedOption, setSelectedOption] = useState('Both');
         error?.response?.data || error.message,
       );
       dispatch(
-        showSnackbar(
-          t(
-            error?.response?.data?.message ||
-              'registrationError',
-          ),
-        ),
+        showSnackbar(t(error?.response?.data?.message || 'registrationError')),
       );
       // showSnackbar(
       //   error?.response?.data?.message ||
@@ -226,6 +213,7 @@ const [selectedOption, setSelectedOption] = useState('Both');
         </View>
         <Bold style={styles.howText}>{t('How do you want to use Souqna?')}</Bold>
         {/* <RadioGroup
+
           options={[
             {value: 'Seller', label: t('seller')},
             {value: 'Buyer', label: t('buyer')},
@@ -299,13 +287,11 @@ const [selectedOption, setSelectedOption] = useState('Both');
             trackColor={{false: colors.grey, true: colors.green}}
             thumbColor={isSubscribed ? colors.white : '#f4f3f4'}
           />
-          <Regular style={styles.switchText}>
-           {t('emailUpdates')}
-          </Regular>
+          <Regular style={styles.switchText}>{t('emailUpdates')}</Regular>
         </View>
         <View style={styles.buttonContainer}>
           <MyButton
-            title={isLoading ? '' : 'Register For Free'}
+            title={isLoading ? '' : t('Register For Free')}
             onPress={handleRegister}
             disabled={isLoading || !email || !password}
             style={{justifyContent: 'center', alignItems: 'center'}} // optional
