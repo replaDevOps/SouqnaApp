@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
   },
   title: {
-    fontSize: mvs(30),
+    fontSize: 50,
     color: colors.green,
   },
   radioButtonContainer: {

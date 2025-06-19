@@ -15,7 +15,7 @@ import {
 import {useNavigation} from '@react-navigation/native';
 import Regular from '../../../typography/RegularText';
 import styles from './styles';
-import {EYESVG} from '../../../assets/svg';
+import {EYESVG, SouqnaLogo} from '../../../assets/svg';
 import Bold from '../../../typography/BoldText';
 import Header from '../../../components/Headers/Header';
 import {colors} from '../../../util/color';
@@ -205,10 +205,7 @@ const [selectedOption, setSelectedOption] = useState('Both');
           title={t('Help')}
         />
         <View style={styles.HeaderContainer}>
-          <Image
-            source={require('../../../assets/img/logo1.png')}
-            style={{width: mvs(50), height: mvs(50)}}
-          />
+            <SouqnaLogo width={70} height={70} />
           <Bold style={styles.title}>Souqna</Bold>
         </View>
         <Bold style={styles.howText}>{t('How do you want to use Souqna?')}</Bold>

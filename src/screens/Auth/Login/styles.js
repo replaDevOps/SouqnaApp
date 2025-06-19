@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
   },
   title: {
-    fontSize: 30,
+    fontSize: 50,
     color: colors.green,
   },
   text: {

@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import { useRef, useState} from 'react';
 import {
   View,
   ToastAndroid,
@@ -7,12 +7,8 @@ import {
   ActivityIndicator,
   StatusBar,
   Animated,
-  Modal,
-  TouchableOpacity,
-  Easing,
   TouchableWithoutFeedback,
   Keyboard,
-  Text,
 } from 'react-native';
 import {useDispatch} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
@@ -30,8 +26,6 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {showSnackbar} from '../../../redux/slices/snackbarSlice';
 import {useTranslation} from 'react-i18next';
 import dayjs from 'dayjs';
-import {getAccessTokenExpiry} from '../../../api/apiServices';
-import WorldSVG from '../../../assets/svg/worldSVG';
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
@@ -191,7 +185,7 @@ const LoginScreen = () => {
           <Header title={t('Help')} />
 
           <View style={styles.HeaderContainer}>
-            <SouqnaLogo width={50} height={50} />
+            <SouqnaLogo width={70} height={70} />
             <Bold style={styles.title}>Souqna</Bold>
           </View>
 
