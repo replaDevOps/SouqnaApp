@@ -11,7 +11,7 @@ const DownArrowSvg = (props) => (
   >
     <Path
       d="M13 6L8 11L3 6"
-      stroke="white"
+      stroke="black"
       strokeWidth={2}
       strokeLinecap="round"
       strokeLinejoin="round"
