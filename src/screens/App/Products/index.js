@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 /* eslint-disable react-hooks/exhaustive-deps */
 import {
   ActivityIndicator,
@@ -6,8 +7,10 @@ import {
   Image,
   Keyboard,
   KeyboardAvoidingView,
+  Modal,
   Platform,
   StatusBar,
+  Text,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -35,6 +38,9 @@ import CarFilters from '../../../components/atoms/CarFilters';
 import BrandFilterSheet from '../../../components/Sheets/BrandFilterSheet';
 import PriceFilterSheet from '../../../components/Sheets/PriceFilterSheet';
 import BuildYearFilterSheet from '../../../components/Sheets/BuildYearFilterSheet';
+import TransmissionFilterSheet from '../../../components/Sheets/TransmissionFilterSheet';
+import AdjustFilterSheet from '../../../components/Sheets/AdjustFilterSheet';
+import {colors} from '../../../util/color';
 const BRANDS = [
   'Audi',
   'BAIC',
@@ -82,6 +88,19 @@ const Products = () => {
     brand: '',
     buildYearMin: '',
     buildYearMax: '',
+    transmission: '',
+    fuelType: '',
+    model: '',
+    mileage: '',
+    power: '',
+    condition: '',
+    inspection: '',
+    // accidentFree: false,
+    color: '',
+    minMileage: '',
+    maxMileage: '',
+    location: '',
+    radius: '',
   });
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -93,6 +112,8 @@ const Products = () => {
   const refPriceInput = useRef(null); // ⬅️ add this
   const refBuildYearSheet = useRef(null);
   const refBuildYearInput = useRef(null);
+  const refTransmissionSheet = useRef(null);
+  const refAdjustSheet = useRef(null);
 
   const {role, id: userId} = useSelector(state => state.user);
   const favorites = useSelector(state => state.favorites.favorites);
@@ -134,15 +155,24 @@ const Products = () => {
         const parsedProducts = response.data.map(product => {
           try {
             const customFields = JSON.parse(product.custom_fields || '[]');
-            const yearField = customFields.find(
-              f => f.name === 'yearofManufacture',
-            );
-            const brandField = customFields.find(f => f.name === 'make_Brand');
+
+            const extractField = name =>
+              customFields.find(f => f.name === name)?.value || '';
 
             return {
               ...product,
-              buildYear: yearField?.value || '',
-              brand: brandField?.value || '',
+              buildYear: extractField('yearofManufacture'),
+              brand: extractField('make_Brand'),
+              transmission: extractField('transmission'),
+              fuelType: extractField('fuelType'),
+              mileage: extractField('mileage'),
+              model: extractField('model'),
+              power: extractField('power'),
+              condition: extractField('condition'),
+              inspection: extractField('inspectionValidUntil'),
+              // accidentFree: extractField('accidentFree') === 'Yes',
+              color: extractField('color'),
+              location: extractField('registrationCity'),
             };
           } catch (e) {
             console.warn('Failed to parse custom fields:', e);
@@ -192,21 +222,48 @@ const Products = () => {
       console.log('Added to favorites:', product);
     }
   };
+ 
   const filteredProducts = useMemo(() => {
     return products.filter(product => {
       if (category !== 'Vehicle') return true;
 
       const price = Number(product.price);
-      const min = Number(filters.minPrice || 0);
-      const max = Number(filters.maxPrice || Infinity);
-      const brandMatch = filters.brand
-        ? product.brand?.toLowerCase().startsWith(filters.brand.toLowerCase())
-        : true;
-      const yearMatch = filters.buildYear
-        ? String(product.buildYear)?.startsWith(filters.buildYear)
-        : true;
+      const buildYear = Number(product.buildYear);
+      const mileage = Number(product.mileage);
 
-      return price >= min && price <= max && brandMatch && yearMatch;
+      return (
+        (!filters.minPrice || price >= Number(filters.minPrice)) &&
+        (!filters.maxPrice || price <= Number(filters.maxPrice)) &&
+        (!filters.brand ||
+          product.brand
+            ?.toLowerCase()
+            .startsWith(filters.brand.toLowerCase())) &&
+        (!filters.model ||
+          product.model?.toLowerCase().includes(filters.model.toLowerCase())) &&
+        (!filters.buildYearMin || buildYear >= Number(filters.buildYearMin)) &&
+        (!filters.buildYearMax || buildYear <= Number(filters.buildYearMax)) &&
+        (!filters.minMileage || mileage >= Number(filters.minMileage)) &&
+        (!filters.maxMileage || mileage <= Number(filters.maxMileage)) &&
+        (!filters.transmission ||
+          product.transmission?.toLowerCase() ===
+            filters.transmission.toLowerCase()) &&
+        (!filters.fuelType ||
+          product.fuelType?.toLowerCase() === filters.fuelType.toLowerCase()) &&
+        (!filters.condition ||
+          product.condition?.toLowerCase() ===
+            filters.condition.toLowerCase()) &&
+        (!filters.inspection ||
+          product.inspection?.includes(filters.inspection)) &&
+        // (filters.accidentFree ? product.accidentFree === true : true) &&
+        (!filters.color ||
+          product.color?.toLowerCase().includes(filters.color.toLowerCase())) &&
+        (!filters.power ||
+          product.power?.toString().includes(filters.power.toString())) &&
+        (!filters.location ||
+          product.location
+            ?.toLowerCase()
+            .includes(filters.location.toLowerCase()))
+      );
     });
   }, [filters, products, category]);
 
@@ -243,6 +300,9 @@ const Products = () => {
     if (refBrandSheet.current) await refBrandSheet.current.close();
     if (refPriceSheet.current) await refPriceSheet.current.close();
     if (refBuildYearSheet.current) await refBuildYearSheet.current.close();
+    if (refTransmissionSheet.current)
+      await refTransmissionSheet.current.close();
+    if (refAdjustSheet.current) await refAdjustSheet.current.close(); // ✅ Add this line
 
     // Small timeout ensures sheets close before new one opens
     setTimeout(() => {
@@ -312,6 +372,18 @@ const Products = () => {
                       }, 300);
                     });
                   }}
+                  onOpenTransmissionSheet={() => {
+                    closeAllSheets(() => {
+                      refTransmissionSheet.current?.expand();
+                      setActiveSheet('transmission');
+                    });
+                  }}
+                  onOpenAdjustSheet={() => {
+                    closeAllSheets(() => {
+                      refAdjustSheet.current?.expand();
+                      setActiveSheet('adjust');
+                    });
+                  }}
                 />
               </View>
             )}
@@ -323,6 +395,7 @@ const Products = () => {
               numColumns={2}
               keyboardShouldPersistTaps="handled" // ✅ Important
             />
+
             <BottomSheet
               ref={refBrandSheet}
               onChange={index => {
@@ -367,6 +440,17 @@ const Products = () => {
               detached={false}
               backdropComponent={renderBackdrop}
               style={{borderRadius: mvs(30), overflow: 'hidden'}}>
+              <View style={{padding: 16}}>
+                <Text
+                  style={{
+                    fontSize: 16,
+                    fontWeight: 'bold',
+                    textAlign: 'center',
+                  }}>
+                  Price
+                </Text>
+                {/* Your custom controls here */}
+              </View>
               <PriceFilterSheet
                 ref={refPriceInput}
                 filters={filters}
@@ -389,10 +473,108 @@ const Products = () => {
               detached={false}
               backdropComponent={renderBackdrop}
               style={{borderRadius: mvs(30), overflow: 'hidden'}}>
+              <View style={{padding: 16}}>
+                <Text
+                  style={{
+                    fontSize: 16,
+                    fontWeight: 'bold',
+                    textAlign: 'center',
+                  }}>
+                  Build Year
+                </Text>
+              </View>
               <BuildYearFilterSheet
                 filters={filters}
                 setFilters={setFilters}
                 ref={refBuildYearInput}
+              />
+            </BottomSheet>
+
+            <BottomSheet
+              ref={refTransmissionSheet}
+              onChange={index => {
+                if (index === -1 && activeSheet === 'transmission')
+                  setActiveSheet(null);
+              }}
+              index={-1}
+              snapPoints={[mvs(150), MAX_PRICE_HEIGHT]}
+              enablePanDownToClose
+              keyboardBehavior="interactive"
+              keyboardBlurBehavior="restore"
+              detached={false}
+              backdropComponent={renderBackdrop}
+              style={{borderRadius: mvs(30), overflow: 'hidden'}}>
+              <View style={{padding: 16}}>
+                <Text
+                  style={{
+                    fontSize: 16,
+                    fontWeight: 'bold',
+                    textAlign: 'center',
+                  }}>
+                  Transmission
+                </Text>
+                {/* Your custom controls here */}
+              </View>
+              <TransmissionFilterSheet
+                filters={filters}
+                setFilters={setFilters}
+                closeSheet={() => refTransmissionSheet.current?.close()}
+              />
+            </BottomSheet>
+
+            <BottomSheet
+              ref={refAdjustSheet}
+              onChange={index => {
+                if (index === -1 && activeSheet === 'adjust')
+                  setActiveSheet(null);
+              }}
+              index={-1}
+              snapPoints={[MAX_SHEET_HEIGHT * 0.6]}
+              enablePanDownToClose
+              keyboardBehavior="interactive"
+              keyboardBlurBehavior="restore"
+              detached={false}
+              backdropComponent={renderBackdrop}
+              style={{borderRadius: mvs(30), overflow: 'hidden'}}>
+              {/* TODO: Replace this with your actual Adjust sheet component */}
+              <View style={{padding: 16}}>
+                <Text
+                  style={{
+                    fontSize: 16,
+                    fontWeight: 'bold',
+                    textAlign: 'center',
+                  }}>
+                  Adjust Filters
+                </Text>
+                {/* Your custom controls here */}
+              </View>
+              <AdjustFilterSheet
+                filters={filters}
+                setFilters={setFilters}
+                closeSheet={() => refAdjustSheet.current?.close()}
+                onOpenBrandSheet={() =>
+                  closeAllSheets(() => refBrandSheet.current?.snapToIndex(1))
+                }
+                onOpenPriceSheet={() =>
+                  closeAllSheets(() => {
+                    refPriceSheet.current?.expand();
+                    setTimeout(() => {
+                      refPriceInput.current?.focusMinPrice();
+                    }, 300);
+                  })
+                }
+                onOpenTransmissionSheet={() =>
+                  closeAllSheets(() => refTransmissionSheet.current?.expand())
+                }
+                onOpenBuildYearSheet={() =>
+                  // ✅ Add this new prop
+                  closeAllSheets(() => {
+                    refBuildYearSheet.current?.expand();
+                    setTimeout(() => {
+                      refBuildYearInput.current?.focusMinYear();
+                    }, 300);
+                  })
+                }
               />
             </BottomSheet>
           </>

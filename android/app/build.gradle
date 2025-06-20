@@ -78,10 +78,10 @@ android {
     }
     signingConfigs {
             release {
-      storeFile file('your_key_name.keystore')
-      storePassword 'repla123'
-      keyAlias 'your_key_alias'
-      keyPassword 'repla123'
+        storeFile file('my-release-key.keystore')
+        storePassword 'repla123'
+        keyAlias 'my-key-alias'
+        keyPassword 'repla123'
     }
         debug {
             storeFile file('debug.keystore')

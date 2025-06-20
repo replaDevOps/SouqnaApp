@@ -37,7 +37,45 @@ import ImageResizer from 'react-native-image-resizer';
 import CategoryFields from './CategoryFields';
 import EnhancedLocationSelector from '../../../../components/Location/EnhancedLocationSelector';
 // import EnhancedCategoryFields from './CategoryFields';
-
+const BRANDS = [
+  'Audi',
+  'BAIC',
+  'BMW',
+  'Changan',
+  'Chevrolet',
+  'Daewoo',
+  'Daihatsu',
+  'DFSK',
+  'Dongfeng',
+  'FAW',
+  'Geely',
+  'Haval',
+  'Hino',
+  'Honda',
+  'Hyundai',
+  'Isuzu',
+  'JAC',
+  'Kia',
+  'Land Rover',
+  'Lexus',
+  'Master Motors',
+  'Mazda',
+  'Mercedes-Benz',
+  'MG',
+  'Mitsubishi',
+  'Nissan',
+  'Peugeot',
+  'Prince',
+  'Proton',
+  'Range Rover',
+  'Renault',
+  'Subaru',
+  'Suzuki',
+  'Tesla',
+  'Toyota',
+  'United Motors',
+  'Volkswagen',
+];
 const CreateProduct = () => {
   const route = useRoute();
   const {
@@ -50,6 +88,7 @@ const CreateProduct = () => {
   const {token, phoneNo} = useSelector(state => state.user);
   const navigation = useNavigation();
   const {t} = useTranslation();
+const [brandModalVisible, setBrandModalVisible] = useState(false);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -90,51 +129,7 @@ const CreateProduct = () => {
   //   };
   // }, []);
 
-  // const handleChooseImages = async () => {
-  //   try {
-  //     const selectedImages = await ImagePicker.openPicker({
-  //       multiple: true,
-  //       mediaType: 'photo',
-  //     });
-
-  //     // Manually crop each selected image
-  //     const croppedImages = await Promise.all(
-  //       selectedImages.map(async image => {
-  //         const cropped = await ImagePicker.openCropper({
-  //           path: image.path,
-  //           width: 1024, // landscape width
-  //           height: 800, // landscape height
-  //           cropping: true,
-  //           freeStyleCropEnabled: true,
-  //           cropperToolbarTitle: 'Crop Image',
-  //           cropperCircleOverlay: false,
-  //           cropperStatusBarColor: '#ffffff',
-  //           cropperToolbarColor: '#ffffff',
-  //           cropperToolbarWidgetColor: '#000000',
-  //         });
-
-  //         return {
-  //           uri: cropped.path,
-  //           fileName: cropped.filename || cropped.path.split('/').pop(),
-  //           type: cropped.mime,
-  //           fileSize: cropped.size,
-  //         };
-  //       }),
-  //     );
-
-  //     setFormData(prev => ({
-  //       ...prev,
-  //       images: [...prev.images, ...croppedImages],
-  //     }));
-  //   } catch (error) {
-  //     if (error.code !== 'E_PICKER_CANCELLED') {
-  //       console.log('Image selection error:', error);
-  //       setSnackbarMessage('Failed to pick image.');
-  //       setSnackbarVisible(true);
-  //     }
-  //   }
-  // };
-
+ 
   const getImageSize = uri =>
     new Promise((resolve, reject) => {
       Image.getSize(

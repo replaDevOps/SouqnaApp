@@ -133,4 +133,41 @@ const styles = StyleSheet.create({
 });
 
 
-export default styles
+export default styles;
+
+export const adjustModalStyles = StyleSheet.create({
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'flex-end', // Bottom sheet style
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+    padding: 20,
+    minHeight: 300,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: -2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  closeText: {
+    color: '#007AFF',
+    fontSize: 16,
+    marginTop: 15,
+    textAlign: 'center',
+  },
+});
+
+

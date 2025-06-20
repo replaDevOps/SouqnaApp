@@ -65,3 +65,4 @@ export {default as CallSVG} from './callSVG';
 export {default as CardSVG} from './cardSVG';
 export {default as MapMarkerSVG} from './mapMarkerSVG';
 export {default as UpdateSVG} from './updateSVG';
+export {default as AdjustSVG} from './adjustSVG';
