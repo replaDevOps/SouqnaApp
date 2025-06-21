@@ -1,3 +1,4 @@
+/* eslint-disable no-lone-blocks */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-shadow */
 /* eslint-disable react-native/no-inline-styles */
@@ -45,10 +46,13 @@ import PropertyFilters from '../../../components/atoms/PropertyFilters';
 import AreaFilterSheet from '../../../components/Sheets/Property/AreaFilterSheet';
 import PropertyTypeFilterSheet from '../../../components/Sheets/Property/PropertyTypeFilterSheet';
 import PropertyAdjustFilterSheet from '../../../components/Sheets/Property/PropertyAdjustFilterSheet';
-import { filterPropertyProducts, filterVehicleProducts } from '../../../util/Filtering/filterProducts';
+import { filterPropertyProducts, filterServiceProducts, filterVehicleProducts } from '../../../util/Filtering/filterProducts';
 import BottomSheetContainer from '../../../components/Sheets/BottomSheetContainer';
 import { getCurrencySymbol } from '../../../util/Filtering/helpers';
 import { BRANDS } from '../../../util/Filtering/constants';
+import ServicesFilters from '../../../components/atoms/ServicesFilter';
+import ServiceAdjustFilterSheet from '../../../components/Sheets/Services/ServiceAdjustFilterSheet';
+import ServiceTypeFilterSheet from '../../../components/Sheets/Services/ServiceTypeFilterSheet';
 
 const Products = () => {
   const [filters, setFilters] = useState({
@@ -75,6 +79,15 @@ const Products = () => {
     propertyType: '',
     minArea: '',
     maxArea: '',
+
+      // Services
+  serviceType: '',
+  employmentType: '',
+  educationRequired: '',
+  experienceRequired: '',
+  genderPreference: '',
+  contactMethod: '',
+  salaryType: '',
   });
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -92,6 +105,10 @@ const Products = () => {
   const refPropertyTypeSheet = useRef(null);
   const refAreaSheet = useRef(null);
   const refAreaInput = useRef(null);
+
+  const refServiceTypeSheet = useRef(null);
+const refLocationSheet = useRef(null);
+
 
   const {role, id: userId} = useSelector(state => state.user);
   const favorites = useSelector(state => state.favorites.favorites);
@@ -166,6 +183,20 @@ const Products = () => {
               rooms: extractField('rooms'),
               bathrooms: extractField('bathrooms'),
               size: extractField('size'),
+
+                // Services Filters
+  serviceType: extractField('category_Industry'),
+  jobLocation: extractField('jobLocation'),
+  employmentType: extractField('employmentType'),
+  experienceRequired: extractField('experienceRequired'),
+  educationRequired: extractField('educationRequired'),
+  genderPreference: extractField('genderPreference'),
+  contactMethod: extractField('contactMethod'),
+  salaryType: extractField('salaryType'),
+  workTiming: extractField('workTiming'),
+  requirements_Qualifications: extractField('requirements_Qualifications'),
+  skills: extractField('skills'),
+  contractDuration: extractField('contractDuration'),
             };
           } catch (e) {
             console.warn('Failed to parse custom fields:', e);
@@ -220,6 +251,7 @@ const filteredProducts = useMemo(() => {
   return products.filter(product => {
     if (category === 'Vehicle') {return filterVehicleProducts(product, filters);}
     if (category === 'Property') {return filterPropertyProducts(product, filters);}
+    if (category === 'Services') {return filterServiceProducts(product,filters);}
     return true;
   });
 }, [products, filters, category]);
@@ -258,7 +290,10 @@ const filteredProducts = useMemo(() => {
     if (refBuildYearSheet.current) {await refBuildYearSheet.current.close();}
     if (refTransmissionSheet.current)
       {await refTransmissionSheet.current.close();}
-    if (refAdjustSheet.current) {await refAdjustSheet.current.close();} // ✅ Add this line
+    if (refAdjustSheet.current) {await refAdjustSheet.current.close();}
+    if (refServiceTypeSheet.current) await refServiceTypeSheet.current.close();
+if (refLocationSheet.current) await refLocationSheet.current.close();
+
 
     // Small timeout ensures sheets close before new one opens
     setTimeout(() => {
@@ -371,6 +406,31 @@ const filteredProducts = useMemo(() => {
                 />
               </View>
             )}
+            {category?.toLowerCase() === 'services' && (
+  <View style={{height: 60}}>
+    <ServicesFilters
+      filters={filters}
+      setFilters={setFilters}
+      onOpenPriceSheet={() => {
+        closeAllSheets(() => {
+          refPriceSheet.current?.expand();
+          setTimeout(() => {
+            refPriceInput.current?.focusMinPrice?.();
+          }, 300);
+        });
+      }}
+      onOpenServiceTypeSheet={() =>
+        closeAllSheets(() => refServiceTypeSheet.current?.expand())
+      }
+      onOpenLocationSheet={() =>
+        closeAllSheets(() => refLocationSheet.current?.expand())
+      }
+      onOpenServiceAdjustSheet={() =>
+        closeAllSheets(() => refAdjustSheet.current?.expand())
+      }
+    />
+  </View>
+)}
 
             <FlatList
               data={filteredProducts}
@@ -607,6 +667,45 @@ const filteredProducts = useMemo(() => {
                 closeSheet={() => refPropertyTypeSheet.current?.close()}
               />
             </BottomSheet>
+
+
+            <BottomSheetContainer
+  ref={refServiceTypeSheet}
+  snapPoints={[MAX_SHEET_HEIGHT * 0.5]}
+  activeSheet={activeSheet}
+  sheetKey="serviceType"
+  setActiveSheet={setActiveSheet}>
+  <ServiceTypeFilterSheet
+    filters={filters}
+    setFilters={setFilters}
+    closeSheet={() => refServiceTypeSheet.current?.close()}
+  />
+</BottomSheetContainer>
+
+
+
+<BottomSheet
+  ref={refAdjustSheet}
+  onChange={index => {
+    if (index === -1 && activeSheet === 'adjust') setActiveSheet(null);
+  }}
+  index={-1}
+  snapPoints={[MAX_SHEET_HEIGHT * 0.8]}
+  enablePanDownToClose
+  keyboardBehavior="interactive"
+  keyboardBlurBehavior="restore"
+  detached={false}
+  backdropComponent={renderBackdrop}
+  style={{ borderRadius: mvs(30), overflow: 'hidden' }}>
+  {category?.toLowerCase() === 'services' ? (
+    <ServiceAdjustFilterSheet
+      filters={filters}
+      setFilters={setFilters}
+      closeSheet={() => refAdjustSheet.current?.close()}
+    />
+  ) : null}
+</BottomSheet>
+
           </>
         )}
       </SafeAreaView>

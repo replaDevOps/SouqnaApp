@@ -51,3 +51,21 @@ export const filterPropertyProducts = (product, filters) => {
     (!filters.distancefroCityCenter_transport || product.distancefroCityCenter_transport?.toLowerCase().includes(filters.distancefroCityCenter_transport.toLowerCase()))
   );
 };
+
+export const filterServiceProducts = (product, filters) => {
+  const price = Number(product.price);
+
+  return (
+    (!filters.minPrice || price >= Number(filters.minPrice)) &&
+    (!filters.maxPrice || price <= Number(filters.maxPrice)) &&
+    (!filters.serviceType || product.serviceType?.toLowerCase().includes(filters.serviceType.toLowerCase())) &&
+    (!filters.location || product.location?.toLowerCase().includes(filters.location.toLowerCase())) &&
+    (!filters.employmentType || product.employmentType?.toLowerCase() === filters.employmentType.toLowerCase()) &&
+    (!filters.educationRequired || product.educationRequired?.toLowerCase() === filters.educationRequired.toLowerCase()) &&
+    (!filters.experienceRequired || product.experienceRequired?.toLowerCase() === filters.experienceRequired.toLowerCase()) &&
+    (!filters.genderPreference || product.genderPreference?.toLowerCase() === filters.genderPreference.toLowerCase()) &&
+    (!filters.contactMethod || product.contactMethod?.toLowerCase() === filters.contactMethod.toLowerCase()) &&
+    (!filters.salaryType || product.salaryType?.toLowerCase() === filters.salaryType.toLowerCase())
+  );
+};
+
