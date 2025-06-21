@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-shadow */
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable react-hooks/exhaustive-deps */
 import {
@@ -7,7 +9,6 @@ import {
   Image,
   Keyboard,
   KeyboardAvoidingView,
-  Modal,
   Platform,
   StatusBar,
   Text,
@@ -40,46 +41,14 @@ import PriceFilterSheet from '../../../components/Sheets/PriceFilterSheet';
 import BuildYearFilterSheet from '../../../components/Sheets/BuildYearFilterSheet';
 import TransmissionFilterSheet from '../../../components/Sheets/TransmissionFilterSheet';
 import AdjustFilterSheet from '../../../components/Sheets/AdjustFilterSheet';
-import {colors} from '../../../util/color';
-const BRANDS = [
-  'Audi',
-  'BAIC',
-  'BMW',
-  'Changan',
-  'Chevrolet',
-  'Daewoo',
-  'Daihatsu',
-  'DFSK',
-  'Dongfeng',
-  'FAW',
-  'Geely',
-  'Haval',
-  'Hino',
-  'Honda',
-  'Hyundai',
-  'Isuzu',
-  'JAC',
-  'Kia',
-  'Land Rover',
-  'Lexus',
-  'Master Motors',
-  'Mazda',
-  'Mercedes-Benz',
-  'MG',
-  'Mitsubishi',
-  'Nissan',
-  'Peugeot',
-  'Prince',
-  'Proton',
-  'Range Rover',
-  'Renault',
-  'Subaru',
-  'Suzuki',
-  'Tesla',
-  'Toyota',
-  'United Motors',
-  'Volkswagen',
-];
+import PropertyFilters from '../../../components/atoms/PropertyFilters';
+import AreaFilterSheet from '../../../components/Sheets/Property/AreaFilterSheet';
+import PropertyTypeFilterSheet from '../../../components/Sheets/Property/PropertyTypeFilterSheet';
+import PropertyAdjustFilterSheet from '../../../components/Sheets/Property/PropertyAdjustFilterSheet';
+import { filterPropertyProducts, filterVehicleProducts } from '../../../util/Filtering/filterProducts';
+import BottomSheetContainer from '../../../components/Sheets/BottomSheetContainer';
+import { getCurrencySymbol } from '../../../util/Filtering/helpers';
+import { BRANDS } from '../../../util/Filtering/constants';
 
 const Products = () => {
   const [filters, setFilters] = useState({
@@ -101,6 +70,11 @@ const Products = () => {
     maxMileage: '',
     location: '',
     radius: '',
+
+    //Property Filters
+    propertyType: '',
+    minArea: '',
+    maxArea: '',
   });
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -109,11 +83,15 @@ const Products = () => {
 
   const refBrandSheet = useRef(null);
   const refPriceSheet = useRef(null);
-  const refPriceInput = useRef(null); // ⬅️ add this
+  const refPriceInput = useRef(null);
   const refBuildYearSheet = useRef(null);
   const refBuildYearInput = useRef(null);
   const refTransmissionSheet = useRef(null);
   const refAdjustSheet = useRef(null);
+
+  const refPropertyTypeSheet = useRef(null);
+  const refAreaSheet = useRef(null);
+  const refAreaInput = useRef(null);
 
   const {role, id: userId} = useSelector(state => state.user);
   const favorites = useSelector(state => state.favorites.favorites);
@@ -122,22 +100,9 @@ const Products = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const {id: subCategoryId, name, category} = route.params;
-  const getCurrencySymbol = (currency = 'USD') => {
-    switch (currency?.toUpperCase?.()) {
-      case 'TRY':
-        return '₺';
-      case 'USD':
-        return '$';
-      case 'SYP':
-        return '£';
-      default:
-        return '$';
-    }
-  };
   const SCREEN_HEIGHT = Dimensions.get('window').height;
   const MAX_SHEET_HEIGHT = SCREEN_HEIGHT * 0.9;
   const MAX_PRICE_HEIGHT = SCREEN_HEIGHT * 0.5;
-  const [shouldAutoFocusPrice, setShouldAutoFocusPrice] = useState(false);
 
   const [brandSearch, setBrandSearch] = useState('');
   const filteredBrands = useMemo(() => {
@@ -146,7 +111,7 @@ const Products = () => {
     );
   }, [brandSearch]);
   useEffect(() => {
-    if (products.length > 0) return; // ✅ prevents re-fetch if already fetched
+    if (products.length > 0) {return;} // ✅ prevents re-fetch if already fetched
 
     const fetchData = async () => {
       setLoading(true);
@@ -173,6 +138,34 @@ const Products = () => {
               // accidentFree: extractField('accidentFree') === 'Yes',
               color: extractField('color'),
               location: extractField('registrationCity'),
+
+              //Property Filters
+              area: (() => {
+                const rawSize = extractField('size') || '';
+                const numeric = rawSize.replace(/[^\d]/g, '');
+                return numeric ? Number(numeric) : 0;
+              })(),
+              propertyType: extractField('propertyType'),
+              heating_Cooling: extractField('heating_Cooling'),
+              water_electricityAvailability: extractField(
+                'water_electricityAvailability',
+              ),
+              petsAllowed: extractField('petsAllowed'),
+              parking: extractField('parking'),
+              furnished: extractField('furnished'),
+              elevator: extractField('elevator'),
+              balcony: extractField('balcony'),
+              titleDeed_Document: extractField('titleDeed_Document'),
+              nearbyLandmarks: extractField('nearbyLandmarks'),
+              distancefroCityCenter_transport: extractField(
+                'distancefroCityCenter_transport',
+              ),
+              floorNumber: extractField('floorNumber'),
+              totalFloorsInBuilding: extractField('totalFloorsInBuilding'),
+              purpose: extractField('purpose'),
+              rooms: extractField('rooms'),
+              bathrooms: extractField('bathrooms'),
+              size: extractField('size'),
             };
           } catch (e) {
             console.warn('Failed to parse custom fields:', e);
@@ -222,51 +215,14 @@ const Products = () => {
       console.log('Added to favorites:', product);
     }
   };
- 
-  const filteredProducts = useMemo(() => {
-    return products.filter(product => {
-      if (category !== 'Vehicle') return true;
 
-      const price = Number(product.price);
-      const buildYear = Number(product.buildYear);
-      const mileage = Number(product.mileage);
-
-      return (
-        (!filters.minPrice || price >= Number(filters.minPrice)) &&
-        (!filters.maxPrice || price <= Number(filters.maxPrice)) &&
-        (!filters.brand ||
-          product.brand
-            ?.toLowerCase()
-            .startsWith(filters.brand.toLowerCase())) &&
-        (!filters.model ||
-          product.model?.toLowerCase().includes(filters.model.toLowerCase())) &&
-        (!filters.buildYearMin || buildYear >= Number(filters.buildYearMin)) &&
-        (!filters.buildYearMax || buildYear <= Number(filters.buildYearMax)) &&
-        (!filters.minMileage || mileage >= Number(filters.minMileage)) &&
-        (!filters.maxMileage || mileage <= Number(filters.maxMileage)) &&
-        (!filters.transmission ||
-          product.transmission?.toLowerCase() ===
-            filters.transmission.toLowerCase()) &&
-        (!filters.fuelType ||
-          product.fuelType?.toLowerCase() === filters.fuelType.toLowerCase()) &&
-        (!filters.condition ||
-          product.condition?.toLowerCase() ===
-            filters.condition.toLowerCase()) &&
-        (!filters.inspection ||
-          product.inspection?.includes(filters.inspection)) &&
-        // (filters.accidentFree ? product.accidentFree === true : true) &&
-        (!filters.color ||
-          product.color?.toLowerCase().includes(filters.color.toLowerCase())) &&
-        (!filters.power ||
-          product.power?.toString().includes(filters.power.toString())) &&
-        (!filters.location ||
-          product.location
-            ?.toLowerCase()
-            .includes(filters.location.toLowerCase()))
-      );
-    });
-  }, [filters, products, category]);
-
+const filteredProducts = useMemo(() => {
+  return products.filter(product => {
+    if (category === 'Vehicle') {return filterVehicleProducts(product, filters);}
+    if (category === 'Property') {return filterPropertyProducts(product, filters);}
+    return true;
+  });
+}, [products, filters, category]);
   const renderRecommendedItem = useCallback(
     ({item}) => (
       <TouchableOpacity
@@ -297,12 +253,12 @@ const Products = () => {
 
   const closeAllSheets = async callback => {
     Keyboard.dismiss();
-    if (refBrandSheet.current) await refBrandSheet.current.close();
-    if (refPriceSheet.current) await refPriceSheet.current.close();
-    if (refBuildYearSheet.current) await refBuildYearSheet.current.close();
+    if (refBrandSheet.current) {await refBrandSheet.current.close();}
+    if (refPriceSheet.current) {await refPriceSheet.current.close();}
+    if (refBuildYearSheet.current) {await refBuildYearSheet.current.close();}
     if (refTransmissionSheet.current)
-      await refTransmissionSheet.current.close();
-    if (refAdjustSheet.current) await refAdjustSheet.current.close(); // ✅ Add this line
+      {await refTransmissionSheet.current.close();}
+    if (refAdjustSheet.current) {await refAdjustSheet.current.close();} // ✅ Add this line
 
     // Small timeout ensures sheets close before new one opens
     setTimeout(() => {
@@ -387,6 +343,35 @@ const Products = () => {
                 />
               </View>
             )}
+            {category?.toLowerCase() === 'property' && (
+              <View style={{height: 60}}>
+                <PropertyFilters
+                  filters={filters}
+                  setFilters={setFilters}
+                  onOpenPriceSheet={() => {
+                    closeAllSheets(() => {
+                      refPriceSheet.current?.expand();
+                      setTimeout(() => {
+                        refPriceInput.current?.focusMinPrice?.();
+                      }, 300);
+                    });
+                  }}
+                  onOpenPropertyTypeSheet={() =>
+                    closeAllSheets(() => refPropertyTypeSheet.current?.expand())
+                  }
+                  onOpenAreaSheet={() => {
+                    closeAllSheets(() => {
+                      refAreaSheet.current?.expand();
+                      setActiveSheet('area');
+                    });
+                  }}
+                  onOpenAdjustSheet={() =>
+                    closeAllSheets(() => refAdjustSheet.current?.expand())
+                  }
+                />
+              </View>
+            )}
+
             <FlatList
               data={filteredProducts}
               renderItem={renderRecommendedItem}
@@ -396,40 +381,27 @@ const Products = () => {
               keyboardShouldPersistTaps="handled" // ✅ Important
             />
 
-            <BottomSheet
-              ref={refBrandSheet}
-              onChange={index => {
-                if (index === -1 && activeSheet === 'brand')
-                  setActiveSheet(null);
-              }}
-              index={-1}
-              snapPoints={[MAX_SHEET_HEIGHT * 0.5, MAX_SHEET_HEIGHT]}
-              enablePanDownToClose
-              detached
-              keyboardBehavior="none"
-              keyboardBlurBehavior="restore"
-              backgroundStyle={{backgroundColor: '#fff'}}
-              handleStyle={{backgroundColor: '#fff'}}
-              backdropComponent={renderBackdrop} // ✅ Add this
-              style={{
-                marginHorizontal: 4,
-                borderRadius: mvs(30),
-                overflow: 'hidden',
-              }}>
-              <BrandFilterSheet
-                refBrandSheet={refBrandSheet}
-                filteredBrands={filteredBrands}
-                brandSearch={brandSearch}
-                setBrandSearch={setBrandSearch}
-                setFilters={setFilters}
-              />
-            </BottomSheet>
+<BottomSheetContainer
+  ref={refBrandSheet}
+  snapPoints={[MAX_SHEET_HEIGHT * 0.5, MAX_SHEET_HEIGHT]}
+  activeSheet={activeSheet}
+  sheetKey="brand"
+  setActiveSheet={setActiveSheet}>
+  <BrandFilterSheet
+    refBrandSheet={refBrandSheet}
+    filteredBrands={filteredBrands}
+    brandSearch={brandSearch}
+    setBrandSearch={setBrandSearch}
+    setFilters={setFilters}
+  />
+</BottomSheetContainer>
+
 
             <BottomSheet
               ref={refPriceSheet}
               onChange={index => {
                 if (index === -1 && activeSheet === 'price')
-                  setActiveSheet(null);
+                  {setActiveSheet(null);}
                 Keyboard.dismiss();
               }}
               index={-1}
@@ -462,7 +434,7 @@ const Products = () => {
               ref={refBuildYearSheet}
               onChange={index => {
                 if (index === -1 && activeSheet === 'year')
-                  setActiveSheet(null);
+                  {setActiveSheet(null);}
                 Keyboard.dismiss();
               }}
               index={-1}
@@ -494,7 +466,7 @@ const Products = () => {
               ref={refTransmissionSheet}
               onChange={index => {
                 if (index === -1 && activeSheet === 'transmission')
-                  setActiveSheet(null);
+                  {setActiveSheet(null);}
               }}
               index={-1}
               snapPoints={[mvs(150), MAX_PRICE_HEIGHT]}
@@ -526,7 +498,7 @@ const Products = () => {
               ref={refAdjustSheet}
               onChange={index => {
                 if (index === -1 && activeSheet === 'adjust')
-                  setActiveSheet(null);
+                  {setActiveSheet(null);}
               }}
               index={-1}
               snapPoints={[MAX_SHEET_HEIGHT * 0.6]}
@@ -536,7 +508,58 @@ const Products = () => {
               detached={false}
               backdropComponent={renderBackdrop}
               style={{borderRadius: mvs(30), overflow: 'hidden'}}>
-              {/* TODO: Replace this with your actual Adjust sheet component */}
+              {category?.toLowerCase() === 'vehicle' ? (
+                <AdjustFilterSheet
+                  filters={filters}
+                  setFilters={setFilters}
+                  closeSheet={() => refAdjustSheet.current?.close()}
+                  onOpenBrandSheet={() =>
+                    closeAllSheets(() => refBrandSheet.current?.snapToIndex(1))
+                  }
+                  onOpenPriceSheet={() =>
+                    closeAllSheets(() => {
+                      refPriceSheet.current?.expand();
+                      setTimeout(() => {
+                        refPriceInput.current?.focusMinPrice();
+                      }, 300);
+                    })
+                  }
+                  onOpenTransmissionSheet={() =>
+                    closeAllSheets(() => refTransmissionSheet.current?.expand())
+                  }
+                  onOpenBuildYearSheet={() =>
+                    // ✅ Add this new prop
+                    closeAllSheets(() => {
+                      refBuildYearSheet.current?.expand();
+                      setTimeout(() => {
+                        refBuildYearInput.current?.focusMinYear();
+                      }, 300);
+                    })
+                  }
+                />
+              ) : (
+                <PropertyAdjustFilterSheet
+                  filters={filters}
+                  setFilters={setFilters}
+                  closeSheet={() => refAdjustSheet.current?.close()}
+                />
+              )}
+            </BottomSheet>
+
+            <BottomSheet
+              ref={refAreaSheet}
+              onChange={index => {
+                if (index === -1 && activeSheet === 'area')
+                  {setActiveSheet(null);}
+              }}
+              index={-1}
+              snapPoints={[mvs(150), MAX_PRICE_HEIGHT]}
+              enablePanDownToClose
+              keyboardBehavior="interactive"
+              keyboardBlurBehavior="restore"
+              detached={false}
+              backdropComponent={renderBackdrop}
+              style={{borderRadius: mvs(30), overflow: 'hidden'}}>
               <View style={{padding: 16}}>
                 <Text
                   style={{
@@ -544,37 +567,44 @@ const Products = () => {
                     fontWeight: 'bold',
                     textAlign: 'center',
                   }}>
-                  Adjust Filters
+                  Area (sqft)
                 </Text>
-                {/* Your custom controls here */}
               </View>
-              <AdjustFilterSheet
+              <AreaFilterSheet
+                ref={refAreaInput}
                 filters={filters}
                 setFilters={setFilters}
-                closeSheet={() => refAdjustSheet.current?.close()}
-                onOpenBrandSheet={() =>
-                  closeAllSheets(() => refBrandSheet.current?.snapToIndex(1))
-                }
-                onOpenPriceSheet={() =>
-                  closeAllSheets(() => {
-                    refPriceSheet.current?.expand();
-                    setTimeout(() => {
-                      refPriceInput.current?.focusMinPrice();
-                    }, 300);
-                  })
-                }
-                onOpenTransmissionSheet={() =>
-                  closeAllSheets(() => refTransmissionSheet.current?.expand())
-                }
-                onOpenBuildYearSheet={() =>
-                  // ✅ Add this new prop
-                  closeAllSheets(() => {
-                    refBuildYearSheet.current?.expand();
-                    setTimeout(() => {
-                      refBuildYearInput.current?.focusMinYear();
-                    }, 300);
-                  })
-                }
+              />
+            </BottomSheet>
+
+            <BottomSheet
+              ref={refPropertyTypeSheet}
+              onChange={index => {
+                if (index === -1 && activeSheet === 'propertyType')
+                  {setActiveSheet(null);}
+              }}
+              index={-1}
+              snapPoints={[mvs(150), MAX_PRICE_HEIGHT]}
+              enablePanDownToClose
+              keyboardBehavior="interactive"
+              keyboardBlurBehavior="restore"
+              detached={false}
+              backdropComponent={renderBackdrop}
+              style={{borderRadius: mvs(30), overflow: 'hidden'}}>
+              <View style={{padding: 16}}>
+                <Text
+                  style={{
+                    fontSize: 16,
+                    fontWeight: 'bold',
+                    textAlign: 'center',
+                  }}>
+                  Property Type
+                </Text>
+              </View>
+              <PropertyTypeFilterSheet
+                filters={filters}
+                setFilters={setFilters}
+                closeSheet={() => refPropertyTypeSheet.current?.close()}
               />
             </BottomSheet>
           </>
