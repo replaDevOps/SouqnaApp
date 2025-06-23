@@ -9,6 +9,7 @@ import {
   Animated,
   TouchableWithoutFeedback,
   Keyboard,
+  Image,
 } from 'react-native';
 import {useDispatch} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
@@ -185,7 +186,7 @@ const LoginScreen = () => {
           <Header title={t('Help')} />
 
           <View style={styles.HeaderContainer}>
-            <SouqnaLogo width={70} height={70} />
+            <Image source={require('../../../assets/img/logo1.png')} style={{height: 70, width:70}}/>
             <Bold style={styles.title}>Souqna</Bold>
           </View>
 

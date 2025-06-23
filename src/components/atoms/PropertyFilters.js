@@ -1,13 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable jsx-quotes */
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  FlatList,
-} from 'react-native';
-import React from 'react';
+import {View, Text, StyleSheet, TouchableOpacity, FlatList} from 'react-native';
 import DownArrowSvg from '../../assets/svg/down-arrow-svg';
 import {colors} from '../../util/color';
 import {AdjustSVG, TrashSVG} from '../../assets/svg';
@@ -17,45 +10,56 @@ const PropertyFilters = ({
   setFilters,
   onOpenPriceSheet,
   onOpenPropertyTypeSheet,
-  onOpenAdjustSheet,
+  onOpenPropertyAdjust,
   onOpenAreaSheet,
+  sortOption,
+  onOpenSortSheet,
+    setSortOption, 
 }) => {
   const getPriceLabel = () => {
-    if (filters.minPrice && !filters.maxPrice)
-      {return `From ${filters.minPrice}`;}
-    if (!filters.minPrice && filters.maxPrice)
-      {return `Up to ${filters.maxPrice}`;}
-    if (filters.minPrice && filters.maxPrice)
-      {return `${filters.minPrice} - ${filters.maxPrice}`;}
+    if (filters.minPrice && !filters.maxPrice) {
+      return `From ${filters.minPrice}`;
+    }
+    if (!filters.minPrice && filters.maxPrice) {
+      return `Up to ${filters.maxPrice}`;
+    }
+    if (filters.minPrice && filters.maxPrice) {
+      return `${filters.minPrice} - ${filters.maxPrice}`;
+    }
     return 'Price';
   };
 
   const getAreaLabel = () => {
-  if (filters.minArea && !filters.maxArea)
-    {return `From ${filters.minArea} sqft`;}
-  if (!filters.minArea && filters.maxArea)
-    {return `Up to ${filters.maxArea} sqft`;}
-  if (filters.minArea && filters.maxArea)
-    {return `${filters.minArea} - ${filters.maxArea} sqft`;}
-  return 'Area';
-};
+    if (filters.minArea && !filters.maxArea) {
+      return `From ${filters.minArea} sqft`;
+    }
+    if (!filters.minArea && filters.maxArea) {
+      return `Up to ${filters.maxArea} sqft`;
+    }
+    if (filters.minArea && filters.maxArea) {
+      return `${filters.minArea} - ${filters.maxArea} sqft`;
+    }
+    return 'Area';
+  };
 
-const resetFilters = () => {
-  setFilters({
-    minPrice: '',
-    maxPrice: '',
-    propertyType: '',
-    minArea: '',
-    maxArea: '',
-  });
-};
-
+  const resetFilters = () => {
+    setFilters({
+      minPrice: '',
+      maxPrice: '',
+      propertyType: '',
+      minArea: '',
+      maxArea: '',
+    });
+      setSortOption(null);
+  };
 
   const filterItems = [
     {
-      key: 'adjust',
+      key: 'property',
       render: () => (
-        <TouchableOpacity style={styles.adjustButton} onPress={onOpenAdjustSheet}>
+        <TouchableOpacity
+          style={styles.adjustButton}
+          onPress={onOpenPropertyAdjust}>
           <AdjustSVG height={16} width={16} />
         </TouchableOpacity>
       ),
@@ -65,7 +69,10 @@ const resetFilters = () => {
       render: () => (
         <TouchableOpacity style={styles.input} onPress={onOpenPriceSheet}>
           <View style={styles.inputRow}>
-            <Text numberOfLines={1} ellipsizeMode="tail" style={styles.filterText}>
+            <Text
+              numberOfLines={1}
+              ellipsizeMode="tail"
+              style={styles.filterText}>
               {getPriceLabel()}
             </Text>
             <DownArrowSvg />
@@ -76,9 +83,14 @@ const resetFilters = () => {
     {
       key: 'propertyType',
       render: () => (
-        <TouchableOpacity style={styles.input} onPress={onOpenPropertyTypeSheet}>
+        <TouchableOpacity
+          style={styles.input}
+          onPress={onOpenPropertyTypeSheet}>
           <View style={styles.inputRow}>
-            <Text style={styles.filterText} numberOfLines={1} ellipsizeMode='tail'>
+            <Text
+              style={styles.filterText}
+              numberOfLines={1}
+              ellipsizeMode="tail">
               {filters.propertyType || 'Property Type'}
             </Text>
             <DownArrowSvg />
@@ -86,21 +98,40 @@ const resetFilters = () => {
         </TouchableOpacity>
       ),
     },
-{
-  key: 'area',
-  render: () => (
-    <TouchableOpacity style={styles.input} onPress={onOpenAreaSheet}>
-      <View style={styles.inputRow}>
-        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.filterText}>
-          {getAreaLabel()}
-        </Text>
-        <DownArrowSvg />
-      </View>
-    </TouchableOpacity>
-  ),
-},
+    {
+      key: 'area',
+      render: () => (
+        <TouchableOpacity style={styles.input} onPress={onOpenAreaSheet}>
+          <View style={styles.inputRow}>
+            <Text
+              numberOfLines={1}
+              ellipsizeMode="tail"
+              style={styles.filterText}>
+              {getAreaLabel()}
+            </Text>
+            <DownArrowSvg />
+          </View>
+        </TouchableOpacity>
+      ),
+    },
 
-
+    {
+      key: 'sort',
+      render: () => (
+        <TouchableOpacity onPress={onOpenSortSheet} style={styles.input}>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-evenly',
+              width: '100%',
+            }}>
+            <Text style={styles.filterText} numberOfLines={1} ellipsizeMode='tail'>{sortOption || 'Sort'}</Text>
+            <DownArrowSvg />
+          </View>
+        </TouchableOpacity>
+      ),
+    },
     {
       key: 'reset',
       render: () => (
@@ -159,7 +190,7 @@ const styles = StyleSheet.create({
     textAlignVertical: 'center',
   },
   resetButton: {
-    backgroundColor: colors.lightgreen,
+    backgroundColor: '#f0f0f0',
     borderRadius: 20,
     height: 35,
     paddingHorizontal: 16,
@@ -168,14 +199,15 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   resetButtonText: {
-    color: colors.white,
-    fontWeight: 'bold',
+    color: colors.black,
+    // fontWeight: 'bold',
   },
   adjustButton: {
     backgroundColor: '#eee',
     borderRadius: 20,
     height: 35,
     width: 40,
+    paddingHorizontal: 10,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 8,

@@ -665,22 +665,22 @@ const recommendedProducts = [
 const paginationImages = [
   {
     id: '1',
-    imageUrl: require('../assets/img/driver1.png'),
+    imageUrl: require('../assets/img/logo1.png'),
     description: 'There’s a lot going on here',
   },
   {
     id: '2',
-    imageUrl: require('../assets/img/driver2.png'),
+    imageUrl: require('../assets/img/logo1.png'),
     description: 'We have more than 35 million users',
   },
   {
     id: '3',
-    imageUrl: require('../assets/img/driver3.png'),
+    imageUrl: require('../assets/img/logo1.png'),
     description: 'Our platform supports over 50,000 products',
   },
   {
     id: '4',
-    imageUrl: require('../assets/img/driver4.png'),
+    imageUrl: require('../assets/img/logo1.png'),
     description: 'We connect people from over 30 countries',
   },
 ];

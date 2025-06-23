@@ -202,8 +202,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   logo: {
-    width: 45,
-    height: 45,
+    width: 70,
+    height: 70,
   },
   modalContainer: {
     backgroundColor: colors.white,
@@ -223,10 +223,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: mvs(20),
+    // marginBottom: mvs(20),
   },
   title: {
-    fontSize: mvs(28),
+    fontSize: 35,
     fontWeight: 'bold',
     color: colors.green,
     marginLeft: mvs(10),

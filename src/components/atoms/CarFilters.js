@@ -10,7 +10,7 @@ import {
 import React from 'react';
 import DownArrowSvg from '../../assets/svg/down-arrow-svg';
 import {colors} from '../../util/color';
-import {AdjustSVG, TrashSVG} from '../../assets/svg';
+import {AdjustSVG, SortSVG, TrashSVG} from '../../assets/svg';
 
 const CarFilters = ({
   filters,
@@ -20,6 +20,9 @@ const CarFilters = ({
   onOpenBuildYearSheet,
   onOpenTransmissionSheet,
   onOpenAdjustSheet,
+  sortOption,
+  onOpenSortSheet,
+  setSortOption,
 }) => {
   const getPriceLabel = () => {
     if (filters.minPrice && !filters.maxPrice)
@@ -40,18 +43,21 @@ const CarFilters = ({
       buildYearMax: '',
       transmission: '',
     });
+    setSortOption(null);
   };
 
   const filterItems = [
     {
-  key: 'adjust',
-  render: () => (
-    <TouchableOpacity style={styles.resetButton} onPress={onOpenAdjustSheet}>
-        {/* <Text style={styles.filterText}>Adjust</Text> */}
-        <AdjustSVG height={16} width={16} />
-    </TouchableOpacity>
-  ),
-},
+      key: 'adjust',
+      render: () => (
+        <TouchableOpacity
+          style={styles.resetButton}
+          onPress={onOpenAdjustSheet}>
+          {/* <Text style={styles.filterText}>Adjust</Text> */}
+          <AdjustSVG height={16} width={16} />
+        </TouchableOpacity>
+      ),
+    },
 
     {
       key: 'price',
@@ -86,7 +92,7 @@ const CarFilters = ({
               justifyContent: 'space-evenly',
               width: '100%',
             }}>
-            <Text style={{color: filters.brand ? '#000' : '#888'}}>
+            <Text style={{color: '#000'}}>
               {filters.brand || 'Brand'}
             </Text>
             <DownArrowSvg />
@@ -107,10 +113,7 @@ const CarFilters = ({
             }}>
             <Text
               style={{
-                color:
-                  filters.buildYearMin || filters.buildYearMax
-                    ? '#000'
-                    : '#888',
+color: '#000'
               }}>
               {filters.buildYearMin && filters.buildYearMax
                 ? `${filters.buildYearMin} - ${filters.buildYearMax}`
@@ -138,7 +141,7 @@ const CarFilters = ({
               justifyContent: 'space-evenly',
               width: '100%',
             }}>
-            <Text style={{color: filters.brand ? '#000' : '#888'}}>
+            <Text style={{color: '#000'}}>
               {filters.transmission || 'Transmission'}
             </Text>
             <DownArrowSvg />
@@ -146,6 +149,24 @@ const CarFilters = ({
         </TouchableOpacity>
       ),
     },
+    {
+      key: 'sort',
+      render: () => (
+        <TouchableOpacity onPress={onOpenSortSheet} style={styles.input}>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-evenly',
+              width: '100%',
+            }}>
+            <Text style={styles.filterText} numberOfLines={1} ellipsizeMode="tail">{sortOption || 'Sort'}</Text>
+            <DownArrowSvg />
+          </View>
+        </TouchableOpacity>
+      ),
+    },
+
     {
       key: 'reset',
       render: () => (
@@ -202,7 +223,7 @@ const styles = StyleSheet.create({
     textAlignVertical: 'center',
   },
   resetButton: {
-    backgroundColor: colors.lightgreen,
+    backgroundColor: '#f0f0f0',
     borderRadius: 20,
     height: 35,
     paddingHorizontal: 16,
@@ -211,19 +232,58 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   resetButtonText: {
-    color: colors.white,
+    color: colors.black,
+    // fontWeight: 'bold',
+  },
+  sortButtonCentered: {
+    gap: 5,
+    flexDirection: 'row',
+    position: 'absolute',
+    bottom: '10%',
+    alignSelf: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.lightgreen, // your desired color
+    paddingHorizontal: 24,
+    paddingVertical: 10,
+    borderRadius: 20,
+    // elevation: 5,
+    zIndex: 999,
+  },
+  sortDropdown: {
+    position: 'absolute',
+    top: 40, // Below the button
+    width: 140,
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    elevation: 5,
+    zIndex: 999,
+    paddingVertical: 6,
+  },
+
+  sortOption: {
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+  },
+
+  sortOptionText: {
+    fontSize: 14,
+    color: '#333',
+  },
+
+  sortButtonText: {
+    color: '#000',
     fontWeight: 'bold',
+    fontSize: 16,
   },
   adjustButton: {
-  backgroundColor: '#eee',
-  borderRadius: 20,
-  height: 35,
-  width: 40,
-  justifyContent: 'center',
-  alignItems: 'center',
-  marginRight: 8,
-},
-
+    backgroundColor: '#eee',
+    borderRadius: 20,
+    height: 35,
+    width: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 8,
+  },
 });
 
 export default CarFilters;

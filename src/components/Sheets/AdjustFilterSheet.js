@@ -1,34 +1,10 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Text, View, TouchableOpacity, TextInput} from 'react-native';
 import {BottomSheetScrollView} from '@gorhom/bottom-sheet';
-import {colors} from '../../util/color';
 import DropDownPicker from 'react-native-dropdown-picker';
-
-const sectionTitleStyle = {
-  fontSize: 16,
-  fontWeight: 'bold',
-  marginVertical: 12,
-};
-
-const labelStyle = {
-  fontSize: 14,
-  marginBottom: 6,
-};
-
-const inputStyle = {
-  borderWidth: 1,
-  borderColor: '#ccc',
-  borderRadius: 8,
-  padding: 8,
-  marginBottom: 12,
-};
-
-const resetButtonStyle = {
-  marginTop: 20,
-  alignSelf: 'center',
-};
-
+import { sectionTitleStyle, inputStyle, labelStyle, resetButtonStyle } from '../../util/Filtering/filterStyles';
+import GooglePlacesSuggestion from '../../components/GooglePlacesSuggestion'; 
 const AdjustFilterSheet = ({
   filters,
   setFilters,
@@ -37,6 +13,14 @@ const AdjustFilterSheet = ({
   onOpenTransmissionSheet,
   onOpenBuildYearSheet,
 }) => {
+  useEffect(() => {
+  if (fuelOpen) setConditionOpen(false);
+}, [fuelOpen]);
+
+useEffect(() => {
+  if (conditionOpen) setFuelOpen(false);
+}, [conditionOpen]);
+
   const resetFilters = () => {
     setFilters({
       brand: '',
@@ -54,6 +38,9 @@ const AdjustFilterSheet = ({
       power: '',
       condition: '',
       inspection: '',
+      lat: '',
+      long: '',
+
     });
   };
 
@@ -82,7 +69,10 @@ const AdjustFilterSheet = ({
         {/* Brand */}
         <Text style={labelStyle}>Brand / Make</Text>
         <TouchableOpacity
-          onPress={onOpenBrandSheet}
+onPress={() => {
+  onOpenBrandSheet?.(); // this should be passed from parent
+}}
+
           style={[inputStyle, {justifyContent: 'center'}]}>
           <Text>{filters.brand || 'Select brand'}</Text>
         </TouchableOpacity>
@@ -177,13 +167,29 @@ const AdjustFilterSheet = ({
         </TouchableOpacity>
 
         {/* Location (from registrationCity) */}
-        <Text style={labelStyle}>Location</Text>
+        {/* <Text style={labelStyle}>Location</Text>
         <TextInput
           placeholder="Enter location"
           value={filters.location}
           onChangeText={text => setFilters(prev => ({...prev, location: text}))}
           style={inputStyle}
-        />
+        /> */}
+
+        <Text style={labelStyle}>Location</Text>
+<View style={inputStyle}>
+  <GooglePlacesSuggestion
+    initialValue={filters.location}
+    onPlaceSelected={({location, lat, long}) => {
+      setFilters(prev => ({
+        ...prev,
+        location,
+        lat,
+        long,
+      }));
+    }}
+  />
+</View>
+
 
         {/* --- ADDITIONAL FILTERS --- */}
         <Text style={sectionTitleStyle}>Additional Filters</Text>

@@ -32,7 +32,7 @@ import {
 } from '../../../api/apiServices';
 import {mvs} from '../../../util/metrices';
 import Regular from '../../../typography/RegularText';
-import {HeartSvg} from '../../../assets/svg';
+import {HeartSvg, SortSVG} from '../../../assets/svg';
 import Bold from '../../../typography/BoldText';
 import styles from './styles';
 import {useTranslation} from 'react-i18next';
@@ -46,13 +46,19 @@ import PropertyFilters from '../../../components/atoms/PropertyFilters';
 import AreaFilterSheet from '../../../components/Sheets/Property/AreaFilterSheet';
 import PropertyTypeFilterSheet from '../../../components/Sheets/Property/PropertyTypeFilterSheet';
 import PropertyAdjustFilterSheet from '../../../components/Sheets/Property/PropertyAdjustFilterSheet';
-import { filterPropertyProducts, filterServiceProducts, filterVehicleProducts } from '../../../util/Filtering/filterProducts';
+import {
+  filterPropertyProducts,
+  filterServiceProducts,
+  filterVehicleProducts,
+} from '../../../util/Filtering/filterProducts';
 import BottomSheetContainer from '../../../components/Sheets/BottomSheetContainer';
-import { getCurrencySymbol } from '../../../util/Filtering/helpers';
-import { BRANDS } from '../../../util/Filtering/constants';
+import {getCurrencySymbol} from '../../../util/Filtering/helpers';
+import {BRANDS} from '../../../util/Filtering/constants';
 import ServicesFilters from '../../../components/atoms/ServicesFilter';
 import ServiceAdjustFilterSheet from '../../../components/Sheets/Services/ServiceAdjustFilterSheet';
 import ServiceTypeFilterSheet from '../../../components/Sheets/Services/ServiceTypeFilterSheet';
+import {parseProductList} from '../../../util/Filtering/parseProductsList';
+import SortSheet from '../../../components/Sheets/SortSheet';
 
 const Products = () => {
   const [filters, setFilters] = useState({
@@ -68,28 +74,31 @@ const Products = () => {
     power: '',
     condition: '',
     inspection: '',
-    // accidentFree: false,
     color: '',
     minMileage: '',
     maxMileage: '',
     location: '',
     radius: '',
+    lat: '',
+long: '',
 
-    //Property Filters
+
     propertyType: '',
     minArea: '',
     maxArea: '',
 
-      // Services
-  serviceType: '',
-  employmentType: '',
-  educationRequired: '',
-  experienceRequired: '',
-  genderPreference: '',
-  contactMethod: '',
-  salaryType: '',
+    serviceType: '',
+    employmentType: '',
+    educationRequired: '',
+    experienceRequired: '',
+    genderPreference: '',
+    contactMethod: '',
+    salaryType: '',
   });
   const [products, setProducts] = useState([]);
+  const [productsMap, setProductsMap] = useState({});
+  const [sortOption, setSortOption] = useState(null);
+
   const [loading, setLoading] = useState(false);
   const [likedItems, setLikedItems] = useState({});
   const {t} = useTranslation();
@@ -100,19 +109,21 @@ const Products = () => {
   const refBuildYearSheet = useRef(null);
   const refBuildYearInput = useRef(null);
   const refTransmissionSheet = useRef(null);
-  const refAdjustSheet = useRef(null);
+  const refVehicleAdjustSheet = useRef(null);
+  const refPropertyAdjustSheet = useRef(null);
+  const refServiceAdjustSheet = useRef(null);
+  const refSortSheet = useRef(null);
 
   const refPropertyTypeSheet = useRef(null);
   const refAreaSheet = useRef(null);
   const refAreaInput = useRef(null);
 
   const refServiceTypeSheet = useRef(null);
-const refLocationSheet = useRef(null);
-
+  const refLocationSheet = useRef(null);
 
   const {role, id: userId} = useSelector(state => state.user);
   const favorites = useSelector(state => state.favorites.favorites);
-  const [activeSheet, setActiveSheet] = useState(null); // 'price' | 'brand' | 'year' | null
+  const [activeSheet, setActiveSheet] = useState(null);
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const route = useRoute();
@@ -127,87 +138,85 @@ const refLocationSheet = useRef(null);
       brand.toLowerCase().includes(brandSearch.toLowerCase()),
     );
   }, [brandSearch]);
+
+  const likedItemsMap = useMemo(() => {
+    return favorites.reduce((acc, item) => {
+      acc[item.id] = true;
+      return acc;
+    }, {});
+  }, [favorites]);
+
+  const navigateToProductDetails = useCallback(
+    productId => {
+      navigation.navigate('ProductDetail', {productId});
+    },
+    [navigation],
+  );
+
+  const handleHeartClick = useCallback(
+    (id, product) => {
+      if (likedItems[id]) {
+        dispatch(removeFavorite(product));
+        setLikedItems(prev => {
+          const updatedState = {...prev};
+          delete updatedState[id];
+          return updatedState;
+        });
+      } else {
+        dispatch(addFavorite(product));
+        setLikedItems(prev => ({
+          ...prev,
+          [id]: true,
+        }));
+      }
+    },
+    [likedItems, dispatch],
+  );
+
+  const closeAllSheets = useCallback(async callback => {
+    Keyboard.dismiss();
+    await Promise.all([
+      refBrandSheet.current?.close(),
+      refPriceSheet.current?.close(),
+      refBuildYearSheet.current?.close(),
+      refTransmissionSheet.current?.close(),
+      refVehicleAdjustSheet.current?.close(),
+      refPropertyAdjustSheet.current?.close(),
+      refServiceAdjustSheet.current?.close(),
+      refServiceTypeSheet.current?.close(),
+      refLocationSheet.current?.close(),
+    ]);
+    callback?.();
+  }, []);
+
+  const renderBackdrop = useCallback(
+    props => (
+      <BottomSheetBackdrop
+        {...props}
+        disappearsOnIndex={-1}
+        appearsOnIndex={0}
+        pressBehavior="close"
+        style={{backgroundColor: 'rgba(0, 0, 0, 0.7)'}}
+      />
+    ),
+    [],
+  );
+
   useEffect(() => {
-    if (products.length > 0) {return;} // ✅ prevents re-fetch if already fetched
+    // if (products.length > 0) return;
+    if (productsMap[subCategoryId]) {
+      setProducts(productsMap[subCategoryId]); // Use cached
+      return;
+    }
 
     const fetchData = async () => {
       setLoading(true);
       const response = await fetchProductsBySubCategory(subCategoryId);
       if (response?.data) {
-        const parsedProducts = response.data.map(product => {
-          try {
-            const customFields = JSON.parse(product.custom_fields || '[]');
-
-            const extractField = name =>
-              customFields.find(f => f.name === name)?.value || '';
-
-            return {
-              ...product,
-              buildYear: extractField('yearofManufacture'),
-              brand: extractField('make_Brand'),
-              transmission: extractField('transmission'),
-              fuelType: extractField('fuelType'),
-              mileage: extractField('mileage'),
-              model: extractField('model'),
-              power: extractField('power'),
-              condition: extractField('condition'),
-              inspection: extractField('inspectionValidUntil'),
-              // accidentFree: extractField('accidentFree') === 'Yes',
-              color: extractField('color'),
-              location: extractField('registrationCity'),
-
-              //Property Filters
-              area: (() => {
-                const rawSize = extractField('size') || '';
-                const numeric = rawSize.replace(/[^\d]/g, '');
-                return numeric ? Number(numeric) : 0;
-              })(),
-              propertyType: extractField('propertyType'),
-              heating_Cooling: extractField('heating_Cooling'),
-              water_electricityAvailability: extractField(
-                'water_electricityAvailability',
-              ),
-              petsAllowed: extractField('petsAllowed'),
-              parking: extractField('parking'),
-              furnished: extractField('furnished'),
-              elevator: extractField('elevator'),
-              balcony: extractField('balcony'),
-              titleDeed_Document: extractField('titleDeed_Document'),
-              nearbyLandmarks: extractField('nearbyLandmarks'),
-              distancefroCityCenter_transport: extractField(
-                'distancefroCityCenter_transport',
-              ),
-              floorNumber: extractField('floorNumber'),
-              totalFloorsInBuilding: extractField('totalFloorsInBuilding'),
-              purpose: extractField('purpose'),
-              rooms: extractField('rooms'),
-              bathrooms: extractField('bathrooms'),
-              size: extractField('size'),
-
-                // Services Filters
-  serviceType: extractField('category_Industry'),
-  jobLocation: extractField('jobLocation'),
-  employmentType: extractField('employmentType'),
-  experienceRequired: extractField('experienceRequired'),
-  educationRequired: extractField('educationRequired'),
-  genderPreference: extractField('genderPreference'),
-  contactMethod: extractField('contactMethod'),
-  salaryType: extractField('salaryType'),
-  workTiming: extractField('workTiming'),
-  requirements_Qualifications: extractField('requirements_Qualifications'),
-  skills: extractField('skills'),
-  contractDuration: extractField('contractDuration'),
-            };
-          } catch (e) {
-            console.warn('Failed to parse custom fields:', e);
-            return product;
-          }
-        });
-
-        setProducts(parsedProducts);
-
-        // setProducts(response.data);
-        console.log('Fetch Products by subcategory:', response.data);
+        const parsed = parseProductList(response.data);
+        setProducts(parsed);
+        setProductsMap(prev => ({...prev, [subCategoryId]: parsed}));
+        console.log(response.data);
       }
       setLoading(false);
     };
@@ -215,46 +224,44 @@ const refLocationSheet = useRef(null);
     fetchData();
   }, [subCategoryId]);
 
-  const likedItemes = useMemo(() => {
-    const map = {};
-    favorites.forEach(item => {
-      map[item.id] = true;
+  const filteredAndSortedProducts = useMemo(() => {
+    // First filter
+    let result = products.filter(product => {
+      if (category === 'Vehicle') {
+        return filterVehicleProducts(product, filters);
+      }
+      if (category === 'Property') {
+        return filterPropertyProducts(product, filters);
+      }
+      if (category === 'Services') {
+        return filterServiceProducts(product, filters);
+      }
+      return true;
     });
-    return map;
-  }, [favorites]);
 
-  const navigateToProductDetails = productId => {
-    navigation.navigate('ProductDetail', {productId});
-    console.log('Product ID: ', productId);
-  };
-
-  const handleHeartClick = (id, product) => {
-    if (likedItems[id]) {
-      dispatch(removeFavorite(product));
-      setLikedItems(prevState => {
-        const updatedState = {...prevState};
-        delete updatedState[id];
-        return updatedState;
-      });
-      console.log('Removed from favorites:', product);
-    } else {
-      dispatch(addFavorite(product));
-      setLikedItems(prevState => ({
-        ...prevState,
-        [id]: true,
-      }));
-      console.log('Added to favorites:', product);
+    // Then sort
+    switch (sortOption) {
+      case 'Newest First':
+        result = result.sort(
+          (a, b) => new Date(b.created_at) - new Date(a.created_at),
+        );
+        break;
+      case 'Oldest First':
+        result = result.sort(
+          (a, b) => new Date(a.created_at) - new Date(b.created_at),
+        );
+        break;
+      case 'Price: Low to High':
+        result = result.sort((a, b) => a.price - b.price);
+        break;
+      case 'Price: High to Low':
+        result = result.sort((a, b) => b.price - a.price);
+        break;
     }
-  };
 
-const filteredProducts = useMemo(() => {
-  return products.filter(product => {
-    if (category === 'Vehicle') {return filterVehicleProducts(product, filters);}
-    if (category === 'Property') {return filterPropertyProducts(product, filters);}
-    if (category === 'Services') {return filterServiceProducts(product,filters);}
-    return true;
-  });
-}, [products, filters, category]);
+    return result;
+  }, [products, filters, sortOption, category]);
+
   const renderRecommendedItem = useCallback(
     ({item}) => (
       <TouchableOpacity
@@ -275,43 +282,12 @@ const filteredProducts = useMemo(() => {
           <TouchableOpacity
             onPress={() => handleHeartClick(item.id, item)}
             style={styles.heartIconContainer}>
-            <HeartSvg filled={likedItemes[item.id]} />
+            <HeartSvg filled={likedItemsMap[item.id]} />
           </TouchableOpacity>
         )}
       </TouchableOpacity>
     ),
-    [handleHeartClick, likedItemes, navigateToProductDetails],
-  );
-
-  const closeAllSheets = async callback => {
-    Keyboard.dismiss();
-    if (refBrandSheet.current) {await refBrandSheet.current.close();}
-    if (refPriceSheet.current) {await refPriceSheet.current.close();}
-    if (refBuildYearSheet.current) {await refBuildYearSheet.current.close();}
-    if (refTransmissionSheet.current)
-      {await refTransmissionSheet.current.close();}
-    if (refAdjustSheet.current) {await refAdjustSheet.current.close();}
-    if (refServiceTypeSheet.current) await refServiceTypeSheet.current.close();
-if (refLocationSheet.current) await refLocationSheet.current.close();
-
-
-    // Small timeout ensures sheets close before new one opens
-    setTimeout(() => {
-      callback?.();
-    }, 200);
-  };
-
-  const renderBackdrop = useCallback(
-    props => (
-      <BottomSheetBackdrop
-        {...props}
-        disappearsOnIndex={-1}
-        appearsOnIndex={0}
-        pressBehavior="close"
-        style={{backgroundColor: 'rgba(0, 0, 0, 0.7)'}} // less dark
-      />
-    ),
-    [],
+    [navigateToProductDetails, handleHeartClick, likedItemsMap],
   );
 
   return (
@@ -341,6 +317,14 @@ if (refLocationSheet.current) await refLocationSheet.current.close();
                 <CarFilters
                   filters={filters}
                   setFilters={setFilters}
+                  sortOption={sortOption}
+                  setSortOption={setSortOption}
+                  onOpenSortSheet={() => {
+                    closeAllSheets(() => {
+                      refSortSheet.current?.expand();
+                      setActiveSheet('sort');
+                    });
+                  }}
                   onOpenBrandSheet={() => {
                     closeAllSheets(() => refBrandSheet.current?.snapToIndex(1));
                     setActiveSheet('brand');
@@ -371,7 +355,7 @@ if (refLocationSheet.current) await refLocationSheet.current.close();
                   }}
                   onOpenAdjustSheet={() => {
                     closeAllSheets(() => {
-                      refAdjustSheet.current?.expand();
+                      refVehicleAdjustSheet.current?.expand();
                       setActiveSheet('adjust');
                     });
                   }}
@@ -383,6 +367,14 @@ if (refLocationSheet.current) await refLocationSheet.current.close();
                 <PropertyFilters
                   filters={filters}
                   setFilters={setFilters}
+                  sortOption={sortOption}
+                  setSortOption={setSortOption}
+                  onOpenSortSheet={() => {
+                    closeAllSheets(() => {
+                      refSortSheet.current?.expand();
+                      setActiveSheet('sort');
+                    });
+                  }}
                   onOpenPriceSheet={() => {
                     closeAllSheets(() => {
                       refPriceSheet.current?.expand();
@@ -400,40 +392,54 @@ if (refLocationSheet.current) await refLocationSheet.current.close();
                       setActiveSheet('area');
                     });
                   }}
-                  onOpenAdjustSheet={() =>
-                    closeAllSheets(() => refAdjustSheet.current?.expand())
-                  }
+                  onOpenPropertyAdjust={() => {
+                    closeAllSheets(() => {
+                      refPropertyAdjustSheet.current?.expand();
+                      setActiveSheet('property');
+                    });
+                  }}
                 />
               </View>
             )}
             {category?.toLowerCase() === 'services' && (
-  <View style={{height: 60}}>
-    <ServicesFilters
-      filters={filters}
-      setFilters={setFilters}
-      onOpenPriceSheet={() => {
-        closeAllSheets(() => {
-          refPriceSheet.current?.expand();
-          setTimeout(() => {
-            refPriceInput.current?.focusMinPrice?.();
-          }, 300);
-        });
-      }}
-      onOpenServiceTypeSheet={() =>
-        closeAllSheets(() => refServiceTypeSheet.current?.expand())
-      }
-      onOpenLocationSheet={() =>
-        closeAllSheets(() => refLocationSheet.current?.expand())
-      }
-      onOpenServiceAdjustSheet={() =>
-        closeAllSheets(() => refAdjustSheet.current?.expand())
-      }
-    />
-  </View>
-)}
+              <View style={{height: 60}}>
+                <ServicesFilters
+                  filters={filters}
+                  setFilters={setFilters}
+                  sortOption={sortOption}
+                  setSortOption={setSortOption}
+                  onOpenSortSheet={() => {
+                    closeAllSheets(() => {
+                      refSortSheet.current?.expand();
+                      setActiveSheet('sort');
+                    });
+                  }}
+                  onOpenPriceSheet={() => {
+                    closeAllSheets(() => {
+                      refPriceSheet.current?.expand();
+                      setTimeout(() => {
+                        refPriceInput.current?.focusMinPrice?.();
+                      }, 300);
+                    });
+                  }}
+                  onOpenServiceTypeSheet={() =>
+                    closeAllSheets(() => refServiceTypeSheet.current?.expand())
+                  }
+                  onOpenLocationSheet={() =>
+                    closeAllSheets(() => refLocationSheet.current?.expand())
+                  }
+                  onOpenServiceAdjustSheet={() => {
+                    closeAllSheets(() => {
+                      refServiceAdjustSheet.current?.expand();
+                      setActiveSheet('services');
+                    });
+                  }}
+                />
+              </View>
+            )}
 
             <FlatList
-              data={filteredProducts}
+              data={filteredAndSortedProducts}
               renderItem={renderRecommendedItem}
               keyExtractor={item => item.id.toString()}
               contentContainerStyle={styles.recommendedContainer}
@@ -441,27 +447,27 @@ if (refLocationSheet.current) await refLocationSheet.current.close();
               keyboardShouldPersistTaps="handled" // ✅ Important
             />
 
-<BottomSheetContainer
-  ref={refBrandSheet}
-  snapPoints={[MAX_SHEET_HEIGHT * 0.5, MAX_SHEET_HEIGHT]}
-  activeSheet={activeSheet}
-  sheetKey="brand"
-  setActiveSheet={setActiveSheet}>
-  <BrandFilterSheet
-    refBrandSheet={refBrandSheet}
-    filteredBrands={filteredBrands}
-    brandSearch={brandSearch}
-    setBrandSearch={setBrandSearch}
-    setFilters={setFilters}
-  />
-</BottomSheetContainer>
-
+            <BottomSheetContainer
+              ref={refBrandSheet}
+              snapPoints={[MAX_SHEET_HEIGHT * 0.5, MAX_SHEET_HEIGHT]}
+              activeSheet={activeSheet}
+              sheetKey="brand"
+              setActiveSheet={setActiveSheet}>
+              <BrandFilterSheet
+                refBrandSheet={refBrandSheet}
+                filteredBrands={filteredBrands}
+                brandSearch={brandSearch}
+                setBrandSearch={setBrandSearch}
+                setFilters={setFilters}
+              />
+            </BottomSheetContainer>
 
             <BottomSheet
               ref={refPriceSheet}
               onChange={index => {
-                if (index === -1 && activeSheet === 'price')
-                  {setActiveSheet(null);}
+                if (index === -1 && activeSheet === 'price') {
+                  setActiveSheet(null);
+                }
                 Keyboard.dismiss();
               }}
               index={-1}
@@ -493,8 +499,9 @@ if (refLocationSheet.current) await refLocationSheet.current.close();
             <BottomSheet
               ref={refBuildYearSheet}
               onChange={index => {
-                if (index === -1 && activeSheet === 'year')
-                  {setActiveSheet(null);}
+                if (index === -1 && activeSheet === 'year') {
+                  setActiveSheet(null);
+                }
                 Keyboard.dismiss();
               }}
               index={-1}
@@ -525,8 +532,9 @@ if (refLocationSheet.current) await refLocationSheet.current.close();
             <BottomSheet
               ref={refTransmissionSheet}
               onChange={index => {
-                if (index === -1 && activeSheet === 'transmission')
-                  {setActiveSheet(null);}
+                if (index === -1 && activeSheet === 'transmission') {
+                  setActiveSheet(null);
+                }
               }}
               index={-1}
               snapPoints={[mvs(150), MAX_PRICE_HEIGHT]}
@@ -555,62 +563,11 @@ if (refLocationSheet.current) await refLocationSheet.current.close();
             </BottomSheet>
 
             <BottomSheet
-              ref={refAdjustSheet}
-              onChange={index => {
-                if (index === -1 && activeSheet === 'adjust')
-                  {setActiveSheet(null);}
-              }}
-              index={-1}
-              snapPoints={[MAX_SHEET_HEIGHT * 0.6]}
-              enablePanDownToClose
-              keyboardBehavior="interactive"
-              keyboardBlurBehavior="restore"
-              detached={false}
-              backdropComponent={renderBackdrop}
-              style={{borderRadius: mvs(30), overflow: 'hidden'}}>
-              {category?.toLowerCase() === 'vehicle' ? (
-                <AdjustFilterSheet
-                  filters={filters}
-                  setFilters={setFilters}
-                  closeSheet={() => refAdjustSheet.current?.close()}
-                  onOpenBrandSheet={() =>
-                    closeAllSheets(() => refBrandSheet.current?.snapToIndex(1))
-                  }
-                  onOpenPriceSheet={() =>
-                    closeAllSheets(() => {
-                      refPriceSheet.current?.expand();
-                      setTimeout(() => {
-                        refPriceInput.current?.focusMinPrice();
-                      }, 300);
-                    })
-                  }
-                  onOpenTransmissionSheet={() =>
-                    closeAllSheets(() => refTransmissionSheet.current?.expand())
-                  }
-                  onOpenBuildYearSheet={() =>
-                    // ✅ Add this new prop
-                    closeAllSheets(() => {
-                      refBuildYearSheet.current?.expand();
-                      setTimeout(() => {
-                        refBuildYearInput.current?.focusMinYear();
-                      }, 300);
-                    })
-                  }
-                />
-              ) : (
-                <PropertyAdjustFilterSheet
-                  filters={filters}
-                  setFilters={setFilters}
-                  closeSheet={() => refAdjustSheet.current?.close()}
-                />
-              )}
-            </BottomSheet>
-
-            <BottomSheet
               ref={refAreaSheet}
               onChange={index => {
-                if (index === -1 && activeSheet === 'area')
-                  {setActiveSheet(null);}
+                if (index === -1 && activeSheet === 'area') {
+                  setActiveSheet(null);
+                }
               }}
               index={-1}
               snapPoints={[mvs(150), MAX_PRICE_HEIGHT]}
@@ -640,8 +597,9 @@ if (refLocationSheet.current) await refLocationSheet.current.close();
             <BottomSheet
               ref={refPropertyTypeSheet}
               onChange={index => {
-                if (index === -1 && activeSheet === 'propertyType')
-                  {setActiveSheet(null);}
+                if (index === -1 && activeSheet === 'propertyType') {
+                  setActiveSheet(null);
+                }
               }}
               index={-1}
               snapPoints={[mvs(150), MAX_PRICE_HEIGHT]}
@@ -668,44 +626,138 @@ if (refLocationSheet.current) await refLocationSheet.current.close();
               />
             </BottomSheet>
 
+            <BottomSheet
+              ref={refSortSheet}
+              onChange={index => {
+                if (index === -1 && activeSheet === 'sort')
+                  setActiveSheet(null);
+              }}
+              index={-1}
+              snapPoints={['50%']}
+              enablePanDownToClose
+              keyboardBehavior="interactive"
+              keyboardBlurBehavior="restore"
+              detached={false}
+              backdropComponent={renderBackdrop}
+              style={{borderRadius: mvs(30), overflow: 'hidden'}}>
+              <SortSheet
+                sortOption={sortOption}
+                setSortOption={setSortOption}
+                closeSheet={() => refSortSheet.current?.close()}
+              />
+            </BottomSheet>
 
             <BottomSheetContainer
-  ref={refServiceTypeSheet}
-  snapPoints={[MAX_SHEET_HEIGHT * 0.5]}
-  activeSheet={activeSheet}
-  sheetKey="serviceType"
-  setActiveSheet={setActiveSheet}>
-  <ServiceTypeFilterSheet
-    filters={filters}
-    setFilters={setFilters}
-    closeSheet={() => refServiceTypeSheet.current?.close()}
-  />
-</BottomSheetContainer>
+              ref={refServiceTypeSheet}
+              snapPoints={[MAX_SHEET_HEIGHT * 0.5]}
+              activeSheet={activeSheet}
+              sheetKey="serviceType"
+              setActiveSheet={setActiveSheet}>
+              <ServiceTypeFilterSheet
+                filters={filters}
+                setFilters={setFilters}
+                closeSheet={() => refServiceTypeSheet.current?.close()}
+              />
+            </BottomSheetContainer>
 
+            <BottomSheet
+              ref={refVehicleAdjustSheet}
+              onChange={index => {
+                if (index === -1 && activeSheet === 'vehicle')
+                  setActiveSheet(null);
+              }}
+              index={-1}
+              snapPoints={[MAX_SHEET_HEIGHT]}
+              enablePanDownToClose
+              keyboardBehavior="interactive"
+              keyboardBlurBehavior="restore"
+              detached={false}
+              backdropComponent={renderBackdrop}
+              style={{borderRadius: mvs(30), overflow: 'hidden'}}>
+              {category?.toLowerCase() === 'vehicle' ? (
+                <AdjustFilterSheet
+                  filters={filters}
+                  setFilters={setFilters}
+                  onOpenBrandSheet={() => {
+                    closeAllSheets(() => {
+                      refBrandSheet.current?.snapToIndex(1);
+                      setActiveSheet('brand');
+                    });
+                  }}
+                  onOpenPriceSheet={() => {
+                    closeAllSheets(() => {
+                      refPriceSheet.current?.expand();
+                      setActiveSheet('price');
+                      setTimeout(() => {
+                        refPriceInput.current?.focusMinPrice();
+                      }, 300);
+                    });
+                  }}
+                  onOpenTransmissionSheet={() => {
+                    closeAllSheets(() => {
+                      refTransmissionSheet.current?.expand();
+                      setActiveSheet('transmission');
+                    });
+                  }}
+                  onOpenBuildYearSheet={() => {
+                    closeAllSheets(() => {
+                      refBuildYearSheet.current?.expand();
+                      setActiveSheet('year');
+                      setTimeout(() => { 
+                        refBuildYearInput.current?.focusMinYear();
+                      }, 300);
+                    });
+                  }}
+                  closeSheet={() => refVehicleAdjustSheet.current?.close()}
+                />
+              ) : null}
+            </BottomSheet>
 
+            <BottomSheet
+              ref={refPropertyAdjustSheet}
+              onChange={index => {
+                if (index === -1 && activeSheet === 'property')
+                  setActiveSheet(null);
+              }}
+              index={-1}
+              snapPoints={[MAX_SHEET_HEIGHT * 0.8]}
+              enablePanDownToClose
+              keyboardBehavior="interactive"
+              keyboardBlurBehavior="restore"
+              detached={false}
+              backdropComponent={renderBackdrop}
+              style={{borderRadius: mvs(30), overflow: 'hidden'}}>
+              {category?.toLowerCase() === 'property' ? (
+                <PropertyAdjustFilterSheet
+                  filters={filters}
+                  setFilters={setFilters}
+                  closeSheet={() => refPropertyAdjustSheet.current?.close()}
+                />
+              ) : null}
+            </BottomSheet>
 
-<BottomSheet
-  ref={refAdjustSheet}
-  onChange={index => {
-    if (index === -1 && activeSheet === 'adjust') setActiveSheet(null);
-  }}
-  index={-1}
-  snapPoints={[MAX_SHEET_HEIGHT * 0.8]}
-  enablePanDownToClose
-  keyboardBehavior="interactive"
-  keyboardBlurBehavior="restore"
-  detached={false}
-  backdropComponent={renderBackdrop}
-  style={{ borderRadius: mvs(30), overflow: 'hidden' }}>
-  {category?.toLowerCase() === 'services' ? (
-    <ServiceAdjustFilterSheet
-      filters={filters}
-      setFilters={setFilters}
-      closeSheet={() => refAdjustSheet.current?.close()}
-    />
-  ) : null}
-</BottomSheet>
-
+            <BottomSheet
+              ref={refServiceAdjustSheet}
+              onChange={index => {
+                if (index === -1 && activeSheet === 'services')
+                  setActiveSheet(null);
+              }}
+              index={-1}
+              snapPoints={[MAX_SHEET_HEIGHT * 0.8]}
+              enablePanDownToClose
+              keyboardBehavior="interactive"
+              keyboardBlurBehavior="restore"
+              detached={false}
+              backdropComponent={renderBackdrop}
+              style={{borderRadius: mvs(30), overflow: 'hidden'}}>
+              {category?.toLowerCase() === 'services' ? (
+                <ServiceAdjustFilterSheet
+                  filters={filters}
+                  setFilters={setFilters}
+                  closeSheet={() => refServiceAdjustSheet.current?.close()}
+                />
+              ) : null}
+            </BottomSheet>
           </>
         )}
       </SafeAreaView>

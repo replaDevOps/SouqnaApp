@@ -1,12 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  FlatList,
-} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, FlatList} from 'react-native';
 import DownArrowSvg from '../../assets/svg/down-arrow-svg';
 import {colors} from '../../util/color';
 import {AdjustSVG, TrashSVG} from '../../assets/svg';
@@ -17,6 +11,9 @@ const ServicesFilters = ({
   onOpenPriceSheet,
   onOpenServiceTypeSheet,
   onOpenServiceAdjustSheet,
+  sortOption,
+  onOpenSortSheet,
+  setSortOption,
 }) => {
   const getPriceLabel = () => {
     if (filters.minPrice && !filters.maxPrice)
@@ -34,6 +31,7 @@ const ServicesFilters = ({
       maxPrice: '',
       serviceType: '',
     });
+    setSortOption(null);
   };
 
   const filterItems = [
@@ -52,7 +50,10 @@ const ServicesFilters = ({
       render: () => (
         <TouchableOpacity style={styles.input} onPress={onOpenPriceSheet}>
           <View style={styles.inputRow}>
-            <Text numberOfLines={1} ellipsizeMode="tail" style={styles.filterText}>
+            <Text
+              numberOfLines={1}
+              ellipsizeMode="tail"
+              style={styles.filterText}>
               {getPriceLabel()}
             </Text>
             <DownArrowSvg />
@@ -61,13 +62,17 @@ const ServicesFilters = ({
       ),
     },
     {
-      key: 'serviceType',
+      key: 'sort',
       render: () => (
-        <TouchableOpacity style={styles.input} onPress={onOpenServiceTypeSheet}>
-          <View style={styles.inputRow}>
-            <Text style={styles.filterText} numberOfLines={1} ellipsizeMode="tail">
-              {filters.serviceType || 'Service Type'}
-            </Text>
+        <TouchableOpacity onPress={onOpenSortSheet} style={styles.input}>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-evenly',
+              width: '100%',
+            }}>
+            <Text style={styles.filterText} numberOfLines={1} ellipsizeMode="tail">{sortOption || 'Sort'}</Text>
             <DownArrowSvg />
           </View>
         </TouchableOpacity>
@@ -131,7 +136,7 @@ const styles = StyleSheet.create({
     textAlignVertical: 'center',
   },
   resetButton: {
-    backgroundColor: colors.lightgreen,
+    backgroundColor: '#f0f0f0',
     borderRadius: 20,
     height: 35,
     paddingHorizontal: 16,
@@ -140,8 +145,8 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   resetButtonText: {
-    color: colors.white,
-    fontWeight: 'bold',
+    color: colors.black,
+    // fontWeight: 'bold',
   },
   adjustButton: {
     backgroundColor: '#eee',
