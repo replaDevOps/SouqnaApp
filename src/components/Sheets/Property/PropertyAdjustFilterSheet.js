@@ -15,6 +15,7 @@ import {
   inputStyle,
 } from '../../../util/Filtering/filterStyles';
 
+
 const PropertyAdjustFilterSheet = ({filters, setFilters}) => {
   const updateField = (key, value) => {
     setFilters(prev => ({...prev, [key]: value}));
@@ -26,6 +27,14 @@ const PropertyAdjustFilterSheet = ({filters, setFilters}) => {
 
   const [heatingCoolingOpen, setHeatingCoolingOpen] = useState(false);
   const [availabilityOpen, setAvailabilityOpen] = useState(false);
+  const [purposeOpen, setPurposeOpen] = useState(false);
+
+const purposeItems = [
+  { label: 'For Sale', value: 'For Sale' },
+  { label: 'For Rent', value: 'For Rent' },
+  { label: 'Other', value: 'Other' },
+];
+
 
   const heatingCoolingItems = [
     {label: 'Installed', value: 'Installed'},
@@ -36,6 +45,22 @@ const PropertyAdjustFilterSheet = ({filters, setFilters}) => {
     {label: 'Available', value: 'Available'},
     {label: 'Not Available', value: 'Not Available'},
   ];
+  const booleanOptions = [
+  {label: 'Yes', value: true},
+  {label: 'No', value: false},
+];
+
+// Define state for each dropdown open status
+const [dropdownStates, setDropdownStates] = useState({
+  petsAllowed: false,
+  parking: false,
+  furnished: false,
+  elevator: false,
+  balcony: false,
+  titleDeed_Document: false,
+  purpose: false
+});
+
 
   return (
     <View style={{flex: 1, zIndex: 0}}>
@@ -53,14 +78,21 @@ const PropertyAdjustFilterSheet = ({filters, setFilters}) => {
           style={inputStyle}
         />
 
-        {/* Purpose */}
-        <Text style={labelStyle}>Purpose</Text>
-        <TextInput
-          placeholder="e.g. For Sale, For Rent"
-          value={filters.purpose || ''}
-          onChangeText={text => updateField('purpose', text)}
-          style={inputStyle}
-        />
+<Text style={labelStyle}>Purpose</Text>
+<View style={{ zIndex: purposeOpen ? 1000 : 1 }}>
+  <DropDownPicker
+    open={purposeOpen}
+    value={filters.purpose}
+    items={purposeItems}
+    setOpen={setPurposeOpen}
+    setValue={val => updateField('purpose', val())}
+    setItems={() => {}}
+    placeholder="Select Purpose"
+    style={[inputStyle, { marginBottom: purposeOpen ? 120 : 12 }]}
+    dropDownContainerStyle={{ ...inputStyle, marginBottom: 12 }}
+  />
+</View>
+
 
         {/* Size */}
         <Text style={labelStyle}>Size</Text>
@@ -168,7 +200,7 @@ const PropertyAdjustFilterSheet = ({filters, setFilters}) => {
         </View>
 
         {/* Switches */}
-        {[
+        {/* {[
           {label: 'Pets Allowed', key: 'petsAllowed'},
           {label: 'Parking', key: 'parking'},
           {label: 'Furnished', key: 'furnished'},
@@ -186,11 +218,36 @@ const PropertyAdjustFilterSheet = ({filters, setFilters}) => {
             }}>
             <Text>{label}</Text>
             <Switch
-              value={!!filters[key]}
+              value={filters[key]}
               onValueChange={val => updateField(key, val)}
             />
           </View>
-        ))}
+        ))} */}
+
+        {[
+  {label: 'Pets Allowed', key: 'petsAllowed'},
+  {label: 'Parking', key: 'parking'},
+  {label: 'Furnished', key: 'furnished'},
+  {label: 'Elevator', key: 'elevator'},
+  {label: 'Balcony', key: 'balcony'},
+  {label: 'Title Deed / Document', key: 'titleDeed_Document'},
+].map(({label, key}) => (
+  <View key={key} style={{zIndex: dropdownStates[key] ? 1000 : 1, marginBottom: 12}}>
+    <Text style={labelStyle}>{label}</Text>
+    <DropDownPicker
+      open={dropdownStates[key]}
+      value={filters[key]}
+      items={booleanOptions}
+      setOpen={open => setDropdownStates(prev => ({...prev, [key]: open}))}
+      setValue={val => updateField(key, val())}
+      setItems={() => {}}
+      placeholder="Select option"
+      style={inputStyle}
+      dropDownContainerStyle={inputStyle}
+    />
+  </View>
+))}
+
 
         {/* Nearby Landmarks */}
         <Text style={labelStyle}>Nearby Landmarks</Text>

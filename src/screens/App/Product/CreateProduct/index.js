@@ -243,11 +243,6 @@ const [brandModalVisible, setBrandModalVisible] = useState(false);
   const submitProduct = async () => {
     console.log('SUBMIT BUTTON PRESSED');
 
-    if (!formData.stock || Number(formData.stock) <= 0) {
-  setSnackbarMessage('Stock cannot be 0');
-  setSnackbarVisible(true);
-  return;
-}
 
     const data = new FormData();
     data.append('name', formData.name);
@@ -639,7 +634,7 @@ const [brandModalVisible, setBrandModalVisible] = useState(false);
             <View style={styles.sectionContainer}>
               <Text style={styles.sectionTitle}>
                 {t('negotiable')}
-                <Text style={{color: colors.red}}>*</Text>
+                {/* <Text style={{color: colors.red}}>*</Text> */}
               </Text>
 
               <View style={styles.radioContainer}>
@@ -684,7 +679,7 @@ const [brandModalVisible, setBrandModalVisible] = useState(false);
             <View style={styles.sectionContainer}>
               <Text style={styles.sectionTitle}>
                 {t('discount')}
-                <Text style={{color: colors.red}}>*</Text>
+                {/* <Text style={{color: colors.red}}>*</Text> */}
               </Text>
               <TextInput
                 style={styles.input}
@@ -715,7 +710,7 @@ const [brandModalVisible, setBrandModalVisible] = useState(false);
             <View style={styles.sectionContainer}>
               <Text style={styles.sectionTitle}>
                 {t('availableStock')}
-                <Text style={{color: colors.red}}>*</Text>
+                {/* <Text style={{color: colors.red}}>*</Text> */}
               </Text>
               <TextInput
                 style={styles.input}

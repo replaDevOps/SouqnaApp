@@ -175,8 +175,8 @@ onPress={() => {
           style={inputStyle}
         /> */}
 
-        <Text style={labelStyle}>Location</Text>
-<View style={inputStyle}>
+        {/* <Text style={labelStyle}>Location</Text> */}
+{/* <View style={inputStyle}>
   <GooglePlacesSuggestion
     initialValue={filters.location}
     onPlaceSelected={({location, lat, long}) => {
@@ -188,20 +188,20 @@ onPress={() => {
       }));
     }}
   />
-</View>
+</View> */}
 
 
         {/* --- ADDITIONAL FILTERS --- */}
         <Text style={sectionTitleStyle}>Additional Filters</Text>
 
         {/* Color */}
-        <Text style={labelStyle}>Color</Text>
+        {/* <Text style={labelStyle}>Color</Text>
         <TextInput
           placeholder="Enter color"
           value={filters.color}
           onChangeText={text => setFilters(prev => ({...prev, color: text}))}
           style={inputStyle}
-        />
+        /> */}
 
         {/* Power */}
         <Text style={labelStyle}>Power (HP/kW)</Text>

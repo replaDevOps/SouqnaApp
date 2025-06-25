@@ -215,6 +215,8 @@ const GooglePlacesSuggestion = ({
     )
       .then(res => res.json())
       .then(json => {
+        console.log('🧪 GOOGLE_PLACES_API_KEY:', GOOGLE_PLACES_API_KEY);
+          console.log('Autocomplete Response:', JSON.stringify(json, null, 2)); // DEBUG
         if (!active) return;
         setSuggestions(json.status === 'OK' ? json.predictions : []);
       })
@@ -266,6 +268,9 @@ const GooglePlacesSuggestion = ({
     // Reset the place selected flag when the user interacts with the input again
     setIsPlaceSelected(false);
   };
+
+
+        console.log('🧪 GOOGLE_PLACES_API_KEY:', config);
 
   // In renderItem:
   const renderItem = ({item}) => {

@@ -59,6 +59,7 @@ import ServiceAdjustFilterSheet from '../../../components/Sheets/Services/Servic
 import ServiceTypeFilterSheet from '../../../components/Sheets/Services/ServiceTypeFilterSheet';
 import {parseProductList} from '../../../util/Filtering/parseProductsList';
 import SortSheet from '../../../components/Sheets/SortSheet';
+import { init } from 'i18next';
 
 const Products = () => {
   const [filters, setFilters] = useState({
@@ -80,8 +81,7 @@ const Products = () => {
     location: '',
     radius: '',
     lat: '',
-long: '',
-
+    long: '',
 
     propertyType: '',
     minArea: '',
@@ -121,13 +121,14 @@ long: '',
   const refServiceTypeSheet = useRef(null);
   const refLocationSheet = useRef(null);
 
-  const {role, id: userId} = useSelector(state => state.user);
+  const {role, id: userId, email: userEmail} = useSelector(state => state.user);
+  const activeRole = role ?? 3;
   const favorites = useSelector(state => state.favorites.favorites);
   const [activeSheet, setActiveSheet] = useState(null);
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const route = useRoute();
-  const {id: subCategoryId, name, category} = route.params;
+  const {id: subCategoryId, name, category, initialProducts} = route.params;
   const SCREEN_HEIGHT = Dimensions.get('window').height;
   const MAX_SHEET_HEIGHT = SCREEN_HEIGHT * 0.9;
   const MAX_PRICE_HEIGHT = SCREEN_HEIGHT * 0.5;
@@ -202,44 +203,59 @@ long: '',
     [],
   );
 
-  useEffect(() => {
-    // if (products.length > 0) return;
-    if (productsMap[subCategoryId]) {
-      setProducts(productsMap[subCategoryId]); // Use cached
-      return;
+useEffect(() => {
+  if (initialProducts?.length > 0) {
+    setLoading(true); // 👈 Start loader
+    setProducts(initialProducts);
+    console.log("FETCHEDPRODUCTS:", initialProducts)
+    setTimeout(() => setLoading(false), 200); // 👈 Delay to let render settle
+    return;
+  }
+
+  if (subCategoryId && productsMap[subCategoryId]) {
+    setProducts(productsMap[subCategoryId]);
+    return;
+  }
+
+  if (!subCategoryId) return;
+
+  const fetchData = async () => {
+    setLoading(true);
+    const response = await fetchProductsBySubCategory(subCategoryId);
+    if (response?.data) {
+      const parsed = parseProductList(response.data);
+      setProducts(parsed);
+      setProductsMap(prev => ({...prev, [subCategoryId]: parsed}));
+      console.log("FetchedPRODUCTS:" , response.data)
     }
+    setLoading(false);
+  };
 
-    const fetchData = async () => {
-      setLoading(true);
-      const response = await fetchProductsBySubCategory(subCategoryId);
-      if (response?.data) {
-        const parsed = parseProductList(response.data);
-        setProducts(parsed);
-        setProductsMap(prev => ({...prev, [subCategoryId]: parsed}));
-        console.log(response.data);
-      }
-      setLoading(false);
-    };
+  fetchData();
+}, [subCategoryId, initialProducts]);
 
-    fetchData();
-  }, [subCategoryId]);
 
   const filteredAndSortedProducts = useMemo(() => {
-    // First filter
+    // Filter based on category filters
     let result = products.filter(product => {
+      let passesCategoryFilter = true;
+
       if (category === 'Vehicle') {
-        return filterVehicleProducts(product, filters);
+        passesCategoryFilter = filterVehicleProducts(product, filters);
+      } else if (category === 'Property') {
+        passesCategoryFilter = filterPropertyProducts(product, filters);
+      } else if (category === 'Services') {
+        passesCategoryFilter = filterServiceProducts(product, filters);
       }
-      if (category === 'Property') {
-        return filterPropertyProducts(product, filters);
-      }
-      if (category === 'Services') {
-        return filterServiceProducts(product, filters);
-      }
-      return true;
+
+      // ✅ Additionally filter by seller email if role === 3
+      const isSellerMatch =
+        activeRole === 2 ? product?.seller?.email === userEmail : true;
+
+      return passesCategoryFilter && isSellerMatch;
     });
 
-    // Then sort
+    // Sort results
     switch (sortOption) {
       case 'Newest First':
         result = result.sort(
@@ -260,7 +276,7 @@ long: '',
     }
 
     return result;
-  }, [products, filters, sortOption, category]);
+  }, [products, filters, sortOption, category, role, userEmail]);
 
   const renderRecommendedItem = useCallback(
     ({item}) => (
@@ -312,132 +328,141 @@ long: '',
           </View>
         ) : (
           <>
-            {category?.toLowerCase() === 'vehicle' && (
-              <View style={{height: 60}}>
-                <CarFilters
-                  filters={filters}
-                  setFilters={setFilters}
-                  sortOption={sortOption}
-                  setSortOption={setSortOption}
-                  onOpenSortSheet={() => {
-                    closeAllSheets(() => {
-                      refSortSheet.current?.expand();
-                      setActiveSheet('sort');
-                    });
-                  }}
-                  onOpenBrandSheet={() => {
-                    closeAllSheets(() => refBrandSheet.current?.snapToIndex(1));
-                    setActiveSheet('brand');
-                  }}
-                  onOpenPriceSheet={() => {
-                    closeAllSheets(() => {
-                      refPriceSheet.current?.expand();
-                      setActiveSheet('price');
-                      setTimeout(() => {
-                        refPriceInput.current?.focusMinPrice(); // wait for animation
-                      }, 300);
-                    });
-                  }}
-                  onOpenBuildYearSheet={() => {
-                    closeAllSheets(() => {
-                      refBuildYearSheet.current?.expand();
-                      setActiveSheet('year');
-                      setTimeout(() => {
-                        refBuildYearInput.current?.focusMinYear(); // ✅ focus input after animation
-                      }, 300);
-                    });
-                  }}
-                  onOpenTransmissionSheet={() => {
-                    closeAllSheets(() => {
-                      refTransmissionSheet.current?.expand();
-                      setActiveSheet('transmission');
-                    });
-                  }}
-                  onOpenAdjustSheet={() => {
-                    closeAllSheets(() => {
-                      refVehicleAdjustSheet.current?.expand();
-                      setActiveSheet('adjust');
-                    });
-                  }}
-                />
-              </View>
+            {role !== 2 && (
+              <>
+                {category?.toLowerCase() === 'vehicle' && (
+                  <View style={{height: 60}}>
+                    <CarFilters
+                      filters={filters}
+                      setFilters={setFilters}
+                      sortOption={sortOption}
+                      setSortOption={setSortOption}
+                      onOpenSortSheet={() => {
+                        closeAllSheets(() => {
+                          refSortSheet.current?.expand();
+                          setActiveSheet('sort');
+                        });
+                      }}
+                      onOpenBrandSheet={() => {
+                        closeAllSheets(() =>
+                          refBrandSheet.current?.snapToIndex(1),
+                        );
+                        setActiveSheet('brand');
+                      }}
+                      onOpenPriceSheet={() => {
+                        closeAllSheets(() => {
+                          refPriceSheet.current?.expand();
+                          setActiveSheet('price');
+                          setTimeout(() => {
+                            refPriceInput.current?.focusMinPrice(); // wait for animation
+                          }, 300);
+                        });
+                      }}
+                      onOpenBuildYearSheet={() => {
+                        closeAllSheets(() => {
+                          refBuildYearSheet.current?.expand();
+                          setActiveSheet('year');
+                          setTimeout(() => {
+                            refBuildYearInput.current?.focusMinYear(); // ✅ focus input after animation
+                          }, 300);
+                        });
+                      }}
+                      onOpenTransmissionSheet={() => {
+                        closeAllSheets(() => {
+                          refTransmissionSheet.current?.expand();
+                          setActiveSheet('transmission');
+                        });
+                      }}
+                      onOpenAdjustSheet={() => {
+                        closeAllSheets(() => {
+                          refVehicleAdjustSheet.current?.expand();
+                          setActiveSheet('adjust');
+                        });
+                      }}
+                    />
+                  </View>
+                )}
+                {category?.toLowerCase() === 'property' && (
+                  <View style={{height: 60}}>
+                    <PropertyFilters
+                      filters={filters}
+                      setFilters={setFilters}
+                      sortOption={sortOption}
+                      setSortOption={setSortOption}
+                      onOpenSortSheet={() => {
+                        closeAllSheets(() => {
+                          refSortSheet.current?.expand();
+                          setActiveSheet('sort');
+                        });
+                      }}
+                      onOpenPriceSheet={() => {
+                        closeAllSheets(() => {
+                          refPriceSheet.current?.expand();
+                          setTimeout(() => {
+                            refPriceInput.current?.focusMinPrice?.();
+                          }, 300);
+                        });
+                      }}
+                      onOpenPropertyTypeSheet={() =>
+                        closeAllSheets(() =>
+                          refPropertyTypeSheet.current?.expand(),
+                        )
+                      }
+                      onOpenAreaSheet={() => {
+                        closeAllSheets(() => {
+                          refAreaSheet.current?.expand();
+                          setActiveSheet('area');
+                        });
+                      }}
+                      onOpenPropertyAdjust={() => {
+                        closeAllSheets(() => {
+                          refPropertyAdjustSheet.current?.expand();
+                          setActiveSheet('property');
+                        });
+                      }}
+                    />
+                  </View>
+                )}
+                {category?.toLowerCase() === 'services' && (
+                  <View style={{height: 60}}>
+                    <ServicesFilters
+                      filters={filters}
+                      setFilters={setFilters}
+                      sortOption={sortOption}
+                      setSortOption={setSortOption}
+                      onOpenSortSheet={() => {
+                        closeAllSheets(() => {
+                          refSortSheet.current?.expand();
+                          setActiveSheet('sort');
+                        });
+                      }}
+                      onOpenPriceSheet={() => {
+                        closeAllSheets(() => {
+                          refPriceSheet.current?.expand();
+                          setTimeout(() => {
+                            refPriceInput.current?.focusMinPrice?.();
+                          }, 300);
+                        });
+                      }}
+                      onOpenServiceTypeSheet={() =>
+                        closeAllSheets(() =>
+                          refServiceTypeSheet.current?.expand(),
+                        )
+                      }
+                      onOpenLocationSheet={() =>
+                        closeAllSheets(() => refLocationSheet.current?.expand())
+                      }
+                      onOpenServiceAdjustSheet={() => {
+                        closeAllSheets(() => {
+                          refServiceAdjustSheet.current?.expand();
+                          setActiveSheet('services');
+                        });
+                      }}
+                    />
+                  </View>
+                )}
+              </>
             )}
-            {category?.toLowerCase() === 'property' && (
-              <View style={{height: 60}}>
-                <PropertyFilters
-                  filters={filters}
-                  setFilters={setFilters}
-                  sortOption={sortOption}
-                  setSortOption={setSortOption}
-                  onOpenSortSheet={() => {
-                    closeAllSheets(() => {
-                      refSortSheet.current?.expand();
-                      setActiveSheet('sort');
-                    });
-                  }}
-                  onOpenPriceSheet={() => {
-                    closeAllSheets(() => {
-                      refPriceSheet.current?.expand();
-                      setTimeout(() => {
-                        refPriceInput.current?.focusMinPrice?.();
-                      }, 300);
-                    });
-                  }}
-                  onOpenPropertyTypeSheet={() =>
-                    closeAllSheets(() => refPropertyTypeSheet.current?.expand())
-                  }
-                  onOpenAreaSheet={() => {
-                    closeAllSheets(() => {
-                      refAreaSheet.current?.expand();
-                      setActiveSheet('area');
-                    });
-                  }}
-                  onOpenPropertyAdjust={() => {
-                    closeAllSheets(() => {
-                      refPropertyAdjustSheet.current?.expand();
-                      setActiveSheet('property');
-                    });
-                  }}
-                />
-              </View>
-            )}
-            {category?.toLowerCase() === 'services' && (
-              <View style={{height: 60}}>
-                <ServicesFilters
-                  filters={filters}
-                  setFilters={setFilters}
-                  sortOption={sortOption}
-                  setSortOption={setSortOption}
-                  onOpenSortSheet={() => {
-                    closeAllSheets(() => {
-                      refSortSheet.current?.expand();
-                      setActiveSheet('sort');
-                    });
-                  }}
-                  onOpenPriceSheet={() => {
-                    closeAllSheets(() => {
-                      refPriceSheet.current?.expand();
-                      setTimeout(() => {
-                        refPriceInput.current?.focusMinPrice?.();
-                      }, 300);
-                    });
-                  }}
-                  onOpenServiceTypeSheet={() =>
-                    closeAllSheets(() => refServiceTypeSheet.current?.expand())
-                  }
-                  onOpenLocationSheet={() =>
-                    closeAllSheets(() => refLocationSheet.current?.expand())
-                  }
-                  onOpenServiceAdjustSheet={() => {
-                    closeAllSheets(() => {
-                      refServiceAdjustSheet.current?.expand();
-                      setActiveSheet('services');
-                    });
-                  }}
-                />
-              </View>
-            )}
-
             <FlatList
               data={filteredAndSortedProducts}
               renderItem={renderRecommendedItem}
@@ -703,7 +728,7 @@ long: '',
                     closeAllSheets(() => {
                       refBuildYearSheet.current?.expand();
                       setActiveSheet('year');
-                      setTimeout(() => { 
+                      setTimeout(() => {
                         refBuildYearInput.current?.focusMinYear();
                       }, 300);
                     });

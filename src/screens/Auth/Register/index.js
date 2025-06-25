@@ -96,6 +96,7 @@ const Register = () => {
       password,
       role,
       fcm: storedFcmToken,
+        sellerType: 1, // 1 = Company, 2 = Private
       // ...(isSeller && {
       //   sellerType: sellerType === 'Company' ? 1 : 2,
       // }),

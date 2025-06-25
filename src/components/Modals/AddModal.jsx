@@ -95,6 +95,7 @@ const AddModal = ({visible, onClose, title, message}) => {
       onRequestClose={onClose}>
       <View style={styles.modalOverlay}>
         <View style={styles.modalContainer}>
+        <View style={{flex: 1}}>
           <View style={styles.headerSection}>
             <TouchableOpacity onPress={onClose}>
               <CloseSvg width={mvs(24)} height={mvs(24)} />
@@ -113,19 +114,20 @@ const AddModal = ({visible, onClose, title, message}) => {
               </TouchableOpacity>
             </View>
           </View>
+          
 
-          <View style={styles.logoAndTitleContainer}>
+          {/* <View style={styles.logoAndTitleContainer}> */}
             {/* <SouqnaLogo width={40} height={40} /> */}
-            <Image
+            {/* <Image
               source={require('../../assets/img/logo1.png')}
               style={styles.logo}
             />
             <Text style={styles.title}>Souqna</Text>
-          </View>
+          </View> */}
 
           <Text style={styles.message}>{message}</Text>
 
-          <View style={styles.carouselSection}>
+          {/* <View style={styles.carouselSection}>
             <FlatList
               data={paginationImages}
               renderItem={renderItem}
@@ -143,10 +145,17 @@ const AddModal = ({visible, onClose, title, message}) => {
               onViewableItemsChanged={onViewableItemsChanged.current}
               viewabilityConfig={viewabilityConfig}
             />
-          </View>
+          </View> */}
+          <View style={styles.singleImageContainer}>
+  <Image
+    source={require('../../assets/img/logo1.png')}
+    style={styles.image}
+  />
+</View>
 
+</View>
           <View style={styles.footerSection}>
-            <View style={styles.pagination}>
+            {/* <View style={styles.pagination}>
               {paginationImages.map((_, index) => (
                 <View
                   key={index}
@@ -156,7 +165,7 @@ const AddModal = ({visible, onClose, title, message}) => {
                   ]}
                 />
               ))}
-            </View>
+            </View> */}
             <TouchableOpacity
               style={styles.closeButton}
               onPress={handleRegister}>
@@ -196,6 +205,12 @@ const AddModal = ({visible, onClose, title, message}) => {
 };
 
 const styles = StyleSheet.create({
+  singleImageContainer: {
+  justifyContent: 'center',
+  alignItems: 'center',
+  marginBottom: mvs(20),
+},
+
   modalOverlay: {
     flex: 1,
     justifyContent: 'flex-start',
@@ -210,6 +225,7 @@ const styles = StyleSheet.create({
     paddingTop: mvs(30),
     paddingHorizontal: mvs(20),
     flex: 1,
+    justifyContent: 'space-between',
   },
   // Header Section (0.2 flex)
   headerSection: {
@@ -235,7 +251,7 @@ const styles = StyleSheet.create({
     fontSize: mvs(16),
     color: colors.black,
     textAlign: 'center',
-    marginBottom: mvs(20),
+    marginBottom: '20%',
   },
   helpText: {
     color: colors.green,
@@ -255,19 +271,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: mvs(40),
   },
-  image: {
-    width: mvs(373),
-    height: mvs(250),
-    resizeMode: 'contain',
-    borderRadius: mvs(10),
-  },
+image: {
+  width: '100%',
+  height: mvs(350), // Increase this for a taller image
+  resizeMode: 'cover',
+  
+  borderRadius: mvs(10),
+},
+
   infoText: {
     textAlign: 'center',
-    marginTop: mvs(15),
+    marginBottom: mvs(25),
     fontSize: mvs(16),
     marginRight: mvs(20),
     paddingHorizontal: mvs(10), // prevents text from touching screen edges
-    maxWidth: '80%',
+    maxWidth: '100%',
   },
   pagination: {
     flexDirection: 'row',

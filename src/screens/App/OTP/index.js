@@ -9,6 +9,7 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
   ActivityIndicator,
+  Image,
 } from 'react-native';
 import {SouqnaLogo} from '../../../assets/svg';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -168,8 +169,10 @@ const OTPScreen = ({navigation}) => {
               justifyContent: 'center',
               marginBottom: 40,
             }}>
-            <SouqnaLogo width={50} height={50} />
-            16
+            <Image
+              source={require('../../../assets/img/logo1.png')}
+              style={{height: 50, width: 50}}
+            />
             <Bold style={styles.title}>Souqna</Bold>
           </View>
           <Text style={styles.instruction}>{t('enterCodeSent')}</Text>
