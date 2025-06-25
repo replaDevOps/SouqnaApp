@@ -7,7 +7,6 @@ const includesAnyLetter = (productField, filterValue) => {
   return chars.some(char => field.includes(char));
 };
 
-
 // export const filterVehicleProducts = (product, filters) => {
 //   const price = Number(product.price);
 //   const buildYear = Number(product.buildYear);
@@ -32,7 +31,6 @@ const includesAnyLetter = (productField, filterValue) => {
 // };
 
 const normalize = str => (str || '').replace(/\s+/g, '').toLowerCase();
-
 
 export const filterVehicleProducts = (product, filters) => {
   const normalize = str =>
@@ -90,27 +88,33 @@ export const filterVehicleProducts = (product, filters) => {
   return (
     (!filters.minPrice || price >= normalizeNum(filters.minPrice)) &&
     (!filters.maxPrice || price <= normalizeNum(filters.maxPrice)) &&
-
-    (!filters.brand || includesNormalized(normalizedProduct.brand, filters.brand)) &&
-    (!filters.model || includesNormalized(normalizedProduct.model, filters.model)) &&
-
-    (!filters.buildYearMin || buildYear >= normalizeNum(filters.buildYearMin)) &&
-    (!filters.buildYearMax || buildYear <= normalizeNum(filters.buildYearMax)) &&
-
+    (!filters.brand ||
+      includesNormalized(normalizedProduct.brand, filters.brand)) &&
+    (!filters.model ||
+      includesNormalized(normalizedProduct.model, filters.model)) &&
+    (!filters.buildYearMin ||
+      buildYear >= normalizeNum(filters.buildYearMin)) &&
+    (!filters.buildYearMax ||
+      buildYear <= normalizeNum(filters.buildYearMax)) &&
     (!filters.minMileage || mileage >= normalizeNum(filters.minMileage)) &&
     (!filters.maxMileage || mileage <= normalizeNum(filters.maxMileage)) &&
-
-    (!filters.transmission || includesNormalized(normalizedProduct.transmission, filters.transmission)) &&
-    (!filters.fuelType || includesNormalized(normalizedProduct.fuelType, filters.fuelType)) &&
-    (!filters.condition || includesNormalized(normalizedProduct.condition, filters.condition)) &&
-    (!filters.inspection || includesNormalized(normalizedProduct.inspection, filters.inspection)) &&
-    (!filters.color || includesNormalized(normalizedProduct.color, filters.color)) &&
-    (!filters.power || looselyMatchesNumber(normalizedProduct.power, filters.power))
+    (!filters.transmission ||
+      includesNormalized(
+        normalizedProduct.transmission,
+        filters.transmission,
+      )) &&
+    (!filters.fuelType ||
+      includesNormalized(normalizedProduct.fuelType, filters.fuelType)) &&
+    (!filters.condition ||
+      includesNormalized(normalizedProduct.condition, filters.condition)) &&
+    (!filters.inspection ||
+      includesNormalized(normalizedProduct.inspection, filters.inspection)) &&
+    (!filters.color ||
+      includesNormalized(normalizedProduct.color, filters.color)) &&
+    (!filters.power ||
+      looselyMatchesNumber(normalizedProduct.power, filters.power))
   );
 };
-
-
-
 
 export const filterPropertyProducts = (product, filters) => {
   const normalize = str =>
@@ -126,7 +130,9 @@ export const filterPropertyProducts = (product, filters) => {
   };
 
   const normalizeNum = val =>
-    typeof val === 'number' ? val : Number((val || '').toString().replace(/[^\d.]/g, '') || 0);
+    typeof val === 'number'
+      ? val
+      : Number((val || '').toString().replace(/[^\d.]/g, '') || 0);
 
   const includesNormalized = (field, filterVal) =>
     normalize(field || '').includes(normalize(filterVal || ''));
@@ -137,7 +143,10 @@ export const filterPropertyProducts = (product, filters) => {
   const looselyMatchesNumber = (textField, filterNumber) => {
     const normalizedText = normalize(textField);
     const regex = new RegExp(`\\b${filterNumber}\\b`); // match whole word (e.g. "4" in "4 rooms")
-    return regex.test(normalizedText) || normalizedText.includes(filterNumber.toString());
+    return (
+      regex.test(normalizedText) ||
+      normalizedText.includes(filterNumber.toString())
+    );
   };
 
   let customFields = Array.isArray(product.custom_fields)
@@ -164,47 +173,82 @@ export const filterPropertyProducts = (product, filters) => {
     bathrooms: customFieldMap.bathrooms,
     floorNumber: customFieldMap.floorNumber,
     totalFloorsInBuilding: customFieldMap.totalFloorsInBuilding,
-    area: normalizeNum(product.area),
+    size: normalizeNum(customFieldMap.size),
     price: normalizeNum(product.price),
   };
 
   return (
-    (!filters.minPrice || normalizedProduct.price >= normalizeNum(filters.minPrice)) &&
-    (!filters.maxPrice || normalizedProduct.price <= normalizeNum(filters.maxPrice)) &&
-
-    (!filters.propertyType || includesNormalized(normalizedProduct.propertyType, filters.propertyType)) &&
-    (!filters.purpose || equalsNormalized(normalizedProduct.purpose, filters.purpose)) &&
-    (!filters.size || includesNormalized(normalizedProduct.size, filters.size)) &&
-
-    (!filters.minArea || normalizedProduct.area >= normalizeNum(filters.minArea)) &&
-    (!filters.maxArea || normalizedProduct.area <= normalizeNum(filters.maxArea)) &&
-
+    (!filters.minPrice ||
+      normalizedProduct.price >= normalizeNum(filters.minPrice)) &&
+    (!filters.maxPrice ||
+      normalizedProduct.price <= normalizeNum(filters.maxPrice)) &&
+    (!filters.propertyType ||
+      includesNormalized(
+        normalizedProduct.propertyType,
+        filters.propertyType,
+      )) &&
+    (!filters.purpose ||
+      equalsNormalized(normalizedProduct.purpose, filters.purpose)) &&
+    (!filters.size ||
+      includesNormalized(normalizedProduct.size, filters.size)) &&
+    (!filters.minArea ||
+      normalizedProduct.size >= normalizeNum(filters.minArea)) &&
+    (!filters.maxArea ||
+      normalizedProduct.size <= normalizeNum(filters.maxArea)) &&
     (!filters.rooms ||
-      looselyMatchesNumber(normalizedProduct.rooms, normalizeNum(filters.rooms))) &&
+      looselyMatchesNumber(
+        normalizedProduct.rooms,
+        normalizeNum(filters.rooms),
+      )) &&
     (!filters.bathrooms ||
-      looselyMatchesNumber(normalizedProduct.bathrooms, normalizeNum(filters.bathrooms))) &&
+      looselyMatchesNumber(
+        normalizedProduct.bathrooms,
+        normalizeNum(filters.bathrooms),
+      )) &&
     (!filters.floorNumber ||
-      looselyMatchesNumber(normalizedProduct.floorNumber, normalizeNum(filters.floorNumber))) &&
+      looselyMatchesNumber(
+        normalizedProduct.floorNumber,
+        normalizeNum(filters.floorNumber),
+      )) &&
     (!filters.totalFloorsInBuilding ||
-      looselyMatchesNumber(normalizedProduct.totalFloorsInBuilding, normalizeNum(filters.totalFloorsInBuilding))) &&
-
-    (!filters.heating_Cooling || equalsNormalized(normalizedProduct.heating_Cooling, filters.heating_Cooling)) &&
-    (!filters.water_electricityAvailability || equalsNormalized(normalizedProduct.water_electricityAvailability, filters.water_electricityAvailability)) &&
-
-    (filters.petsAllowed === undefined || normalizedProduct.petsAllowed === filters.petsAllowed) &&
-    (filters.parking === undefined || normalizedProduct.parking === filters.parking) &&
-    (filters.furnished === undefined || normalizedProduct.furnished === filters.furnished) &&
-    (filters.elevator === undefined || normalizedProduct.elevator === filters.elevator) &&
-    (filters.balcony === undefined || normalizedProduct.balcony === filters.balcony) &&
-    (filters.titleDeed_Document === undefined || normalizedProduct.titleDeed_Document === filters.titleDeed_Document) &&
-
-    (!filters.nearbyLandmarks || includesNormalized(normalizedProduct.nearbyLandmarks, filters.nearbyLandmarks)) &&
-    (!filters.distancefroCityCenter_transport || includesNormalized(normalizedProduct.distancefroCityCenter_transport, filters.distancefroCityCenter_transport))
+      looselyMatchesNumber(
+        normalizedProduct.totalFloorsInBuilding,
+        normalizeNum(filters.totalFloorsInBuilding),
+      )) &&
+    (!filters.heating_Cooling ||
+      equalsNormalized(
+        normalizedProduct.heating_Cooling,
+        filters.heating_Cooling,
+      )) &&
+    (!filters.water_electricityAvailability ||
+      equalsNormalized(
+        normalizedProduct.water_electricityAvailability,
+        filters.water_electricityAvailability,
+      )) &&
+    (filters.petsAllowed === undefined ||
+      normalizedProduct.petsAllowed === filters.petsAllowed) &&
+    (filters.parking === undefined ||
+      normalizedProduct.parking === filters.parking) &&
+    (filters.furnished === undefined ||
+      normalizedProduct.furnished === filters.furnished) &&
+    (filters.elevator === undefined ||
+      normalizedProduct.elevator === filters.elevator) &&
+    (filters.balcony === undefined ||
+      normalizedProduct.balcony === filters.balcony) &&
+    (filters.titleDeed_Document === undefined ||
+      normalizedProduct.titleDeed_Document === filters.titleDeed_Document) &&
+    (!filters.nearbyLandmarks ||
+      includesNormalized(
+        normalizedProduct.nearbyLandmarks,
+        filters.nearbyLandmarks,
+      )) &&
+    (!filters.distancefroCityCenter_transport ||
+      includesNormalized(
+        normalizedProduct.distancefroCityCenter_transport,
+        filters.distancefroCityCenter_transport,
+      ))
   );
 };
-
-
-
 
 const includesIgnoreCase = (target = '', search = '') =>
   target.toLowerCase().includes(search.toLowerCase());
@@ -217,34 +261,62 @@ const getCustomField = (product, fieldName) => {
   return found?.value || '';
 };
 
-
 export const filterServiceProducts = (product, filters) => {
   const price = Number(product.price);
 
   const get = field => getCustomField(product, field);
-  
+
   return (
     (!filters.minPrice || price >= Number(filters.minPrice)) &&
     (!filters.maxPrice || price <= Number(filters.maxPrice)) &&
-
-    (!filters.serviceType || includesIgnoreCase(product.serviceType, filters.serviceType)) &&
-    (!filters.location || includesIgnoreCase(product.location, filters.location)) &&
-
-    (!filters.employmentType || get('employmentType').toLowerCase() === filters.employmentType.toLowerCase()) &&
-    (!filters.educationRequired || includesIgnoreCase(get('educationRequired'), filters.educationRequired)) &&
-    (!filters.experienceRequired || includesIgnoreCase(get('experienceRequired'), filters.experienceRequired)) &&
-    (!filters.genderPreference || get('genderPreference').toLowerCase() === filters.genderPreference.toLowerCase()) &&
-    (!filters.contactMethod || get('contactMethod').toLowerCase() === filters.contactMethod.toLowerCase()) &&
-    (!filters.salaryType || get('salaryType').toLowerCase() === filters.salaryType.toLowerCase()) &&
-    (!filters.requirements_Qualifications || includesIgnoreCase(get('requirements_Qualifications'), filters.requirements_Qualifications)) &&
+    (!filters.serviceType ||
+      includesIgnoreCase(product.serviceType, filters.serviceType)) &&
+    (!filters.location ||
+      includesIgnoreCase(product.location, filters.location)) &&
+    (!filters.employmentType ||
+      get('employmentType').toLowerCase() ===
+        filters.employmentType.toLowerCase()) &&
+    (!filters.educationRequired ||
+      includesIgnoreCase(
+        get('educationRequired'),
+        filters.educationRequired,
+      )) &&
+    (!filters.experienceRequired ||
+      includesIgnoreCase(
+        get('experienceRequired'),
+        filters.experienceRequired,
+      )) &&
+    (!filters.genderPreference ||
+      get('genderPreference').toLowerCase() ===
+        filters.genderPreference.toLowerCase()) &&
+    (!filters.contactMethod ||
+      get('contactMethod').toLowerCase() ===
+        filters.contactMethod.toLowerCase()) &&
+    (!filters.salaryType ||
+      get('salaryType').toLowerCase() === filters.salaryType.toLowerCase()) &&
+    (!filters.requirements_Qualifications ||
+      includesIgnoreCase(
+        get('requirements_Qualifications'),
+        filters.requirements_Qualifications,
+      )) &&
     (!filters.skills || includesIgnoreCase(get('skills'), filters.skills)) &&
-    (!filters.workTiming || includesIgnoreCase(get('workTiming'), filters.workTiming)) &&
-    (!filters.contractDuration || includesIgnoreCase(get('contractDuration'), filters.contractDuration)) &&
-    (!filters.benefits || includesIgnoreCase(get('benefits'), filters.benefits)) &&
-    (!filters.numberofVacancies || includesIgnoreCase(get('numberofVacancies'), filters.numberofVacancies)) &&
-    (!filters.applicationDeadline || includesIgnoreCase(get('applicationDeadline'), filters.applicationDeadline)) &&
-    (!filters.jobLocation || includesIgnoreCase(get('jobLocation'), filters.jobLocation))
+    (!filters.workTiming ||
+      includesIgnoreCase(get('workTiming'), filters.workTiming)) &&
+    (!filters.contractDuration ||
+      includesIgnoreCase(get('contractDuration'), filters.contractDuration)) &&
+    (!filters.benefits ||
+      includesIgnoreCase(get('benefits'), filters.benefits)) &&
+    (!filters.numberofVacancies ||
+      includesIgnoreCase(
+        get('numberofVacancies'),
+        filters.numberofVacancies,
+      )) &&
+    (!filters.applicationDeadline ||
+      includesIgnoreCase(
+        get('applicationDeadline'),
+        filters.applicationDeadline,
+      )) &&
+    (!filters.jobLocation ||
+      includesIgnoreCase(get('jobLocation'), filters.jobLocation))
   );
 };
-
-

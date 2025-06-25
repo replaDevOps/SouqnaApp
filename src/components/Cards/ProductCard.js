@@ -11,12 +11,21 @@ const ProductCard = ({product, onPress, onHeartPress}) => {
   const favorites = useSelector(state => state.favorites.favorites);
 
   return (
-    <TouchableOpacity style={styles.card} onPress={() => onPress?.(product.id)}>
+    <TouchableOpacity
+      style={styles.card}
+      onPress={() => {
+        console.log('Product card clicked:', product.id, product.name);
+        onPress?.(product.id);
+      }}>
       <Image
         source={{
           uri: `${BASE_URL_Product}${product?.images?.[0]?.path}`,
         }}
         style={styles.image}
+        onLoadStart={() =>
+          console.log('Image loading started for:', product.id)
+        }
+        onLoadEnd={() => console.log('Image loaded for:', product.id)}
       />
       <View style={styles.textContainer}>
         <Regular style={styles.name} numberOfLines={1}>

@@ -110,8 +110,7 @@ const ServiceAdjustFilterSheet = ({filters, setFilters, closeSheet}) => {
       )}
 
       {/* Contact Method Dropdown */}
-<View style={[styles.field, { zIndex: 3000, elevation: 3 }]}>
-
+      <View style={[styles.field, {zIndex: 3000, elevation: 3}]}>
         <Text style={styles.label}>Contact Method</Text>
         <DropDownPicker
           open={contactOpen}
@@ -130,7 +129,7 @@ const ServiceAdjustFilterSheet = ({filters, setFilters, closeSheet}) => {
           items={[
             {label: 'Phone', value: 'Phone'},
             {label: 'Email', value: 'Email'},
-            {label: 'In Person', value: 'In Person'},
+            {label: 'Walk-in', value: 'Walk-in'},
           ]}
           placeholder="Select"
           style={styles.dropdown}
@@ -139,8 +138,7 @@ const ServiceAdjustFilterSheet = ({filters, setFilters, closeSheet}) => {
       </View>
 
       {/* Salary Type Dropdown */}
-<View style={[styles.field, { zIndex: 2000, elevation: 2 }]}>
-
+      <View style={[styles.field, {zIndex: 2000, elevation: 2}]}>
         <Text style={styles.label}>Salary Type</Text>
         <DropDownPicker
           open={salaryOpen}
@@ -166,9 +164,8 @@ const ServiceAdjustFilterSheet = ({filters, setFilters, closeSheet}) => {
         />
       </View>
 
-{/* Employment Type Dropdown */}
-<View style={[styles.field, { zIndex: 1000, elevation: 1 }]}>
-
+      {/* Employment Type Dropdown */}
+      <View style={[styles.field, {zIndex: 1000, elevation: 1}]}>
         <Text style={styles.label}>Employment Type</Text>
         <DropDownPicker
           open={employmentOpen}

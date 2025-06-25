@@ -3,8 +3,13 @@ import React, {useEffect, useState} from 'react';
 import {Text, View, TouchableOpacity, TextInput} from 'react-native';
 import {BottomSheetScrollView} from '@gorhom/bottom-sheet';
 import DropDownPicker from 'react-native-dropdown-picker';
-import { sectionTitleStyle, inputStyle, labelStyle, resetButtonStyle } from '../../util/Filtering/filterStyles';
-import GooglePlacesSuggestion from '../../components/GooglePlacesSuggestion'; 
+import {
+  sectionTitleStyle,
+  inputStyle,
+  labelStyle,
+  resetButtonStyle,
+} from '../../util/Filtering/filterStyles';
+import GooglePlacesSuggestion from '../../components/GooglePlacesSuggestion';
 const AdjustFilterSheet = ({
   filters,
   setFilters,
@@ -14,12 +19,12 @@ const AdjustFilterSheet = ({
   onOpenBuildYearSheet,
 }) => {
   useEffect(() => {
-  if (fuelOpen) setConditionOpen(false);
-}, [fuelOpen]);
+    if (fuelOpen) setConditionOpen(false);
+  }, [fuelOpen]);
 
-useEffect(() => {
-  if (conditionOpen) setFuelOpen(false);
-}, [conditionOpen]);
+  useEffect(() => {
+    if (conditionOpen) setFuelOpen(false);
+  }, [conditionOpen]);
 
   const resetFilters = () => {
     setFilters({
@@ -40,7 +45,6 @@ useEffect(() => {
       inspection: '',
       lat: '',
       long: '',
-
     });
   };
 
@@ -69,10 +73,9 @@ useEffect(() => {
         {/* Brand */}
         <Text style={labelStyle}>Brand / Make</Text>
         <TouchableOpacity
-onPress={() => {
-  onOpenBrandSheet?.(); // this should be passed from parent
-}}
-
+          onPress={() => {
+            onOpenBrandSheet?.(); // this should be passed from parent
+          }}
           style={[inputStyle, {justifyContent: 'center'}]}>
           <Text>{filters.brand || 'Select brand'}</Text>
         </TouchableOpacity>
@@ -141,7 +144,12 @@ onPress={() => {
 
         {/* Fuel Type */}
         <Text style={labelStyle}>Fuel Type</Text>
-<View style={{zIndex: fuelOpen ? 1000 : 1, position: 'relative', elevation: fuelOpen ? 10 : 0}}>
+        <View
+          style={{
+            zIndex: fuelOpen ? 1000 : 1,
+            position: 'relative',
+            elevation: fuelOpen ? 10 : 0,
+          }}>
           <DropDownPicker
             open={fuelOpen}
             value={filters.fuelType}
@@ -176,7 +184,7 @@ onPress={() => {
         /> */}
 
         {/* <Text style={labelStyle}>Location</Text> */}
-{/* <View style={inputStyle}>
+        {/* <View style={inputStyle}>
   <GooglePlacesSuggestion
     initialValue={filters.location}
     onPlaceSelected={({location, lat, long}) => {
@@ -189,7 +197,6 @@ onPress={() => {
     }}
   />
 </View> */}
-
 
         {/* --- ADDITIONAL FILTERS --- */}
         <Text style={sectionTitleStyle}>Additional Filters</Text>
@@ -214,7 +221,7 @@ onPress={() => {
         />
 
         {/* Condition (not in fields but OK to keep) */}
-        <Text style={labelStyle}>Condition</Text>
+        {/* <Text style={labelStyle}>Condition</Text>
 <View style={{zIndex: conditionOpen ? 999 : 1, position: 'relative', elevation: conditionOpen ? 10 : 0}}>
           <DropDownPicker
             open={conditionOpen}
@@ -230,7 +237,7 @@ onPress={() => {
               marginBottom: 12,
             }}
           />
-        </View>
+        </View> */}
 
         {/* Inspection Validity */}
         <Text style={labelStyle}>Inspection Validity</Text>

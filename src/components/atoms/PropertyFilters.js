@@ -14,7 +14,7 @@ const PropertyFilters = ({
   onOpenAreaSheet,
   sortOption,
   onOpenSortSheet,
-    setSortOption, 
+  setSortOption,
 }) => {
   const getPriceLabel = () => {
     if (filters.minPrice && !filters.maxPrice) {
@@ -39,7 +39,7 @@ const PropertyFilters = ({
     if (filters.minArea && filters.maxArea) {
       return `${filters.minArea} - ${filters.maxArea} sqft`;
     }
-    return 'Area';
+    return 'Size';
   };
 
   const resetFilters = () => {
@@ -50,7 +50,7 @@ const PropertyFilters = ({
       minArea: '',
       maxArea: '',
     });
-      setSortOption(null);
+    setSortOption(null);
   };
 
   const filterItems = [
@@ -126,7 +126,12 @@ const PropertyFilters = ({
               justifyContent: 'space-evenly',
               width: '100%',
             }}>
-            <Text style={styles.filterText} numberOfLines={1} ellipsizeMode='tail'>{sortOption || 'Sort'}</Text>
+            <Text
+              style={styles.filterText}
+              numberOfLines={1}
+              ellipsizeMode="tail">
+              {sortOption || 'Sort'}
+            </Text>
             <DownArrowSvg />
           </View>
         </TouchableOpacity>

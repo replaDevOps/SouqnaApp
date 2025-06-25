@@ -1,8 +1,8 @@
-import React, { forwardRef, useImperativeHandle, useRef } from 'react';
-import { TextInput } from 'react-native';
-import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
+import React, {forwardRef, useImperativeHandle, useRef} from 'react';
+import {TextInput} from 'react-native';
+import {BottomSheetScrollView} from '@gorhom/bottom-sheet';
 
-const AreaFilterSheet = ({ filters, setFilters }, ref) => {
+const AreaFilterSheet = ({filters, setFilters}, ref) => {
   const minAreaRef = useRef(null);
 
   useImperativeHandle(ref, () => ({
@@ -28,10 +28,10 @@ const AreaFilterSheet = ({ filters, setFilters }, ref) => {
           borderRadius: 10,
         }}
         ref={minAreaRef}
-        placeholder="Min Area (sqft)"
+        placeholder="Min Size (sqft)"
         keyboardType="numeric"
         value={filters.minArea}
-        onChangeText={text => setFilters(prev => ({ ...prev, minArea: text }))}
+        onChangeText={text => setFilters(prev => ({...prev, minArea: text}))}
       />
       <TextInput
         style={{
@@ -41,10 +41,10 @@ const AreaFilterSheet = ({ filters, setFilters }, ref) => {
           padding: 10,
           borderRadius: 10,
         }}
-        placeholder="Max Area (sqft)"
+        placeholder="Max Size (sqft)"
         keyboardType="numeric"
         value={filters.maxArea}
-        onChangeText={text => setFilters(prev => ({ ...prev, maxArea: text }))}
+        onChangeText={text => setFilters(prev => ({...prev, maxArea: text}))}
       />
     </BottomSheetScrollView>
   );

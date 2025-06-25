@@ -59,7 +59,7 @@ import ServiceAdjustFilterSheet from '../../../components/Sheets/Services/Servic
 import ServiceTypeFilterSheet from '../../../components/Sheets/Services/ServiceTypeFilterSheet';
 import {parseProductList} from '../../../util/Filtering/parseProductsList';
 import SortSheet from '../../../components/Sheets/SortSheet';
-import { init } from 'i18next';
+import {init} from 'i18next';
 
 const Products = () => {
   const [filters, setFilters] = useState({
@@ -203,37 +203,36 @@ const Products = () => {
     [],
   );
 
-useEffect(() => {
-  if (initialProducts?.length > 0) {
-    setLoading(true); // 👈 Start loader
-    setProducts(initialProducts);
-    console.log("FETCHEDPRODUCTS:", initialProducts)
-    setTimeout(() => setLoading(false), 200); // 👈 Delay to let render settle
-    return;
-  }
-
-  if (subCategoryId && productsMap[subCategoryId]) {
-    setProducts(productsMap[subCategoryId]);
-    return;
-  }
-
-  if (!subCategoryId) return;
-
-  const fetchData = async () => {
-    setLoading(true);
-    const response = await fetchProductsBySubCategory(subCategoryId);
-    if (response?.data) {
-      const parsed = parseProductList(response.data);
-      setProducts(parsed);
-      setProductsMap(prev => ({...prev, [subCategoryId]: parsed}));
-      console.log("FetchedPRODUCTS:" , response.data)
+  useEffect(() => {
+    if (initialProducts?.length > 0) {
+      setLoading(true); // 👈 Start loader
+      setProducts(initialProducts);
+      console.log('FETCHEDPRODUCTS:', initialProducts);
+      setTimeout(() => setLoading(false), 200); // 👈 Delay to let render settle
+      return;
     }
-    setLoading(false);
-  };
 
-  fetchData();
-}, [subCategoryId, initialProducts]);
+    if (subCategoryId && productsMap[subCategoryId]) {
+      setProducts(productsMap[subCategoryId]);
+      return;
+    }
 
+    if (!subCategoryId) return;
+
+    const fetchData = async () => {
+      setLoading(true);
+      const response = await fetchProductsBySubCategory(subCategoryId);
+      if (response?.data) {
+        const parsed = parseProductList(response.data);
+        setProducts(parsed);
+        setProductsMap(prev => ({...prev, [subCategoryId]: parsed}));
+        console.log('FetchedPRODUCTS:', response.data);
+      }
+      setLoading(false);
+    };
+
+    fetchData();
+  }, [subCategoryId, initialProducts]);
 
   const filteredAndSortedProducts = useMemo(() => {
     // Filter based on category filters
@@ -609,7 +608,7 @@ useEffect(() => {
                     fontWeight: 'bold',
                     textAlign: 'center',
                   }}>
-                  Area (sqft)
+                  Size (sqft)
                 </Text>
               </View>
               <AreaFilterSheet
