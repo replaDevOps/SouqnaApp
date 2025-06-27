@@ -9,6 +9,7 @@ import {
 import {colors} from '../../../util/color';
 import {mvs, width} from '../../../util/metrices';
 import {CrossIconSVG} from '../../../assets/svg';
+import {useTranslation} from 'react-i18next';
 
 const PrimaryPasswordInput = ({
   placeholder,
@@ -30,6 +31,8 @@ const PrimaryPasswordInput = ({
   const togglePasswordVisibility = () => {
     setIsSecure(!isSecure);
   };
+  const {i18n} = useTranslation();
+  const isArabic = i18n.language === 'ar';
 
   return (
     <View
@@ -50,7 +53,14 @@ const PrimaryPasswordInput = ({
         onChangeText={onChangeText}
         onBlur={onBlur}
         secureTextEntry={isSecure}
-        style={[styles.input, style]}
+        style={[
+          styles.input,
+          {
+            textAlign: isArabic ? 'right' : 'left',
+            writingDirection: isArabic ? 'rtl' : 'ltr',
+          },
+          style,
+        ]}
         placeholderTextColor={colors.grey}
         keyboardType={keyboardType}
       />

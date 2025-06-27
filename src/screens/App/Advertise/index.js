@@ -135,7 +135,7 @@ const AdvertiseScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" />
-      <MainHeader title={t('Post Your Ad')} />
+      <MainHeader title={t('titleProduct')} />
       {loading ? (
         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
           <ActivityIndicator size="large" color="#adbd6e" />

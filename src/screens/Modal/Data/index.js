@@ -45,7 +45,7 @@ const DataScreen = () => {
           onPress={() => {
             openUrl('https://themen.kleinanzeigen.de/nutzungsbedingungen/');
           }}>
-          <Text style={styles.menuText}>{t('Terms of use')}</Text>
+          <Text style={styles.menuText}>{t('termsOfUse')}</Text>
           <OpenSVG width={20} height={20} />
         </TouchableOpacity>
       </View>

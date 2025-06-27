@@ -78,7 +78,7 @@ android {
     }
     signingConfigs {
             release {
-        storeFile file('your_key_name.keystore')
+        storeFile file('my-release-key.keystore')
         storePassword 'repla123'
         keyAlias 'your_key_alias'
         keyPassword 'repla123'
@@ -95,7 +95,6 @@ android {
             signingConfig signingConfigs.debug
         }
         release {
-            signingConfig signingConfigs.debug
             signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"

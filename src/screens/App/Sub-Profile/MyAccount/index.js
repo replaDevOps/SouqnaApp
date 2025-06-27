@@ -107,7 +107,7 @@ useEffect(() => {
                 {/* {renderEditableRow(t('address'), 'address')} */}
 
 <View style={styles.row}>
-  <Text style={styles.label}>{t('Seller Type')}</Text>
+  <Text style={styles.label}>{t('sellerType')}</Text>
   {isEditing ? (
     <TouchableOpacity onPress={() =>
       handleChange('sellerType', editedData.sellerType === 1 ? 0 : 1)
@@ -131,7 +131,7 @@ useEffect(() => {
                 <Text style={styles.cardTitle}>{t('Contact Info')}</Text>
 
                 {renderEditableRow(t('phoneNumber'), 'phone', 'phone-pad')}
-                {renderEditableRow(t('Email'), 'email', 'email-address')}
+                {renderEditableRow(t('email'), 'email', 'email-address')}
               </View>
             </View>
 
