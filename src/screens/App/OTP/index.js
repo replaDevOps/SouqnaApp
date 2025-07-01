@@ -11,7 +11,6 @@ import {
   ActivityIndicator,
   Image,
 } from 'react-native';
-import {SouqnaLogo} from '../../../assets/svg';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {colors} from '../../../util/color';
 import MainHeader from '../../../components/Headers/MainHeader';

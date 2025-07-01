@@ -82,47 +82,101 @@ const CategorySection = ({}) => {
   }
 
   return (
-    <View style={styles.categoryContainer}>
-      <FlatList
-        // data={categories}
-        data={categories.filter(item => item.status === 1)}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        keyExtractor={(category, index) => index.toString()}
-        contentContainerStyle={{justifyContent: 'space-evenly', flexGrow: 1}}
-        renderItem={({item}) => {
-          const imageURL = item.image
-            ? `${BASE_URL_Product}${item.image}`
-            : null;
+  <View style={styles.categoryContainer}>
+    {/* Row 1 - Big Icons */}
+    <View style={styles.row}>
+      {categories
+        .filter(cat => ['Vehicle', 'Property'].includes(cat.name) && cat.status === 1)
+        .map(item => {
+          const imageURL = item.image ? `${BASE_URL_Product}${item.image}` : null;
           const Icon = categoryIcons[item.name] || HOMESVG;
 
           return (
             <TouchableOpacity
+              key={item.id}
+              style={styles.bigCard}
               onPress={() => handleCategoryPress(item.name, item.id)}>
-              <View style={styles.categoryItem}>
-                {imageURL ? (
-                  <Image
-                    source={{uri: imageURL}}
-                    style={styles.IconContainer}
-                  />
-                ) : (
-                  <Icon width={24} height={24} />
-                )}
-                <View style={styles.textContainer}>
-                  <Text
-                    style={styles.categoryText}
-                    numberOfLines={2}
-                    ellipsizeMode="tail">
-                    {item.name}
-                  </Text>
-                </View>
-              </View>
+              {imageURL ? (
+                <Image source={{uri: imageURL}} style={styles.bigIcon} />
+              ) : (
+                <Icon width={60} height={60} />
+              )}
+              <Text style={styles.categoryText}>{item.name}</Text>
             </TouchableOpacity>
           );
-        }}
-      />
+        })}
     </View>
-  );
+
+    {/* Row 2 - Small Icons */}
+    <View style={styles.row}>
+      {categories
+        .filter(
+          cat =>
+            ['Services', 'New & Used', 'Spare Parts'].includes(cat.name) &&
+            cat.status === 1,
+        )
+        .map(item => {
+          const imageURL = item.image ? `${BASE_URL_Product}${item.image}` : null;
+          const Icon = categoryIcons[item.name] || HOMESVG;
+
+          return (
+            <TouchableOpacity
+              key={item.id}
+              style={styles.smallCard}
+              onPress={() => handleCategoryPress(item.name, item.id)}>
+              {imageURL ? (
+                <Image source={{uri: imageURL}} style={styles.smallIcon} />
+              ) : (
+                <Icon width={36} height={36} />
+              )}
+              <Text style={styles.categoryText}>{item.name}</Text>
+            </TouchableOpacity>
+          );
+        })}
+    </View>
+  </View>
+);
+
+      // <FlatList
+      //   // data={categories}
+      //   data={categories.filter(item => item.status === 1)}
+      //   horizontal
+      //   showsHorizontalScrollIndicator={false}
+      //   keyExtractor={(category, index) => index.toString()}
+      //   contentContainerStyle={{justifyContent: 'space-evenly', flexGrow: 1}}
+      //   renderItem={({item}) => {
+      //     const imageURL = item.image
+      //       ? `${BASE_URL_Product}${item.image}`
+      //       : null;
+      //     const Icon = categoryIcons[item.name] || HOMESVG;
+
+      //     return (
+      //       <TouchableOpacity
+      //         onPress={() => handleCategoryPress(item.name, item.id)}>
+      //         <View style={styles.categoryItem}>
+      //           {imageURL ? (
+      //             <Image
+      //               source={{uri: imageURL}}
+      //               style={styles.IconContainer}
+      //             />
+      //           ) : (
+      //             <Icon width={24} height={24} />
+      //           )}
+      //           <View style={styles.textContainer}>
+      //             <Text
+      //               style={styles.categoryText}
+      //               numberOfLines={2}
+      //               ellipsizeMode="tail">
+      //               {item.name}
+      //             </Text>
+      //           </View>
+      //         </View>
+      //       </TouchableOpacity>
+      //     );
+      //   }}
+      // />
+    // </View>
+  // );
 };
 
 // Memoize with custom comparison to prevent re-renders
