@@ -1,16 +1,10 @@
 /* eslint-disable react-native/no-inline-styles */
-import {
-  View,
-  Text,
-  TextInput,
-  StyleSheet,
-  TouchableOpacity,
-  FlatList,
-} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, FlatList} from 'react-native';
 import React from 'react';
 import DownArrowSvg from '../../assets/svg/down-arrow-svg';
 import {colors} from '../../util/color';
-import {AdjustSVG, SortSVG, TrashSVG} from '../../assets/svg';
+import {AdjustSVG, TrashSVG} from '../../assets/svg';
+import {t} from 'i18next';
 
 const CarFilters = ({
   filters,
@@ -31,7 +25,7 @@ const CarFilters = ({
       return `Up to ${filters.maxPrice}`;
     if (filters.minPrice && filters.maxPrice)
       return `${filters.minPrice} - ${filters.maxPrice}`;
-    return 'Price';
+    return t('price');
   };
 
   const resetFilters = () => {
@@ -92,9 +86,15 @@ const CarFilters = ({
               justifyContent: 'space-evenly',
               width: '100%',
             }}>
-            <Text style={{color: '#000'}}>
-              {filters.brand || 'Brand'}
-            </Text>
+<Text
+  numberOfLines={1}
+  ellipsizeMode="tail"
+  style={{color: '#000', flex: 1, marginRight: 8}}>
+  {filters.brand?.length > 0
+    ? filters.brand.join(', ')
+    : t('brand')}
+</Text>
+
             <DownArrowSvg />
           </View>
         </TouchableOpacity>
@@ -113,7 +113,7 @@ const CarFilters = ({
             }}>
             <Text
               style={{
-color: '#000'
+                color: '#000',
               }}>
               {filters.buildYearMin && filters.buildYearMax
                 ? `${filters.buildYearMin} - ${filters.buildYearMax}`
@@ -121,7 +121,7 @@ color: '#000'
                 ? `From ${filters.buildYearMin}`
                 : filters.buildYearMax
                 ? `Up to ${filters.buildYearMax}`
-                : 'Build Year'}
+                : t('buildyear')}
             </Text>
             <DownArrowSvg />
           </View>
@@ -142,7 +142,7 @@ color: '#000'
               width: '100%',
             }}>
             <Text style={{color: '#000'}}>
-              {filters.transmission || 'Transmission'}
+              {filters.transmission || t('transmission')}
             </Text>
             <DownArrowSvg />
           </View>
@@ -160,7 +160,12 @@ color: '#000'
               justifyContent: 'space-evenly',
               width: '100%',
             }}>
-            <Text style={styles.filterText} numberOfLines={1} ellipsizeMode="tail">{sortOption || 'Sort'}</Text>
+            <Text
+              style={styles.filterText}
+              numberOfLines={1}
+              ellipsizeMode="tail">
+              {sortOption || t('sort')}
+            </Text>
             <DownArrowSvg />
           </View>
         </TouchableOpacity>
@@ -173,7 +178,7 @@ color: '#000'
         <TouchableOpacity style={styles.resetButton} onPress={resetFilters}>
           <View style={{flexDirection: 'row', gap: 4}}>
             <TrashSVG height={20} width={20} />
-            <Text style={styles.resetButtonText}>Reset Filters</Text>
+            <Text style={styles.resetButtonText}>{t('resetfilters')}</Text>
           </View>
         </TouchableOpacity>
       ),

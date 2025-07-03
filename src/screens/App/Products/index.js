@@ -32,7 +32,7 @@ import {
 } from '../../../api/apiServices';
 import {mvs} from '../../../util/metrices';
 import Regular from '../../../typography/RegularText';
-import {HeartSvg, SortSVG} from '../../../assets/svg';
+import {HeartSvg, MapMarkerSVG, SortSVG} from '../../../assets/svg';
 import Bold from '../../../typography/BoldText';
 import styles from './styles';
 import {useTranslation} from 'react-i18next';
@@ -60,12 +60,13 @@ import ServiceTypeFilterSheet from '../../../components/Sheets/Services/ServiceT
 import {parseProductList} from '../../../util/Filtering/parseProductsList';
 import SortSheet from '../../../components/Sheets/SortSheet';
 import {init} from 'i18next';
+import { colors } from '../../../util/color';
 
 const Products = () => {
   const [filters, setFilters] = useState({
     minPrice: '',
     maxPrice: '',
-    brand: '',
+    brand: [],
     buildYearMin: '',
     buildYearMax: '',
     transmission: '',
@@ -132,6 +133,8 @@ const Products = () => {
   const SCREEN_HEIGHT = Dimensions.get('window').height;
   const MAX_SHEET_HEIGHT = SCREEN_HEIGHT * 0.9;
   const MAX_PRICE_HEIGHT = SCREEN_HEIGHT * 0.5;
+    const [allProducts, setAllProducts] = useState([]);
+
 
   const [brandSearch, setBrandSearch] = useState('');
   const filteredBrands = useMemo(() => {
@@ -207,8 +210,9 @@ const Products = () => {
     if (initialProducts?.length > 0) {
       setLoading(true); // 👈 Start loader
       setProducts(initialProducts);
+      setAllProducts(initialProducts);
       console.log('FETCHEDPRODUCTS:', initialProducts);
-      setTimeout(() => setLoading(false), 200); // 👈 Delay to let render settle
+      setTimeout(() => setLoading(false), 200);
       return;
     }
 
@@ -225,6 +229,7 @@ const Products = () => {
       if (response?.data) {
         const parsed = parseProductList(response.data);
         setProducts(parsed);
+        setAllProducts(parsed);
         setProductsMap(prev => ({...prev, [subCategoryId]: parsed}));
         console.log('FetchedPRODUCTS:', response.data);
       }
@@ -312,6 +317,15 @@ const Products = () => {
       <SafeAreaView style={[styles.container, {position: 'relative'}]}>
         <StatusBar barStyle="dark-content" />
         <MainHeader title={name} showBackIcon />
+
+              {role !== 2 && (
+                <TouchableOpacity
+                  onPress={() => navigation.navigate('Map', {allProducts})}
+                  // onPress={() => setModalVisible(true)}
+                  style={styles.mapContainer}>
+                  <MapMarkerSVG width={35} height={35} fill={colors.white} />
+                </TouchableOpacity>
+              )}
 
         {loading ? (
           <View style={styles.noListingsContainer}>
@@ -483,6 +497,7 @@ const Products = () => {
                 brandSearch={brandSearch}
                 setBrandSearch={setBrandSearch}
                 setFilters={setFilters}
+                filters={filters}
               />
             </BottomSheetContainer>
 

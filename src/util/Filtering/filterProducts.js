@@ -88,8 +88,11 @@ export const filterVehicleProducts = (product, filters) => {
   return (
     (!filters.minPrice || price >= normalizeNum(filters.minPrice)) &&
     (!filters.maxPrice || price <= normalizeNum(filters.maxPrice)) &&
-    (!filters.brand ||
-      includesNormalized(normalizedProduct.brand, filters.brand)) &&
+(!filters.brand?.length ||
+  filters.brand.some(selectedBrand =>
+    includesNormalized(normalizedProduct.brand, selectedBrand),
+  ))
+&&
     (!filters.model ||
       includesNormalized(normalizedProduct.model, filters.model)) &&
     (!filters.buildYearMin ||

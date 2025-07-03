@@ -6,21 +6,15 @@ const styles = StyleSheet.create({
   categoryContainer: {
     marginTop: mvs(10),
     marginHorizontal: mvs(5),
-    // paddingTop: mvs(10),
-    // marginBottom: mvs(10),
     flexDirection: 'column',
-    // backgroundColor: colors.white,
     justifyContent: 'space-evenly',
   },
   categoryItem: {
     alignItems: 'center',
-    // left: mvs(30),
     justifyContent: 'center',
     width: mvs(75),
-    // marginBottom: mvs(10),
   },
   IconContainer: {
-    // padding: 10,
     justifyContent: 'center',
     alignItems: 'center',
     width: mvs(55),
@@ -50,9 +44,13 @@ const styles = StyleSheet.create({
 row: {
   flexDirection: 'row',
   justifyContent: 'space-around',
-  marginBottom: mvs(10), // reduced slightly
+  // marginBottom: mvs(30), // reduced slightly
 },
-
+row1: {
+  flexDirection: 'row',
+  justifyContent: 'space-around',
+  marginBottom: mvs(30), // reduced slightly
+},
 
 bigCard: {
   alignItems: 'center',
@@ -69,13 +67,17 @@ bigIcon: {
   height: 50,
   marginBottom: 8,
   resizeMode: 'contain',
+    borderRadius: 50 / 2,
+  backgroundColor: colors.lightorange,
 },
 
 smallIcon: {
-  width: 35,
-  height: 35,
+  width: 40,
+  height: 40,
   marginBottom: 6,
   resizeMode: 'contain',
+    borderRadius: 45 / 2,
+  backgroundColor: colors.lightorange,
 },
 
 categoryText: {

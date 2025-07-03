@@ -67,3 +67,4 @@ export {default as MapMarkerSVG} from './mapMarkerSVG';
 export {default as UpdateSVG} from './updateSVG';
 export {default as AdjustSVG} from './adjustSVG';
 export {default as SortSVG} from './sortSVG';
+export {default as TickSVG} from './tickSVG';

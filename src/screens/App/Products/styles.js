@@ -7,7 +7,22 @@ const {width} = Dimensions.get('window');
 // const imageWidth = width * 0.4;
 const cardWidth = (width - mvs(45)) / 2;
 const styles = StyleSheet.create({
+  
   container: {flex: 1, backgroundColor: '#fff'},
+
+    mapContainer: {
+    position: 'absolute',
+    width: mvs(55),
+    height: mvs(55),
+    backgroundColor: '#adbd6e',
+    opacity: 0.9,
+    bottom: 15,
+    right: 15,
+    zIndex: 10,
+    borderRadius: mvs(27),
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   list: {padding: 10},
   card: {
     marginBottom: 15,

@@ -4,6 +4,7 @@ import {View, Text, StyleSheet, TouchableOpacity, FlatList} from 'react-native';
 import DownArrowSvg from '../../assets/svg/down-arrow-svg';
 import {colors} from '../../util/color';
 import {AdjustSVG, TrashSVG} from '../../assets/svg';
+import { t } from 'i18next';
 
 const ServicesFilters = ({
   filters,
@@ -22,7 +23,7 @@ const ServicesFilters = ({
       return `Up to ${filters.maxPrice}`;
     if (filters.minPrice && filters.maxPrice)
       return `${filters.minPrice} - ${filters.maxPrice}`;
-    return 'Price';
+    return t('price');
   };
 
   const resetFilters = () => {
@@ -72,7 +73,7 @@ const ServicesFilters = ({
               justifyContent: 'space-evenly',
               width: '100%',
             }}>
-            <Text style={styles.filterText} numberOfLines={1} ellipsizeMode="tail">{sortOption || 'Sort'}</Text>
+            <Text style={styles.filterText} numberOfLines={1} ellipsizeMode="tail">{sortOption || t('sort')}</Text>
             <DownArrowSvg />
           </View>
         </TouchableOpacity>
@@ -84,7 +85,7 @@ const ServicesFilters = ({
         <TouchableOpacity style={styles.resetButton} onPress={resetFilters}>
           <View style={{flexDirection: 'row', gap: 4}}>
             <TrashSVG height={20} width={20} />
-            <Text style={styles.resetButtonText}>Reset Filters</Text>
+            <Text style={styles.resetButtonText}>{t('resetfilters')}</Text>
           </View>
         </TouchableOpacity>
       ),

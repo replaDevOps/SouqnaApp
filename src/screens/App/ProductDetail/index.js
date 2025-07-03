@@ -328,7 +328,7 @@ const ProductDetail = () => {
   return (
     <SafeAreaView style={styles.container}>
       {loading || !product ? (
-        <Loader width={mvs(160)} height={mvs(160)} />
+        <Loader width={mvs(250)} height={mvs(250)} />
       ) : (
         <>
           {console.log('Product currency:', product.currency)}

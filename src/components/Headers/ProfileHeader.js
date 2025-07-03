@@ -155,10 +155,10 @@ export default function ProfileHeader({OnPressLogout, onRoleSwitch}) {
           {activeRole === '2' || activeRole === 2
             ? t('Seller Account')
             : activeRole === '3' || activeRole === 3
-            ? t('Buyer Account')
+            ? t('buyeraccount')
             : isSellerOn
             ? t('Seller Account')
-            : t('Buyer Account')}
+            : t('buyeraccount')}
         </Text>
         <TouchableOpacity onPress={toggleSellerMode} activeOpacity={0.8}>
           {isSellerOn ? (

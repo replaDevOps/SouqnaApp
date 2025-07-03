@@ -9,7 +9,8 @@ import {
   labelStyle,
   resetButtonStyle,
 } from '../../util/Filtering/filterStyles';
-import GooglePlacesSuggestion from '../../components/GooglePlacesSuggestion';
+import { colors } from '../../util/color';
+import { t } from 'i18next';
 const AdjustFilterSheet = ({
   filters,
   setFilters,
@@ -17,6 +18,8 @@ const AdjustFilterSheet = ({
   onOpenPriceSheet,
   onOpenTransmissionSheet,
   onOpenBuildYearSheet,
+  onApplyFilters,
+  closeSheet,
 }) => {
   useEffect(() => {
     if (fuelOpen) setConditionOpen(false);
@@ -220,25 +223,6 @@ const AdjustFilterSheet = ({
           style={inputStyle}
         />
 
-        {/* Condition (not in fields but OK to keep) */}
-        {/* <Text style={labelStyle}>Condition</Text>
-<View style={{zIndex: conditionOpen ? 999 : 1, position: 'relative', elevation: conditionOpen ? 10 : 0}}>
-          <DropDownPicker
-            open={conditionOpen}
-            value={filters.condition}
-            items={conditionItems}
-            setOpen={setConditionOpen}
-            setValue={val => setFilters(prev => ({...prev, condition: val()}))}
-            setItems={setConditionItems}
-            placeholder="Select condition"
-            style={[inputStyle, {marginBottom: conditionOpen ? 120 : 12}]}
-            dropDownContainerStyle={{
-              ...inputStyle,
-              marginBottom: 12,
-            }}
-          />
-        </View> */}
-
         {/* Inspection Validity */}
         <Text style={labelStyle}>Inspection Validity</Text>
         <TextInput
@@ -254,7 +238,23 @@ const AdjustFilterSheet = ({
         <TouchableOpacity onPress={resetFilters} style={resetButtonStyle}>
           <Text style={{color: 'red', fontWeight: 'bold'}}>Reset Filters</Text>
         </TouchableOpacity>
+
+              {/* --- DONE BUTTON --- */}
+<View style={{padding: 20}}>
+  <TouchableOpacity
+    onPress={() => {onApplyFilters
+         closeSheet?.(); }}
+    style={{
+      backgroundColor: colors.lightgreen,
+      paddingVertical: 12,
+      borderRadius: 8,
+      alignItems: 'center',
+    }}>
+    <Text style={{color: '#fff', fontWeight: 'bold'}}>{t('Done')}</Text>
+  </TouchableOpacity>
+</View>
       </BottomSheetScrollView>
+
     </View>
   );
 };

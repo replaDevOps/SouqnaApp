@@ -9,6 +9,8 @@ import {
 import {BottomSheetScrollView} from '@gorhom/bottom-sheet';
 import DropDownPicker from 'react-native-dropdown-picker';
 import {resetButtonStyle} from '../../../util/Filtering/filterStyles';
+import { colors } from '../../../util/color';
+import { t } from 'i18next';
 
 const ServiceAdjustFilterSheet = ({filters, setFilters, closeSheet}) => {
   const [genderOpen, setGenderOpen] = useState(false);
@@ -199,6 +201,22 @@ const ServiceAdjustFilterSheet = ({filters, setFilters, closeSheet}) => {
       <TouchableOpacity onPress={resetFilters} style={resetButtonStyle}>
         <Text style={{color: 'red', fontWeight: 'bold'}}>Reset Filters</Text>
       </TouchableOpacity>
+
+      {/* --- DONE BUTTON --- */}
+        <View style={{padding: 20}}>
+          <TouchableOpacity
+            onPress={() => {
+              closeSheet?.();
+            }}
+            style={{
+              backgroundColor: colors.lightgreen,
+              paddingVertical: 12,
+              borderRadius: 8,
+              alignItems: 'center',
+            }}>
+            <Text style={{color: '#fff', fontWeight: 'bold'}}>{t('Done')}</Text>
+          </TouchableOpacity>
+        </View>
     </BottomSheetScrollView>
   );
 };

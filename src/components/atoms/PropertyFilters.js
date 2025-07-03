@@ -4,6 +4,7 @@ import {View, Text, StyleSheet, TouchableOpacity, FlatList} from 'react-native';
 import DownArrowSvg from '../../assets/svg/down-arrow-svg';
 import {colors} from '../../util/color';
 import {AdjustSVG, TrashSVG} from '../../assets/svg';
+import { t } from 'i18next';
 
 const PropertyFilters = ({
   filters,
@@ -26,7 +27,7 @@ const PropertyFilters = ({
     if (filters.minPrice && filters.maxPrice) {
       return `${filters.minPrice} - ${filters.maxPrice}`;
     }
-    return 'Price';
+    return t('price');
   };
 
   const getAreaLabel = () => {
@@ -39,7 +40,7 @@ const PropertyFilters = ({
     if (filters.minArea && filters.maxArea) {
       return `${filters.minArea} - ${filters.maxArea} sqft`;
     }
-    return 'Size';
+    return t('size');
   };
 
   const resetFilters = () => {
@@ -91,7 +92,7 @@ const PropertyFilters = ({
               style={styles.filterText}
               numberOfLines={1}
               ellipsizeMode="tail">
-              {filters.propertyType || 'Property Type'}
+              {filters.propertyType || t('propertytype')}
             </Text>
             <DownArrowSvg />
           </View>
@@ -130,7 +131,7 @@ const PropertyFilters = ({
               style={styles.filterText}
               numberOfLines={1}
               ellipsizeMode="tail">
-              {sortOption || 'Sort'}
+              {sortOption || t('sort')}
             </Text>
             <DownArrowSvg />
           </View>
@@ -143,7 +144,7 @@ const PropertyFilters = ({
         <TouchableOpacity style={styles.resetButton} onPress={resetFilters}>
           <View style={{flexDirection: 'row', gap: 4}}>
             <TrashSVG height={20} width={20} />
-            <Text style={styles.resetButtonText}>Reset Filters</Text>
+            <Text style={styles.resetButtonText}>{t('resetfilters')}</Text>
           </View>
         </TouchableOpacity>
       ),

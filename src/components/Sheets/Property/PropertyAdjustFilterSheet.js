@@ -1,12 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {useState} from 'react';
-import {
-  Text,
-  View,
-  TextInput,
-  Switch,
-  TouchableOpacity,
-} from 'react-native';
+import {Text, View, TextInput, TouchableOpacity} from 'react-native';
 import {BottomSheetScrollView} from '@gorhom/bottom-sheet';
 import DropDownPicker from 'react-native-dropdown-picker';
 import {
@@ -14,9 +8,10 @@ import {
   labelStyle,
   inputStyle,
 } from '../../../util/Filtering/filterStyles';
+import { colors } from '../../../util/color';
+import { t } from 'i18next';
 
-
-const PropertyAdjustFilterSheet = ({filters, setFilters}) => {
+const PropertyAdjustFilterSheet = ({filters, setFilters, closeSheet}) => {
   const updateField = (key, value) => {
     setFilters(prev => ({...prev, [key]: value}));
   };
@@ -29,12 +24,11 @@ const PropertyAdjustFilterSheet = ({filters, setFilters}) => {
   const [availabilityOpen, setAvailabilityOpen] = useState(false);
   const [purposeOpen, setPurposeOpen] = useState(false);
 
-const purposeItems = [
-  { label: 'For Sale', value: 'For Sale' },
-  { label: 'For Rent', value: 'For Rent' },
-  { label: 'Other', value: 'Other' },
-];
-
+  const purposeItems = [
+    {label: 'For Sale', value: 'For Sale'},
+    {label: 'For Rent', value: 'For Rent'},
+    {label: 'Other', value: 'Other'},
+  ];
 
   const heatingCoolingItems = [
     {label: 'Installed', value: 'Installed'},
@@ -46,21 +40,20 @@ const purposeItems = [
     {label: 'Not Available', value: 'Not Available'},
   ];
   const booleanOptions = [
-  {label: 'Yes', value: true},
-  {label: 'No', value: false},
-];
+    {label: 'Yes', value: true},
+    {label: 'No', value: false},
+  ];
 
-// Define state for each dropdown open status
-const [dropdownStates, setDropdownStates] = useState({
-  petsAllowed: false,
-  parking: false,
-  furnished: false,
-  elevator: false,
-  balcony: false,
-  titleDeed_Document: false,
-  purpose: false
-});
-
+  // Define state for each dropdown open status
+  const [dropdownStates, setDropdownStates] = useState({
+    petsAllowed: false,
+    parking: false,
+    furnished: false,
+    elevator: false,
+    balcony: false,
+    titleDeed_Document: false,
+    purpose: false,
+  });
 
   return (
     <View style={{flex: 1, zIndex: 0}}>
@@ -78,21 +71,20 @@ const [dropdownStates, setDropdownStates] = useState({
           style={inputStyle}
         />
 
-<Text style={labelStyle}>Purpose</Text>
-<View style={{ zIndex: purposeOpen ? 1000 : 1 }}>
-  <DropDownPicker
-    open={purposeOpen}
-    value={filters.purpose}
-    items={purposeItems}
-    setOpen={setPurposeOpen}
-    setValue={val => updateField('purpose', val())}
-    setItems={() => {}}
-    placeholder="Select Purpose"
-    style={[inputStyle, { marginBottom: purposeOpen ? 120 : 12 }]}
-    dropDownContainerStyle={{ ...inputStyle, marginBottom: 12 }}
-  />
-</View>
-
+        <Text style={labelStyle}>Purpose</Text>
+        <View style={{zIndex: purposeOpen ? 1000 : 1}}>
+          <DropDownPicker
+            open={purposeOpen}
+            value={filters.purpose}
+            items={purposeItems}
+            setOpen={setPurposeOpen}
+            setValue={val => updateField('purpose', val())}
+            setItems={() => {}}
+            placeholder="Select Purpose"
+            style={[inputStyle, {marginBottom: purposeOpen ? 120 : 12}]}
+            dropDownContainerStyle={{...inputStyle, marginBottom: 12}}
+          />
+        </View>
 
         {/* Size */}
         <Text style={labelStyle}>Size</Text>
@@ -225,29 +217,32 @@ const [dropdownStates, setDropdownStates] = useState({
         ))} */}
 
         {[
-  {label: 'Pets Allowed', key: 'petsAllowed'},
-  {label: 'Parking', key: 'parking'},
-  {label: 'Furnished', key: 'furnished'},
-  {label: 'Elevator', key: 'elevator'},
-  {label: 'Balcony', key: 'balcony'},
-  {label: 'Title Deed / Document', key: 'titleDeed_Document'},
-].map(({label, key}) => (
-  <View key={key} style={{zIndex: dropdownStates[key] ? 1000 : 1, marginBottom: 12}}>
-    <Text style={labelStyle}>{label}</Text>
-    <DropDownPicker
-      open={dropdownStates[key]}
-      value={filters[key]}
-      items={booleanOptions}
-      setOpen={open => setDropdownStates(prev => ({...prev, [key]: open}))}
-      setValue={val => updateField(key, val())}
-      setItems={() => {}}
-      placeholder="Select option"
-      style={inputStyle}
-      dropDownContainerStyle={inputStyle}
-    />
-  </View>
-))}
-
+          {label: 'Pets Allowed', key: 'petsAllowed'},
+          {label: 'Parking', key: 'parking'},
+          {label: 'Furnished', key: 'furnished'},
+          {label: 'Elevator', key: 'elevator'},
+          {label: 'Balcony', key: 'balcony'},
+          {label: 'Title Deed / Document', key: 'titleDeed_Document'},
+        ].map(({label, key}) => (
+          <View
+            key={key}
+            style={{zIndex: dropdownStates[key] ? 1000 : 1, marginBottom: 12}}>
+            <Text style={labelStyle}>{label}</Text>
+            <DropDownPicker
+              open={dropdownStates[key]}
+              value={filters[key]}
+              items={booleanOptions}
+              setOpen={open =>
+                setDropdownStates(prev => ({...prev, [key]: open}))
+              }
+              setValue={val => updateField(key, val())}
+              setItems={() => {}}
+              placeholder="Select option"
+              style={inputStyle}
+              dropDownContainerStyle={inputStyle}
+            />
+          </View>
+        ))}
 
         {/* Nearby Landmarks */}
         <Text style={labelStyle}>Nearby Landmarks</Text>
@@ -275,6 +270,22 @@ const [dropdownStates, setDropdownStates] = useState({
           style={{marginTop: 20, alignSelf: 'center'}}>
           <Text style={{color: 'red', fontWeight: 'bold'}}>Reset Filters</Text>
         </TouchableOpacity>
+
+        {/* --- DONE BUTTON --- */}
+        <View style={{padding: 20}}>
+          <TouchableOpacity
+            onPress={() => {
+              closeSheet?.();
+            }}
+            style={{
+              backgroundColor: colors.lightgreen,
+              paddingVertical: 12,
+              borderRadius: 8,
+              alignItems: 'center',
+            }}>
+            <Text style={{color: '#fff', fontWeight: 'bold'}}>{t('Done')}</Text>
+          </TouchableOpacity>
+        </View>
       </BottomSheetScrollView>
     </View>
   );

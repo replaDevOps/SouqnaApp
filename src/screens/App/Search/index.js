@@ -284,14 +284,14 @@ const dashboardRefreshRef = useRef(null);
         <LogoHeader />
       </View>
 
-      {role !== 2 && (
+      {/* {role !== 2 && (
         <TouchableOpacity
           onPress={() => navigation.navigate('Map', {allProducts})}
           // onPress={() => setModalVisible(true)}
           style={styles.mapContainer}>
           <MapMarkerSVG width={35} height={35} fill={colors.white} />
         </TouchableOpacity>
-      )}
+      )} */}
       <ScrollView
         contentContainerStyle={{backgroundColor: '#fbfbfb', flexGrow: 1}}
         refreshControl={
