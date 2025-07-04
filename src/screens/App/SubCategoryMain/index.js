@@ -41,13 +41,17 @@ const SubCategoryMain = () => {
         const response = await fetchBuyerProducts(filters);
 
         if (response?.data?.length > 0) {
+          // const parsedProducts = response.data.filter(
+          //   p =>
+          //     p.category?.id === categoryId &&
+          //     p.category?.name?.toLowerCase() ===
+          //       (category.name || category).toLowerCase(),
+          // );
           const parsedProducts = response.data.filter(
-            p =>
-              p.category?.id === categoryId &&
-              p.category?.name?.toLowerCase() ===
-                (category.name || category).toLowerCase(),
+            p => p.category?.id === categoryId,
           );
 
+          console.log('PARSED PRODUCTS: ', parsedProducts);
           navigation.navigate('Products', {
             categoryId,
             id: null,
