@@ -36,6 +36,7 @@ import PhotoManipulator from 'react-native-photo-manipulator';
 import ImageResizer from 'react-native-image-resizer';
 import CategoryFields from './CategoryFields';
 import EnhancedLocationSelector from '../../../../components/Location/EnhancedLocationSelector';
+import i18n from '../../../../i18n/i18n';
 // import EnhancedCategoryFields from './CategoryFields';
 const BRANDS = [
   'Audi',
@@ -87,8 +88,10 @@ const CreateProduct = () => {
   } = route.params;
   const {token, phoneNo} = useSelector(state => state.user);
   const navigation = useNavigation();
-  const {t} = useTranslation();
-const [brandModalVisible, setBrandModalVisible] = useState(false);
+  const [brandModalVisible, setBrandModalVisible] = useState(false);
+  // const isArabic = i18n.language === 'ar'; // useTranslation should be imported and initialized
+  const {t, i18n} = useTranslation();
+  console.log('Current Language:', i18n.language);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -104,7 +107,7 @@ const [brandModalVisible, setBrandModalVisible] = useState(false);
     contactInfo: phoneNo, // Additional field
     negotiable: '', // Additional field
     currency: '',
-    custom_fields: [],
+    fields: [],
   });
 
   const [loading, setLoading] = useState(false);
@@ -129,7 +132,6 @@ const [brandModalVisible, setBrandModalVisible] = useState(false);
   //   };
   // }, []);
 
- 
   const getImageSize = uri =>
     new Promise((resolve, reject) => {
       Image.getSize(
@@ -243,7 +245,6 @@ const [brandModalVisible, setBrandModalVisible] = useState(false);
   const submitProduct = async () => {
     console.log('SUBMIT BUTTON PRESSED');
 
-
     const data = new FormData();
     data.append('name', formData.name);
     data.append('description', formData.description);
@@ -252,7 +253,7 @@ const [brandModalVisible, setBrandModalVisible] = useState(false);
     data.append('categoryID', categoryId);
     data.append('subCategoryID', subCategoryId);
 
-    // Prepare custom_fields array
+    // Prepare fields array
     const customFieldsArray = categoryFields.map(field => ({
       name: field.name,
       value: formData[field.name],
@@ -274,7 +275,7 @@ const [brandModalVisible, setBrandModalVisible] = useState(false);
       });
     }
     console.log('FORMDATA TILL NOW : ', data);
-    data.append('custom_fields', JSON.stringify(customFieldsArray));
+    data.append('fields', JSON.stringify(customFieldsArray));
 
     data.append('stock', formData.stock);
     data.append('discount', formData.discount);
@@ -312,7 +313,7 @@ const [brandModalVisible, setBrandModalVisible] = useState(false);
           contactInfo: '', // Reset additional field
           negotiable: '',
           currency: '',
-          custom_fields: [],
+          fields: [],
         });
 
         navigation.dispatch(

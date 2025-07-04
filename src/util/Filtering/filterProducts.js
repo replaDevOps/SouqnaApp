@@ -50,10 +50,10 @@ export const filterVehicleProducts = (product, filters) => {
     return num === normalizeNum(number);
   };
 
-  // Step 1: Parse custom_fields if necessary
-  const customFields = Array.isArray(product.custom_fields)
-    ? product.custom_fields
-    : JSON.parse(product.custom_fields || '[]');
+  // Step 1: Parse fields if necessary
+  const customFields = Array.isArray(product.fields)
+    ? product.fields
+    : JSON.parse(product.fields || '[]');
 
   // Step 2: Flatten custom fields into an object
   const customFieldMap = {};
@@ -152,9 +152,9 @@ export const filterPropertyProducts = (product, filters) => {
     );
   };
 
-  let customFields = Array.isArray(product.custom_fields)
-    ? product.custom_fields
-    : JSON.parse(product.custom_fields || '[]');
+  let customFields = Array.isArray(product.fields)
+    ? product.fields
+    : JSON.parse(product.fields || '[]');
 
   const customFieldMap = {};
   for (const item of customFields) {
@@ -256,9 +256,9 @@ export const filterPropertyProducts = (product, filters) => {
 const includesIgnoreCase = (target = '', search = '') =>
   target.toLowerCase().includes(search.toLowerCase());
 const getCustomField = (product, fieldName) => {
-  const fieldArray = Array.isArray(product.custom_fields)
-    ? product.custom_fields
-    : JSON.parse(product.custom_fields || '[]');
+  const fieldArray = Array.isArray(product.fields)
+    ? product.fields
+    : JSON.parse(product.fields || '[]');
 
   const found = fieldArray.find(f => f.name === fieldName);
   return found?.value || '';
