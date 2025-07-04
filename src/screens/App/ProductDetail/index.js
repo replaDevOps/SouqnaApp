@@ -275,7 +275,7 @@ const ProductDetail = () => {
       lat: product.lat,
       long: product.long,
       condition: product.condition, // assuming it's 1 or 2
-      custom_fields: product.custom_fields,
+      fields: product.fields,
       currency: product.currency,
       contactInfo: product.contactInfo,
     });
@@ -403,7 +403,7 @@ const ProductDetail = () => {
               <Bold style={{fontSize: mvs(22), marginHorizontal: mvs(10)}}>
                 {t('details')}
               </Bold>
-              <DetailsTable ProductData={product.custom_fields} />
+              <DetailsTable ProductData={product.fields} />
             </View>
             <View style={styles.descriptionContainer}>
               <Bold style={{fontSize: mvs(22)}}>{t('Description')}</Bold>

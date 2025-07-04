@@ -5,13 +5,14 @@ import styles from './style';
 import dummyData from '../../../../util/dummyData';
 import {HOMESVG} from '../../../../assets/svg';
 import CategorySkeleton from './CategorySkeleton';
-import axios from 'axios';
 import {useDispatch, useSelector} from 'react-redux';
 import API, {
   BASE_URL_Product,
   fetchCategories,
 } from '../../../../api/apiServices';
 import {setCategories} from '../../../../redux/slices/categorySlice';
+import {useTranslation} from 'react-i18next';
+import i18n from '../../../../i18n/i18n';
 
 const {categoryIcons} = dummyData;
 
@@ -22,6 +23,8 @@ const CategorySection = ({}) => {
   const categories = useSelector(state => state.category.categories);
   const SERVER_URL = {BASE_URL_Product};
   const {token} = useSelector(state => state.user);
+  const {i18n} = useTranslation();
+  const language = i18n.language;
 
   // Simulate loading time
   useEffect(() => {
@@ -68,7 +71,7 @@ const CategorySection = ({}) => {
           categoryId: categoryId,
           subcategories,
         });
-    console.log(`Category ${categoryName} clicked`);
+        console.log(`Category ${categoryName} clicked`);
       } else {
         console.warn('No subcategories found');
       }
@@ -93,6 +96,35 @@ const CategorySection = ({}) => {
 
           return (
             <TouchableOpacity
+<<<<<<< Updated upstream
+=======
+<<<<<<< HEAD
+              onPress={() =>
+                handleCategoryPress(
+                  i18n.language === 'ar' ? item.ar_name : item.name,
+                  item.id,
+                )
+              }>
+              <View style={styles.categoryItem}>
+                {imageURL ? (
+                  <Image
+                    source={{uri: imageURL}}
+                    style={styles.IconContainer}
+                  />
+                ) : (
+                  <Icon width={24} height={24} />
+                )}
+                <View style={styles.textContainer}>
+                  <Text
+                    style={styles.categoryText}
+                    numberOfLines={2}
+                    ellipsizeMode="tail">
+                    {language === 'ar' ? item.ar_name : item.name}
+                  </Text>
+                </View>
+              </View>
+=======
+>>>>>>> Stashed changes
               key={item.id}
               style={styles.bigCard}
               onPress={() => handleCategoryPress(item.name, item.id)}>
@@ -102,6 +134,10 @@ const CategorySection = ({}) => {
                 <Icon width={60} height={60} />
               )}
               <Text style={styles.categoryText}>{item.name}</Text>
+<<<<<<< Updated upstream
+=======
+>>>>>>> upstream/main
+>>>>>>> Stashed changes
             </TouchableOpacity>
           );
         })}
@@ -139,9 +175,13 @@ const CategorySection = ({}) => {
 };
 
 // Memoize with custom comparison to prevent re-renders
-export default memo(CategorySection, (prevProps, nextProps) => {
+const areEqual = (prevProps, nextProps) => {
+  const prevLang = i18n.language;
+  const nextLang = i18n.language;
   return (
     JSON.stringify(prevProps.categories) ===
-    JSON.stringify(nextProps.categories)
+      JSON.stringify(nextProps.categories) && prevLang === nextLang
   );
-});
+};
+
+export default memo(CategorySection, areEqual);
