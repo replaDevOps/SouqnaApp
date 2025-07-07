@@ -139,7 +139,7 @@ const Category = () => {
       <MainHeader title={t('updateCategory')} showBackIcon={true} />
       {loading ? (
         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-          <ActivityIndicator size="large" color="#adbd6e" />
+          <ActivityIndicator size="large" color="#008e91" />
         </View>
       ) : (
         <FlatList

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import  {useEffect, useState} from 'react';
 import './src/i18n/i18n';
 import 'react-native-gesture-handler';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
@@ -14,6 +14,8 @@ import messaging from '@react-native-firebase/messaging';
 import useNotificationListener from './src/util/NotificationService';
 import GlobalSnackbar from './src/components/Structure/GlobalSnackbar';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
+import { Text } from 'react-native';
+
 
 LogBox.ignoreAllLogs();
 
@@ -46,7 +48,6 @@ const App = () => {
     const unsubscribe = messaging().onTokenRefresh(async newToken => {
       console.log('FCM Token refreshed:', newToken);
       await AsyncStorage.setItem('fcmToken', newToken);
-      // Optionally, send the new token to your backend server here
     });
 
     // Cleanup on unmount
@@ -55,17 +56,41 @@ const App = () => {
     };
   }, []);
 
-  useEffect(() => {
-    const initLanguage = async () => {
-      const savedLang = await AsyncStorage.getItem('appLanguage');
-      if (savedLang && i18n.language !== savedLang) {
-        await i18n.changeLanguage(savedLang);
-      }
-      setIsReady(true);
+  // useEffect(() => {
+  //   const initLanguage = async () => {
+  //     const savedLang = await AsyncStorage.getItem('appLanguage');
+  //     if (savedLang && i18n.language !== savedLang) {
+  //       await i18n.changeLanguage(savedLang);
+  //     }
+  //     setIsReady(true);
+  //   };
+
+  //   initLanguage();
+  // }, []);
+
+useEffect(() => {
+  const initLanguage = async () => {
+    const savedLang = await AsyncStorage.getItem('appLanguage');
+    if (savedLang && i18n.language !== savedLang) {
+      await i18n.changeLanguage(savedLang);
+    }
+
+    // Set default font family based on language
+    const TextComponent = Text as any;
+
+    if (TextComponent.defaultProps == null) TextComponent.defaultProps = {};
+    TextComponent.defaultProps.allowFontScaling = false;
+    TextComponent.defaultProps.style = {
+      fontFamily: (savedLang || i18n.language) === 'ar' ? 'Asal' : 'System',
     };
 
-    initLanguage();
-  }, []);
+    setIsReady(true);
+  };
+
+  initLanguage();
+}, []);
+
+
 
   if (!isReady) return null; // You can replace this with a splash screen
   const linking = {
@@ -76,6 +101,8 @@ const App = () => {
       },
     },
   };
+  
+  
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>

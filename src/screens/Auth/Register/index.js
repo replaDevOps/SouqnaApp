@@ -251,7 +251,7 @@ const Register = () => {
               disabled={isLoading || !email || !password}
               style={{justifyContent: 'center', alignItems: 'center'}} // optional
             >
-              {isLoading && <ActivityIndicator color={colors.green} />}
+              {isLoading && <ActivityIndicator color={colors.lightgreen} />}
             </MyButton>
 
             <Regular style={styles.termsText}>

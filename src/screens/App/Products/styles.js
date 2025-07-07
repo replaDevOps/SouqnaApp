@@ -14,7 +14,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: mvs(55),
     height: mvs(55),
-    backgroundColor: '#adbd6e',
+    backgroundColor: '#008e91',
     opacity: 0.9,
     bottom: 15,
     right: 15,

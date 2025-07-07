@@ -293,7 +293,7 @@ const Chat = () => {
       {...props}
       wrapperStyle={{
         right: {
-          backgroundColor: '#ADBD6E',
+          backgroundColor: '#008e91',
           padding: mvs(2),
           marginRight: mvs(0),
         },
@@ -336,7 +336,7 @@ const Chat = () => {
       }}>
       <View
         style={{
-          backgroundColor: isUploading ? colors.grey : '#ADBD6E',
+          backgroundColor: isUploading ? colors.grey : '#008e91',
           paddingHorizontal: mvs(15),
           paddingVertical: mvs(10),
           borderRadius: mvs(5),
@@ -365,7 +365,7 @@ const Chat = () => {
         marginLeft: mvs(10),
         marginBottom: Platform.OS === 'ios' ? mvs(5) : 0,
       }}
-      icon={() => <PlusSvg width={22} height={22} fill={'#ADBD6E'} />}
+      icon={() => <PlusSvg width={22} height={22} fill={'#008e91'} />}
       onPressActionButton={pickImage}
       options={{}}
     />
@@ -405,7 +405,7 @@ const Chat = () => {
 
   const renderLoading = () => (
     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-      <ActivityIndicator size="large" color="#ADBD6E" />
+      <ActivityIndicator size="large" color="#008e91" />
     </View>
   );
 
@@ -475,7 +475,7 @@ const styles = StyleSheet.create({
   productPrice: {
     marginTop: 4,
     fontSize: 12,
-    color: '#ADBD6E',
+    color: '#008e91',
   },
 });
 

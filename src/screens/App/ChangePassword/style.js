@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
   },
   resetButton: {
     height: mvs(50),
-    backgroundColor: '#adbd6E', // Green color as shown in the image
+    backgroundColor: '#008e91', // Green color as shown in the image
     borderRadius: mvs(25), // Rounded button
     justifyContent: 'center',
     alignItems: 'center',

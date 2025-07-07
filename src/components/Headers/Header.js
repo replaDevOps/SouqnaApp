@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
     // padding: 8,
   },
   title: {
-    color: colors.green,
+    color: colors.lightgreen,
     fontSize: 16,
   },
   rightContainer: {

@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   modalButton: {
-    backgroundColor: '#adbd6e',
+    backgroundColor: '#',
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 5,
@@ -255,7 +255,7 @@ const styles = StyleSheet.create({
     width: mvs(20),
     borderRadius: mvs(10),
     borderWidth: 2,
-    borderColor: '#adbd6e',
+    borderColor: '#008e91',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -263,7 +263,7 @@ const styles = StyleSheet.create({
     height: mvs(10),
     width: mvs(10),
     borderRadius: mvs(5),
-    backgroundColor: '#adbd6e',
+    backgroundColor: '#008e91',
   },
   radioLabel: {
     fontSize: mvs(16),

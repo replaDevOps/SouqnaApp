@@ -80,7 +80,7 @@ const ForgetPassword = () => {
             <MyButton
               title={
                 loading ? (
-                  <ActivityIndicator size="large" color={colors.green} />
+                  <ActivityIndicator size="large" color={colors.lightgreen} />
                 ) : (
                   t('Submit')
                 )

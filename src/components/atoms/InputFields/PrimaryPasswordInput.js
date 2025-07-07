@@ -11,6 +11,7 @@ import {colors} from '../../../util/color';
 import {mvs, width} from '../../../util/metrices';
 import {CrossIconSVG} from '../../../assets/svg';
 import {useTranslation} from 'react-i18next';
+import CustomText from '../../CustomText';
 
 const PrimaryPasswordInput = ({
   placeholder,
@@ -77,7 +78,7 @@ const PrimaryPasswordInput = ({
           })}
         </TouchableOpacity>
       )}
-      {error && <Text style={styles.errorText}>{error}</Text>}
+      {error && <CustomText style={styles.errorText}>{error}</CustomText>}
     </View>
   );
 };

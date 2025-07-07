@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#adbd6e',
+    backgroundColor: '#008e91',
     justifyContent: 'center',
     borderTopLeftRadius: 40,
     borderTopRightRadius: 40,
@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
   },
   saveBtn: {
     padding: 10,
-    backgroundColor: '#adbd6e',
+    backgroundColor: '#',
     borderRadius: 6,
   },
   btnText: {

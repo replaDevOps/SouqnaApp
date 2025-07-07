@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 45,
-    color: colors.green,
+    color: colors.lightgreen,
   },
   radioButtonContainer: {
     flexDirection: 'row',
@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: mvs(20),
   },
   selectedRadioButton: {
-    borderColor: colors.green,
+    borderColor: colors.lightgreen,
   },
 
   radioButtonLabel: {
@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
     fontSize: mvs(14),
   },
   whenText: {
-    color: colors.green,
+    color: colors.lightgreen,
     marginBottom: mvs(10),
   },
   input: {
@@ -122,7 +122,7 @@ const styles = StyleSheet.create({
   },
   termsLink: {
     fontSize: mvs(14),
-    color: colors.green,
+    color: colors.lightgreen,
     textDecorationLine: 'underline',
     lineHeight: mvs(14),
     paddingTop: 0,

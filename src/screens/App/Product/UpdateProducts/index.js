@@ -502,7 +502,7 @@ const UpdateProduct = () => {
                                   padding: 4,
                                   borderRadius: 20,
                                 }}>
-                                <EYESVG size={20} color="#adbd6e" />
+                                <EYESVG size={20} color="#008e91" />
                               </TouchableOpacity>
                               <TouchableOpacity
                                 style={styles.removeIcon}

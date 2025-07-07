@@ -225,7 +225,7 @@ const styles = StyleSheet.create({
     color: colors.green,
   },
   sellerContainer: {
-    backgroundColor: '#ADBD6E',
+    backgroundColor: '#008e91',
     flexDirection: 'row',
     paddingHorizontal: mvs(8),
     borderRadius: mvs(10),
@@ -238,7 +238,7 @@ const styles = StyleSheet.create({
     right: 20,
   },
   sellerText: {
-    color: colors.black,
+    color: colors.white,
     fontWeight: 'bold',
     fontSize: mvs(20),
   },
