@@ -1,11 +1,10 @@
 /* eslint-disable react-native/no-inline-styles */
 
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import {useCallback, useEffect, useRef, useState} from 'react';
 import {
   RefreshControl,
   ScrollView,
   StatusBar,
-  TouchableOpacity,
   View,
 } from 'react-native';
 import SearchHeader from '../../../components/Headers/SearchHeader';
@@ -27,8 +26,6 @@ import API, {
 import {setVerificationStatus} from '../../../redux/slices/userSlice';
 import LogoHeader from '../../../components/Structure/Search/Header/LogoHeader';
 import {Snackbar} from 'react-native-paper';
-import {colors} from '../../../util/color';
-import {MapMarkerSVG} from '../../../assets/svg';
 import BannerSlider from '../../../components/atoms/BannerSlider';
 import ProductDashboard from '../../../components/atoms/Dashboard';
 

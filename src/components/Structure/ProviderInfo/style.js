@@ -55,5 +55,14 @@ const styles = StyleSheet.create({
     // marginLeft: mvs(10),
     color: colors.black,
   },
+  row: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  marginBottom: 6,
+},
+
+rowReverse: {
+  flexDirection: 'row-reverse',
+},
 });
 export default styles;
