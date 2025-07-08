@@ -380,7 +380,7 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   startTrialButton: {
-    backgroundColor: '#adbd6e',
+    backgroundColor: '#008e91',
     borderRadius: 4,
     padding: 16,
     alignItems: 'center',

@@ -53,7 +53,16 @@ const styles = StyleSheet.create({
   leftText: {
     fontSize: mvs(14),
     // marginLeft: mvs(10),
-    color: colors.black,
+    color: colors.white,
   },
+  row: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  marginBottom: 6,
+},
+
+rowReverse: {
+  flexDirection: 'row-reverse',
+},
 });
 export default styles;

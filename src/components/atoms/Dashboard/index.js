@@ -231,7 +231,7 @@ useEffect(() => {
   if (loading) {
     return (
       <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
-        <ActivityIndicator size="large" color={'#adbd6e'} />
+        <ActivityIndicator size="large" color={'#008e91'} />
       </View>
     );
   }

@@ -9,8 +9,8 @@ import {
   labelStyle,
   resetButtonStyle,
 } from '../../util/Filtering/filterStyles';
-import { colors } from '../../util/color';
-import { t } from 'i18next';
+import {colors} from '../../util/color';
+import {t} from 'i18next';
 const AdjustFilterSheet = ({
   filters,
   setFilters,
@@ -239,22 +239,23 @@ const AdjustFilterSheet = ({
           <Text style={{color: 'red', fontWeight: 'bold'}}>Reset Filters</Text>
         </TouchableOpacity>
 
-              {/* --- DONE BUTTON --- */}
-<View style={{padding: 20}}>
-  <TouchableOpacity
-    onPress={() => {onApplyFilters
-         closeSheet?.(); }}
-    style={{
-      backgroundColor: colors.lightgreen,
-      paddingVertical: 12,
-      borderRadius: 8,
-      alignItems: 'center',
-    }}>
-    <Text style={{color: '#fff', fontWeight: 'bold'}}>{t('Done')}</Text>
-  </TouchableOpacity>
-</View>
+        {/* --- DONE BUTTON --- */}
+        <View style={{padding: 20}}>
+          <TouchableOpacity
+            onPress={() => {
+              onApplyFilters;
+              closeSheet?.();
+            }}
+            style={{
+              backgroundColor: colors.lightgreen,
+              paddingVertical: 12,
+              borderRadius: 8,
+              alignItems: 'center',
+            }}>
+            <Text style={{color: '#fff', fontWeight: 'bold'}}>{t('Done')}</Text>
+          </TouchableOpacity>
+        </View>
       </BottomSheetScrollView>
-
     </View>
   );
 };

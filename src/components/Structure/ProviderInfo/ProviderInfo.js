@@ -58,7 +58,7 @@ const ProviderInfo = ({provider}) => {
 
       <Row>
         <Regular>
-          <ActiveSVG width={15} height={15} /> {'Active Since '}
+          <ActiveSVG width={15} height={15} /> {t('activeSince')}
           {provider.date}
         </Regular>
       </Row>

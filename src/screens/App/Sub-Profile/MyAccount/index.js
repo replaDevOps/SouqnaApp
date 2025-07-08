@@ -301,7 +301,7 @@ input: {
     paddingVertical: 8,
     paddingHorizontal: 24,
     borderRadius: 12,
-    backgroundColor: '#ADBD6E',
+    backgroundColor: '#008e91',
   },
   saveText: {
     fontSize: 18,
@@ -314,7 +314,7 @@ input: {
     borderRadius: 12,
     marginTop: 16,
     width: 320,
-    backgroundColor: '#ADBD6E',
+    backgroundColor: '#008e91',
   },
   editText: {
     textAlign: 'center',

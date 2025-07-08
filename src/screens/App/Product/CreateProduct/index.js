@@ -16,7 +16,6 @@ import {
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {CommonActions, useNavigation, useRoute} from '@react-navigation/native';
-import axios from 'axios';
 import {useSelector} from 'react-redux';
 // import {launchImageLibrary} from 'react-native-image-picker';
 // import ImagePicker from 'react-native-image-crop-picker';
@@ -88,6 +87,7 @@ const CreateProduct = () => {
   } = route.params;
   const {token, phoneNo} = useSelector(state => state.user);
   const navigation = useNavigation();
+
   const [brandModalVisible, setBrandModalVisible] = useState(false);
   // const isArabic = i18n.language === 'ar'; // useTranslation should be imported and initialized
   const {t, i18n} = useTranslation();
@@ -98,14 +98,14 @@ const CreateProduct = () => {
     description: '',
     price: '',
     stock: '',
-    discount: '',
-    specialOffer: '',
+    // discount: '',
+    // specialOffer: '',
     images: [],
     location: '',
     lat: '',
     long: '',
-    contactInfo: phoneNo, // Additional field
-    negotiable: '', // Additional field
+    contactInfo: phoneNo,
+    negotiable: '',
     currency: '',
     fields: [],
   });
@@ -114,8 +114,8 @@ const CreateProduct = () => {
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [selectedCondition, setSelectedCondition] = useState('');
-  const [categories, setCategories] = useState([]); // State to store fetched categories
-  const [categoryFields, setCategoryFields] = useState([]); // State to store category fields
+  const [categories, setCategories] = useState([]);
+  const [categoryFields, setCategoryFields] = useState([]);
   console.log('{stored phone no:}', phoneNo);
   // const conditionValue =
   //   selectedCondition === 'Yes' ? 1 : selectedCondition === 'No' ? 2 : null;
@@ -145,7 +145,7 @@ const CreateProduct = () => {
     try {
       const result = await launchImageLibrary({
         mediaType: 'photo',
-        selectionLimit: 0, // allow multiple images
+        selectionLimit: 0,
       });
 
       if (result.didCancel) return;
@@ -278,8 +278,8 @@ const CreateProduct = () => {
     data.append('fields', JSON.stringify(customFieldsArray));
 
     data.append('stock', formData.stock);
-    data.append('discount', formData.discount);
-    data.append('specialOffer', formData.specialOffer);
+    // data.append('discount', formData.discount);
+    // data.append('specialOffer', formData.specialOffer);
     data.append('location', formData.location);
     data.append('lat', formData.lat);
     data.append('long', formData.long);
@@ -308,8 +308,8 @@ const CreateProduct = () => {
           location: '',
           lat: '',
           long: '',
-          discount: '',
-          specialOffer: '',
+          // discount: '',
+          // specialOffer: '',
           contactInfo: '', // Reset additional field
           negotiable: '',
           currency: '',
@@ -677,11 +677,11 @@ const CreateProduct = () => {
             </View>
 
             {/* Discount Section */}
-            <View style={styles.sectionContainer}>
+            {/* <View style={styles.sectionContainer}>
               <Text style={styles.sectionTitle}>
-                {t('discount')}
+                {t('discount')} */}
                 {/* <Text style={{color: colors.red}}>*</Text> */}
-              </Text>
+              {/* </Text>
               <TextInput
                 style={styles.input}
                 placeholder={t('discountPlaceholder')}
@@ -690,14 +690,14 @@ const CreateProduct = () => {
                 value={formData.discount}
                 onChangeText={text => handleInputChange('discount', text)}
               />
-            </View>
+            </View> */}
 
             {/* Special Offer Section */}
-            <View style={styles.sectionContainer}>
+            {/* <View style={styles.sectionContainer}>
               <Text style={styles.sectionTitle}>
-                {t('specialOffer')}
+                {t('specialOffer')} */}
                 {/* <Text style={{color: colors.red}}>*</Text> */}
-              </Text>
+              {/* </Text>
               <TextInput
                 style={styles.input}
                 placeholder={t('specialOfferPlaceholder')}
@@ -705,7 +705,7 @@ const CreateProduct = () => {
                 value={formData.specialOffer}
                 onChangeText={text => handleInputChange('specialOffer', text)}
               />
-            </View>
+            </View> */}
 
             {/* Stock Section */}
             <View style={styles.sectionContainer}>

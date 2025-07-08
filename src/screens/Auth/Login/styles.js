@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 45,
-    color: colors.green,
+    color: colors.lightgreen,
   },
   text: {
     marginVertical: mvs(10),
@@ -122,14 +122,14 @@ const styles = StyleSheet.create({
   },
   registerLink: {
     fontWeight: 'bold',
-    color: colors.green,
+    color: colors.lightgreen,
     marginBottom: mvs(20),
     fontFamily: 'DMSans-Bold',
   },
   ForgetPassword: {
     textAlign: 'right',
     fontWeight: 'bold',
-    color: colors.green,
+    color: colors.lightgreen,
     marginRight: mvs(20),
     fontFamily: 'DMSans-Bold',
     textDecorationLine: 'underline',

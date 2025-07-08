@@ -104,7 +104,7 @@ const ShareActions = ({productTitle, productLink, productId}) => {
           <EmailSvg width={30} height={30} style={styles.shareIcon} />
         </TouchableOpacity>
         <TouchableOpacity onPress={handleShareToSMS}>
-          <ChatSVG2 width={25} height={25} style={styles.shareIcon} />
+          <ChatSVG width={25} height={25} style={styles.shareIcon} color='#758CA3'/>
         </TouchableOpacity>
         <TouchableOpacity onPress={handleCopyLink}>
           <CopyLinkSVG width={25} height={25} style={styles.shareIcon} />

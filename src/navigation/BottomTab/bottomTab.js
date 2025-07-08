@@ -265,7 +265,7 @@ useEffect(() => {
           headerShown: false,
           tabBarShowLabel: false,
           tabBarStyle: styles.tabBar,
-          tabBarActiveTintColor: '#ADBD6E',
+          tabBarActiveTintColor: '#008e91',
           tabBarIcon: ({focused}) => (
             <View style={styles.iconContainer}>
               {getIconComponent(route.name, focused)}

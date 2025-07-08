@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   selectedCard: {
-    borderColor: '#adbd6e',
+    borderColor: '#008e91',
     borderWidth: 2,
   },
   planTitle: {
@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
   },
   getButton: {
     marginTop: 20,
-    backgroundColor: '#adbd6e',
+    backgroundColor: '#008e91',
     padding: 15,
     borderRadius: 10,
     alignItems: 'center',

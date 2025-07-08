@@ -3,7 +3,7 @@ import Svg, {Path} from 'react-native-svg';
 import {colors} from '../../util/color';
 const EYESVG = props => (
   <Svg
-    fill="#adbd6e"
+    fill="#008e91"
     width="20px"
     height="20px"
     viewBox="0 0 24 24"

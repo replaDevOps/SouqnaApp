@@ -84,7 +84,7 @@ const ServicesFilters = ({
       render: () => (
         <TouchableOpacity style={styles.resetButton} onPress={resetFilters}>
           <View style={{flexDirection: 'row', gap: 4}}>
-            <TrashSVG height={20} width={20} />
+            <TrashSVG height={20} width={20} color='#000'/>
             <Text style={styles.resetButtonText}>{t('resetfilters')}</Text>
           </View>
         </TouchableOpacity>

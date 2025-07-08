@@ -14,7 +14,7 @@ const ChatSVG2 = ({color = '#8899A6'}) => (
     <Path
       d="M18.81,16.23,20,21l-4.95-2.48A9.84,9.84,0,0,1,12,19c-5,0-9-3.58-9-8s4-8,9-8,9,3.58,9,8A7.49,7.49,0,0,1,18.81,16.23Z"
       fill="none"
-      stroke={'#1c1a1a'}
+      stroke={'#ffffff'}
       strokeLinecap="round"
       strokeLinejoin="round"
       strokeWidth={1}

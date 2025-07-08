@@ -74,7 +74,7 @@ const ProductFooter = ({
         onPress: handleDeletePress,
         loading: loadingDelete,
         text: t('deleteProduct'),
-        Icon: TrashSVG,
+        Icon: TrashSVG ,
       },
     );
   }
@@ -92,7 +92,7 @@ const ProductFooter = ({
             onPress={onPress}>
             <Icon width={24} height={24} />
             {loading ? (
-              <ActivityIndicator size="small" color={colors.green} />
+              <ActivityIndicator size="small" color={colors.lightgreen} />
             ) : (
               <Text style={[styles.buttonText]}>{text}</Text>
             )}
@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.lightgreen,
   },
   buttonText: {
-    color: colors.green,
+    color: colors.white,
     fontSize: mvs(16),
     marginLeft: mvs(10),
     fontWeight: 'bold',
