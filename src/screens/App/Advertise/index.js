@@ -19,6 +19,7 @@ import {mvs} from '../../../util/metrices';
 import Bold from '../../../typography/BoldText';
 import {ForwardSVG} from '../../../assets/svg';
 import API, {BASE_URL_Product} from '../../../api/apiServices';
+import i18n from '../../../i18n/i18n';
 
 const AdvertiseScreen = () => {
   // const {categories, categoryIcons} = dummyData;
@@ -82,7 +83,8 @@ const AdvertiseScreen = () => {
       if (res.data.success) {
         const subcategories = res.data.data;
         navigation.navigate('AdvertiseAll', {
-          category: categoryName,
+          category:
+            i18n.language === 'ar' ? categoryName.ar_name : categoryName.name,
           categoryId: categoryId,
           categoryImage: image,
           subcategories,
@@ -99,7 +101,7 @@ const AdvertiseScreen = () => {
     const imageURL = item.image ? `${BASE_URL_Product}${item.image}` : null;
     return (
       <TouchableOpacity
-        onPress={() => handleCategoryPress(item.name, item.id, imageURL)}
+        onPress={() => handleCategoryPress(item, item.id, imageURL)}
         style={styles.categoryItem}>
         <View style={styles.IconContainer}>
           {imageURL ? (
@@ -116,7 +118,7 @@ const AdvertiseScreen = () => {
             style={styles.categoryText}
             numberOfLines={2}
             ellipsizeMode="tail">
-            {item.name}
+            {i18n.language === 'ar' ? item.ar_name : item.name}
           </Bold>
           {item.hasSubcategories && (
             <View style={{marginTop: mvs(5), alignItems: 'center'}}>

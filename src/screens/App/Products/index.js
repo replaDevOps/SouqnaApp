@@ -60,7 +60,7 @@ import ServiceTypeFilterSheet from '../../../components/Sheets/Services/ServiceT
 import {parseProductList} from '../../../util/Filtering/parseProductsList';
 import SortSheet from '../../../components/Sheets/SortSheet';
 import {init} from 'i18next';
-import { colors } from '../../../util/color';
+import {colors} from '../../../util/color';
 
 const Products = () => {
   const [filters, setFilters] = useState({
@@ -133,8 +133,7 @@ const Products = () => {
   const SCREEN_HEIGHT = Dimensions.get('window').height;
   const MAX_SHEET_HEIGHT = SCREEN_HEIGHT * 0.9;
   const MAX_PRICE_HEIGHT = SCREEN_HEIGHT * 0.5;
-    const [allProducts, setAllProducts] = useState([]);
-
+  const [allProducts, setAllProducts] = useState([]);
 
   const [brandSearch, setBrandSearch] = useState('');
   const filteredBrands = useMemo(() => {
@@ -221,7 +220,7 @@ const Products = () => {
       return;
     }
 
-    if (!subCategoryId) return;
+    if (!subCategoryId && !initialProducts?.length) return;
 
     const fetchData = async () => {
       setLoading(true);
@@ -318,14 +317,14 @@ const Products = () => {
         <StatusBar barStyle="dark-content" />
         <MainHeader title={name} showBackIcon />
 
-              {role !== 2 && (
-                <TouchableOpacity
-                  onPress={() => navigation.navigate('Map', {allProducts})}
-                  // onPress={() => setModalVisible(true)}
-                  style={styles.mapContainer}>
-                  <MapMarkerSVG width={35} height={35} fill={colors.white} />
-                </TouchableOpacity>
-              )}
+        {role !== 2 && (
+          <TouchableOpacity
+            onPress={() => navigation.navigate('Map', {allProducts})}
+            // onPress={() => setModalVisible(true)}
+            style={styles.mapContainer}>
+            <MapMarkerSVG width={35} height={35} fill={colors.white} />
+          </TouchableOpacity>
+        )}
 
         {loading ? (
           <View style={styles.noListingsContainer}>
