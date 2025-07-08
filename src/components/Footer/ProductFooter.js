@@ -74,7 +74,7 @@ const ProductFooter = ({
         onPress: handleDeletePress,
         loading: loadingDelete,
         text: t('deleteProduct'),
-        Icon: TrashSVG,
+        Icon: TrashSVG ,
       },
     );
   }
@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.lightgreen,
   },
   buttonText: {
-    color: colors.black,
+    color: colors.white,
     fontSize: mvs(16),
     marginLeft: mvs(10),
     fontWeight: 'bold',

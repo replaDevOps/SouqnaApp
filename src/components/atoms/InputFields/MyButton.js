@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
   text: {
     fontSize: mvs(17),
     fontWeight: '400',
-    color: colors.green,
+    color: colors.white,
     fontFamily: 'DMSans',
   },
   view1: {

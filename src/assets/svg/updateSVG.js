@@ -2,7 +2,7 @@ import * as React from 'react';
 import Svg, {Path, Polyline} from 'react-native-svg';
 const UpdateSVG = props => (
   <Svg
-    fill="#000000"
+    fill="#FFFFFF"
     width="800px"
     height="800px"
     viewBox="0 0 24 24"
@@ -16,7 +16,7 @@ const UpdateSVG = props => (
       d="M4,12A8,8,0,0,1,18.93,8"
       style={{
         fill: 'none',
-        stroke: 'rgb(0, 0, 0)',
+        stroke: '#FFFFFF',
         strokeLinecap: 'round',
         strokeLinejoin: 'round',
         strokeWidth: 2,
@@ -28,7 +28,7 @@ const UpdateSVG = props => (
       d="M20,12A8,8,0,0,1,5.07,16"
       style={{
         fill: 'none',
-        stroke: 'rgb(0, 0, 0)',
+        stroke: '#FFFFFF',
         strokeLinecap: 'round',
         strokeLinejoin: 'round',
         strokeWidth: 2,
@@ -40,7 +40,7 @@ const UpdateSVG = props => (
       points="14 8 19 8 19 3"
       style={{
         fill: 'none',
-        stroke: 'rgb(0, 0, 0)',
+        stroke: '#FFFFFF',
         strokeLinecap: 'round',
         strokeLinejoin: 'round',
         strokeWidth: 2,
@@ -52,7 +52,7 @@ const UpdateSVG = props => (
       points="10 16 5 16 5 21"
       style={{
         fill: 'none',
-        stroke: 'rgb(0, 0, 0)',
+        stroke: '#FFFFFF',
         strokeLinecap: 'round',
         strokeLinejoin: 'round',
         strokeWidth: 2,
