@@ -80,13 +80,18 @@ const AdvertiseScreen = () => {
       });
 
       if (res.data.success) {
-        const subcategories = res.data.data;
+  const subcategories = res.data.data.map(sub => ({
+    ...sub,
+    imageURL: sub.image ? `${BASE_URL_Product}${sub.image}` : null,
+    imageName: sub.imageName || null,
+  }));
         navigation.navigate('AdvertiseAll', {
           category: categoryName,
           categoryId: categoryId,
           categoryImage: image,
           subcategories,
         });
+        console.log('Subcategories:', subcategories);
       } else {
         console.warn('No subcategories found');
       }

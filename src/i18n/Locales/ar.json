@@ -384,7 +384,7 @@
   "dontHaveAccount": "ليس لديك حساب؟",
   "enterValidEmail": "يرجى إدخال بريد إلكتروني صالح.",
   "passwordMinLength": "يجب أن تكون كلمة المرور 8 أحرف على الأقل.",
-  "buyerLoginSuccess": "تم تسجيل دخول المشتري بنجاح",
+  "buyerLoginSuccess": "تم تسجيل الدخول بنجاح",
   "sellerLoginSuccess": "تم تسجيل دخول البائع بنجاح",
   "invalidCredentials": "بريد إلكتروني أو كلمة مرور غير صحيحة",
   "chooseRole": "اختر الدور",

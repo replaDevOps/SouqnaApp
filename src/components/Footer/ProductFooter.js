@@ -41,7 +41,7 @@ const ProductFooter = ({
   // Declare buttons based on role
   let buttons = [];
 
-  if (!token || (role === 3 && !isOwner)) {
+  if (!isOwner) {
     buttons.push(
       {
         key: 'chat',
@@ -60,7 +60,7 @@ const ProductFooter = ({
     );
   }
 
-  if (role === 2 || isOwner) {
+  else {
     buttons.push(
       {
         key: 'update',
@@ -78,9 +78,9 @@ const ProductFooter = ({
       },
     );
   }
-  if (role === 3 && isOwner) {
-    return null; // Hide footer entirely
-  }
+  // if (role === 3 && isOwner) {
+  //   return null; // Hide footer entirely
+  // }
 
   return (
     <View style={styles.footerContainer}>

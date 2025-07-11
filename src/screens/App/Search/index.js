@@ -272,13 +272,15 @@ const dashboardRefreshRef = useRef(null);
 
     }
   };
+  const handleNotification = () => {
+    navigation.navigate('BuyerNotification');}
 
   return (
     <View style={styles.container}>
       <StatusBar barStyle="dark-content" translucent backgroundColor="#fff" />
 
       <View style={styles.LogoHeader}>
-        <LogoHeader />
+        <LogoHeader showFavIcon={true} onNotification={handleNotification}/>
       </View>
 
       {/* {role !== 2 && (

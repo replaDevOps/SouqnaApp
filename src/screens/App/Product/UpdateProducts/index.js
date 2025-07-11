@@ -49,8 +49,8 @@ const UpdateProduct = () => {
     description: '',
     price: '',
     // stock: '',
-    discount: '',
-    specialOffer: '',
+    // discount: '',
+    // specialOffer: '',
     images: [],
     location: '',
     lat: '',
@@ -83,8 +83,8 @@ const UpdateProduct = () => {
         description,
         price,
         // stock,
-        discount,
-        specialOffer,
+        // discount,
+        // specialOffer,
         images,
         location,
         lat,
@@ -125,8 +125,8 @@ const UpdateProduct = () => {
           description: description || '',
           price: price?.toString() || '',
           // stock: stock?.toString() || '',
-          discount: discount?.toString() || '',
-          specialOffer: specialOffer || '',
+          // discount: discount?.toString() || '',
+          // specialOffer: specialOffer || '',
           images: formattedImages,
           location: location || '',
           lat: lat || '',
@@ -142,8 +142,8 @@ const UpdateProduct = () => {
           description: description || '',
           price: price?.toString() || '',
           // stock: stock?.toString() || '',
-          discount: discount?.toString() || '',
-          specialOffer: specialOffer || '',
+          // discount: discount?.toString() || '',
+          // specialOffer: specialOffer || '',
           images: formattedImages,
           location: location || '',
           lat: lat || '',
@@ -310,7 +310,7 @@ const UpdateProduct = () => {
       location: formData.location,
       lat: formData.lat,
       long: formData.long,
-      discount: formData.discount,
+      // discount: formData.discount,
       // stock: formData.stock,
       // condition: conditionValue,
       // negotiable: formData.negotiable,
@@ -640,11 +640,11 @@ const UpdateProduct = () => {
           </View>
 
           {/* Discount Section */}
-          <View style={styles.sectionContainer}>
+          {/* <View style={styles.sectionContainer}>
             <Text style={styles.sectionTitle}>
-              {t('discount')}
+              {t('discount')} */}
               {/* <Text style={{color: colors.red}}>*</Text> */}
-            </Text>
+            {/* </Text>
             <TextInput
               style={styles.input}
               placeholder={t('discountPlaceholder')}
@@ -653,14 +653,14 @@ const UpdateProduct = () => {
               value={formData.discount}
               onChangeText={text => handleInputChange('discount', text)}
             />
-          </View>
+          </View> */}
 
           {/* Special Offer Section */}
-          <View style={styles.sectionContainer}>
+          {/* <View style={styles.sectionContainer}>
             <Text style={styles.sectionTitle}>
-              {t('specialOffer')}
+              {t('specialOffer')} */}
               {/* <Text style={{color: colors.red}}>*</Text> */}
-            </Text>
+            {/* </Text>
             <TextInput
               style={styles.input}
               placeholder={t('specialOfferPlaceholder')}
@@ -668,7 +668,7 @@ const UpdateProduct = () => {
               value={formData.specialOffer}
               onChangeText={text => handleInputChange('specialOffer', text)}
             />
-          </View>
+          </View> */}
 
           <View style={styles.sectionContainer}>
             <Text style={styles.sectionTitle}>

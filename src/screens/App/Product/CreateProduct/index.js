@@ -93,7 +93,7 @@ const CreateProduct = () => {
     name: '',
     description: '',
     price: '',
-    stock: '',
+    // stock: '',
     // discount: '',
     // specialOffer: '',
     images: [],
@@ -273,7 +273,7 @@ const CreateProduct = () => {
     console.log('FORMDATA TILL NOW : ', data);
     data.append('custom_fields', JSON.stringify(customFieldsArray));
 
-    data.append('stock', formData.stock);
+    // data.append('stock', formData.stock);
     // data.append('discount', formData.discount);
     // data.append('specialOffer', formData.specialOffer);
     data.append('location', formData.location);
@@ -299,7 +299,7 @@ const CreateProduct = () => {
           name: '',
           description: '',
           price: '',
-          stock: '',
+          // stock: '',
           images: [],
           location: '',
           lat: '',
@@ -676,8 +676,8 @@ const CreateProduct = () => {
             {/* <View style={styles.sectionContainer}>
               <Text style={styles.sectionTitle}>
                 {t('discount')} */}
-                {/* <Text style={{color: colors.red}}>*</Text> */}
-              {/* </Text>
+            {/* <Text style={{color: colors.red}}>*</Text> */}
+            {/* </Text>
               <TextInput
                 style={styles.input}
                 placeholder={t('discountPlaceholder')}
@@ -692,8 +692,8 @@ const CreateProduct = () => {
             {/* <View style={styles.sectionContainer}>
               <Text style={styles.sectionTitle}>
                 {t('specialOffer')} */}
-                {/* <Text style={{color: colors.red}}>*</Text> */}
-              {/* </Text>
+            {/* <Text style={{color: colors.red}}>*</Text> */}
+            {/* </Text>
               <TextInput
                 style={styles.input}
                 placeholder={t('specialOfferPlaceholder')}
@@ -704,11 +704,11 @@ const CreateProduct = () => {
             </View> */}
 
             {/* Stock Section */}
-            <View style={styles.sectionContainer}>
+            {/* <View style={styles.sectionContainer}>
               <Text style={styles.sectionTitle}>
-                {t('availableStock')}
-                {/* <Text style={{color: colors.red}}>*</Text> */}
-              </Text>
+                {t('availableStock')} */}
+            {/* <Text style={{color: colors.red}}>*</Text> */}
+            {/* </Text>
               <TextInput
                 style={styles.input}
                 placeholder={t('stockPlaceholder')}
@@ -716,8 +716,8 @@ const CreateProduct = () => {
                 keyboardType="numeric"
                 value={formData.stock}
                 onChangeText={text => handleInputChange('stock', text)}
-              />
-            </View>
+              /> */}
+            {/* </View> */}
 
             {/* Additional Fields Section */}
             <CategoryFields

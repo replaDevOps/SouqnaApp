@@ -44,7 +44,7 @@ const FavouriteScreen = () => {
     return (
       <SafeAreaView style={styles.container}>
         <StatusBar barStyle="dark-content" />
-        <MainHeader title={t('favourites')} />
+        <MainHeader title={t('favourites')} showBackIcon={true}/>
         <View style={styles.content}>
           <Image
             source={require('../../../assets/img/empty.png')}

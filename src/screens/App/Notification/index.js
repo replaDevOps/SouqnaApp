@@ -32,40 +32,44 @@ const Notification = () => {
     navigation.goBack();
   };
 
-  useEffect(() => {
-    const getNotifications = async () => {
-      setLoading(true);
-      const res = await fetchNotifications(token, role);
-      if (res?.status === true && Array.isArray(res?.data)) {
-        setNotifications(res.data);
-      } else {
-        console.warn('No notifications found or error occurred');
-      }
-      setLoading(false);
-    };
-
-    getNotifications();
-  }, [token, role]);
-
-  const renderItem = ({item}) => {
-    return (
-      <View style={styles.notificationItem}>
-        <TouchableOpacity style={styles.notificationIcon}>
-          <Notificationsvg color={colors.green} />
-        </TouchableOpacity>
-
-        <View style={styles.notificationTextContainer}>
-          <Text style={styles.notificationTitle}>{item.title}</Text>
-          <Text style={styles.notificationText}>{item.message}</Text>
-        </View>
-      </View>
-    );
+useEffect(() => {
+  const getNotifications = async () => {
+    setLoading(true);
+    const res = await fetchNotifications(token, role);
+        console.log('Notification API Response:', res);
+    if (res?.success && Array.isArray(res?.data)) {
+      setNotifications(res.data);
+    } else {
+      console.warn('No notifications found or error occurred');
+    }
+    setLoading(false);
   };
+
+  getNotifications();
+}, [token, role]);
+
+const renderItem = ({ item }) => (
+  <View style={styles.notificationItem}>
+    <TouchableOpacity style={styles.notificationIcon}>
+      <Notificationsvg color={colors.green} />
+    </TouchableOpacity>
+
+    <View style={styles.notificationTextContainer}>
+      <Text style={styles.notificationTitle}>{item.type}</Text>
+      <Text style={styles.notificationText}>{item.description}</Text>
+
+      {/* Optional: Date or Sender */}
+      {/* <Text style={styles.notificationMeta}>
+        {new Date(item.created_at).toLocaleDateString()} | {item?.added_by?.name}
+      </Text> */}
+    </View>
+  </View>
+);
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" />
-      <MainHeader title={t('titleNotification')} showBackIcon={true} />
+      <MainHeader title={t('titleNotification')} />
 
       {loading ? (
         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>

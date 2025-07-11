@@ -150,7 +150,7 @@ export default function ProfileHeader({OnPressLogout, onRoleSwitch}) {
           style={styles.logo}
         />
       </View>
-      <View style={styles.sellerContainer}>
+      {/* <View style={styles.sellerContainer}>
         <Text style={styles.sellerText}>
           {activeRole === '2' || activeRole === 2
             ? t('Seller Account')
@@ -167,9 +167,9 @@ export default function ProfileHeader({OnPressLogout, onRoleSwitch}) {
             <OffSVG width={mvs(40)} height={mvs(45)} fill={colors.gray} />
           )}
         </TouchableOpacity>
-      </View>
+      </View> */}
       {/* Snackbar for showing role change messages */}
-      <Snackbar
+      {/* <Snackbar
         visible={snackbarVisible}
         onDismiss={() => setSnackbarVisible(false)}
         duration={Snackbar.DURATION_LONG}
@@ -178,9 +178,9 @@ export default function ProfileHeader({OnPressLogout, onRoleSwitch}) {
           onPress: () => setSnackbarVisible(false),
         }}>
         {snackbarMessage}
-      </Snackbar>
+      </Snackbar> */}
       {/* Modal for role switching - pass token and password props */}
-      <SwitchModal
+      {/* <SwitchModal
         visible={modalVisible}
         onClose={handleModalClose}
         role={activeRole}
@@ -188,7 +188,7 @@ export default function ProfileHeader({OnPressLogout, onRoleSwitch}) {
         password={password}
         onSubmit={handleModalSubmit}
         isLoading={isLoading}
-      />
+      /> */}
     </SafeAreaView>
   );
 }

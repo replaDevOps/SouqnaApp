@@ -1,31 +1,13 @@
-import React, {useState} from 'react';
+/* eslint-disable react-native/no-inline-styles */
 import {Image, TouchableOpacity, View} from 'react-native';
-import SearchHeader from '../../../Headers/SearchHeader';
 import {useNavigation} from '@react-navigation/native';
 import {mvs} from '../../../../util/metrices';
-import {NotificationSVG} from '../../../../assets/svg';
-import {useSelector} from 'react-redux';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import { colors } from '../../../../util/color';
+import { HeartSVG, NotificationSVG } from '../../../../assets/svg';
 
-export default function LogoHeader() {
-  const [isSearchMode, setIsSearchMode] = useState(false);
+export default function LogoHeader({showFavIcon = false, onNotification}) {
   const navigation = useNavigation();
-  const {role} = useSelector(state => state.user);
-
-  const onCancelSearch = () => {
-    setIsSearchMode(false);
-  };
-
-  const onFocusSearch = () => {
-    setIsSearchMode(true);
-  };
-
-  const onNotification = () => {
-    navigation.navigate('BuyerNotification');
-  };
-  const navigateToSearchResults = () => {
-    navigation.navigate('SearchResultsScreen');
-  };
 
   return (
     <SafeAreaView style={{backgroundColor: '#fff', elevation: 3}}>
@@ -43,11 +25,22 @@ export default function LogoHeader() {
           source={require('../../../../assets/img/Souqna_Logo3.png')}
           style={{width: mvs(145), height: mvs(28), resizeMode: 'contain'}}
         />
-        {/* {role !== 2 && (
-          <TouchableOpacity onPress={onNotification}>
+                <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginLeft: 'auto',
+          }}>
+              {showFavIcon && (
+<TouchableOpacity onPress={() => navigation.navigate('Favourite')}
+              style={{marginRight: mvs(12)}}>
+          <HeartSVG color={colors.green} width={mvs(22)} height={mvs(22)} />
+        </TouchableOpacity>
+      )}
+          {/* <TouchableOpacity onPress={() => navigation.navigate('BuyerNotification')}>
             <NotificationSVG width={mvs(22)} height={mvs(22)} />
-          </TouchableOpacity>
-        )} */}
+          </TouchableOpacity> */}
+        </View>
       </View>
     </SafeAreaView>
   );

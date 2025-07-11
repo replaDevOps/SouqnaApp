@@ -569,42 +569,32 @@ const sendPushNotification = async (title, body, receiverToken) => {
 
 export const fetchNotifications = async (token, role) => {
   try {
-    let endpoint = null;
-    let response = null;
+    const headers = {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    };
 
     if (role === 2) {
-      endpoint = 'viewAllNotificaionsSeller';
-      response = await API.get(
-        endpoint,
-        {amount: 200},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-        },
+      // Seller API (POST with amount)
+      const res = await API.get(
+        'viewAllNotificaionsSeller',
+        { amount: 200 },
+        { headers }
       );
-    } else if (role === 3) {
-      endpoint = 'viewAllNotificaionsBuyer';
-      response = await API.get(endpoint, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      return res.data;
     } else {
-      console.warn('Unsupported role for notifications:', role);
-      return null;
+      // Buyer API (GET)
+      const res = await API.get('viewAllNotificaionsBuyer', {
+        headers,
+      });
+      return res.data;
     }
-
-    return response.data;
   } catch (error) {
-    console.error(
-      'Error fetching notifications:',
-      error?.response?.data || error.message,
-    );
-    return null;
+    console.error('Error fetching notifications:', error?.response?.data || error);
+    return { success: false, data: [] };
   }
 };
+
 
 export const submitCardDetails = async (cardData, token) => {
   try {

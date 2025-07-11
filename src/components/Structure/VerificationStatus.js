@@ -14,7 +14,7 @@ const VerificationStatus = () => {
   const {role, token, verificationStatus} = useSelector(state => state.user);
 
   useEffect(() => {
-    if (role === 3 || !token || !isFocused) return;
+    // if (role === 3 || !token || !isFocused) return;
 
     const fetchVerificationStatus = async () => {
       try {

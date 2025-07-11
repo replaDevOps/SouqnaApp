@@ -291,6 +291,7 @@ input: {
     paddingHorizontal: 24,
     borderRadius: 12,
     backgroundColor: '#D1D5DB',
+    marginRight:10,
   },
   cancelText: {
     fontSize: 18,

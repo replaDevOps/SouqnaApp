@@ -379,7 +379,7 @@
   "dontHaveAccount": "Don't have an account?",
   "enterValidEmail": "Please enter a valid email.",
   "passwordMinLength": "Password must be at least 8 characters.",
-  "buyerLoginSuccess": "Buyer logged in successfully",
+  "buyerLoginSuccess": "Logged in successfully",
   "sellerLoginSuccess": "Seller logged in successfully",
   "invalidCredentials": "Invalid email or password",
   "chooseRole": "Choose Role",

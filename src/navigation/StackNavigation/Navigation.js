@@ -37,6 +37,7 @@ import ImagePreview from '../../screens/App/Product/ImagePreview';
 import Category from '../../screens/App/UpdateAdvertise/Category';
 import SubCategory from '../../screens/App/UpdateAdvertise/SubCategory';
 import ForgetPassword from '../../screens/App/ForgetPassword';
+import FavouriteScreen from '../../screens/App/Favourite';
 
 const Stack = createStackNavigator();
 
@@ -94,6 +95,8 @@ const AppNavigator = () => {
         <Stack.Screen name="Category" component={Category} />
         <Stack.Screen name="SubCategory" component={SubCategory} />
         <Stack.Screen name="ForgotPassword" component={ForgetPassword} />
+        <Stack.Screen name="Favourite" component={FavouriteScreen} />
+
       </Stack.Navigator>
     </View>
   );

@@ -7,6 +7,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.white,
   },
+  
   headerContainer: {
     paddingHorizontal: mvs(16),
     paddingVertical: mvs(10),
@@ -36,6 +37,15 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     // elevation: 1, // Android shadow
+  },
+    IconContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: mvs(50),
+    height: mvs(50),
+    marginRight: mvs(10),
+    borderRadius: mvs(12),
+    marginBottom: mvs(18),
   },
   subCategoryLeft: {
     flex: 1,

@@ -61,14 +61,18 @@ const CategorySection = ({}) => {
       });
 
       if (res.data.success) {
-        const subcategories = res.data.data;
+        const subcategories = res.data.data.map(sub => ({
+          ...sub,
+          imageURL: sub.image ? `${BASE_URL_Product}${sub.image}` : null,
+          imageName: sub.imageName || null,
+        }));
         console.log('Response of categories : ', res.data.data);
         navigation.navigate('SubCategoryMain', {
           category: categoryName,
           categoryId: categoryId,
           subcategories,
         });
-    console.log(`Category ${categoryName} clicked`);
+        console.log(`Category ${categoryName} clicked`);
       } else {
         console.warn('No subcategories found');
       }
@@ -82,60 +86,84 @@ const CategorySection = ({}) => {
   }
 
   return (
-  <View style={styles.categoryContainer}>
-    {/* Row 1 - Big Icons */}
-    <View style={styles.row1}>
-      {categories
-        .filter(cat => ['Vehicle', 'Property'].includes(cat.name) && cat.status === 1)
-        .map(item => {
-          const imageURL = item.image ? `${BASE_URL_Product}${item.image}` : null;
-          const Icon = categoryIcons[item.name] || HOMESVG;
+    <View style={styles.categoryContainer}>
+      {/* Row 1 - Big Icons */}
+      <View style={styles.row1}>
+        {categories
+          .filter(
+            cat =>
+              ['Vehicle', 'Property'].includes(cat.name) && cat.status === 1,
+          )
+          .map(item => {
+            const imageURL = item.image
+              ? `${BASE_URL_Product}${item.image}`
+              : null;
+            const Icon = categoryIcons[item.name] || HOMESVG;
 
-          return (
-            <TouchableOpacity
-              key={item.id}
-              style={styles.bigCard}
-              onPress={() => handleCategoryPress(item.name, item.id)}>
-              {imageURL ? (
-                <Image source={{uri: imageURL}} style={styles.bigIcon} />
-              ) : (
-                <Icon width={60} height={60} />
-              )}
-              <Text style={styles.categoryText}>{item.name}</Text>
-            </TouchableOpacity>
-          );
-        })}
+            return (
+              <TouchableOpacity
+                key={item.id}
+                style={styles.bigCard}
+                onPress={() => handleCategoryPress(item.name, item.id)}>
+                {/* <View style={styles.textTop}>
+                  <Text style={styles.categoryText}>{item.name}</Text>
+                </View>
+                <View style={styles.iconBottomRight}>
+                  {imageURL ? (
+                    <Image source={{uri: imageURL}} style={styles.bigIcon} />
+                  ) : (
+                    <Icon width={50} height={50} />
+                  )}
+                </View> */}
+                <View style={styles.bigCardContent}>
+  <Text style={styles.categoryText}>{item.name}</Text>
+  {imageURL ? (
+    <Image source={{uri: imageURL}} style={styles.bigIcon} />
+  ) : (
+    <Icon width={60} height={60} />
+  )}
+</View>
+
+              </TouchableOpacity>
+            );
+          })}
+      </View>
+
+      {/* Row 2 - Small Icons */}
+      <View style={styles.row}>
+        {categories
+          .filter(
+            cat =>
+              ['Services', 'New & Used', 'Spare Parts'].includes(cat.name) &&
+              cat.status === 1,
+          )
+          .map(item => {
+            const imageURL = item.image
+              ? `${BASE_URL_Product}${item.image}`
+              : null;
+            const Icon = categoryIcons[item.name] || HOMESVG;
+
+            return (
+              <TouchableOpacity
+                key={item.id}
+                style={styles.smallCard}
+                onPress={() => handleCategoryPress(item.name, item.id)}>
+                <View style={styles.textTop}>
+                  <Text style={styles.categoryText}>{item.name}</Text>
+                </View>
+                <View style={styles.iconBottomFull}>
+                  {imageURL ? (
+                    <Image source={{uri: imageURL}} style={styles.smallIcon} />
+                  ) : (
+                    <Icon width={'100%'} height={40} />
+                  )}
+                </View>
+              </TouchableOpacity>
+            );
+          })}
+      </View>
     </View>
-
-    {/* Row 2 - Small Icons */}
-    <View style={styles.row}>
-      {categories
-        .filter(
-          cat =>
-            ['Services', 'New & Used', 'Spare Parts'].includes(cat.name) &&
-            cat.status === 1,
-        )
-        .map(item => {
-          const imageURL = item.image ? `${BASE_URL_Product}${item.image}` : null;
-          const Icon = categoryIcons[item.name] || HOMESVG;
-
-          return (
-            <TouchableOpacity
-              key={item.id}
-              style={styles.smallCard}
-              onPress={() => handleCategoryPress(item.name, item.id)}>
-              {imageURL ? (
-                <Image source={{uri: imageURL}} style={styles.smallIcon} />
-              ) : (
-                <Icon width={36} height={36} />
-              )}
-              <Text style={styles.categoryText}>{item.name}</Text>
-            </TouchableOpacity>
-          );
-        })}
-    </View>
-  </View>
-);
+  );
 };
 
 // Memoize with custom comparison to prevent re-renders

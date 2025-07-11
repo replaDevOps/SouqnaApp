@@ -155,7 +155,6 @@ const Profile = () => {
       console.error('Language toggle error:', error);
     }
   };
-  
 
   return (
     <Animated.View style={{flex: 1, transform: [{translateX: translateXAnim}]}}>
@@ -177,7 +176,8 @@ const Profile = () => {
         </View>
 
         <View style={styles.container}>
-          {(activeRole === '2' || activeRole === 2) && <VerificationStatus />}
+          {/* {(activeRole === '2' || activeRole === 2) && <VerificationStatus />} */}
+          <VerificationStatus />
 
           <View style={styles.content}>
             <Regular style={styles.regularText}>{t('general')}</Regular>
@@ -211,7 +211,21 @@ const Profile = () => {
                   <ForwardSVG width={24} height={24} fill={colors.green} />
                 </TouchableOpacity>
               ) : (
-                ''
+                <TouchableOpacity
+                  style={styles.menuItemContainer}
+                  onPress={() => navigation.navigate('Verification')}>
+                  <View style={styles.leftRow}>
+                    <View style={styles.iconWrapper}>
+                      <VerifiedSVG width={22} height={22} />
+                    </View>
+                    <Regular style={styles.menuText}>
+                      {verificationStatus === 2 || verificationStatus === 1
+                        ? t('UpdateInformation')
+                        : t('getVerified')}
+                    </Regular>
+                  </View>
+                  <ForwardSVG width={24} height={24} fill={colors.green} />
+                </TouchableOpacity>
               )}
 
               <TouchableOpacity

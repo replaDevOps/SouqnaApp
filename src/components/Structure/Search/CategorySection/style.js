@@ -41,49 +41,105 @@ const styles = StyleSheet.create({
 
 
 
-row: {
-  flexDirection: 'row',
-  justifyContent: 'space-around',
-  // marginBottom: mvs(30), // reduced slightly
-},
+// Update styles
 row1: {
   flexDirection: 'row',
-  justifyContent: 'space-around',
-  marginBottom: mvs(30), // reduced slightly
+  justifyContent: 'space-between',
+  marginBottom: mvs(20),
+  paddingHorizontal: mvs(10),
+},
+
+row: {
+  flexDirection: 'row',
+  flexWrap: 'wrap',
+  justifyContent: 'space-between',
+  rowGap: mvs(15),
+  paddingHorizontal: mvs(10),
 },
 
 bigCard: {
-  alignItems: 'center',
-  width: '45%',
+  width: '48%',
+  height: mvs(100),
+  backgroundColor: '#fff',
+  borderRadius: mvs(12),
+  padding: mvs(10),
+  justifyContent: 'space-between',
+  position: 'relative',
+  borderWidth: 1,
+  borderColor: '#ddd',
+  // elevation: 4,
+  // shadowColor: '#000',
+  // shadowOffset: { width: 0, height: 2 },
+  // shadowOpacity: 0.1,
+  // shadowRadius: 4,
 },
 
 smallCard: {
-  alignItems: 'center',
-  width: '28%',
+  width: '30%',
+  height: mvs(100),
+  backgroundColor: '#fff',
+  borderRadius: mvs(12),
+  padding: mvs(10),
+  justifyContent: 'space-between',
+  position: 'relative',
+  borderWidth: 1,
+  borderColor: '#ddd',
+  // elevation: 4,
+  // shadowColor: '#000',
+  // shadowOffset: { width: 0, height: 2 },
+  // shadowOpacity: 0.1,
+  // shadowRadius: 4,
 },
 
 bigIcon: {
-  width: 50,
-  height: 50,
-  marginBottom: 8,
-  resizeMode: 'contain',
-    borderRadius: 50 / 2,
-  backgroundColor: colors.lightorange,
+  width: mvs(60),
+  height: mvs(60),
+  resizeMode: 'stretch',
 },
 
 smallIcon: {
-  width: 40,
-  height: 40,
-  marginBottom: 6,
-  resizeMode: 'contain',
-    borderRadius: 45 / 2,
-  backgroundColor: colors.lightorange,
+  width: mvs(60),
+  height: mvs(50),
+  borderRadius: mvs(25),
+  resizeMode: 'stretch',
+},
+BigcategoryText: {
+  fontSize: mvs(20),
+  fontWeight: 'bold',
+  color: '#333',
+  // textAlign: 'center',
+  marginTop: mvs(4),
+},
+categoryText: {
+  fontSize: mvs(15),
+  fontWeight: 'bold',
+  color: '#333',
+  textAlign: 'center',
+  marginVertical: mvs(4),
 },
 
-categoryText: {
-  fontSize: 14,
-  fontWeight: '500',
-  textAlign: 'center',
+textTop: {
+  // alignItems: 'center',
+  marginBottom: mvs(10),
+},
+
+iconBottomRight: {
+  position: 'absolute',
+  bottom: mvs(10),
+  right: mvs(10),
+},
+
+iconBottomFull: {
+  width: '100%',
+  alignItems: 'center',
+  justifyContent: 'flex-end',
+  flex: 1,
+},
+bigCardContent: {
+  flex: 1,
+  justifyContent: 'center',
+  alignItems: 'center',
+  gap: mvs(6),
 },
 
 
