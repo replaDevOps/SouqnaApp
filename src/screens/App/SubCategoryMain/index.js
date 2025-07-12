@@ -17,12 +17,15 @@ import {ForwardSVG, ProfileSVG} from '../../../assets/svg';
 import styles from '../AdvertiseAll/style';
 import {fetchBuyerProducts} from '../../../api/apiServices';
 import {colors} from '../../../util/color';
+import {useTranslation} from 'react-i18next';
+import i18n from '../../../i18n/i18n';
 
 const SubCategoryMain = () => {
   const route = useRoute();
   const {category, subcategories, categoryId} = route.params;
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false); // 👈 Add loading state
+  const {t} = useTranslation();
 
   const handleSubcategoryPress = async subcategory => {
     const isAllCategory = subcategory.id === null;
@@ -47,7 +50,7 @@ const SubCategoryMain = () => {
           navigation.navigate('Products', {
             categoryId,
             id: null,
-            name: `All ${category}`,
+            name: `${t('all')} ${category}`,
             category,
             initialProducts: parsedProducts,
             subcategoryImage: subcategory.imageURL,
@@ -66,7 +69,7 @@ const SubCategoryMain = () => {
       navigation.navigate('Products', {
         categoryId,
         id: subcategory.id,
-        name: subcategory.name,
+        name: getSubCategoryName(subcategory),
         category,
       });
     }
@@ -74,6 +77,10 @@ const SubCategoryMain = () => {
 
   const handleBack = () => {
     navigation.goBack();
+  };
+
+  const getSubCategoryName = item => {
+    return i18n.language === 'ar' ? item.ar_name : item.name;
   };
 
   const renderSubCategoryItem = ({item}) => (
@@ -97,7 +104,9 @@ const SubCategoryMain = () => {
         )}
       </View>
       <View style={styles.subCategoryLeft}>
-        <Regular style={styles.subCategoryText}>{item.name}</Regular>
+        <Regular style={styles.subCategoryText}>
+          {getSubCategoryName(item)}
+        </Regular>
       </View>
       <ForwardSVG width={26} height={26} />
     </TouchableOpacity>
@@ -108,7 +117,11 @@ const SubCategoryMain = () => {
       <StatusBar barStyle="dark-content" />
       <CategoryHeader title={category} onBack={handleBack} />
       <View style={styles.headerContainer}>
-        <Regular style={styles.header}>All {category}</Regular>
+        <Regular style={styles.header}>
+          {' '}
+          {t(`all`)}
+          {category}
+        </Regular>
       </View>
 
       {loading ? ( // 👈 Show loader if loading
@@ -128,14 +141,15 @@ const SubCategoryMain = () => {
                 onPress={() =>
                   handleSubcategoryPress({
                     id: null,
-                    name: `All ${category}`,
+                    name: `${t('all')} ${category}`,
                     imageURL: null,
                     imageName: null,
                   })
                 }>
                 <View style={styles.titleContainer}>
                   <Regular style={styles.subCategoryText}>
-                    All {category}
+                    {t(`all`)}
+                    {category}
                   </Regular>
                 </View>
                 <ForwardSVG width={26} height={26} />

@@ -12,6 +12,8 @@ import API, {
   fetchCategories,
 } from '../../../../api/apiServices';
 import {setCategories} from '../../../../redux/slices/categorySlice';
+import {useTranslation} from 'react-i18next';
+import i18n from '../../../../i18n/i18n';
 
 const {categoryIcons} = dummyData;
 
@@ -22,6 +24,8 @@ const CategorySection = ({}) => {
   const categories = useSelector(state => state.category.categories);
   const SERVER_URL = {BASE_URL_Product};
   const {token} = useSelector(state => state.user);
+  const {i18n} = useTranslation();
+  const language = i18n.language;
 
   // Simulate loading time
   useEffect(() => {
@@ -84,6 +88,9 @@ const CategorySection = ({}) => {
   if (isLoading) {
     return <CategorySkeleton />;
   }
+  const getCategoryName = item => {
+    return language === 'ar' ? item.ar_name : item.name;
+  };
 
   return (
     <View style={styles.categoryContainer}>
@@ -104,26 +111,20 @@ const CategorySection = ({}) => {
               <TouchableOpacity
                 key={item.id}
                 style={styles.bigCard}
-                onPress={() => handleCategoryPress(item.name, item.id)}>
-                {/* <View style={styles.textTop}>
-                  <Text style={styles.categoryText}>{item.name}</Text>
-                </View>
-                <View style={styles.iconBottomRight}>
+                onPress={() =>
+                  handleCategoryPress(getCategoryName(item), item.id)
+                }>
+                <View style={styles.bigCardContent}>
+                  <Text style={styles.categoryText}>
+                    {getCategoryName(item)}
+                  </Text>
+
                   {imageURL ? (
                     <Image source={{uri: imageURL}} style={styles.bigIcon} />
                   ) : (
-                    <Icon width={50} height={50} />
+                    <Icon width={60} height={60} />
                   )}
-                </View> */}
-                <View style={styles.bigCardContent}>
-  <Text style={styles.categoryText}>{item.name}</Text>
-  {imageURL ? (
-    <Image source={{uri: imageURL}} style={styles.bigIcon} />
-  ) : (
-    <Icon width={60} height={60} />
-  )}
-</View>
-
+                </View>
               </TouchableOpacity>
             );
           })}
@@ -147,9 +148,13 @@ const CategorySection = ({}) => {
               <TouchableOpacity
                 key={item.id}
                 style={styles.smallCard}
-                onPress={() => handleCategoryPress(item.name, item.id)}>
+                onPress={() =>
+                  handleCategoryPress(getCategoryName(item), item.id)
+                }>
                 <View style={styles.textTop}>
-                  <Text style={styles.categoryText}>{item.name}</Text>
+                  <Text style={styles.categoryText}>
+                    {getCategoryName(item)}
+                  </Text>
                 </View>
                 <View style={styles.iconBottomFull}>
                   {imageURL ? (

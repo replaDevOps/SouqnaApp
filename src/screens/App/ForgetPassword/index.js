@@ -6,6 +6,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Text,
+  Image,
 } from 'react-native';
 import {MyButton} from '../../../components/atoms/InputFields/MyButton';
 import {SouqnaLogo} from '../../../assets/svg';
@@ -61,8 +62,10 @@ const ForgetPassword = () => {
           <Header title={t('Help')} />
 
           <View style={styles.HeaderContainer}>
-            <SouqnaLogo width={50} height={50} />
-            <Bold style={styles.title}>Souqna</Bold>
+            <Image
+              source={require('../../../assets/img/logo1.png')}
+              style={{height: 150, width: 150}}
+            />
           </View>
           <View>
             <Text style={{fontSize: mvs(16), fontWeight: 'bold'}}></Text>

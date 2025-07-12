@@ -170,9 +170,8 @@ const OTPScreen = ({navigation}) => {
             }}>
             <Image
               source={require('../../../assets/img/logo1.png')}
-              style={{height: 50, width: 50}}
+              style={{height: 150, width: 150}}
             />
-            <Bold style={styles.title}>Souqna</Bold>
           </View>
           <Text style={styles.instruction}>{t('enterCodeSent')}</Text>
 

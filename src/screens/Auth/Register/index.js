@@ -96,7 +96,7 @@ const Register = () => {
       password,
       role,
       fcm: storedFcmToken,
-        sellerType: 1, // 1 = Company, 2 = Private
+      sellerType: 1, // 1 = Company, 2 = Private
       // ...(isSeller && {
       //   sellerType: sellerType === 'Company' ? 1 : 2,
       // }),
@@ -190,9 +190,8 @@ const Register = () => {
           <View style={styles.HeaderContainer}>
             <Image
               source={require('../../../assets/img/logo1.png')}
-              style={{height: 70, width: 70}}
+              style={{height: 150, width: 150}}
             />
-            <Bold style={styles.title}>Souqna</Bold>
           </View>
           <Bold style={styles.howText}>
             {t('How do you want to use Souqna?')}

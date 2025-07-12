@@ -1,4 +1,4 @@
-import { useRef, useState} from 'react';
+import {useRef, useState} from 'react';
 import {
   View,
   ToastAndroid,
@@ -111,10 +111,11 @@ const LoginScreen = () => {
           // Show role selection modal if both
           // setShowRoleSelection(true);
           dispatch(
-            showSnackbar(t('buyerLoginSuccess')
+            showSnackbar(
+              t('buyerLoginSuccess'),
               // user.role === 3
-                // ? t('buyerLoginSuccess')
-                // : t('sellerLoginSuccess'),
+              // ? t('buyerLoginSuccess')
+              // : t('sellerLoginSuccess'),
             ),
             navigation.replace('MainTabs'),
           );
@@ -186,8 +187,11 @@ const LoginScreen = () => {
           <Header title={t('Help')} />
 
           <View style={styles.HeaderContainer}>
-            <Image source={require('../../../assets/img/logo1.png')} style={{height: 70, width:70}}/>
-            <Bold style={styles.title}>Souqna</Bold>
+            <Image
+              source={require('../../../assets/img/logo1.png')}
+              style={{height: 150, width: 150}}
+            />
+            {/* <Bold style={styles.title}>Souqna</Bold> */}
           </View>
 
           <PrimaryPasswordInput
