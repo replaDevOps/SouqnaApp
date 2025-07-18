@@ -17,9 +17,8 @@ import Regular from '../../../typography/RegularText';
 import styles from './styles';
 import {MyButton} from '../../../components/atoms/InputFields/MyButton';
 import {setRole, setTokens, setUser} from '../../../redux/slices/userSlice';
-import {EYESVG, SouqnaLogo} from '../../../assets/svg';
+import {EYESVG,} from '../../../assets/svg';
 import PrimaryPasswordInput from '../../../components/atoms/InputFields/PrimaryPasswordInput';
-import Bold from '../../../typography/BoldText';
 import Header from '../../../components/Headers/Header';
 import {loginUser} from '../../../api/authServices';
 import {colors} from '../../../util/color';
@@ -186,8 +185,7 @@ const LoginScreen = () => {
           <Header title={t('Help')} />
 
           <View style={styles.HeaderContainer}>
-            <Image source={require('../../../assets/img/logo1.png')} style={{height: 70, width:70}}/>
-            <Bold style={styles.title}>Souqna</Bold>
+            <Image source={require('../../../assets/img/logo1.png')} style={{height: 72, width:72}}/>
           </View>
 
           <PrimaryPasswordInput
