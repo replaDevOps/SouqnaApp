@@ -327,7 +327,9 @@ export const fetchBuyerProducts = async (filters = {}) => {
     });
     console.log('Endpoint Used: showProducts (Buyer/Guest)');
 
-    if (response.status === 200) return response.data;
+    if (response.status === 200) {
+      return response.data;
+    }
     console.error(`Error: Received status code ${response.status}`);
     return null;
   } catch (error) {

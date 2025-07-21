@@ -1,6 +1,13 @@
 // RecommendedSection.js
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
-import {FlatList, View, TouchableOpacity, Image, Text} from 'react-native';
+import React, {useCallback, useEffect, useMemo, useState, useImperativeHandle, forwardRef} from 'react';
+import {
+  FlatList,
+  View,
+  TouchableOpacity,
+  Image,
+  Text,
+  RefreshControl,
+} from 'react-native';
 import styles from './style';
 import Regular from '../../../../typography/RegularText';
 import {HeartSvg} from '../../../../assets/svg';
@@ -19,14 +26,10 @@ import ProductCardSkeleton from './ProductCardSkeleton';
 import {useNavigation} from '@react-navigation/native';
 import {showSnackbar} from '../../../../redux/slices/snackbarSlice';
 
-const RecommendedSection = () => {
+const RecommendedSection = forwardRef(({onRefreshRef}, ref) => {
   const hideTitle = false;
   const [apiProducts, setApiProducts] = useState([]);
-  console.log('🚀 ~ RecommendedSection ~ apiProducts:', apiProducts);
   const [productsLoading, setProductsLoading] = useState(true);
-  const [isEndOfResults, setIsEndOfResults] = useState(false);
-  const [refreshing, setRefreshing] = useState(false);
-  const [page, setPage] = useState(1);
   const navigation = useNavigation();
 
   const {token, role} = useSelector(state => state.user);
@@ -70,13 +73,25 @@ const RecommendedSection = () => {
       console.error('Invalid products data', response);
     }
     setProductsLoading(false);
-  }, [token]);
+  }, [token, role]);
+
+  // Expose the refresh function to parent component
+  useImperativeHandle(ref, () => ({
+    refresh: loadProducts
+  }));
+
+  // Set the ref for parent component to access
+  useEffect(() => {
+    if (onRefreshRef) {
+      onRefreshRef.current = loadProducts;
+    }
+  }, [loadProducts, onRefreshRef]);
 
   useEffect(() => {
     loadProducts();
   }, [loadProducts]);
 
-  async function handleHeartClick(id, item) {
+  const handleHeartClick = useCallback(async (id, item) => {
     if (role === 2) {
       showSnackbar('Log in as buyer');
       return;
@@ -104,11 +119,9 @@ const RecommendedSection = () => {
         setApiProducts(updatedState);
       });
     }
-  }
+  }, [role, token, apiProducts]);
 
-  async function loadMoreProducts() {
-    console.log('Loading more products');
-  }
+  async function loadMoreProducts() {}
 
   const renderRecommendedItem = useCallback(
     ({item}) => (
@@ -138,7 +151,7 @@ const RecommendedSection = () => {
         )}
       </TouchableOpacity>
     ),
-    [handleHeartClick, role],
+    [handleHeartClick, role, navigation],
   );
 
   // Render skeleton items in the same layout as the actual product items
@@ -170,14 +183,6 @@ const RecommendedSection = () => {
             : ''}
         </Bold>
       )}
-      {/* <Button
-        title="Test Deep Link"
-        onPress={() =>
-          Linking.openURL(
-            'myapp://product/ddf69a24-0c13-4185-a639-ec1372ece937',
-          )
-        }
-      /> */}
 
       {productsLoading ? (
         renderSkeletonList()
@@ -192,13 +197,13 @@ const RecommendedSection = () => {
           // refreshControl={
           //   <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           // }
-          ListFooterComponent={
-            isEndOfResults ? (
-              <Regular style={styles.endOfResultsText}>
-                {t('endOfResults')}
-              </Regular>
-            ) : null
-          }
+          // ListFooterComponent={
+          //   isEndOfResults ? (
+          //     <Regular style={styles.endOfResultsText}>
+          //       {t('endOfResults')}
+          //     </Regular>
+          //   ) : null
+          // }
           ListEmptyComponent={
             !productsLoading && (
               <View style={{paddingVertical: mvs(100)}}>
@@ -220,6 +225,6 @@ const RecommendedSection = () => {
       )}
     </View>
   );
-};
+});
 
 export default RecommendedSection;

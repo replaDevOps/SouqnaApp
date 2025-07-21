@@ -22,7 +22,6 @@ const FavouriteScreen = () => {
   const {role, token} = useSelector(state => state.user);
   const {t} = useTranslation();
   const [favorites, setFavorites] = useState([]);
-  console.log('🚀 ~ FavouriteScreen ~ favorites:', favorites);
 
   useEffect(() => {
     if (token) {
@@ -34,8 +33,6 @@ const FavouriteScreen = () => {
     }
   }, [token]);
 
-  console.log('Favorites:', favorites);
-
   const handleHeartClick = async (id, product) => {
     if (role === 2) {
       showSnackbar('Log in as buyer');
@@ -44,11 +41,11 @@ const FavouriteScreen = () => {
     // Check if the product is already in favorites
     const isInFavorites = favorites.some(fav => fav.product?.id === id);
     if (isInFavorites) {
-      //   // If the product is already in favorites, remove it
       await removeFromFavorite(id, token).then(res => {
-        setFavorites(prevState =>
-          prevState.filter(fav => fav.product?.id !== id),
+        const updatedFavorites = favorites.filter(
+          fav => fav.product?.id !== id,
         );
+        setFavorites(updatedFavorites);
       });
     }
   };
@@ -83,12 +80,6 @@ const FavouriteScreen = () => {
           style={styles.recommendedImage}
         />
         <View style={styles.recommendedTextContainer}>
-          {/* <Regular
-          style={styles.recommendedLocation}
-          numberOfLines={2}
-          ellipsizeMode="tail">
-          {item.location}
-        </Regular> */}
           <Regular style={styles.recommendedTitle}>{favItem.name}</Regular>
           <Regular style={styles.recommendedPrice}>${favItem.price}</Regular>
         </View>
