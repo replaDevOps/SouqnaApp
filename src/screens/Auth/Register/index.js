@@ -192,7 +192,6 @@ const Register = () => {
               source={require('../../../assets/img/logo1.png')}
               style={{height: 70, width: 70}}
             />
-            <Bold style={styles.title}>Souqna</Bold>
           </View>
           <Bold style={styles.howText}>
             {t('How do you want to use Souqna?')}

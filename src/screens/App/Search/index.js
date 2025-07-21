@@ -1,12 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
 
 import {useCallback, useEffect, useRef, useState} from 'react';
-import {
-  RefreshControl,
-  ScrollView,
-  StatusBar,
-  View,
-} from 'react-native';
+import {RefreshControl, ScrollView, StatusBar, View} from 'react-native';
 import SearchHeader from '../../../components/Headers/SearchHeader';
 import styles from './style';
 import AddModal from '../../../components/Modals/AddModal';
@@ -14,14 +9,12 @@ import {useIsFocused, useNavigation} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
 import CategorySection from '../../../components/Structure/Search/CategorySection/CategorySection';
 import RecommendedSection from '../../../components/Structure/Search/RecommendedSection/RecommendedSection';
-import {
-  addFavorite,
-  removeFavorite,
-} from '../../../redux/slices/favoritesSlice';
 import VerificationModal from '../../../components/Modals/VerificationModal';
 import API, {
+  addToFavorite,
   fetchBuyerProducts,
   fetchCategories,
+  removeFromFavorite,
 } from '../../../api/apiServices';
 import {setVerificationStatus} from '../../../redux/slices/userSlice';
 import LogoHeader from '../../../components/Structure/Search/Header/LogoHeader';
@@ -30,15 +23,15 @@ import BannerSlider from '../../../components/atoms/BannerSlider';
 import ProductDashboard from '../../../components/atoms/Dashboard';
 
 const SearchScreen = () => {
+  const navigation = useNavigation();
   const [likedItems, setLikedItems] = useState({});
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const navigation = useNavigation();
   const [isSearchMode, setIsSearchMode] = useState(false);
   const [loading, setLoading] = useState(false);
   const [allProducts, setAllProducts] = useState([]);
   const [allRecommendedProducts, setAllRecommendedProducts] = useState([]);
-const dashboardRefreshRef = useRef(null);
+  const dashboardRefreshRef = useRef(null);
 
   const [isEndOfResults, setIsEndOfResults] = useState(false);
   const {token, verificationStatus, role} = useSelector(state => state.user);
@@ -98,24 +91,24 @@ const dashboardRefreshRef = useRef(null);
     }
   }, [token, dispatch, isFocused, role]);
 
-  useEffect(() => {
-    const loadProducts = async () => {
-      setLoading(true);
+  // useEffect(() => {
+  //   const loadProducts = async () => {
+  //     setLoading(true);
 
-      const response = await fetchBuyerProducts(token, {}, role);
-      if (response?.success) {
-        const products = response.data;
-        setAllRecommendedProducts(products.slice(0, 6));
-        setAllProducts(products);
-        setApiProducts(products);
-        setIsEndOfResults(false);
-      }
+  //     const response = await fetchBuyerProducts(token, {}, role);
+  //     if (response?.success) {
+  //       const products = response.data;
+  //       setAllRecommendedProducts(products.slice(0, 6));
+  //       setAllProducts(products);
+  //       setApiProducts(products);
+  //       setIsEndOfResults(false);
+  //     }
 
-      setLoading(false);
-    };
+  //     setLoading(false);
+  //   };
 
-    loadProducts();
-  }, [token, role, setApiProducts]);
+  //   loadProducts();
+  // }, [token, role, setApiProducts]);
 
   useEffect(() => {
     // if (role === 3) return;
@@ -171,52 +164,44 @@ const dashboardRefreshRef = useRef(null);
   };
 
   // Simulate an API call to fetch more data
-  const loadMoreRecommendedProducts = useCallback(async () => {
-    if (loading || isEndOfResults) {
-      return;
-    }
-    setLoading(true);
+  // const loadMoreRecommendedProducts = useCallback(async () => {
+  //   if (loading || isEndOfResults) {
+  //     return;
+  //   }
+  //   setLoading(true);
 
-    setTimeout(() => {
-      const nextProducts = allRecommendedProducts.slice(
-        allRecommendedProducts.length,
-        allRecommendedProducts.length + 6,
-      );
+  //   setTimeout(() => {
+  //     const nextProducts = allRecommendedProducts.slice(
+  //       allRecommendedProducts.length,
+  //       allRecommendedProducts.length + 6,
+  //     );
 
-      if (nextProducts.length === 0) {
-        setIsEndOfResults(true);
-      } else {
-        setAllRecommendedProducts(prevState => [...prevState, ...nextProducts]);
-      }
+  //     if (nextProducts.length === 0) {
+  //       setIsEndOfResults(true);
+  //     } else {
+  //       setAllRecommendedProducts(prevState => [...prevState, ...nextProducts]);
+  //     }
 
-      setLoading(false);
-    }, 1500);
-  }, [loading, allRecommendedProducts, isEndOfResults]);
+  //     setLoading(false);
+  //   }, 1500);
+  // }, [loading, allRecommendedProducts, isEndOfResults]);
 
-  const handleHeartClick = (id, product) => {
-    if (role === 2) {
-      showSnackbar('Log in as buyer');
-      return;
-    }
+  // const handleHeartClick = async (id, product) => {
+  //   console.log('Liked items:', id,product);
+  //   if (role === 2) {
+  //     showSnackbar('Log in as buyer');
+  //     return;
+  //   }
 
-    if (likedItems[id]) {
-      // If the product is already in the favorites, remove it
-      dispatch(removeFavorite(product));
-      setLikedItems(prevState => {
-        const updatedState = {...prevState};
-        delete updatedState[id];
-        return updatedState;
-      });
-      console.log('Removed from favorites:', product);
-    } else {
-      dispatch(addFavorite(product));
-      setLikedItems(prevState => ({
-        ...prevState,
-        [id]: true,
-      }));
-      console.log('Added to favorites:', product);
-    }
-  };
+  //   if (likedItems[id]) {
+  //     console.log('Removing from favorites:', likedItems[id]);
+  //     // If the product is already in the favorites, remove it
+  //    
+  //   } else {
+  //     console.log('Adding to favorites:', likedItems[id]);
+  //    
+  //   }
+  // };
 
   const onClose = () => {
     setIsModalVisible(false);
@@ -237,17 +222,12 @@ const dashboardRefreshRef = useRef(null);
     navigation.navigate('SearchResultsScreen');
   };
 
-  const navigateToProductDetails = productId => {
-    navigation.navigate('ProductDetail', {productId});
-    console.log('Product ID: ', productId);
-  };
-
   const onRefresh = async () => {
-      console.log('Refreshing...');
+    console.log('Refreshing...');
 
     setRefreshing(true);
     try {
-          dashboardRefreshRef.current?.(); // 👈 refresh dashboard
+      dashboardRefreshRef.current?.(); // 👈 refresh dashboard
 
       setCategoriesLoading(true);
       const categoriesResponse = await fetchCategories(token);
@@ -255,7 +235,7 @@ const dashboardRefreshRef = useRef(null);
         setApiCategories(categoriesResponse.data);
       }
       setCategoriesLoading(false);
- 
+
       const productsResponse = await fetchBuyerProducts(token, {}, role);
       if (productsResponse?.success) {
         const products = productsResponse.data;
@@ -268,8 +248,7 @@ const dashboardRefreshRef = useRef(null);
       console.error('Error refreshing data:', error);
     } finally {
       setRefreshing(false);
-          console.log('Refresh complete');
-
+      console.log('Refresh complete');
     }
   };
 
@@ -280,15 +259,6 @@ const dashboardRefreshRef = useRef(null);
       <View style={styles.LogoHeader}>
         <LogoHeader />
       </View>
-
-      {/* {role !== 2 && (
-        <TouchableOpacity
-          onPress={() => navigation.navigate('Map', {allProducts})}
-          // onPress={() => setModalVisible(true)}
-          style={styles.mapContainer}>
-          <MapMarkerSVG width={35} height={35} fill={colors.white} />
-        </TouchableOpacity>
-      )} */}
       <ScrollView
         contentContainerStyle={{backgroundColor: '#fbfbfb', flexGrow: 1}}
         refreshControl={
@@ -309,26 +279,13 @@ const dashboardRefreshRef = useRef(null);
         <CategorySection categories={apiCategories} />
 
         {/* {!isModalVisible && hasFetchedVerification && <BannerSlider />} */}
-        {!token ? null : role === 3 ? <BannerSlider /> : <ProductDashboard onRefresh={onRefresh}/>}
+        {!token ? null : role === 3 ? (
+          <BannerSlider />
+        ) : (
+          <ProductDashboard onRefresh={onRefresh} />
+        )}
 
-        {/* <BannerSlider /> */}
-
-        {/* {role !== 2 && role !== '2' && (
-          <GalleryContainer
-            onProductSelect={navigateToProductDetails}
-            onRefresh={onRefresh}
-          />
-        )} */}
-
-        <RecommendedSection
-          products={allRecommendedProducts}
-          loadMoreProducts={loadMoreRecommendedProducts}
-          // onRefresh={onRefresh}
-          isEndOfResults={isEndOfResults}
-          likedItems={likedItems}
-          handleHeartClick={handleHeartClick}
-          navigateToProductDetails={navigateToProductDetails}
-        />
+        <RecommendedSection />
       </ScrollView>
 
       {isModalVisible && !token && <AddModal onClose={onClose} />}

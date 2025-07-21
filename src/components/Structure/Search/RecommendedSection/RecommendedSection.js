@@ -1,55 +1,35 @@
 // RecommendedSection.js
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
-import {
-  FlatList,
-  View,
-  TouchableOpacity,
-  Image,
-  Text,
-  RefreshControl,
-  Button,
-  Linking,
-} from 'react-native';
+import {FlatList, View, TouchableOpacity, Image, Text} from 'react-native';
 import styles from './style';
 import Regular from '../../../../typography/RegularText';
 import {HeartSvg} from '../../../../assets/svg';
 import Bold from '../../../../typography/BoldText';
 import {useSelector} from 'react-redux';
 import {
+  addToFavorite,
   BASE_URL_Product,
   fetchBuyerProducts,
-  fetchProducts,
   fetchSellerProducts,
+  removeFromFavorite,
 } from '../../../../api/apiServices';
 import {useTranslation} from 'react-i18next';
 import {mvs} from '../../../../util/metrices';
 import ProductCardSkeleton from './ProductCardSkeleton';
+import {useNavigation} from '@react-navigation/native';
+import {showSnackbar} from '../../../../redux/slices/snackbarSlice';
 
-const RecommendedSection = ({
-  products,
-  loadMoreProducts,
-  loading,
-  isEndOfResults,
-  // likedItems,
-  handleHeartClick,
-  navigateToProductDetails,
-  hideTitle,
-  refreshing,
-  onRefresh,
-}) => {
+const RecommendedSection = () => {
+  const hideTitle = false;
   const [apiProducts, setApiProducts] = useState([]);
+  console.log('🚀 ~ RecommendedSection ~ apiProducts:', apiProducts);
   const [productsLoading, setProductsLoading] = useState(true);
+  const [isEndOfResults, setIsEndOfResults] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+  const [page, setPage] = useState(1);
+  const navigation = useNavigation();
 
   const {token, role} = useSelector(state => state.user);
-  const favorites = useSelector(state => state.favorites.favorites);
-
-  const likedItemes = useMemo(() => {
-    const map = {};
-    favorites.forEach(item => {
-      map[item.id] = true;
-    });
-    return map;
-  }, [favorites]);
 
   const {t} = useTranslation();
   const getCurrencySymbol = (currency = 'USD') => {
@@ -64,6 +44,7 @@ const RecommendedSection = ({
         return '$';
     }
   };
+
   const loadProducts = useCallback(async () => {
     setProductsLoading(true);
 
@@ -83,7 +64,6 @@ const RecommendedSection = ({
       // Buyer or Guest (role 3 or others)
       response = await fetchBuyerProducts(filters);
     }
-    console.log('API Response:', response);
     if (response?.success && Array.isArray(response.data)) {
       setApiProducts(response.data);
     } else {
@@ -96,11 +76,47 @@ const RecommendedSection = ({
     loadProducts();
   }, [loadProducts]);
 
+  async function handleHeartClick(id, item) {
+    if (role === 2) {
+      showSnackbar('Log in as buyer');
+      return;
+    }
+
+    const isInFavorites = item?.isFavorite;
+    if (isInFavorites) {
+      await removeFromFavorite(id, token).then(res => {
+        const updatedState = apiProducts.map(product => {
+          if (product.id === id) {
+            product.isFavorite = !product.isFavorite;
+          }
+          return product;
+        });
+        setApiProducts(updatedState);
+      });
+    } else {
+      await addToFavorite(id, token).then(res => {
+        const updatedState = apiProducts.map(product => {
+          if (product.id === id) {
+            product.isFavorite = !product.isFavorite;
+          }
+          return product;
+        });
+        setApiProducts(updatedState);
+      });
+    }
+  }
+
+  async function loadMoreProducts() {
+    console.log('Loading more products');
+  }
+
   const renderRecommendedItem = useCallback(
     ({item}) => (
       <TouchableOpacity
         style={styles.recommendedItem}
-        onPress={() => navigateToProductDetails(item.id)}>
+        onPress={() =>
+          navigation.navigate('ProductDetail', {productId: item.id})
+        }>
         <Image
           source={{uri: `${BASE_URL_Product}${item.images?.[0]?.path}`}}
           style={styles.recommendedImage}
@@ -117,12 +133,12 @@ const RecommendedSection = ({
           <TouchableOpacity
             onPress={() => handleHeartClick(item.id, item)}
             style={styles.heartIconContainer}>
-            <HeartSvg filled={likedItemes[item.id]} />
+            <HeartSvg filled={item?.isFavorite} />
           </TouchableOpacity>
         )}
       </TouchableOpacity>
     ),
-    [handleHeartClick, likedItemes, navigateToProductDetails],
+    [handleHeartClick, role],
   );
 
   // Render skeleton items in the same layout as the actual product items

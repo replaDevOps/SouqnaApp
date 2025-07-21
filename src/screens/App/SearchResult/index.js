@@ -20,69 +20,49 @@ import {
   fetchSellerProducts,
 } from '../../../api/apiServices';
 import ProductCard from '../../../components/Cards/ProductCard';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
+import {useDebounced} from '../../../hooks/useDebounce';
 
 const SearchResultsScreen = () => {
   const route = useRoute();
   const navigation = useNavigation();
   const initialSearchText = route.params?.searchText || '';
   const [searchText, setSearchText] = useState(initialSearchText);
+  const debouncedSearchText = useDebounced(searchText, 300);
   const [allProducts, setAllProducts] = useState([]);
-  const [filteredProducts, setFilteredProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const {token, role} = useSelector(state => state.user);
   const {t} = useTranslation();
 
   useEffect(() => {
     loadProducts();
-  }, []);
+  }, [debouncedSearchText]);
 
-  useEffect(() => {
-    filterProducts(searchText);
-  }, [searchText]);
-  const filters = {
-    productName: '',
-    fromDate: '',
-    toDate: '',
-    status: '',
-  };
-  const loadProducts = async () => {
+  async function loadProducts() {
     try {
       setLoading(true);
 
-      // const response = await fetchBuyerProducts(token, {}, role);
       const response =
         role === 2 || role === '2'
-          ? await fetchSellerProducts(token, filters)
-          : await fetchBuyerProducts(filters);
+          ? await fetchSellerProducts(token, {productName: debouncedSearchText})
+          : await fetchBuyerProducts({productName: debouncedSearchText});
       console.log('API product response:', response);
 
       // Adjusting the response to access products inside the 'data' field
       if (response?.success && Array.isArray(response.data)) {
         setAllProducts(response.data); // All products
-        setFilteredProducts(response.data); // Filtered products
+        // setFilteredProducts(response.data); // Filtered products
       } else {
         console.warn('No products received or invalid format:', response);
         setAllProducts([]); // Ensure an empty array if no products
-        setFilteredProducts([]); // Ensure an empty array if no products
+        // setFilteredProducts([]); // Ensure an empty array if no products
       }
     } catch (err) {
       console.error('Error loading products:', err);
     } finally {
       setLoading(false);
     }
-  };
-
-  const filterProducts = query => {
-    if (!query) {
-      setFilteredProducts(allProducts);
-      return;
-    }
-    const filtered = allProducts.filter(product =>
-      product.name?.toLowerCase().startsWith(query.toLowerCase()),
-    );
-    setFilteredProducts(filtered);
-  };
+  }
 
   const handleSearch = query => {
     console.log('Searching for:', query);
@@ -124,7 +104,7 @@ const SearchResultsScreen = () => {
         </View>
       ) : (
         <FlatList
-          data={filteredProducts}
+          data={allProducts}
           numColumns={2}
           keyExtractor={item => item.id?.toString()}
           renderItem={({item}) => <ProductCard product={item} />}

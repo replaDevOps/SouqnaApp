@@ -16,45 +16,43 @@ import MainHeader from '../../../../components/Headers/MainHeader';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useTranslation} from 'react-i18next';
 import {useSelector} from 'react-redux';
-import { GetSeller } from '../../../../api/apiServices';
+import {GetSeller} from '../../../../api/apiServices';
 
 export default function MyAccount() {
   const [isEditing, setIsEditing] = useState(false);
-const [originalData, setOriginalData] = useState({
-  name: '',
-  phone: '',
-  email: '',
-  sellerType: 0,
-});
+  const [originalData, setOriginalData] = useState({
+    name: '',
+    phone: '',
+    email: '',
+    sellerType: 0,
+  });
 
-const [editedData, setEditedData] = useState(originalData);
+  const [editedData, setEditedData] = useState(originalData);
 
   const {t} = useTranslation();
   const {token} = useSelector(state => state.user);
 
-useEffect(() => {
-  const fetchSellerDetails = async () => {
-    if (!token) return;
+  useEffect(() => {
+    const fetchSellerDetails = async () => {
+      if (!token) return;
 
-    const sellerData = await GetSeller(token);
-    console.log('Seller Data:', sellerData);
+      const sellerData = await GetSeller(token);
+      console.log('Seller Data:', sellerData);
 
-    if (sellerData) {
-      const formattedData = {
-        name: sellerData.data?.name || '',
-        phone: sellerData.data?.phoneNo || '',
-        email: sellerData.data?.email || '',
-        sellerType: sellerData.data?.sellerType ?? 0,
-      };
-      setOriginalData(formattedData);
-      setEditedData(formattedData);
-    }
-  };
+      if (sellerData) {
+        const formattedData = {
+          name: sellerData.data?.name || '',
+          phone: sellerData.data?.phoneNo || '',
+          email: sellerData.data?.email || '',
+          sellerType: sellerData.data?.sellerType ?? 0,
+        };
+        setOriginalData(formattedData);
+        setEditedData(formattedData);
+      }
+    };
 
-  fetchSellerDetails();
-}, [token]);
- 
-
+    fetchSellerDetails();
+  }, [token]);
 
   const handleEditToggle = () => {
     if (isEditing) {
@@ -106,24 +104,40 @@ useEffect(() => {
                 {/* {renderEditableRow(t('occupation'), 'occupation')} */}
                 {/* {renderEditableRow(t('address'), 'address')} */}
 
-<View style={styles.row}>
-  <Text style={styles.label}>{t('sellerType')}</Text>
-  {isEditing ? (
-    <TouchableOpacity onPress={() =>
-      handleChange('sellerType', editedData.sellerType === 1 ? 0 : 1)
-    }>
-      {editedData.sellerType === 1 ? (
-        <OnSVG width={50} height={50} stroke={'white'} fill={'green'} />
-      ) : (
-        <OffSVG width={50} height={50} stroke={'white'} fill={'green'} />
-      )}
-    </TouchableOpacity>
-  ) : (
-    <Text style={styles.value}>
-      {editedData.sellerType === 1 ? t('Company') : t('Private')}
-    </Text>
-  )}
-</View>
+                <View style={styles.row}>
+                  <Text style={styles.label}>{t('sellerType')}</Text>
+                  {isEditing ? (
+                    <TouchableOpacity
+                      onPress={() =>
+                        handleChange(
+                          'sellerType',
+                          editedData.sellerType === 1 ? 0 : 1,
+                        )
+                      }>
+                      {editedData.sellerType === 1 ? (
+                        <OnSVG
+                          width={50}
+                          height={50}
+                          stroke={'white'}
+                          fill={'green'}
+                        />
+                      ) : (
+                        <OffSVG
+                          width={50}
+                          height={50}
+                          stroke={'white'}
+                          fill={'green'}
+                        />
+                      )}
+                    </TouchableOpacity>
+                  ) : (
+                    <Text style={styles.value}>
+                      {editedData.sellerType === 1
+                        ? t('Company')
+                        : t('Private')}
+                    </Text>
+                  )}
+                </View>
               </View>
 
               {/* Contact Info */}
@@ -166,38 +180,33 @@ useEffect(() => {
     </KeyboardAvoidingView>
   );
 
-function renderEditableRow(label, field, keyboardType = 'default') {
-  return (
-    <View style={styles.row}>
-      <View style={styles.labelContainer}>
-        <Text style={styles.label} numberOfLines={1}>
-          {label}
-        </Text>
-      </View>
-      <View style={styles.valueContainer}>
-        {isEditing ? (
-          <TextInput
-            style={styles.input}
-            value={editedData[field]}
-            onChangeText={text => handleChange(field, text)}
-            keyboardType={keyboardType}
-            placeholder={label}
-            placeholderTextColor="#9CA3AF"
-          />
-        ) : (
-          <Text
-            style={styles.value}
-            numberOfLines={1}
-            ellipsizeMode="tail">
-            {editedData[field]}
+  function renderEditableRow(label, field, keyboardType = 'default') {
+    return (
+      <View style={styles.row}>
+        <View style={styles.labelContainer}>
+          <Text style={styles.label} numberOfLines={1}>
+            {label}
           </Text>
-        )}
+        </View>
+        <View style={styles.valueContainer}>
+          {isEditing ? (
+            <TextInput
+              style={styles.input}
+              value={editedData[field]}
+              onChangeText={text => handleChange(field, text)}
+              keyboardType={keyboardType}
+              placeholder={label}
+              placeholderTextColor="#9CA3AF"
+            />
+          ) : (
+            <Text style={styles.value} numberOfLines={1} ellipsizeMode="tail">
+              {editedData[field]}
+            </Text>
+          )}
+        </View>
       </View>
-    </View>
-  );
-}
-
-
+    );
+  }
 }
 
 const styles = StyleSheet.create({
@@ -243,37 +252,37 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-labelContainer: {
-  flex: 0.4,
-  paddingRight: 8,
-},
+  labelContainer: {
+    flex: 0.4,
+    paddingRight: 8,
+  },
 
-valueContainer: {
-  flex: 0.6,
-},
+  valueContainer: {
+    flex: 0.6,
+  },
 
-label: {
-  fontSize: 16,
-  fontWeight: '500',
-  color: '#374151',
-},
+  label: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#374151',
+  },
 
-value: {
-  fontSize: 16,
-  color: '#111827',
-  textAlign: 'right',
-},
+  value: {
+    fontSize: 16,
+    color: '#111827',
+    textAlign: 'right',
+  },
 
-input: {
-  fontSize: 16,
-  borderBottomWidth: 1,
-  borderBottomColor: '#E5E7EB',
-  paddingVertical: 4,
-  color: '#111827',
-  width: '100%',
-  textAlign:'left',
-  // textAlignVertical:'top',
-},
+  input: {
+    fontSize: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E7EB',
+    paddingVertical: 4,
+    color: '#111827',
+    width: '100%',
+    textAlign: 'left',
+    // textAlignVertical:'top',
+  },
 
   centered: {
     alignItems: 'center',

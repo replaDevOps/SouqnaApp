@@ -1,7 +1,8 @@
 import React, {useEffect} from 'react';
-import {View, Animated, Image} from 'react-native';
+import {View, Animated} from 'react-native';
 import {mvs} from '../../../util/metrices';
 import styles from './styles';
+import FastImage from 'react-native-fast-image';
 
 const SplashScreen = ({navigation}) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -24,8 +25,8 @@ const SplashScreen = ({navigation}) => {
   return (
     <View style={styles.logoContainer}>
       <Animated.View style={{opacity: fadeAnim}}>
-        <Image
-          source={require('../../../assets/img/logo1.png')}
+        <FastImage
+          source={require('../../../assets/img/logo2.gif')}
           style={{width: mvs(280), height: mvs(200)}}
         />
       </Animated.View>

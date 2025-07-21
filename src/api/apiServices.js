@@ -212,7 +212,7 @@ export const uploadProductImages = async (productId, imageFiles, token) => {
   }
 };
 
-export const GetSeller = async ( token) => {
+export const GetSeller = async token => {
   try {
     const response = await API.get('get-seller', {
       headers: {
@@ -675,6 +675,63 @@ export const deleteProduct = async (productId, token) => {
     return response.data;
   } catch (error) {
     console.error('Error deleting product:', error.response?.data || error);
+    throw error;
+  }
+};
+
+export const addToFavorite = async (productId, token) => {
+  try {
+    const response = await API.post(
+      'addToFavorite',
+      {
+        productID: productId,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error adding to favorites:', error.response?.data || error);
+    throw error;
+  }
+};
+
+export const removeFromFavorite = async (productId, token) => {
+  try {
+    const response = await API.post(
+      'removeFromFavorite',
+      {
+        productID: productId,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    return response.data;
+  } catch (error) {
+    console.error(
+      'Error removing from favorites:',
+      error.response?.data || error,
+    );
+    throw error;
+  }
+};
+
+export const getFavorites = async token => {
+  try {
+    const response = await API.get('getFavorites', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching favorites:', error.response?.data || error);
     throw error;
   }
 };

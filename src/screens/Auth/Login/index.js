@@ -80,6 +80,7 @@ const LoginScreen = () => {
       const res = await loginUser(email, password);
       if (res.success) {
         const user = res.user;
+        console.log("user",user)
 
         // Save actual role first
         dispatch(
