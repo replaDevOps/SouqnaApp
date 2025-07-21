@@ -21,14 +21,13 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {useDispatch, useSelector} from 'react-redux';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import BottomSheet, {BottomSheetBackdrop} from '@gorhom/bottom-sheet';
-import {
-  addFavorite,
-  removeFavorite,
-} from '../../../redux/slices/favoritesSlice';
 import MainHeader from '../../../components/Headers/MainHeader';
 import {
+  addToFavorite,
   BASE_URL_Product,
   fetchProductsBySubCategory,
+  getFavorites,
+  removeFromFavorite,
 } from '../../../api/apiServices';
 import {mvs} from '../../../util/metrices';
 import Regular from '../../../typography/RegularText';
@@ -61,6 +60,7 @@ import {parseProductList} from '../../../util/Filtering/parseProductsList';
 import SortSheet from '../../../components/Sheets/SortSheet';
 import {init} from 'i18next';
 import {colors} from '../../../util/color';
+import {showSnackbar} from '../../../redux/slices/snackbarSlice';
 
 const Products = () => {
   const [filters, setFilters] = useState({
@@ -101,6 +101,7 @@ const Products = () => {
   const [sortOption, setSortOption] = useState(null);
 
   const [loading, setLoading] = useState(false);
+  const {token} = useSelector(state => state.user);
   const [likedItems, setLikedItems] = useState({});
   const {t} = useTranslation();
 
@@ -124,7 +125,7 @@ const Products = () => {
 
   const {role, id: userId, email: userEmail} = useSelector(state => state.user);
   const activeRole = role ?? 3;
-  const favorites = useSelector(state => state.favorites.favorites);
+  const [likedItemsMap, setLikedItemsMap] = useState([]);
   const [activeSheet, setActiveSheet] = useState(null);
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -142,13 +143,6 @@ const Products = () => {
     );
   }, [brandSearch]);
 
-  const likedItemsMap = useMemo(() => {
-    return favorites.reduce((acc, item) => {
-      acc[item.id] = true;
-      return acc;
-    }, {});
-  }, [favorites]);
-
   const navigateToProductDetails = useCallback(
     productId => {
       navigation.navigate('ProductDetail', {productId});
@@ -157,23 +151,51 @@ const Products = () => {
   );
 
   const handleHeartClick = useCallback(
-    (id, product) => {
-      if (likedItems[id]) {
-        dispatch(removeFavorite(product));
-        setLikedItems(prev => {
-          const updatedState = {...prev};
-          delete updatedState[id];
-          return updatedState;
+    async (id, item) => {
+      if (role === 2) {
+        showSnackbar('Log in as buyer');
+        return;
+      }
+
+      const isInFavorites = likedItemsMap?.some(fav => fav.product?.id === id);
+
+      const previousAllProducts = [...allProducts];
+      const previousLikedItemsMap = [...likedItemsMap];
+
+      if (isInFavorites) {
+        const updatedState = allProducts.map(product => {
+          if (product.id === id) {
+            product.isFavorite = false;
+          }
+          return product;
+        });
+        setAllProducts(updatedState);
+        setLikedItemsMap(prev => prev.filter(fav => fav.product?.id !== id));
+
+        await removeFromFavorite(id, token).catch(error => {
+          setAllProducts(previousAllProducts);
+          setLikedItemsMap(previousLikedItemsMap);
         });
       } else {
-        dispatch(addFavorite(product));
-        setLikedItems(prev => ({
-          ...prev,
-          [id]: true,
-        }));
+        const updatedState = allProducts.map(product => {
+          if (product.id === id) {
+            product.isFavorite = true;
+          }
+          return product;
+        });
+        setAllProducts(updatedState);
+        const newFavorite = {
+          product: {id: id},
+        };
+        setLikedItemsMap(prev => [...prev, newFavorite]);
+
+        await addToFavorite(id, token).catch(error => {
+          setAllProducts(previousAllProducts);
+          setLikedItemsMap(previousLikedItemsMap);
+        });
       }
     },
-    [likedItems, dispatch],
+    [role, token, likedItemsMap, allProducts],
   );
 
   const closeAllSheets = useCallback(async callback => {
@@ -207,7 +229,7 @@ const Products = () => {
 
   useEffect(() => {
     if (initialProducts?.length > 0) {
-      setLoading(true); // 👈 Start loader
+      setLoading(true);
       setProducts(initialProducts);
       setAllProducts(initialProducts);
       console.log('FETCHEDPRODUCTS:', initialProducts);
@@ -238,6 +260,16 @@ const Products = () => {
     fetchData();
   }, [subCategoryId, initialProducts]);
 
+  useEffect(() => {
+    getLikedItems();
+  }, [token]);
+
+  async function getLikedItems() {
+    await getFavorites(token).then(res => {
+      setLikedItemsMap(res?.data);
+    });
+  }
+
   const filteredAndSortedProducts = useMemo(() => {
     // Filter based on category filters
     let result = products.filter(product => {
@@ -251,14 +283,12 @@ const Products = () => {
         passesCategoryFilter = filterServiceProducts(product, filters);
       }
 
-      // ✅ Additionally filter by seller email if role === 3
       const isSellerMatch =
         activeRole === 2 ? product?.seller?.email === userEmail : true;
 
       return passesCategoryFilter && isSellerMatch;
     });
 
-    // Sort results
     switch (sortOption) {
       case 'Newest First':
         result = result.sort(
@@ -301,7 +331,9 @@ const Products = () => {
           <TouchableOpacity
             onPress={() => handleHeartClick(item.id, item)}
             style={styles.heartIconContainer}>
-            <HeartSvg filled={likedItemsMap[item.id]} />
+            <HeartSvg
+              filled={likedItemsMap?.some(fav => fav.product?.id === item.id)}
+            />
           </TouchableOpacity>
         )}
       </TouchableOpacity>
@@ -366,7 +398,7 @@ const Products = () => {
                           refPriceSheet.current?.expand();
                           setActiveSheet('price');
                           setTimeout(() => {
-                            refPriceInput.current?.focusMinPrice(); // wait for animation
+                            refPriceInput.current?.focusMinPrice();
                           }, 300);
                         });
                       }}
@@ -375,7 +407,7 @@ const Products = () => {
                           refBuildYearSheet.current?.expand();
                           setActiveSheet('year');
                           setTimeout(() => {
-                            refBuildYearInput.current?.focusMinYear(); // ✅ focus input after animation
+                            refBuildYearInput.current?.focusMinYear();
                           }, 300);
                         });
                       }}

@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {View, FlatList, TouchableOpacity, Image, StatusBar} from 'react-native';
 import {useSelector} from 'react-redux'; // Import dispatch
 import MainHeader from '../../../components/Headers/MainHeader';
@@ -43,12 +43,22 @@ const FavouriteScreen = () => {
     // Check if the product is already in favorites
     const isInFavorites = favorites.some(fav => fav.product?.id === id);
     if (isInFavorites) {
-      await removeFromFavorite(id, token).then(res => {
-        const updatedFavorites = favorites.filter(
-          fav => fav.product?.id !== id,
-        );
-        setFavorites(updatedFavorites);
-      });
+      // Optimistic update
+      const updatedFavorites = favorites.filter(fav => fav.product?.id !== id);
+      setFavorites(updatedFavorites);
+
+      // Actual API call
+      await removeFromFavorite(id, token)
+        .then(res => {
+          if (res.success) {
+            setFavorites(updatedFavorites);
+          }
+        })
+        .catch(err => {
+          // Revert optimistic update
+          showSnackbar('Error removing from favorites', err?.message);
+          setFavorites(favorites);
+        });
     }
   };
 
