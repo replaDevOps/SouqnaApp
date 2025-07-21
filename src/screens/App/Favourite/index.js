@@ -1,11 +1,11 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {View, FlatList, TouchableOpacity, Image, StatusBar} from 'react-native';
 import {useSelector} from 'react-redux'; // Import dispatch
 import MainHeader from '../../../components/Headers/MainHeader';
 import Bold from '../../../typography/BoldText';
 import Regular from '../../../typography/RegularText';
 import {HeartSvg} from '../../../assets/svg';
-import {useNavigation} from '@react-navigation/native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import styles from '../../../components/Structure/Search/RecommendedSection/style';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useTranslation} from 'react-i18next';
@@ -23,15 +23,17 @@ const FavouriteScreen = () => {
   const {t} = useTranslation();
   const [favorites, setFavorites] = useState([]);
 
-  useEffect(() => {
-    if (token) {
-      const fetchFavorites = async () => {
-        const favs = await getFavorites(token);
-        setFavorites(favs.data);
-      };
-      fetchFavorites();
-    }
-  }, [token]);
+  useFocusEffect(
+    useCallback(() => {
+      if (token) {
+        const fetchFavorites = async () => {
+          const favs = await getFavorites(token);
+          setFavorites(favs.data);
+        };
+        fetchFavorites();
+      }
+    }, [token]),
+  );
 
   const handleHeartClick = async (id, product) => {
     if (role === 2) {
