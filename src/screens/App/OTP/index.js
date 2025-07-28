@@ -14,7 +14,6 @@ import {
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {colors} from '../../../util/color';
 import MainHeader from '../../../components/Headers/MainHeader';
-import Bold from '../../../typography/BoldText';
 import {resendOtp, verifyOtp} from '../../../api/apiServices';
 import {Snackbar} from 'react-native-paper';
 import {useRoute} from '@react-navigation/native';

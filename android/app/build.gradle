@@ -77,12 +77,12 @@ android {
         versionName "1.0"
     }
     signingConfigs {
-            release {
-        storeFile file('my-release-key.keystore')
-        storePassword 'repla123'
-        keyAlias 'your_key_alias'
-        keyPassword 'repla123'
-    }
+        release {
+            storeFile file('my-release-key.keystore')
+            storePassword 'repla123'
+            keyAlias 'souqna-key'
+            keyPassword 'repla123'
+        }
         debug {
             storeFile file('debug.keystore')
             storePassword 'android'

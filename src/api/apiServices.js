@@ -628,7 +628,7 @@ export const submitCardDetails = async (cardData, token) => {
 
 export const verifyOtp = async otp => {
   try {
-    const response = await API.post('verifyOtp', {
+    const response = await API.post('verifyRegisterOtp', {
       // phone: phoneNumber,
       otp: otp,
     });
