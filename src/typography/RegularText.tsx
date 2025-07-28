@@ -1,7 +1,7 @@
-import React from 'react';
-import {ColorValue, StyleProp, StyleSheet, Text, TextStyle} from 'react-native';
-import {colors} from '../util/color';
-import {mvs} from '../util/metrices';
+import React, { JSX } from 'react';
+import { ColorValue, StyleProp, StyleSheet, Text, TextStyle } from 'react-native';
+import { colors } from '../util/color';
+import { mvs } from '../util/metrices';
 import fonts from '../assets/fonts';
 type FcProps = {
   label?: string | number;
@@ -25,7 +25,7 @@ const Regular: React.FC<FcProps> = ({
     <Text
       numberOfLines={numberOfLines}
       {...props}
-      style={[{...styles.label, color: color, fontSize: fontSize}, style]}>
+      style={[{ ...styles.label, color: color, fontSize: fontSize }, style]}>
       {label}
       {children}
     </Text>
