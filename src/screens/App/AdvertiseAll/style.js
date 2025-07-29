@@ -22,6 +22,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: mvs(16),
     paddingBottom: mvs(20),
   },
+  IconContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: mvs(60), // Increased to match image width
+    height: mvs(60), // Increased to match image height
+    // borderRadius: mvs(12),
+    marginRight: mvs(12), // Add some margin to separate from text
+  },
   subCategoryItem: {
     flexDirection: 'row',
     alignItems: 'center',

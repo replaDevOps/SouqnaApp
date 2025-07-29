@@ -80,7 +80,7 @@ android {
         release {
             storeFile file('my-release-key.keystore')
             storePassword 'repla123'
-            keyAlias 'souqna-key'
+            keyAlias 'your_key_alias'
             keyPassword 'repla123'
         }
         debug {

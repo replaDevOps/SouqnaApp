@@ -680,8 +680,8 @@ const CreateProduct = () => {
             {/* <View style={styles.sectionContainer}>
               <Text style={styles.sectionTitle}>
                 {t('discount')} */}
-                {/* <Text style={{color: colors.red}}>*</Text> */}
-              {/* </Text>
+            {/* <Text style={{color: colors.red}}>*</Text> */}
+            {/* </Text>
               <TextInput
                 style={styles.input}
                 placeholder={t('discountPlaceholder')}
@@ -696,8 +696,8 @@ const CreateProduct = () => {
             {/* <View style={styles.sectionContainer}>
               <Text style={styles.sectionTitle}>
                 {t('specialOffer')} */}
-                {/* <Text style={{color: colors.red}}>*</Text> */}
-              {/* </Text>
+            {/* <Text style={{color: colors.red}}>*</Text> */}
+            {/* </Text>
               <TextInput
                 style={styles.input}
                 placeholder={t('specialOfferPlaceholder')}

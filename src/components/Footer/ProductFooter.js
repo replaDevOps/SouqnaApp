@@ -74,7 +74,7 @@ const ProductFooter = ({
         onPress: handleDeletePress,
         loading: loadingDelete,
         text: t('deleteProduct'),
-        Icon: TrashSVG ,
+        Icon: TrashSVG,
       },
     );
   }
@@ -89,6 +89,7 @@ const ProductFooter = ({
           <TouchableOpacity
             key={key}
             style={[styles.buyButton]}
+            disabled={loading}
             onPress={onPress}>
             <Icon width={24} height={24} />
             {loading ? (
