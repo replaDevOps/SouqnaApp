@@ -55,7 +55,7 @@ const UpdateProduct = () => {
     location: '',
     lat: '',
     long: '',
-    fields: [],
+    custom_fields: [],
     currency: '',
     contactInfo: '',
   });
@@ -89,7 +89,7 @@ const UpdateProduct = () => {
         location,
         lat,
         long,
-        fields = [],
+        custom_fields = [],
         currency,
         contactInfo,
         // condition,
@@ -119,7 +119,7 @@ const UpdateProduct = () => {
           fileSize: 1000,
         })) || [];
       try {
-        const parsedCustomFields = JSON.parse(fields);
+        const parsedCustomFields = JSON.parse(custom_fields);
         setFormData({
           name: productName || '',
           description: description || '',
@@ -131,12 +131,12 @@ const UpdateProduct = () => {
           location: location || '',
           lat: lat || '',
           long: long || '',
-          fields: parsedCustomFields, // Use the parsed array
+          custom_fields: parsedCustomFields, // Use the parsed array
           currency: currency || '',
           contactInfo: contactInfo || '',
         });
       } catch (error) {
-        console.error('Error parsing fields:', error);
+        console.error('Error parsing custom_fields:', error);
         setFormData({
           name: productName || '',
           description: description || '',
@@ -148,7 +148,7 @@ const UpdateProduct = () => {
           location: location || '',
           lat: lat || '',
           long: long || '',
-          fields: [], // Default to an empty array if parsing fails
+          custom_fields: [], // Default to an empty array if parsing fails
           currency: currency || '',
           contactInfo: contactInfo || '',
         });
@@ -315,7 +315,7 @@ const UpdateProduct = () => {
       // condition: conditionValue,
       // negotiable: formData.negotiable,
       // contactInfo: formData.contactInfo,
-      fields: formData.fields,
+      custom_fields: formData.custom_fields,
       currency: formData.currency,
       contactInfo: formData.contactInfo,
     };
@@ -702,8 +702,8 @@ const UpdateProduct = () => {
 
           <View style={styles.sectionContainer}>
             <Text style={styles.sectionTitle}>{t('customFields')}</Text>
-            {Array.isArray(formData.fields) ? (
-              formData.fields.map((field, index) => (
+            {Array.isArray(formData.custom_fields) ? (
+              formData.custom_fields.map((field, index) => (
                 <View key={index} style={styles.fieldContainer}>
                   <Text style={styles.sectionTitle}>{field.name}</Text>
                   <TextInput
@@ -712,10 +712,10 @@ const UpdateProduct = () => {
                     placeholderTextColor={colors.grey}
                     value={field.value || ''}
                     onChangeText={text => {
-                      const updatedFields = formData.fields.map((f, idx) =>
-                        idx === index ? {...f, value: text} : f,
+                      const updatedFields = formData.custom_fields.map(
+                        (f, idx) => (idx === index ? {...f, value: text} : f),
                       );
-                      handleInputChange('fields', updatedFields);
+                      handleInputChange('custom_fields', updatedFields);
                     }}
                   />
                 </View>

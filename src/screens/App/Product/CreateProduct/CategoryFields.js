@@ -79,8 +79,6 @@ const CategoryFields = ({categoryFields, formData, handleInputChange}) => {
   const {i18n} = useTranslation();
   const isArabic = i18n.language === 'ar';
 
-  console.log('Current Language:', i18n.language); // Debug: Check current language
-
   const renderField = (field, index) => {
     const fieldValue = formData[field.name] || '';
     const label = isArabic ? field.ar_label : field.label;
@@ -88,11 +86,20 @@ const CategoryFields = ({categoryFields, formData, handleInputChange}) => {
       ? `اختر ${field.ar_label}`
       : `Select ${field.label.toLowerCase()}`;
 
-    console.log(`Field Label (${field.name}):`, label); // Debug: Check field label
-
     const parseOptions = options => {
-      if (!options) return [];
-      return options.split(',').map(option => option.trim());
+      if (!options) {
+        return [];
+      }
+
+      try {
+        // Try to parse JSON string
+        const parsed = JSON.parse(options);
+        const localized = isArabic ? parsed.ar : parsed.en;
+        return localized.split(',').map(opt => opt.trim());
+      } catch (e) {
+        // Fallback for legacy plain string
+        return options.split(',').map(opt => opt.trim());
+      }
     };
 
     switch (field.type) {

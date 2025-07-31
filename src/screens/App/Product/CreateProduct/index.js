@@ -91,7 +91,7 @@ const CreateProduct = () => {
   const [brandModalVisible, setBrandModalVisible] = useState(false);
   // const isArabic = i18n.language === 'ar'; // useTranslation should be imported and initialized
   const {t, i18n} = useTranslation();
-  console.log('Current Language:', i18n.language);
+  // console.log('Current Language:', i18n.language);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -116,7 +116,7 @@ const CreateProduct = () => {
   const [selectedCondition, setSelectedCondition] = useState('');
   const [categories, setCategories] = useState([]);
   const [categoryFields, setCategoryFields] = useState([]);
-  console.log('{stored phone no:}', phoneNo);
+  // console.log('{stored phone no:}', phoneNo);
   // const conditionValue =
   //   selectedCondition === 'Yes' ? 1 : selectedCondition === 'No' ? 2 : null;
 
@@ -275,7 +275,7 @@ const CreateProduct = () => {
       });
     }
     console.log('FORMDATA TILL NOW : ', data);
-    data.append('fields', JSON.stringify(customFieldsArray));
+    data.append('custom_fields', JSON.stringify(customFieldsArray));
 
     data.append('stock', formData.stock);
     // data.append('discount', formData.discount);
@@ -402,7 +402,8 @@ const CreateProduct = () => {
         // Match category name from route
         const matchedCategory = fetchedCategories.find(
           cat =>
-            cat.name.trim().toLowerCase() === category.trim().toLowerCase(),
+            cat.name.trim().toLowerCase() === category.trim().toLowerCase() ||
+            cat.ar_name.trim() === category.trim(),
         );
 
         if (matchedCategory) {

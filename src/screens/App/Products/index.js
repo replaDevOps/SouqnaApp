@@ -374,7 +374,7 @@ const Products = () => {
           <>
             {role !== 2 && (
               <>
-                {category?.toLowerCase() === 'vehicle' && (
+                {category === t('Cars') && (
                   <View style={{height: 60}}>
                     <CarFilters
                       filters={filters}
@@ -744,7 +744,7 @@ const Products = () => {
               detached={false}
               backdropComponent={renderBackdrop}
               style={{borderRadius: mvs(30), overflow: 'hidden'}}>
-              {category?.toLowerCase() === 'vehicle' ? (
+              {category === t('Cars') ? (
                 <AdjustFilterSheet
                   filters={filters}
                   setFilters={setFilters}
