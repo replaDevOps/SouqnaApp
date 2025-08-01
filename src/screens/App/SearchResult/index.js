@@ -22,6 +22,7 @@ import {
 import ProductCard from '../../../components/Cards/ProductCard';
 import {useTranslation} from 'react-i18next';
 import {useDebounced} from '../../../hooks/useDebounce';
+import Loader from '../../../components/Loader';
 
 const SearchResultsScreen = () => {
   const route = useRoute();
@@ -100,7 +101,8 @@ const SearchResultsScreen = () => {
       />
       {loading ? (
         <View style={styles.loader}>
-          <ActivityIndicator size="large" color={colors.primary} />
+          <Loader width={mvs(250)} height={mvs(250)} />
+          {/* <ActivityIndicator size="large" color={colors.primary} />*/}
         </View>
       ) : (
         <FlatList

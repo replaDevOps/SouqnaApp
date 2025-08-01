@@ -26,7 +26,7 @@ const SplashScreen = ({navigation}) => {
     <View style={styles.logoContainer}>
       <Animated.View style={{opacity: fadeAnim}}>
         <FastImage
-          source={require('../../../assets/img/logo2.gif')}
+          source={require('../../../assets/img/loader.gif')}
           style={{width: mvs(280), height: mvs(200)}}
         />
       </Animated.View>

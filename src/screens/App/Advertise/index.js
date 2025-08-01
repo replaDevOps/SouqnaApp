@@ -20,6 +20,7 @@ import Bold from '../../../typography/BoldText';
 import {ForwardSVG} from '../../../assets/svg';
 import API, {BASE_URL_Product} from '../../../api/apiServices';
 import i18n from '../../../i18n/i18n';
+import Loader from '../../../components/Loader';
 
 const AdvertiseScreen = () => {
   // const {categories, categoryIcons} = dummyData;
@@ -140,7 +141,8 @@ const AdvertiseScreen = () => {
       <MainHeader title={t('titleProduct')} />
       {loading ? (
         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-          <ActivityIndicator size="large" color="#008e91" />
+          <Loader width={mvs(250)} height={mvs(250)} />
+          {/* <ActivityIndicator size="large" color="#008e91" /> */}
         </View>
       ) : (
         <FlatList

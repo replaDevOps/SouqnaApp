@@ -97,7 +97,7 @@ const CreateProduct = () => {
     name: '',
     description: '',
     price: '',
-    stock: '',
+    // stock: '',
     // discount: '',
     // specialOffer: '',
     images: [],
@@ -107,7 +107,7 @@ const CreateProduct = () => {
     contactInfo: phoneNo,
     negotiable: '',
     currency: '',
-    fields: [],
+    custom_fields: [],
   });
 
   const [loading, setLoading] = useState(false);
@@ -254,9 +254,15 @@ const CreateProduct = () => {
     data.append('subCategoryID', subCategoryId);
 
     // Prepare fields array
+
+    console.log('categoryFields: ', categoryFields);
+    // console.log('categoryFields: ', JSON.stringify(categoryFields, null, 4));
+
     const customFieldsArray = categoryFields.map(field => ({
       name: field.name,
+      ar_name: field.ar_name,
       value: formData[field.name],
+      ar_value: formData[field.ar_name], // Assuming you have Arabic values in formData
     }));
 
     for (let i = 0; i < formData.images.length; i++) {
@@ -274,18 +280,20 @@ const CreateProduct = () => {
         type: image.type || 'image/jpeg',
       });
     }
+    console.log('customFieldsArray: ', customFieldsArray);
     console.log('FORMDATA TILL NOW : ', data);
     data.append('custom_fields', JSON.stringify(customFieldsArray));
 
-    data.append('stock', formData.stock);
+    // data.append('stock', formData.stock);
     // data.append('discount', formData.discount);
     // data.append('specialOffer', formData.specialOffer);
     data.append('location', formData.location);
     data.append('lat', formData.lat);
     data.append('long', formData.long);
     data.append('contactInfo', formData.contactInfo);
-    data.append('negotiable', selectedCondition);
+    // data.append('negotiable', selectedCondition);
     console.log('FORMDATA BEING SENT : ', data);
+    // return;
     try {
       setLoading(true);
       const response = await API.post('createProduct', data, {
@@ -303,7 +311,7 @@ const CreateProduct = () => {
           name: '',
           description: '',
           price: '',
-          stock: '',
+          // stock: '',
           images: [],
           location: '',
           lat: '',
@@ -311,9 +319,9 @@ const CreateProduct = () => {
           // discount: '',
           // specialOffer: '',
           contactInfo: '', // Reset additional field
-          negotiable: '',
+          // negotiable: '',
           currency: '',
-          fields: [],
+          custom_fields: [],
         });
 
         navigation.dispatch(
@@ -633,13 +641,13 @@ const CreateProduct = () => {
                 />
               </View>
             </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>
-                {t('negotiable')}
-                {/* <Text style={{color: colors.red}}>*</Text> */}
-              </Text>
+            {/* <View style={styles.sectionContainer}> */}
+            {/* <Text style={styles.sectionTitle}>
+                {/* {t('negotiable')} */}
+            {/* <Text style={{color: colors.red}}>*</Text> */}
+            {/* </Text> */}
 
-              <View style={styles.radioContainer}>
+            {/* <View style={styles.radioContainer}>
                 <TouchableOpacity
                   style={styles.radioOption}
                   onPress={() => handleConditionSelect('Yes')}>
@@ -675,7 +683,7 @@ const CreateProduct = () => {
                   <Text style={styles.radioText}>{t('no')}</Text>
                 </TouchableOpacity>
               </View>
-            </View>
+            </View> */}
 
             {/* Discount Section */}
             {/* <View style={styles.sectionContainer}>
@@ -709,10 +717,9 @@ const CreateProduct = () => {
             </View> */}
 
             {/* Stock Section */}
-            <View style={styles.sectionContainer}>
+            {/* <View style={styles.sectionContainer}>
               <Text style={styles.sectionTitle}>
                 {t('availableStock')}
-                {/* <Text style={{color: colors.red}}>*</Text> */}
               </Text>
               <TextInput
                 style={styles.input}
@@ -722,7 +729,7 @@ const CreateProduct = () => {
                 value={formData.stock}
                 onChangeText={text => handleInputChange('stock', text)}
               />
-            </View>
+            </View> */}
 
             {/* Additional Fields Section */}
             <CategoryFields

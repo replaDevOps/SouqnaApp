@@ -15,6 +15,8 @@ import styles from '../AdvertiseAll/style';
 import {fetchBuyerProducts} from '../../../api/apiServices';
 import i18n from '../../../i18n/i18n';
 import {t} from 'i18next';
+import Loader from '../../../components/Loader';
+import {mvs} from '../../../util/metrices';
 
 const SubCategoryMain = () => {
   const route = useRoute();
@@ -106,7 +108,8 @@ const SubCategoryMain = () => {
 
       {loading ? (
         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-          <ActivityIndicator size="large" color="#000" />
+          <Loader width={mvs(250)} height={mvs(250)} />
+          {/* <ActivityIndicator size="large" color="#000" /> */}
         </View>
       ) : (
         <View style={styles.content}>

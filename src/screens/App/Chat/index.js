@@ -34,6 +34,7 @@ import {getStorage, ref, uploadBytes, getDownloadURL} from 'firebase/storage';
 import {app} from '../../../firebase';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useTranslation} from 'react-i18next';
+import Loader from '../../../components/Loader';
 
 const Chat = () => {
   const route = useRoute();
@@ -405,7 +406,8 @@ const Chat = () => {
 
   const renderLoading = () => (
     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-      <ActivityIndicator size="large" color="#008e91" />
+      <Loader width={mvs(250)} height={mvs(250)} />
+      {/* {/* <ActivityIndicator size="large" color="#008e91" /> */}
     </View>
   );
 

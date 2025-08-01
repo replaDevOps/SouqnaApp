@@ -61,6 +61,7 @@ import SortSheet from '../../../components/Sheets/SortSheet';
 import {init} from 'i18next';
 import {colors} from '../../../util/color';
 import {showSnackbar} from '../../../redux/slices/snackbarSlice';
+import Loader from '../../../components/Loader';
 
 const Products = () => {
   const [filters, setFilters] = useState({
@@ -103,7 +104,9 @@ const Products = () => {
   const [loading, setLoading] = useState(false);
   const {token} = useSelector(state => state.user);
   const [likedItems, setLikedItems] = useState({});
-  const {t} = useTranslation();
+  const {t, i18n} = useTranslation();
+
+  const isArabic = i18n.language === 'ar';
 
   const refBrandSheet = useRef(null);
   const refPriceSheet = useRef(null);
@@ -149,6 +152,8 @@ const Products = () => {
     },
     [navigation],
   );
+
+  console.log('category====>', category, t('Property'));
 
   const handleHeartClick = useCallback(
     async (id, item) => {
@@ -275,10 +280,21 @@ const Products = () => {
     let result = products.filter(product => {
       let passesCategoryFilter = true;
 
-      if (category === 'Vehicle') {
-        passesCategoryFilter = filterVehicleProducts(product, filters);
-      } else if (category === 'Property') {
-        passesCategoryFilter = filterPropertyProducts(product, filters);
+      // console.log('Filtering product:', product, filters);
+      // console.log('Category:', category);
+
+      if (category === t('Cars')) {
+        passesCategoryFilter = filterVehicleProducts(
+          product,
+          filters,
+          isArabic,
+        );
+      } else if (category === t('Property')) {
+        passesCategoryFilter = filterPropertyProducts(
+          product,
+          filters,
+          isArabic,
+        );
       } else if (category === 'Services') {
         passesCategoryFilter = filterServiceProducts(product, filters);
       }
@@ -360,7 +376,8 @@ const Products = () => {
 
         {loading ? (
           <View style={styles.noListingsContainer}>
-            <ActivityIndicator size="large" style={{marginTop: 20}} />
+            <Loader width={mvs(250)} height={mvs(250)} />
+            {/* <ActivityIndicator size="large" style={{marginTop: 20}} /> */}
           </View>
         ) : products.length === 0 ? (
           <View style={styles.noListingsContainer}>
@@ -426,7 +443,7 @@ const Products = () => {
                     />
                   </View>
                 )}
-                {category?.toLowerCase() === 'property' && (
+                {category === t('Property') && (
                   <View style={{height: 60}}>
                     <PropertyFilters
                       filters={filters}
@@ -461,7 +478,7 @@ const Products = () => {
                       onOpenPropertyAdjust={() => {
                         closeAllSheets(() => {
                           refPropertyAdjustSheet.current?.expand();
-                          setActiveSheet('property');
+                          setActiveSheet(t('Property'));
                         });
                       }}
                     />
@@ -786,7 +803,7 @@ const Products = () => {
             <BottomSheet
               ref={refPropertyAdjustSheet}
               onChange={index => {
-                if (index === -1 && activeSheet === 'property')
+                if (index === -1 && activeSheet === t('Property'))
                   setActiveSheet(null);
               }}
               index={-1}
@@ -797,7 +814,7 @@ const Products = () => {
               detached={false}
               backdropComponent={renderBackdrop}
               style={{borderRadius: mvs(30), overflow: 'hidden'}}>
-              {category?.toLowerCase() === 'property' ? (
+              {category === t('Property') ? (
                 <PropertyAdjustFilterSheet
                   filters={filters}
                   setFilters={setFilters}

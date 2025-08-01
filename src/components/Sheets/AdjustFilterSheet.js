@@ -11,6 +11,7 @@ import {
 } from '../../util/Filtering/filterStyles';
 import {colors} from '../../util/color';
 import {t} from 'i18next';
+import {useTranslation} from 'react-i18next';
 const AdjustFilterSheet = ({
   filters,
   setFilters,
@@ -28,6 +29,8 @@ const AdjustFilterSheet = ({
   useEffect(() => {
     if (conditionOpen) setFuelOpen(false);
   }, [conditionOpen]);
+
+  const {i18n} = useTranslation();
 
   const resetFilters = () => {
     setFilters({
@@ -51,15 +54,26 @@ const AdjustFilterSheet = ({
     });
   };
 
+  const isArabic = i18n.language === 'ar';
+
   const [fuelOpen, setFuelOpen] = useState(false);
   const [conditionOpen, setConditionOpen] = useState(false);
 
-  const [fuelItems, setFuelItems] = useState([
-    {label: 'Petrol', value: 'Petrol'},
-    {label: 'Diesel', value: 'Diesel'},
-    {label: 'Hybrid', value: 'Hybrid'},
-    {label: 'Electric', value: 'Electric'},
-  ]);
+  const [fuelItems, setFuelItems] = useState(
+    isArabic
+      ? [
+          {label: 'بنزين', value: 'بنزين'},
+          {label: 'ديزل', value: 'ديزل'},
+          {label: 'هجين', value: 'هجين'},
+          {label: 'كهرباء', value: 'كهرباء'},
+        ]
+      : [
+          {label: 'Petrol', value: 'Petrol'},
+          {label: 'Diesel', value: 'Diesel'},
+          {label: 'Hybrid', value: 'Hybrid'},
+          {label: 'Electric', value: 'Electric'},
+        ],
+  );
 
   const [conditionItems, setConditionItems] = useState([
     {label: 'Used', value: 'Used'},
@@ -71,10 +85,10 @@ const AdjustFilterSheet = ({
       <BottomSheetScrollView
         contentContainerStyle={{padding: 20, paddingBottom: 60}}>
         {/* --- BASIC FILTERS --- */}
-        <Text style={sectionTitleStyle}>Basic Filters</Text>
+        <Text style={sectionTitleStyle}>{t('Basic Filters')}</Text>
 
         {/* Brand */}
-        <Text style={labelStyle}>Brand / Make</Text>
+        <Text style={labelStyle}>{t('Brand / Make') || 'Brand / Make'}</Text>
         <TouchableOpacity
           onPress={() => {
             onOpenBrandSheet?.(); // this should be passed from parent
@@ -84,7 +98,7 @@ const AdjustFilterSheet = ({
         </TouchableOpacity>
 
         {/* Model */}
-        <Text style={labelStyle}>Model</Text>
+        <Text style={labelStyle}>{t('Model')}</Text>
         <TextInput
           placeholder="Enter model"
           value={filters.model}
@@ -93,7 +107,7 @@ const AdjustFilterSheet = ({
         />
 
         {/* Price Range */}
-        <Text style={labelStyle}>Price Range</Text>
+        <Text style={labelStyle}>{t('priceRange')}</Text>
         <TouchableOpacity
           onPress={onOpenPriceSheet}
           style={[inputStyle, {justifyContent: 'center'}]}>
@@ -107,7 +121,7 @@ const AdjustFilterSheet = ({
         </TouchableOpacity>
 
         {/* Year Range */}
-        <Text style={labelStyle}>Year Range</Text>
+        <Text style={labelStyle}>{t('yearRange')}</Text>
         <TouchableOpacity
           onPress={onOpenBuildYearSheet}
           style={[inputStyle, {justifyContent: 'center'}]}>
@@ -123,7 +137,7 @@ const AdjustFilterSheet = ({
         </TouchableOpacity>
 
         {/* Mileage Range */}
-        <Text style={labelStyle}>Mileage Range</Text>
+        <Text style={labelStyle}>{t('mileageRange')}</Text>
         <View style={{flexDirection: 'row', gap: 10}}>
           <TextInput
             placeholder="Min (km)"
@@ -146,7 +160,7 @@ const AdjustFilterSheet = ({
         </View>
 
         {/* Fuel Type */}
-        <Text style={labelStyle}>Fuel Type</Text>
+        <Text style={labelStyle}> {t('fuelType')} </Text>
         <View
           style={{
             zIndex: fuelOpen ? 1000 : 1,
@@ -158,7 +172,10 @@ const AdjustFilterSheet = ({
             value={filters.fuelType}
             items={fuelItems}
             setOpen={setFuelOpen}
-            setValue={val => setFilters(prev => ({...prev, fuelType: val()}))}
+            setValue={val => {
+              console.log('Selected fuel type:', val());
+              setFilters(prev => ({...prev, fuelType: val()}));
+            }}
             setItems={setFuelItems}
             placeholder="Select fuel type"
             style={[inputStyle, {marginBottom: fuelOpen ? 120 : 12}]}
@@ -170,7 +187,7 @@ const AdjustFilterSheet = ({
         </View>
 
         {/* Transmission */}
-        <Text style={labelStyle}>Transmission</Text>
+        <Text style={labelStyle}> {t('transmissionType')} </Text>
         <TouchableOpacity
           onPress={onOpenTransmissionSheet}
           style={[inputStyle, {justifyContent: 'center'}]}>
@@ -202,7 +219,7 @@ const AdjustFilterSheet = ({
 </View> */}
 
         {/* --- ADDITIONAL FILTERS --- */}
-        <Text style={sectionTitleStyle}>Additional Filters</Text>
+        <Text style={sectionTitleStyle}>{t('Additional Filters')}</Text>
 
         {/* Color */}
         {/* <Text style={labelStyle}>Color</Text>
@@ -214,7 +231,10 @@ const AdjustFilterSheet = ({
         /> */}
 
         {/* Power */}
-        <Text style={labelStyle}>Power (HP/kW)</Text>
+        <Text style={labelStyle}>
+          {}
+          {t('power') || 'Power (HP/kW)'}
+        </Text>
         <TextInput
           placeholder="Enter power"
           keyboardType="numeric"
@@ -224,7 +244,9 @@ const AdjustFilterSheet = ({
         />
 
         {/* Inspection Validity */}
-        <Text style={labelStyle}>Inspection Validity</Text>
+        <Text style={labelStyle}>
+          {t('inspectionValidity') || 'Inspection Validity'}
+        </Text>
         <TextInput
           placeholder="Valid till (e.g. 2026)"
           value={filters.inspection}
@@ -236,7 +258,9 @@ const AdjustFilterSheet = ({
 
         {/* --- RESET FILTERS BUTTON --- */}
         <TouchableOpacity onPress={resetFilters} style={resetButtonStyle}>
-          <Text style={{color: 'red', fontWeight: 'bold'}}>Reset Filters</Text>
+          <Text style={{color: 'red', fontWeight: 'bold'}}>
+            {t('resetFilters')}
+          </Text>
         </TouchableOpacity>
 
         {/* --- DONE BUTTON --- */}

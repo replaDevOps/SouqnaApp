@@ -10,13 +10,14 @@ import {BASE_URL_Product} from '../../../api/apiServices';
 import {useTranslation} from 'react-i18next';
 
 const ProviderInfo = ({provider}) => {
-  const {t} = useTranslation();
+  const {t, i18n} = useTranslation();
+  const isArabic = i18n.language === 'ar';
   const roleText =
     provider?.user?.role === '2'
-      ? 'Seller'
+      ? t('seller')
       : provider?.user?.role === '3'
-      ? 'Buyer'
-      : 'Seller';
+      ? t('buyer')
+      : t('seller');
   return (
     <View style={styles.providerContainer}>
       <Bold style={styles.providerTitle}>{t('Provider')}</Bold>
@@ -37,11 +38,15 @@ const ProviderInfo = ({provider}) => {
 
       <View style={styles.attributes}>
         <View style={styles.attributeBox}>
-          <Regular style={styles.leftText}>{provider.category?.name}</Regular>
+          <Regular style={styles.leftText}>
+            {isArabic ? provider.category?.ar_name : provider.category?.name}
+          </Regular>
         </View>
         <View style={styles.attributeBox}>
           <Regular style={styles.leftText}>
-            {provider.sub_category?.name}
+            {isArabic
+              ? provider.sub_category?.ar_name
+              : provider.sub_category?.name}
           </Regular>
         </View>
       </View>

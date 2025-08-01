@@ -20,6 +20,7 @@ import {fetchNotifications} from '../../../api/apiServices';
 import {useSelector} from 'react-redux';
 import {mvs} from '../../../util/metrices';
 import MainHeader from '../../../components/Headers/MainHeader';
+import Loader from '../../../components/Loader';
 
 const Notification = () => {
   const navigation = useNavigation();
@@ -69,7 +70,8 @@ const Notification = () => {
 
       {loading ? (
         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-          <ActivityIndicator size="large" color={colors.green} />
+          <Loader width={mvs(250)} height={mvs(250)} />
+          {/* {/* <ActivityIndicator size="large" color={colors.green} /> */}
         </View>
       ) : (
         <FlatList

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -6,21 +6,22 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from 'react-native';
-import Svg, { Path, G, Text as SvgText } from 'react-native-svg';
+import Svg, {Path, G, Text as SvgText} from 'react-native-svg';
 import styles from './styles';
-import { mvs } from '../../../util/metrices';
-import { useSelector } from 'react-redux';
+import {mvs} from '../../../util/metrices';
+import {useSelector} from 'react-redux';
 import API from '../../../api/apiServices';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
+import Loader from '../../Loader';
 
-const ProductDashboard = ({ onRefresh }) => {
+const ProductDashboard = ({onRefresh}) => {
   const [activeView, setActiveView] = useState('total'); // 'total' or 'monthly'
   const [loading, setLoading] = useState(true);
   const [dashboardData, setDashboardData] = useState(null);
   const [error, setError] = useState(null);
   const [categoryColorMap, setCategoryColorMap] = useState({});
-  const { t } = useTranslation();
+  const {t} = useTranslation();
   const colorPalette = [
     '#003f5c', // Dark Teal
     '#58508d', // Slate Purple
@@ -28,7 +29,7 @@ const ProductDashboard = ({ onRefresh }) => {
     '#ff6361', // Coral Red
     '#ffa600', // Amber Yellow
   ];
-  const { token } = useSelector(state => state.user);
+  const {token} = useSelector(state => state.user);
 
   const loadCategoryColors = async () => {
     try {
@@ -52,16 +53,21 @@ const ProductDashboard = ({ onRefresh }) => {
   const assignColorsToCategories = categories => {
     if (!categories) return [];
 
-    const updatedColorMap = { ...categoryColorMap };
+    const updatedColorMap = {...categoryColorMap};
     let hasNewCategories = false;
 
     const usedColors = new Set(Object.values(updatedColorMap));
-    const availableColors = colorPalette.filter(color => !usedColors.has(color));
+    const availableColors = colorPalette.filter(
+      color => !usedColors.has(color),
+    );
     let colorIndex = 0;
 
     categories.forEach(category => {
       if (!updatedColorMap[category.name]) {
-        let assignedColor = availableColors.length > 0 ? availableColors.shift() : colorPalette[colorIndex % colorPalette.length];
+        let assignedColor =
+          availableColors.length > 0
+            ? availableColors.shift()
+            : colorPalette[colorIndex % colorPalette.length];
         updatedColorMap[category.name] = assignedColor;
         usedColors.add(assignedColor);
         hasNewCategories = true;
@@ -95,7 +101,10 @@ const ProductDashboard = ({ onRefresh }) => {
         setError('Failed to fetch dashboard data');
       }
     } catch (error) {
-      console.error('Error fetching dashboard data:', error.response?.data || error.message);
+      console.error(
+        'Error fetching dashboard data:',
+        error.response?.data || error.message,
+      );
       setError('An error occurred while fetching dashboard data');
     } finally {
       setLoading(false);
@@ -107,23 +116,27 @@ const ProductDashboard = ({ onRefresh }) => {
     fetchDashboardData();
   }, [token]);
 
-useEffect(() => {
-  onRefresh?.(() => {
-    fetchDashboardData();
-  });
-}, []);
-
+  useEffect(() => {
+    onRefresh?.(() => {
+      fetchDashboardData();
+    });
+  }, []);
 
   const getActiveCategories = () => {
     if (!dashboardData) return [];
 
     return assignColorsToCategories(
-      activeView === 'total' ? dashboardData.category_distribution.all_time : dashboardData.category_distribution.this_month,
+      activeView === 'total'
+        ? dashboardData.category_distribution.all_time
+        : dashboardData.category_distribution.this_month,
     );
   };
 
   const activeCategories = getActiveCategories();
-  const totalProducts = activeCategories.reduce((sum, category) => sum + category.count, 0);
+  const totalProducts = activeCategories.reduce(
+    (sum, category) => sum + category.count,
+    0,
+  );
 
   const PieChart = () => {
     const radius = 80;
@@ -132,7 +145,10 @@ useEffect(() => {
 
     if (activeCategories.length === 1) {
       return (
-        <Svg height={radius * 2} width={radius * 2} viewBox={`0 0 ${radius * 2} ${radius * 2}`}>
+        <Svg
+          height={radius * 2}
+          width={radius * 2}
+          viewBox={`0 0 ${radius * 2} ${radius * 2}`}>
           <Path
             d={`M ${centerX} ${centerY}
                 m 0 -${radius}
@@ -156,7 +172,10 @@ useEffect(() => {
     let startAngle = 0;
 
     return (
-      <Svg height={radius * 2} width={radius * 2} viewBox={`0 0 ${radius * 2} ${radius * 2}`}>
+      <Svg
+        height={radius * 2}
+        width={radius * 2}
+        viewBox={`0 0 ${radius * 2} ${radius * 2}`}>
         {activeCategories.map((category, index) => {
           const percentage = category.count / totalProducts;
           const angle = percentage * 2 * Math.PI;
@@ -216,7 +235,7 @@ useEffect(() => {
           {activeCategories.map((category, index) => (
             <View key={index} style={styles.legendItem}>
               <View
-                style={[styles.legendColor, { backgroundColor: category.color }]}
+                style={[styles.legendColor, {backgroundColor: category.color}]}
               />
               <Text style={styles.legendText}>
                 {category.name} ({category.count})
@@ -230,7 +249,13 @@ useEffect(() => {
 
   if (loading) {
     return (
-      <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+      <View
+        style={[
+          styles.container,
+          {justifyContent: 'center', alignItems: 'center'},
+        ]}>
+        {/* <Loader width={mvs(250)} height={mvs(250)} /> */}
+        {/* <ActivityIndicator size="large" color={'#008e91'} />} */}
         <ActivityIndicator size="large" color={'#008e91'} />
       </View>
     );
@@ -238,15 +263,23 @@ useEffect(() => {
 
   if (error) {
     return (
-      <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
-        <Text style={{ color: 'red' }}>{error}</Text>
+      <View
+        style={[
+          styles.container,
+          {justifyContent: 'center', alignItems: 'center'},
+        ]}>
+        <Text style={{color: 'red'}}>{error}</Text>
       </View>
     );
   }
 
   if (!dashboardData) {
     return (
-      <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+      <View
+        style={[
+          styles.container,
+          {justifyContent: 'center', alignItems: 'center'},
+        ]}>
         <Text>{t('noDataAvailable')}</Text>
       </View>
     );
@@ -258,7 +291,7 @@ useEffect(() => {
         <TouchableOpacity
           style={[
             styles.statBox,
-            { marginRight: mvs(10) },
+            {marginRight: mvs(10)},
             activeView === 'total' && {
               backgroundColor: 'rgba(196, 218, 106, 0.14)',
               borderWidth: 1,
@@ -268,7 +301,7 @@ useEffect(() => {
           <Text
             style={[
               styles.statLabel,
-              activeView === 'total' && { color: '#000' },
+              activeView === 'total' && {color: '#000'},
             ]}>
             {t('totalProducts')}
           </Text>
@@ -287,12 +320,15 @@ useEffect(() => {
           <Text
             style={[
               styles.statLabel,
-              activeView === 'monthly' && { color: '#000' },
+              activeView === 'monthly' && {color: '#000'},
             ]}>
             {t('productsThisMonth')}
           </Text>
           <Text
-            style={[styles.statValue, activeView === 'monthly' && { color: '#000' }]}>
+            style={[
+              styles.statValue,
+              activeView === 'monthly' && {color: '#000'},
+            ]}>
             {dashboardData.ads_this_month}
           </Text>
         </TouchableOpacity>
