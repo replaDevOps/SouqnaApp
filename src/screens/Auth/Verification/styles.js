@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   modalButton: {
-    backgroundColor: '#',
+    backgroundColor: colors.primary, // Use your primary color
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 5,

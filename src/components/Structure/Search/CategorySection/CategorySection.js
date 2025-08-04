@@ -30,13 +30,47 @@ const CategorySection = () => {
     return () => clearTimeout(timer);
   }, []);
 
+  // Define the desired order
+  const desiredOrder = [
+    'Vehicle',
+    'Property',
+    'Spare Parts',
+    'Services',
+    'New & Used',
+  ];
+
+  // Function to sort categories
+  const sortCategories = categoriestoSort => {
+    return categoriestoSort.sort((a, b) => {
+      const indexA = desiredOrder.indexOf(a.name);
+      const indexB = desiredOrder.indexOf(b.name);
+
+      // If both categories are in the desired order, sort by their position
+      if (indexA !== -1 && indexB !== -1) {
+        return indexA - indexB;
+      }
+
+      // If only one is in the desired order, prioritize it
+      if (indexA !== -1) {
+        return -1;
+      }
+      if (indexB !== -1) {
+        return 1;
+      }
+
+      // If neither is in the desired order, maintain original order
+      return 0;
+    });
+  };
+
   useEffect(() => {
     const loadCategories = async () => {
       setIsLoading(true);
       const res = await fetchCategories(token);
       if (res?.success) {
-        dispatch(setCategories(res.data));
-        console.log('Setting Categories:', res.data);
+        const sortedCategories = sortCategories([...res.data]);
+        console.log('Setting Categories:', sortedCategories);
+        dispatch(setCategories(sortedCategories));
       } else {
         console.warn('Failed to fetch categories');
       }

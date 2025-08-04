@@ -135,7 +135,7 @@ export default function ProfileHeader({OnPressLogout, onRoleSwitch}) {
   };
 
   return (
-    <SafeAreaView style={styles.headerContainer}>
+    <SafeAreaView style={{...styles.headerContainer}}>
       <StatusBar
         barStyle="dark-content"
         backgroundColor="#FFFFFF" // Make sure this matches your background
@@ -144,7 +144,7 @@ export default function ProfileHeader({OnPressLogout, onRoleSwitch}) {
       <TouchableOpacity onPress={OnPressLogout} style={styles.logoutButton}>
         <PowerOffSVG width={mvs(25)} height={mvs(25)} fill={colors.white} />
       </TouchableOpacity>
-      <View style={styles.logoWrapper}>
+      <View style={{...styles.logoWrapper}}>
         <Image
           source={require('../../assets/img/logo1.png')}
           style={styles.logo}
@@ -195,7 +195,7 @@ export default function ProfileHeader({OnPressLogout, onRoleSwitch}) {
 
 const styles = StyleSheet.create({
   headerContainer: {
-    backgroundColor: colors.lightorange,
+    backgroundColor: colors.white,
     // height: headerHeight,
     // paddingTop: 40,
     paddingHorizontal: mvs(15),

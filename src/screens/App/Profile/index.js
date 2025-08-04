@@ -155,7 +155,6 @@ const Profile = () => {
       console.error('Language toggle error:', error);
     }
   };
-  
 
   return (
     <Animated.View style={{flex: 1, transform: [{translateX: translateXAnim}]}}>
