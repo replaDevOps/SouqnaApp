@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   StatusBar,
   ActivityIndicator,
+  Image,
 } from 'react-native';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import Regular from '../../../typography/RegularText';
@@ -17,6 +18,7 @@ import i18n from '../../../i18n/i18n';
 import {t} from 'i18next';
 import Loader from '../../../components/Loader';
 import {mvs} from '../../../util/metrices';
+import {BASE_URL_Product} from '../../../api/apiServices';
 
 const SubCategoryMain = () => {
   const route = useRoute();
@@ -83,18 +85,30 @@ const SubCategoryMain = () => {
     navigation.goBack();
   };
 
-  const renderSubCategoryItem = ({item}) => (
-    <TouchableOpacity
-      style={styles.subCategoryItem}
-      onPress={() => handleSubcategoryPress(item)}>
-      <View style={styles.titleContainer}>
-        <Regular style={styles.subCategoryText}>
-          {getLocalizedName(item)}
-        </Regular>
-      </View>
-      <ForwardSVG width={26} height={26} />
-    </TouchableOpacity>
-  );
+  const renderSubCategoryItem = ({item}) => {
+    const imageURL = item.image ? `${BASE_URL_Product}${item.image}` : null;
+
+    return (
+      <TouchableOpacity
+        style={styles.subCategoryItem}
+        onPress={() => handleSubcategoryPress(item)}>
+        <View style={styles.IconContainer}>
+          {imageURL && (
+            <Image
+              source={{uri: imageURL}}
+              style={{width: mvs(60), height: mvs(60), resizeMode: 'contain'}}
+            />
+          )}
+        </View>
+        <View style={styles.titleContainer}>
+          <Regular style={styles.subCategoryText}>
+            {getLocalizedName(item)}
+          </Regular>
+        </View>
+        <ForwardSVG width={26} height={26} />
+      </TouchableOpacity>
+    );
+  };
 
   return (
     <SafeAreaView style={styles.container}>
