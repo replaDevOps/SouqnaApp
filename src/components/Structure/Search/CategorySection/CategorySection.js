@@ -30,37 +30,39 @@ const CategorySection = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  // Define the desired order
-  const desiredOrder = [
-    'Vehicle',
-    'Property',
-    'Spare Parts',
-    'Services',
-    'New & Used',
-  ];
+  // Define the desired order with layout specification
+  const categoryLayout = {
+    firstRow: ['Vehicle', 'Property'], // Big cards
+    secondRow: ['Services', 'New & Used', 'Spare Parts'], // Small cards
+  };
 
-  // Function to sort categories
-  const sortCategories = categoriestoSort => {
-    return categoriestoSort.sort((a, b) => {
-      const indexA = desiredOrder.indexOf(a.name);
-      const indexB = desiredOrder.indexOf(b.name);
+  // Function to organize categories by layout
+  const organizeCategoriesByLayout = categoriesData => {
+    const organized = {
+      firstRow: [],
+      secondRow: [],
+    };
 
-      // If both categories are in the desired order, sort by their position
-      if (indexA !== -1 && indexB !== -1) {
-        return indexA - indexB;
+    // Filter active categories
+    const activeCategories = categoriesData.filter(item => item.status === 1);
+
+    // Organize first row (big cards)
+    categoryLayout.firstRow.forEach(categoryName => {
+      const category = activeCategories.find(cat => cat.name === categoryName);
+      if (category) {
+        organized.firstRow.push(category);
       }
-
-      // If only one is in the desired order, prioritize it
-      if (indexA !== -1) {
-        return -1;
-      }
-      if (indexB !== -1) {
-        return 1;
-      }
-
-      // If neither is in the desired order, maintain original order
-      return 0;
     });
+
+    // Organize second row (small cards)
+    categoryLayout.secondRow.forEach(categoryName => {
+      const category = activeCategories.find(cat => cat.name === categoryName);
+      if (category) {
+        organized.secondRow.push(category);
+      }
+    });
+
+    return organized;
   };
 
   useEffect(() => {
@@ -68,9 +70,8 @@ const CategorySection = () => {
       setIsLoading(true);
       const res = await fetchCategories(token);
       if (res?.success) {
-        const sortedCategories = sortCategories([...res.data]);
-        console.log('Setting Categories:', sortedCategories);
-        dispatch(setCategories(sortedCategories));
+        console.log('Setting Categories:', res.data);
+        dispatch(setCategories(res.data));
       } else {
         console.warn('Failed to fetch categories');
       }
@@ -109,54 +110,73 @@ const CategorySection = () => {
     }
   };
 
+  const renderCategoryItem = (item, isBig = false) => {
+    const imageURL = item.image ? `${BASE_URL_Product}${item.image}` : null;
+    const Icon = categoryIcons[item.name] || HOMESVG;
+    const cardStyle = isBig ? styles.bigCard : styles.smallCard;
+    const iconStyle = isBig ? styles.bigIcon : styles.smallIcon;
+
+    return (
+      <TouchableOpacity
+        key={item.id.toString()}
+        style={{
+          ...cardStyle,
+          borderWidth: 1,
+          borderColor: 'black',
+          borderRadius: 10,
+        }}
+        onPress={() =>
+          handleCategoryPress(
+            i18n.language === 'ar' ? item.ar_name : item.name,
+            item.id,
+          )
+        }>
+        {imageURL ? (
+          <Image
+            resizeMode="contain"
+            source={{uri: imageURL}}
+            style={iconStyle}
+          />
+        ) : (
+          <View
+            style={[
+              iconStyle,
+              {justifyContent: 'center', alignItems: 'center'},
+            ]}>
+            <Icon width={isBig ? 30 : 24} height={isBig ? 30 : 24} />
+          </View>
+        )}
+        <Text
+          style={styles.categoryText}
+          numberOfLines={2}
+          ellipsizeMode="tail">
+          {i18n.language === 'ar' ? item.ar_name : item.name}
+        </Text>
+      </TouchableOpacity>
+    );
+  };
+
   if (isLoading) {
     return <CategorySkeleton />;
   }
 
+  const organizedCategories = organizeCategoriesByLayout(categories);
+
   return (
     <View style={styles.categoryContainer}>
-      <FlatList
-        data={categories.filter(item => item.status === 1)}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        keyExtractor={item => item.id.toString()}
-        contentContainerStyle={{justifyContent: 'space-evenly', flexGrow: 1}}
-        renderItem={({item}) => {
-          const imageURL = item.image
-            ? `${BASE_URL_Product}${item.image}`
-            : null;
-          const Icon = categoryIcons[item.name] || HOMESVG;
+      {/* First Row - Big Cards */}
+      <View style={styles.row}>
+        {organizedCategories.firstRow.map(item =>
+          renderCategoryItem(item, true),
+        )}
+      </View>
 
-          return (
-            <TouchableOpacity
-              onPress={() =>
-                handleCategoryPress(
-                  i18n.language === 'ar' ? item.ar_name : item.name,
-                  item.id,
-                )
-              }>
-              <View style={styles.categoryItem}>
-                {imageURL ? (
-                  <Image
-                    source={{uri: imageURL}}
-                    style={styles.IconContainer}
-                  />
-                ) : (
-                  <Icon width={24} height={24} />
-                )}
-                <View style={styles.textContainer}>
-                  <Text
-                    style={styles.categoryText}
-                    numberOfLines={2}
-                    ellipsizeMode="tail">
-                    {i18n.language === 'ar' ? item.ar_name : item.name}
-                  </Text>
-                </View>
-              </View>
-            </TouchableOpacity>
-          );
-        }}
-      />
+      {/* Second Row - Small Cards */}
+      <View style={styles.row1}>
+        {organizedCategories.secondRow.map(item =>
+          renderCategoryItem(item, false),
+        )}
+      </View>
     </View>
   );
 };

@@ -76,6 +76,25 @@ const BRANDS = [
   'United Motors',
   'Volkswagen',
 ];
+
+const fieldOrder = [
+  // Vehicle Details
+  'category',
+  'make_brand',
+  'model',
+  'year_of_manufacture',
+  'mileage',
+  'fuel_type',
+  'transmission',
+  'power',
+  'number_of_doors',
+  'vehicle_type',
+  'condition',
+  'color',
+  // Registration and Ownership
+  'first_registration_date',
+  'inspection_valid_until',
+];
 const CreateProduct = () => {
   const route = useRoute();
   const {
@@ -131,6 +150,26 @@ const CreateProduct = () => {
   //       .catch(e => console.log('Cleanup error:', e));
   //   };
   // }, []);
+
+  const sortCategoryFields = fields => {
+    return fields.sort((a, b) => {
+      const indexA = fieldOrder.indexOf(a.name);
+      const indexB = fieldOrder.indexOf(b.name);
+
+      // If field is not in the order array, put it at the end
+      if (indexA === -1 && indexB === -1) {
+        return 0;
+      }
+      if (indexA === -1) {
+        return 1;
+      }
+      if (indexB === -1) {
+        return -1;
+      }
+
+      return indexA - indexB;
+    });
+  };
 
   const getImageSize = uri =>
     new Promise((resolve, reject) => {
@@ -416,7 +455,8 @@ const CreateProduct = () => {
 
         if (matchedCategory) {
           console.log('MATCHED CATEGORY FIELDS: ', matchedCategory.fields);
-          setCategoryFields(matchedCategory.fields); // Set the dynamic fields
+          const sortedFields = sortCategoryFields(matchedCategory.fields);
+          setCategoryFields(sortedFields);
         }
       } else {
         setSnackbarMessage('Failed to fetch categories.');

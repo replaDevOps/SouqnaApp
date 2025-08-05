@@ -243,8 +243,10 @@ const styles = StyleSheet.create({
     fontSize: mvs(20),
   },
   logo: {
-    width: mvs(100),
-    height: mvs(90),
+    width: '100%',
+    // height: '100%',
+    // width: mvs(200),
+    height: mvs(250),
     resizeMode: 'cover',
   },
 });
