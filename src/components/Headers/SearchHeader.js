@@ -31,6 +31,7 @@ const SearchHeader = ({
           style={styles.searchBar}
           onPressIn={onFocusSearch}
           placeholder={t('SearchBarplaceholder')}
+          // placeholder={t('SearchBarplaceholder')}
           placeholderTextColor={colors.grey}
           keyboardType="default"
           value={searchText}
@@ -61,8 +62,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: mvs(7),
     paddingTop: mvs(20),
+    width: '90%',
     paddingBottom: mvs(10),
-    backgroundColor: '#fbfbfb',
+    // backgroundColor: '#fbfbfb',
   },
   searchBarContainer: {
     // add shadow here
@@ -81,7 +83,7 @@ const styles = StyleSheet.create({
     borderRadius: mvs(4),
     paddingHorizontal: mvs(10),
     paddingVertical: mvs(4),
-    marginHorizontal: mvs(10),
+    // marginHorizontal: mvs(10),
   },
   searchBar: {
     flex: 1,

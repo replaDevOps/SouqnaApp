@@ -1,5 +1,12 @@
 // RecommendedSection.js
-import React, {useCallback, useEffect, useMemo, useState, useImperativeHandle, forwardRef} from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  useImperativeHandle,
+  forwardRef,
+} from 'react';
 import {
   FlatList,
   View,
@@ -65,7 +72,8 @@ const RecommendedSection = forwardRef(({onRefreshRef}, ref) => {
       response = await fetchSellerProducts(token, filters);
     } else {
       // Buyer or Guest (role 3 or others)
-      response = await fetchBuyerProducts(filters);
+      const isLoggedIn = Boolean(token);
+      response = await fetchBuyerProducts(filters, isLoggedIn);
     }
     if (response?.success && Array.isArray(response.data)) {
       setApiProducts(response.data);
@@ -77,7 +85,7 @@ const RecommendedSection = forwardRef(({onRefreshRef}, ref) => {
 
   // Expose the refresh function to parent component
   useImperativeHandle(ref, () => ({
-    refresh: loadProducts
+    refresh: loadProducts,
   }));
 
   // Set the ref for parent component to access
@@ -91,35 +99,38 @@ const RecommendedSection = forwardRef(({onRefreshRef}, ref) => {
     loadProducts();
   }, [loadProducts]);
 
-  const handleHeartClick = useCallback(async (id, item) => {
-    if (role === 2) {
-      showSnackbar('Log in as buyer');
-      return;
-    }
+  const handleHeartClick = useCallback(
+    async (id, item) => {
+      if (role === 2) {
+        showSnackbar('Log in as buyer');
+        return;
+      }
 
-    const isInFavorites = item?.isFavorite;
-    if (isInFavorites) {
-      await removeFromFavorite(id, token).then(res => {
-        const updatedState = apiProducts.map(product => {
-          if (product.id === id) {
-            product.isFavorite = !product.isFavorite;
-          }
-          return product;
+      const isInFavorites = item?.isFavorite;
+      if (isInFavorites) {
+        await removeFromFavorite(id, token).then(res => {
+          const updatedState = apiProducts.map(product => {
+            if (product.id === id) {
+              product.isFavorite = !product.isFavorite;
+            }
+            return product;
+          });
+          setApiProducts(updatedState);
         });
-        setApiProducts(updatedState);
-      });
-    } else {
-      await addToFavorite(id, token).then(res => {
-        const updatedState = apiProducts.map(product => {
-          if (product.id === id) {
-            product.isFavorite = !product.isFavorite;
-          }
-          return product;
+      } else {
+        await addToFavorite(id, token).then(res => {
+          const updatedState = apiProducts.map(product => {
+            if (product.id === id) {
+              product.isFavorite = !product.isFavorite;
+            }
+            return product;
+          });
+          setApiProducts(updatedState);
         });
-        setApiProducts(updatedState);
-      });
-    }
-  }, [role, token, apiProducts]);
+      }
+    },
+    [role, token, apiProducts],
+  );
 
   async function loadMoreProducts() {}
 
@@ -142,7 +153,7 @@ const RecommendedSection = forwardRef(({onRefreshRef}, ref) => {
             {Number(item.price).toLocaleString()}
           </Regular>
         </View>
-        {role !== 2 && (
+        {role !== 2 && Boolean(token) && (
           <TouchableOpacity
             onPress={() => handleHeartClick(item.id, item)}
             style={styles.heartIconContainer}>
@@ -151,7 +162,7 @@ const RecommendedSection = forwardRef(({onRefreshRef}, ref) => {
         )}
       </TouchableOpacity>
     ),
-    [handleHeartClick, role, navigation],
+    [handleHeartClick, role, navigation, token],
   );
 
   // Render skeleton items in the same layout as the actual product items

@@ -43,10 +43,15 @@ const SearchResultsScreen = () => {
     try {
       setLoading(true);
 
+      const isLoggedIn = Boolean(token);
+
       const response =
         role === 2 || role === '2'
           ? await fetchSellerProducts(token, {productName: debouncedSearchText})
-          : await fetchBuyerProducts({productName: debouncedSearchText});
+          : await fetchBuyerProducts(
+              {productName: debouncedSearchText},
+              isLoggedIn,
+            );
       console.log('API product response:', response);
 
       // Adjusting the response to access products inside the 'data' field

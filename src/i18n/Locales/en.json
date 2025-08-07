@@ -610,5 +610,8 @@
   "Nearby Landmarks": "Nearby Landmarks",
   "Transport": "Distance from City Center / Transport",
   "Select Option": "Select Option",
-  "Select Purpose": "Select Purpose"
+  "Select Purpose": "Select Purpose",
+  "Manual": "Manual",
+  "Automatic": "Automatic",
+  "Select Transmission": "Select Transmission"
 }

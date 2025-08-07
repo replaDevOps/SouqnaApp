@@ -1,10 +1,12 @@
 import React from 'react';
 import {Text, TouchableOpacity} from 'react-native';
 import {BottomSheetScrollView} from '@gorhom/bottom-sheet';
+import {useTranslation} from 'react-i18next';
 
 const options = ['Automatic', 'Manual'];
 
 const TransmissionFilterSheet = ({filters, setFilters, closeSheet}) => {
+  const {t} = useTranslation();
   return (
     <BottomSheetScrollView
       contentContainerStyle={{
@@ -12,13 +14,13 @@ const TransmissionFilterSheet = ({filters, setFilters, closeSheet}) => {
         paddingBottom: 40,
       }}>
       <Text style={{fontSize: 16, fontWeight: 'bold', marginBottom: 10}}>
-        Select Transmission
+        {t('Select Transmission')}
       </Text>
       {options.map(option => (
         <TouchableOpacity
           key={option}
           onPress={() => {
-            setFilters(prev => ({...prev, transmission: option}));
+            setFilters(prev => ({...prev, transmission: t(option)}));
             closeSheet();
           }}
           style={{
@@ -28,7 +30,7 @@ const TransmissionFilterSheet = ({filters, setFilters, closeSheet}) => {
             borderRadius: 10,
             marginBottom: 10,
           }}>
-          <Text>{option}</Text>
+          <Text>{t(option)}</Text>
         </TouchableOpacity>
       ))}
     </BottomSheetScrollView>

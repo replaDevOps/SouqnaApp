@@ -317,14 +317,18 @@ export const fetchSellerProducts = async (token, filters = {}) => {
   }
 };
 
-export const fetchBuyerProducts = async (filters = {}) => {
+export const fetchBuyerProducts = async (filters = {}, isLoggedIn) => {
   try {
-    const response = await API.post('showProducts', filters, {
-      headers: {
-        pageNo: 1,
-        recordsPerPage: 20,
+    const response = await API.post(
+      isLoggedIn ? 'showProducts' : 'showProductsWithoutAuth',
+      filters,
+      {
+        headers: {
+          pageNo: 1,
+          recordsPerPage: 20,
+        },
       },
-    });
+    );
     console.log('Endpoint Used: showProducts (Buyer/Guest)');
 
     if (response.status === 200) {

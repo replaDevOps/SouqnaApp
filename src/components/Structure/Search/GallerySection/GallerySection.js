@@ -119,7 +119,8 @@ const GalleryContainer = ({
         response = await fetchSellerProducts(token, filters);
       } else {
         // Buyer or Guest (role 3 or others)
-        response = await fetchBuyerProducts(filters);
+        const isLoggedIn = Boolean(token);
+        response = await fetchBuyerProducts(filters, isLoggedIn);
       }
       console.log('API Response:', response);
       if (response?.success && Array.isArray(response.data)) {

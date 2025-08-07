@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
 
   smallCard: {
     alignItems: 'center',
-    width: '30%',
+    width: '23%',
     paddingVertical: mvs(8),
   },
 

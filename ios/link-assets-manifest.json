@@ -1,0 +1,49 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "src/assets/fonts/Asal.ttf",
+      "sha1": "69062e24d9081b0665e73a68a84e4dcc0723a92d"
+    },
+    {
+      "path": "src/assets/fonts/DMSans_18pt-Bold.ttf",
+      "sha1": "183ca56aa84af9774818fba4839814582e361f0d"
+    },
+    {
+      "path": "src/assets/fonts/DMSans_18pt-ExtraBold.ttf",
+      "sha1": "5aef6f351fc71740af511471ed69fb07dfa1b3e5"
+    },
+    {
+      "path": "src/assets/fonts/DMSans_18pt-Medium.ttf",
+      "sha1": "4990f8ea90a8099886176643f6ad79aa2d0d398c"
+    },
+    {
+      "path": "src/assets/fonts/DMSans_18pt-Regular.ttf",
+      "sha1": "d27f051995049b2fb0445c7b1caca9e88950766a"
+    },
+    {
+      "path": "src/assets/fonts/DMSans_18pt-SemiBold.ttf",
+      "sha1": "0238b3dd66beb77571a61df2a629b79beff33cef"
+    },
+    {
+      "path": "src/assets/fonts/DMSans_24pt-Bold.ttf",
+      "sha1": "928ae5178da9d59fe9e35b5b6307e8c2546a454c"
+    },
+    {
+      "path": "src/assets/fonts/Poppins-Bold.ttf",
+      "sha1": "875cf0cecd647bcf22e79d633d868c1b1ec98dfa"
+    },
+    {
+      "path": "src/assets/fonts/Poppins-Medium.ttf",
+      "sha1": "283f21b44efbdbf276ba802be2d949a36bbc4233"
+    },
+    {
+      "path": "src/assets/fonts/Poppins-Regular.ttf",
+      "sha1": "fdd3002e7d814ee47c1c1b8487c72c6bbb3a2d00"
+    },
+    {
+      "path": "src/assets/fonts/index.tsx",
+      "sha1": "ed4e773e6d66799dc3aedb118bfb024ad304b9aa"
+    }
+  ]
+}

@@ -306,12 +306,12 @@ const CreateProduct = () => {
 
     for (let i = 0; i < formData.images.length; i++) {
       const image = formData.images[i];
-      if (image.fileSize > 2 * 1024 * 1024) {
-        setSnackbarMessage(`Image ${i + 1} must be under 2MB.`);
-        setSnackbarVisible(true);
-        setLoading(false);
-        return;
-      }
+      // if (image.fileSize > 2 * 1024 * 1024) {
+      //   setSnackbarMessage(`Image ${i + 1} must be under 2MB.`);
+      //   setSnackbarVisible(true);
+      //   setLoading(false);
+      //   return;
+      // }
 
       data.append('images[]', {
         uri: image.uri,

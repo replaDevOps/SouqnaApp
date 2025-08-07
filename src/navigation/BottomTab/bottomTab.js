@@ -166,9 +166,16 @@ const MyTabs = () => {
               tabPress: e => handleTabPress(e, route, navigation),
             })}
           />
-          <Tab.Screen
+          {/* <Tab.Screen
             name="Notification"
             component={Notification}
+            listeners={({navigation, route}) => ({
+              tabPress: e => handleTabPress(e, route, navigation),
+            })}
+          /> */}
+          <Tab.Screen
+            name="Favourite"
+            component={FavouriteScreen}
             listeners={({navigation, route}) => ({
               tabPress: e => handleTabPress(e, route, navigation),
             })}
@@ -201,13 +208,13 @@ const MyTabs = () => {
               tabPress: e => handleTabPress(e, route, navigation),
             })}
           />
-          <Tab.Screen
+          {/* <Tab.Screen
             name="Notification"
             component={Notification}
             listeners={({navigation, route}) => ({
               tabPress: e => handleTabPress(e, route, navigation),
             })}
-          />
+          /> */}
           <Tab.Screen
             name="Profile"
             component={Profile}

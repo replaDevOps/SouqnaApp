@@ -121,8 +121,9 @@ const CategorySection = () => {
         key={item.id.toString()}
         style={{
           ...cardStyle,
-          borderWidth: 1,
-          borderColor: 'black',
+          backgroundColor: '#F2F2F2',
+          // borderWidth: 1,
+          // borderColor: 'black',
           borderRadius: 10,
         }}
         onPress={() =>
@@ -176,6 +177,47 @@ const CategorySection = () => {
         {organizedCategories.secondRow.map(item =>
           renderCategoryItem(item, false),
         )}
+        <TouchableOpacity
+          // eslint-disable-next-line react-native/no-inline-styles
+          style={{
+            ...styles.smallCard,
+            backgroundColor: '#F2F2F2',
+            // borderWidth: 1,
+            // borderColor: 'black',
+            borderRadius: 10,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+          onPress={
+            () => navigation.navigate('AllCategoriesView')
+            // handleCategoryPress(
+            //   i18n.language === 'ar' ? item.ar_name : item.name,
+            //   item.id,
+            // )
+          }>
+          {/* {imageURL ? (
+          <Image
+            resizeMode="contain"
+            source={{uri: imageURL}}
+            style={iconStyle}
+          />
+        )  */}
+          {/* : ( */}
+          {/* <View
+            style={[
+              styles.smallCard,
+              {justifyContent: 'center', alignItems: 'center'},
+            ]}>
+            <HOMESVG width={24} height={24} />
+          </View> */}
+          {/* )} */}
+          <Text
+            style={styles.categoryText}
+            numberOfLines={2}
+            ellipsizeMode="tail">
+            All Categories
+          </Text>
+        </TouchableOpacity>
       </View>
     </View>
   );

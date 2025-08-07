@@ -611,5 +611,8 @@
   "Nearby Landmarks": "معالم قريبة",
   "Transport": "المسافة من مركز المدينة / وسائل النقل",
   "Select Option": "اختر خيارًا",
-  "Select Purpose": "اختر الغرض"
+  "Select Purpose": "اختر الغرض",
+  "Manual": "عادي",
+  "Automatic": "أوتوماتيك",
+  "Select Transmission": "اختر ناقل الحركة"
 }

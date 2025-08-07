@@ -19,12 +19,14 @@ import {t} from 'i18next';
 import Loader from '../../../components/Loader';
 import {mvs} from '../../../util/metrices';
 import {BASE_URL_Product} from '../../../api/apiServices';
+import {useSelector} from 'react-redux';
 
 const SubCategoryMain = () => {
   const route = useRoute();
   const {category, subcategories, categoryId} = route.params;
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
+  const {token} = useSelector(state => state.user);
 
   const getLocalizedName = item =>
     i18n.language === 'ar' ? item.ar_name || item.name : item.name;
@@ -42,7 +44,9 @@ const SubCategoryMain = () => {
           category_id: categoryId,
         };
 
-        const response = await fetchBuyerProducts(filters);
+        const isLoggedIn = Boolean(token);
+
+        const response = await fetchBuyerProducts(filters, isLoggedIn);
 
         if (response?.data?.length > 0) {
           // const parsedProducts = response.data.filter(

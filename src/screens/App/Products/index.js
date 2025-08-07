@@ -343,7 +343,7 @@ const Products = () => {
             {Number(item.price).toLocaleString()}
           </Regular>
         </View>
-        {role !== 2 && (
+        {role !== 2 && Boolean(token) && (
           <TouchableOpacity
             onPress={() => handleHeartClick(item.id, item)}
             style={styles.heartIconContainer}>
@@ -354,7 +354,7 @@ const Products = () => {
         )}
       </TouchableOpacity>
     ),
-    [navigateToProductDetails, handleHeartClick, likedItemsMap],
+    [navigateToProductDetails, handleHeartClick, likedItemsMap, token],
   );
 
   return (

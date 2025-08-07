@@ -1,7 +1,13 @@
 /* eslint-disable react-native/no-inline-styles */
 
 import {useEffect, useRef, useState} from 'react';
-import {RefreshControl, ScrollView, StatusBar, View} from 'react-native';
+import {
+  RefreshControl,
+  ScrollView,
+  StatusBar,
+  View,
+  TouchableOpacity,
+} from 'react-native';
 import SearchHeader from '../../../components/Headers/SearchHeader';
 import styles from './style';
 import AddModal from '../../../components/Modals/AddModal';
@@ -10,14 +16,15 @@ import {useDispatch, useSelector} from 'react-redux';
 import CategorySection from '../../../components/Structure/Search/CategorySection/CategorySection';
 import RecommendedSection from '../../../components/Structure/Search/RecommendedSection/RecommendedSection';
 import VerificationModal from '../../../components/Modals/VerificationModal';
-import API, {
-  fetchCategories,
-} from '../../../api/apiServices';
+import API, {fetchCategories} from '../../../api/apiServices';
 import {setVerificationStatus} from '../../../redux/slices/userSlice';
 import LogoHeader from '../../../components/Structure/Search/Header/LogoHeader';
 import {Snackbar} from 'react-native-paper';
 import BannerSlider from '../../../components/atoms/BannerSlider';
 import ProductDashboard from '../../../components/atoms/Dashboard';
+import {NotificationSVG} from '../../../assets/svg';
+import {color} from '../../../util/color';
+import {mvs} from '../../../util/metrices';
 
 const SearchScreen = () => {
   const navigation = useNavigation();
@@ -209,9 +216,20 @@ const SearchScreen = () => {
       <ScrollView
         contentContainerStyle={{backgroundColor: '#fbfbfb', flexGrow: 1}}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefreshEnhanced} />
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefreshEnhanced}
+          />
         }>
-        <View style={{backgroundColor: '#fbfbfb'}}>
+        <View
+          style={{
+            backgroundColor: '#fbfbfb',
+            flexDirection: 'row',
+            width: '100%',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            // padding: mvs(10),
+          }}>
           <SearchHeader
             onFocusSearch={onFocusSearch}
             isSearchMode={isSearchMode}
@@ -221,6 +239,20 @@ const SearchScreen = () => {
             searchText={searchText}
             setSearchText={setSearchText}
           />
+          <TouchableOpacity
+            style={{
+              width: '10%',
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+              paddingHorizontal: mvs(10),
+            }}
+            onPress={() => {
+              console.log('pressed');
+              navigation.navigate('Notification');
+            }}>
+            <NotificationSVG color={color} />
+          </TouchableOpacity>
         </View>
 
         <CategorySection categories={apiCategories} />
