@@ -1,11 +1,17 @@
 /* eslint-disable react-native/no-inline-styles */
-import React from 'react';
 import {Text, TouchableOpacity} from 'react-native';
 import {BottomSheetScrollView} from '@gorhom/bottom-sheet';
+import {useTranslation} from 'react-i18next';
 
-const options = ['Newest First', 'Oldest First', 'Price: Low to High', 'Price: High to Low'];
+const options = [
+  'Newest First',
+  'Oldest First',
+  'Price: Low to High',
+  'Price: High to Low',
+];
 
 const SortSheet = ({sortOption, setSortOption, closeSheet}) => {
+  const {t} = useTranslation();
   return (
     <BottomSheetScrollView
       contentContainerStyle={{
@@ -13,13 +19,13 @@ const SortSheet = ({sortOption, setSortOption, closeSheet}) => {
         paddingBottom: 40,
       }}>
       <Text style={{fontSize: 16, fontWeight: 'bold', marginBottom: 10}}>
-        Sort By
+        {t('Sort By')}
       </Text>
       {options.map(option => (
         <TouchableOpacity
           key={option}
           onPress={() => {
-            setSortOption(option);
+            setSortOption(t(option));
             closeSheet();
           }}
           style={{
@@ -28,7 +34,7 @@ const SortSheet = ({sortOption, setSortOption, closeSheet}) => {
             borderRadius: 10,
             marginBottom: 10,
           }}>
-          <Text >{option}</Text>
+          <Text>{t(option)}</Text>
         </TouchableOpacity>
       ))}
     </BottomSheetScrollView>

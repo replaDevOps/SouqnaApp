@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import {Text, View, TouchableOpacity, TextInput} from 'react-native';
 import {BottomSheetScrollView} from '@gorhom/bottom-sheet';
 import DropDownPicker from 'react-native-dropdown-picker';
@@ -23,11 +23,15 @@ const AdjustFilterSheet = ({
   closeSheet,
 }) => {
   useEffect(() => {
-    if (fuelOpen) setConditionOpen(false);
+    if (fuelOpen) {
+      setConditionOpen(false);
+    }
   }, [fuelOpen]);
 
   useEffect(() => {
-    if (conditionOpen) setFuelOpen(false);
+    if (conditionOpen) {
+      setFuelOpen(false);
+    }
   }, [conditionOpen]);
 
   const {i18n} = useTranslation();
@@ -94,13 +98,13 @@ const AdjustFilterSheet = ({
             onOpenBrandSheet?.(); // this should be passed from parent
           }}
           style={[inputStyle, {justifyContent: 'center'}]}>
-          <Text>{filters.brand || 'Select brand'}</Text>
+          <Text>{filters.brand || t('Select brand')}</Text>
         </TouchableOpacity>
 
         {/* Model */}
         <Text style={labelStyle}>{t('Model')}</Text>
         <TextInput
-          placeholder="Enter model"
+          placeholder={t('Enter model')}
           value={filters.model}
           onChangeText={text => setFilters(prev => ({...prev, model: text}))}
           style={inputStyle}
@@ -113,10 +117,12 @@ const AdjustFilterSheet = ({
           style={[inputStyle, {justifyContent: 'center'}]}>
           <Text>
             {filters.minPrice || filters.maxPrice
-              ? `${filters.minPrice ? `From ${filters.minPrice}` : ''} ${
-                  filters.maxPrice ? `Up to ${filters.maxPrice}` : ''
+              ? `${
+                  filters.minPrice ? `${t('From')} ${filters.minPrice}` : ''
+                } ${
+                  filters.maxPrice ? `${t('Up to')}${filters.maxPrice}` : ''
                 }`.trim()
-              : 'Select price range'}
+              : t('Select price range')}
           </Text>
         </TouchableOpacity>
 
@@ -128,11 +134,15 @@ const AdjustFilterSheet = ({
           <Text>
             {filters.buildYearMin || filters.buildYearMax
               ? `${
-                  filters.buildYearMin ? `From ${filters.buildYearMin}` : ''
+                  filters.buildYearMin
+                    ? `${t('From')} ${filters.buildYearMin}`
+                    : ''
                 } ${
-                  filters.buildYearMax ? `Up to ${filters.buildYearMax}` : ''
+                  filters.buildYearMax
+                    ? `${t('Up to')}${filters.buildYearMax}`
+                    : ''
                 }`.trim()
-              : 'Select year range'}
+              : t('Select year range')}
           </Text>
         </TouchableOpacity>
 
@@ -173,11 +183,10 @@ const AdjustFilterSheet = ({
             items={fuelItems}
             setOpen={setFuelOpen}
             setValue={val => {
-              console.log('Selected fuel type:', val());
               setFilters(prev => ({...prev, fuelType: val()}));
             }}
             setItems={setFuelItems}
-            placeholder="Select fuel type"
+            placeholder={t('Select fuel type')}
             style={[inputStyle, {marginBottom: fuelOpen ? 120 : 12}]}
             dropDownContainerStyle={{
               ...inputStyle,
@@ -191,7 +200,7 @@ const AdjustFilterSheet = ({
         <TouchableOpacity
           onPress={onOpenTransmissionSheet}
           style={[inputStyle, {justifyContent: 'center'}]}>
-          <Text>{filters.transmission || 'Select transmission'}</Text>
+          <Text>{filters.transmission || t('Select transmission')}</Text>
         </TouchableOpacity>
 
         {/* Location (from registrationCity) */}

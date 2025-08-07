@@ -1,6 +1,5 @@
-/* eslint-disable no-lone-blocks */
 /* eslint-disable no-unused-vars */
-/* eslint-disable no-shadow */
+
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable react-hooks/exhaustive-deps */
 import {
@@ -67,7 +66,7 @@ const Products = () => {
   const [filters, setFilters] = useState({
     minPrice: '',
     maxPrice: '',
-    brand: [],
+    make_brand: [],
     buildYearMin: '',
     buildYearMax: '',
     transmission: '',
@@ -284,6 +283,8 @@ const Products = () => {
       // console.log('Category:', category);
 
       if (category === t('Cars')) {
+        console.log('Filters:', filters);
+        // console.log('products: ', product);
         passesCategoryFilter = filterVehicleProducts(
           product,
           filters,
@@ -306,20 +307,20 @@ const Products = () => {
     });
 
     switch (sortOption) {
-      case 'Newest First':
+      case t('Newest First'):
         result = result.sort(
           (a, b) => new Date(b.created_at) - new Date(a.created_at),
         );
         break;
-      case 'Oldest First':
+      case t('Oldest First'):
         result = result.sort(
           (a, b) => new Date(a.created_at) - new Date(b.created_at),
         );
         break;
-      case 'Price: Low to High':
+      case t('Price: Low to High'):
         result = result.sort((a, b) => a.price - b.price);
         break;
-      case 'Price: High to Low':
+      case t('Price: High to Low'):
         result = result.sort((a, b) => b.price - a.price);
         break;
     }
@@ -572,7 +573,7 @@ const Products = () => {
                     fontWeight: 'bold',
                     textAlign: 'center',
                   }}>
-                  Price
+                  {t('price')}
                 </Text>
                 {/* Your custom controls here */}
               </View>
@@ -606,7 +607,7 @@ const Products = () => {
                     fontWeight: 'bold',
                     textAlign: 'center',
                   }}>
-                  Build Year
+                  {t('buildyear')}
                 </Text>
               </View>
               <BuildYearFilterSheet

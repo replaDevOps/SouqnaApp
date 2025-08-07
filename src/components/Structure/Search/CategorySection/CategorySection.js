@@ -1,5 +1,5 @@
-import React, {useState, useEffect} from 'react';
-import {FlatList, Image, Text, TouchableOpacity, View} from 'react-native';
+import {useState, useEffect} from 'react';
+import {Image, Text, TouchableOpacity, View} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import styles from './style';
 import dummyData from '../../../../util/dummyData';
@@ -12,6 +12,7 @@ import API, {
 } from '../../../../api/apiServices';
 import {setCategories} from '../../../../redux/slices/categorySlice';
 import i18n from '../../../../i18n/i18n';
+import {useTranslation} from 'react-i18next';
 
 const {categoryIcons} = dummyData;
 
@@ -21,6 +22,7 @@ const CategorySection = () => {
   const [isLoading, setIsLoading] = useState(true);
   const categories = useSelector(state => state.category.categories);
   const {token} = useSelector(state => state.user);
+  const {t} = useTranslation();
 
   // Simulate loading time
   useEffect(() => {
@@ -215,7 +217,7 @@ const CategorySection = () => {
             style={styles.categoryText}
             numberOfLines={2}
             ellipsizeMode="tail">
-            All Categories
+            {t('All Categories')}
           </Text>
         </TouchableOpacity>
       </View>

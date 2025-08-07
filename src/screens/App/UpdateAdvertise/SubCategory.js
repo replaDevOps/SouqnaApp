@@ -1,4 +1,3 @@
-import React from 'react';
 import {View, FlatList, TouchableOpacity, StatusBar} from 'react-native';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import Regular from '../../../typography/RegularText';
@@ -7,11 +6,14 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {ForwardSVG} from '../../../assets/svg';
 import styles from '../AdvertiseAll/style';
 
+import {useTranslation} from 'react-i18next';
+
 const SubCategory = () => {
   const route = useRoute();
   const {category, categoryId, categoryImage, subcategories, onSelect} =
     route.params;
   const navigation = useNavigation();
+  const {t} = useTranslation();
 
   const handleSubcategoryPress = subcategory => {
     console.log(`Advertise ${subcategory.name} clicked`);
@@ -44,7 +46,9 @@ const SubCategory = () => {
       <StatusBar barStyle="dark-content" />
       <CategoryHeader title={category} onBack={handleBack} />
       <View style={styles.headerContainer}>
-        <Regular style={styles.header}>In All {category}</Regular>
+        <Regular style={styles.header}>
+          {t('In All')} {category}
+        </Regular>
       </View>
       <View style={styles.content}>
         <FlatList

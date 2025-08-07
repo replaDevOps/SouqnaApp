@@ -54,7 +54,8 @@ export const filterVehicleProducts = (product, filters, isArabic) => {
     ? product.custom_fields
     : JSON.parse(product.custom_fields || '[]');
 
-  console.log('Custom fields:', customFields);
+  product?.id === '37ada34d-abd5-402d-a370-ca77af75689f' &&
+    console.log('Custom fields:', customFields);
 
   // Step 2: Flatten custom fields into an object
   const customFieldMap = {};
@@ -64,15 +65,16 @@ export const filterVehicleProducts = (product, filters, isArabic) => {
     }
   }
 
-  console.log('Custom field map:', customFieldMap);
+  product?.id === '37ada34d-abd5-402d-a370-ca77af75689f' &&
+    console.log('Custom field map:', customFieldMap);
 
   // Step 3: Build normalized product
   const normalizedProduct = {
     ...product,
     ...customFieldMap,
-    brand: product.brand || customFieldMap.make_Brand,
+    make_brand: product.make_brand || customFieldMap.make_brand,
     model: product.model || customFieldMap.model,
-    buildYear: product.buildYear || customFieldMap.yearofManufacture,
+    buildYear: product.buildYear || customFieldMap.year_of_manufacture,
     mileage: product.mileage || customFieldMap.mileage,
     transmission: product.transmission || customFieldMap.transmission,
     fuelType: product.fuelType || customFieldMap.fuelType,
@@ -91,10 +93,20 @@ export const filterVehicleProducts = (product, filters, isArabic) => {
   return (
     (!filters.minPrice || price >= normalizeNum(filters.minPrice)) &&
     (!filters.maxPrice || price <= normalizeNum(filters.maxPrice)) &&
-    (!filters.brand?.length ||
-      filters.brand.some(selectedBrand =>
-        includesNormalized(normalizedProduct.brand, selectedBrand),
-      )) &&
+    (!filters.make_brand?.length ||
+      filters.make_brand.some(selectedBrand => {
+        product?.id === '37ada34d-abd5-402d-a370-ca77af75689f' &&
+          console.log('Selected brand:', selectedBrand);
+        product?.id === '37ada34d-abd5-402d-a370-ca77af75689f' &&
+          console.log('Normalized product:', normalizedProduct);
+        product?.id === '37ada34d-abd5-402d-a370-ca77af75689f' &&
+          console.log(
+            'Normalized product make_brand:',
+            normalizedProduct.make_brand,
+          );
+
+        return includesNormalized(normalizedProduct.make_brand, selectedBrand);
+      })) &&
     (!filters.model ||
       includesNormalized(normalizedProduct.model, filters.model)) &&
     (!filters.buildYearMin ||

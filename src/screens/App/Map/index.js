@@ -2,33 +2,26 @@ import React, {useState, useEffect, useRef, useCallback, useMemo} from 'react';
 import {
   View,
   Text,
-  StyleSheet,
   TouchableOpacity,
   Platform,
   Alert,
   Image,
   FlatList,
-  Modal,
   ScrollView,
   TouchableWithoutFeedback,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import MapView, {PROVIDER_GOOGLE, Marker, Circle} from 'react-native-maps';
+import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import {request, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import MainHeader from '../../../components/Headers/MainHeader';
-import {
-  BarsSVG,
-  CurrentLocationSVG,
-  ForwardSVG,
-  NoneSVG,
-} from '../../../assets/svg';
+import {BarsSVG, CurrentLocationSVG} from '../../../assets/svg';
 import {mvs} from '../../../util/metrices';
 import styles from './styles';
 import {useSelector} from 'react-redux';
 import {colors} from '../../../util/color';
-
+import {useTranslation} from 'react-i18next';
 // Memoized Marker Component to prevent unnecessary re-renders
 const MarkerComponent = React.memo(({item, onPress}) => (
   <Marker
@@ -95,6 +88,7 @@ export default function MapScreen() {
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [mapReady, setMapReady] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
+  const {t} = useTranslation();
 
   // Add refs for debouncing
   const regionUpdateTimeoutRef = useRef(null);
@@ -404,7 +398,7 @@ export default function MapScreen() {
   };
 
   const filterProductsByCategory = (products, categoryName) => {
-    if (!categoryName || categoryName === 'All') {
+    if (!categoryName || categoryName === t('All')) {
       return products;
     } else {
       return products.filter(
@@ -629,7 +623,7 @@ export default function MapScreen() {
               style={styles.dropdownText}
               numberOfLines={1}
               ellipsizeMode="tail">
-              All Categories
+              {t('All Categories')}
             </Text>
           </TouchableOpacity>
 

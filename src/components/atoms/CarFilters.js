@@ -1,6 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
 import {View, Text, StyleSheet, TouchableOpacity, FlatList} from 'react-native';
-import React from 'react';
 import DownArrowSvg from '../../assets/svg/down-arrow-svg';
 import {colors} from '../../util/color';
 import {AdjustSVG, TrashSVG} from '../../assets/svg';
@@ -19,12 +18,15 @@ const CarFilters = ({
   setSortOption,
 }) => {
   const getPriceLabel = () => {
-    if (filters.minPrice && !filters.maxPrice)
-      return `From ${filters.minPrice}`;
-    if (!filters.minPrice && filters.maxPrice)
-      return `Up to ${filters.maxPrice}`;
-    if (filters.minPrice && filters.maxPrice)
+    if (filters.minPrice && !filters.maxPrice) {
+      return `${t('From')} ${filters.minPrice}`;
+    }
+    if (!filters.minPrice && filters.maxPrice) {
+      return `${t('Up to')} ${filters.maxPrice}`;
+    }
+    if (filters.minPrice && filters.maxPrice) {
       return `${filters.minPrice} - ${filters.maxPrice}`;
+    }
     return t('price');
   };
 
@@ -86,14 +88,14 @@ const CarFilters = ({
               justifyContent: 'space-evenly',
               width: '100%',
             }}>
-<Text
-  numberOfLines={1}
-  ellipsizeMode="tail"
-  style={{color: '#000', flex: 1, marginRight: 8}}>
-  {filters.brand?.length > 0
-    ? filters.brand.join(', ')
-    : t('brand')}
-</Text>
+            <Text
+              numberOfLines={1}
+              ellipsizeMode="tail"
+              style={{color: '#000', flex: 1, marginRight: 8}}>
+              {filters.make_brand && filters.make_brand?.length > 0
+                ? filters.make_brand.join(', ')
+                : t('brand')}
+            </Text>
 
             <DownArrowSvg />
           </View>
@@ -164,7 +166,7 @@ const CarFilters = ({
               style={styles.filterText}
               numberOfLines={1}
               ellipsizeMode="tail">
-              {sortOption || t('sort')}
+              {t(sortOption) || t('sort')}
             </Text>
             <DownArrowSvg />
           </View>
@@ -177,7 +179,7 @@ const CarFilters = ({
       render: () => (
         <TouchableOpacity style={styles.resetButton} onPress={resetFilters}>
           <View style={{flexDirection: 'row', gap: 4}}>
-            <TrashSVG height={20} width={20} color='#000'/>
+            <TrashSVG height={20} width={20} color="#000" />
             <Text style={styles.resetButtonText}>{t('resetfilters')}</Text>
           </View>
         </TouchableOpacity>
