@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import MainHeader from '../../Headers/MainHeader';
 import {useNavigation} from '@react-navigation/native';
+import CustomText from '../../CustomText';
 
 const PlanScreen = () => {
   const [selectedPlan, setSelectedPlan] = useState('basic'); // 'basic' | 'premium'
@@ -27,7 +28,7 @@ const PlanScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       {/* <MainHeader title={'Plan'} /> */}
-      <Text style={styles.header}>Choose a Plan</Text>
+      <CustomText style={styles.header}>Choose a Plan</CustomText>
 
       {/* <TouchableOpacity
         style={[
@@ -35,9 +36,9 @@ const PlanScreen = () => {
           selectedPlan === 'basic' && styles.selectedCard,
         ]}
         onPress={() => setSelectedPlan('basic')}> */}
-      {/* <Text style={styles.planTitle}>Basic Plan</Text>
-        <Text style={styles.planPrice}>Free</Text>
-        <Text style={styles.planPrice}>2 Ads/Week</Text>
+      {/* <CustomText style={styles.planTitle}>Basic Plan</CustomText>
+        <CustomText style={styles.planPrice}>Free</CustomText>
+        <CustomText style={styles.planPrice}>2 Ads/Week</CustomText>
       </TouchableOpacity> */}
 
       <TouchableOpacity
@@ -46,14 +47,14 @@ const PlanScreen = () => {
           selectedPlan === 'premium' && styles.selectedCard,
         ]}
         onPress={() => setSelectedPlan('premium')}>
-        <Text style={styles.planTitle}>Premium Plan</Text>
-        <Text style={styles.planPrice}>$20/month</Text>
-        <Text style={styles.planPrice}>Unlimited Ads/Week</Text>
-        <Text style={styles.trialText}>First 3 months free</Text>
+        <CustomText style={styles.planTitle}>Premium Plan</CustomText>
+        <CustomText style={styles.planPrice}>$20/month</CustomText>
+        <CustomText style={styles.planPrice}>Unlimited Ads/Week</CustomText>
+        <CustomText style={styles.trialText}>First 3 months free</CustomText>
       </TouchableOpacity>
 
       <TouchableOpacity onPress={handleGetPlan} style={styles.getButton}>
-        <Text style={styles.getButtonText}>Get Plan</Text>
+        <CustomText style={styles.getButtonText}>Get Plan</CustomText>
       </TouchableOpacity>
     </SafeAreaView>
   );

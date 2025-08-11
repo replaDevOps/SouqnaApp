@@ -1,8 +1,10 @@
 import React from 'react';
-import {ColorValue, StyleProp, StyleSheet, Text, TextStyle} from 'react-native';
-import {colors} from '../util/color';
-import {mvs} from '../util/metrices';
+import { ColorValue, StyleProp, StyleSheet, TextStyle } from 'react-native';
+import { colors } from '../util/color';
+import { mvs } from '../util/metrices';
 import fonts from '../assets/fonts';
+import CustomText from '../components/CustomText';
+import i18n from '../i18n/i18n';
 type FcProps = {
   label?: string | number;
   numberOfLines?: number;
@@ -21,14 +23,15 @@ const Bold: React.FC<FcProps> = ({
   style,
   ...props
 }) => {
+  const fontFamily = i18n.language === 'ar' ? 'Asal' : 'System';
   return (
-    <Text
+    <CustomText
       numberOfLines={numberOfLines}
       {...props}
-      style={[{...styles.label, color: color, fontSize: fontSize}, style]}>
+      style={[{ ...styles.label, color: color, fontSize: fontSize, fontFamily }, style]}>
       {label}
       {children}
-    </Text>
+    </CustomText>
   );
 };
 export default Bold;

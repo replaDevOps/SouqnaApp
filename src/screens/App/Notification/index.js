@@ -21,6 +21,7 @@ import {useSelector} from 'react-redux';
 import {mvs} from '../../../util/metrices';
 import MainHeader from '../../../components/Headers/MainHeader';
 import Loader from '../../../components/Loader';
+import CustomText from '../../../components/CustomText';
 
 const Notification = () => {
   const navigation = useNavigation();
@@ -56,8 +57,10 @@ const Notification = () => {
         </TouchableOpacity>
 
         <View style={styles.notificationTextContainer}>
-          <Text style={styles.notificationTitle}>{item.title}</Text>
-          <Text style={styles.notificationText}>{item.message}</Text>
+          <CustomText style={styles.notificationTitle}>{item.title}</CustomText>
+          <CustomText style={styles.notificationText}>
+            {item.message}
+          </CustomText>
         </View>
       </View>
     );
@@ -98,9 +101,9 @@ const Notification = () => {
                   height: mvs(200),
                 }}
               />
-              <Text style={{textAlign: 'center', marginTop: mvs(20)}}>
+              <CustomText style={{textAlign: 'center', marginTop: mvs(20)}}>
                 {t('noNotificationsFound')}
-              </Text>
+              </CustomText>
             </View>
           }
         />

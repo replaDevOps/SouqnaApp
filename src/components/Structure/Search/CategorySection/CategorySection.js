@@ -13,6 +13,7 @@ import API, {
 import {setCategories} from '../../../../redux/slices/categorySlice';
 import i18n from '../../../../i18n/i18n';
 import {useTranslation} from 'react-i18next';
+import CustomText from '../../../CustomText';
 
 const {categoryIcons} = dummyData;
 
@@ -149,12 +150,12 @@ const CategorySection = () => {
             <Icon width={isBig ? 30 : 24} height={isBig ? 30 : 24} />
           </View>
         )}
-        <Text
+        <CustomText
           style={styles.categoryText}
           numberOfLines={2}
           ellipsizeMode="tail">
           {i18n.language === 'ar' ? item.ar_name : item.name}
-        </Text>
+        </CustomText>
       </TouchableOpacity>
     );
   };
@@ -213,12 +214,12 @@ const CategorySection = () => {
             <HOMESVG width={24} height={24} />
           </View> */}
           {/* )} */}
-          <Text
-            style={styles.categoryText}
+          <CustomText
+            style={{...styles.categoryText}}
             numberOfLines={2}
             ellipsizeMode="tail">
             {t('All Categories')}
-          </Text>
+          </CustomText>
         </TouchableOpacity>
       </View>
     </View>

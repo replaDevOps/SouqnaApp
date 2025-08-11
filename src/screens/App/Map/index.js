@@ -22,6 +22,7 @@ import styles from './styles';
 import {useSelector} from 'react-redux';
 import {colors} from '../../../util/color';
 import {useTranslation} from 'react-i18next';
+import CustomText from '../../../components/CustomText';
 // Memoized Marker Component to prevent unnecessary re-renders
 const MarkerComponent = React.memo(({item, onPress}) => (
   <Marker
@@ -33,13 +34,17 @@ const MarkerComponent = React.memo(({item, onPress}) => (
         markerStyles.container,
         item.isMultiple ? markerStyles.multiple : markerStyles.single,
       ]}>
-      {!item.isMultiple && <Text style={markerStyles.dollarSign}>$</Text>}
-      <Text
+      {!item.isMultiple && (
+        <CustomText style={markerStyles.dollarSign}>$</CustomText>
+      )}
+      <CustomText
         style={[markerStyles.priceText, {fontSize: item.isMultiple ? 10 : 12}]}>
         {item.formattedPrice}
-      </Text>
+      </CustomText>
       {item.isMultiple && (
-        <Text style={markerStyles.itemCount}>{item.products.length} items</Text>
+        <CustomText style={markerStyles.itemCount}>
+          {item.products.length} items
+        </CustomText>
       )}
     </View>
   </Marker>
@@ -554,26 +559,26 @@ export default function MapScreen() {
             />
           ) : (
             <View style={[styles.productImage, styles.noImagePlaceholder]}>
-              <Text>No Image</Text>
+              <CustomText>No Image</CustomText>
             </View>
           )}
         </View>
         <View style={styles.productInfo}>
-          <Text style={styles.productTitle} numberOfLines={1}>
+          <CustomText style={styles.productTitle} numberOfLines={1}>
             {item.name}
-          </Text>
-          <Text
+          </CustomText>
+          <CustomText
             style={styles.productLocation}
             numberOfLines={1}
             ellipsizeMode="tail">
             {item.location}
-          </Text>
+          </CustomText>
           <View style={styles.priceTagContainer}>
-            <Text style={styles.priceTag}>{item.price} - USD</Text>
+            <CustomText style={styles.priceTag}>{item.price} - USD</CustomText>
             {item.condition != 2 ? (
-              <Text style={styles.conditionTag}>New</Text>
+              <CustomText style={styles.conditionTag}>New</CustomText>
             ) : (
-              <Text style={styles.conditionTag}>Used</Text>
+              <CustomText style={styles.conditionTag}>Used</CustomText>
             )}
           </View>
         </View>
@@ -592,13 +597,13 @@ export default function MapScreen() {
           style={styles.dropdownButton}>
           <BarsSVG width={24} height={24} />
           <View style={{flexShrink: 1}}>
-            <Text
+            <CustomText
               numberOfLines={1}
               ellipsizeMode="tail"
               style={{fontSize: mvs(18), fontWeight: 'bold', flexShrink: 1}}>
               {' '}
               {activeCategory ? `${activeCategory}` : 'Categories'}
-            </Text>
+            </CustomText>
           </View>
         </TouchableOpacity>
       </View>
@@ -619,12 +624,12 @@ export default function MapScreen() {
               setDropdownVisible(false);
             }}>
             <RadioButton selected={activeCategory === null} />
-            <Text
+            <CustomText
               style={styles.dropdownText}
               numberOfLines={1}
               ellipsizeMode="tail">
               {t('All Categories')}
-            </Text>
+            </CustomText>
           </TouchableOpacity>
 
           {categories.map(category => (
@@ -636,12 +641,12 @@ export default function MapScreen() {
                 setDropdownVisible(false);
               }}>
               <RadioButton selected={activeCategory === category.name} />
-              <Text
+              <CustomText
                 style={styles.dropdownText}
                 numberOfLines={1}
                 ellipsizeMode="tail">
                 {category.name}
-              </Text>
+              </CustomText>
             </TouchableOpacity>
           ))}
         </ScrollView>
@@ -652,14 +657,14 @@ export default function MapScreen() {
         {selectedProductsGroup ? (
           <View style={styles.productGroupContainer}>
             <View style={styles.productGroupHeader}>
-              <Text style={styles.productGroupTitle}>
+              <CustomText style={styles.productGroupTitle}>
                 {selectedProductsGroup.length} Ad
                 {selectedProductsGroup.length > 1 ? 's' : ''} Available
-              </Text>
+              </CustomText>
               <TouchableOpacity
                 style={styles.closeButton}
                 onPress={() => setSelectedProductsGroup(null)}>
-                <Text style={styles.closeButtonText}>×</Text>
+                <CustomText style={styles.closeButtonText}>×</CustomText>
               </TouchableOpacity>
             </View>
 
@@ -678,12 +683,12 @@ export default function MapScreen() {
           </View>
         ) : (
           <View style={{alignItems: 'center'}}>
-            <Text style={{fontSize: mvs(15), fontWeight: '400'}}>
+            <CustomText style={{fontSize: mvs(15), fontWeight: '400'}}>
               In this region:
-            </Text>
-            <Text style={{fontSize: mvs(22), fontWeight: 'bold'}}>
+            </CustomText>
+            <CustomText style={{fontSize: mvs(22), fontWeight: 'bold'}}>
               {visibleProducts.length} ads
-            </Text>
+            </CustomText>
           </View>
         )}
       </View>

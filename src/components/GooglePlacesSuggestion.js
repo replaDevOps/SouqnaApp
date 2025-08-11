@@ -15,6 +15,7 @@ import {CloseSvg, SearchSVG} from '../assets/svg';
 import {colors} from '../util/color';
 import config from '../util/config';
 import Geolocation from '@react-native-community/geolocation';
+import CustomText from './CustomText';
 
 const GOOGLE_PLACES_API_KEY = config.GOOGLE_PLACES_API_KEY;
 const AUTOCOMPLETE_URL =
@@ -216,7 +217,7 @@ const GooglePlacesSuggestion = ({
       .then(res => res.json())
       .then(json => {
         console.log('🧪 GOOGLE_PLACES_API_KEY:', GOOGLE_PLACES_API_KEY);
-          console.log('Autocomplete Response:', JSON.stringify(json, null, 2)); // DEBUG
+        console.log('Autocomplete Response:', JSON.stringify(json, null, 2)); // DEBUG
         if (!active) return;
         setSuggestions(json.status === 'OK' ? json.predictions : []);
       })
@@ -269,8 +270,7 @@ const GooglePlacesSuggestion = ({
     setIsPlaceSelected(false);
   };
 
-
-        console.log('🧪 GOOGLE_PLACES_API_KEY:', config);
+  console.log('🧪 GOOGLE_PLACES_API_KEY:', config);
 
   // In renderItem:
   const renderItem = ({item}) => {
@@ -282,13 +282,13 @@ const GooglePlacesSuggestion = ({
           {isFetchingLocation ? (
             <ActivityIndicator size="small" color={colors.black} />
           ) : (
-            <Text
+            <CustomText
               style={[
                 styles.description,
                 {fontWeight: 'bold', marginVertical: 10, padding: 10},
               ]}>
               📍 Choose your current location
-            </Text>
+            </CustomText>
           )}
         </TouchableOpacity>
       );
@@ -299,7 +299,7 @@ const GooglePlacesSuggestion = ({
         style={styles.suggestionItem}
         onPress={() => handleSelect(item)}>
         <View style={styles.row}>
-          <Text style={styles.description}>{item.description}</Text>
+          <CustomText style={styles.description}>{item.description}</CustomText>
         </View>
       </TouchableOpacity>
     );
@@ -355,9 +355,9 @@ const GooglePlacesSuggestion = ({
           {isFetchingLocation ? (
             <ActivityIndicator size="small" color={colors.black} />
           ) : (
-            <Text style={styles.useMyLocationText}>
+            <CustomText style={styles.useMyLocationText}>
               📍 Use your current location
-            </Text>
+            </CustomText>
           )}
         </TouchableOpacity>
       )}

@@ -36,6 +36,7 @@ import ImageResizer from 'react-native-image-resizer';
 import CategoryFields from './CategoryFields';
 import EnhancedLocationSelector from '../../../../components/Location/EnhancedLocationSelector';
 import i18n from '../../../../i18n/i18n';
+import CustomText from '../../../../components/CustomText';
 // import EnhancedCategoryFields from './CategoryFields';
 const BRANDS = [
   'Audi',
@@ -499,7 +500,9 @@ const CreateProduct = () => {
             }}
             contentContainerStyle={{paddingBottom: mvs(60)}}>
             <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>{t('category')}</Text>
+              <CustomText style={styles.sectionTitle}>
+                {t('category')}
+              </CustomText>
               <View style={styles.categoryBox}>
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
                   <Image
@@ -513,22 +516,24 @@ const CreateProduct = () => {
                       // justifyContent: 'space-between',
                     }}>
                     <View style={styles.fixedTextBox}>
-                      <Text
+                      <CustomText
                         style={styles.categoryTitle}
                         ellipsizeMode="tail"
                         numberOfLines={1}>
                         {category}
-                      </Text>
-                      <Text
+                      </CustomText>
+                      <CustomText
                         style={styles.categorySubtitle}
                         ellipsizeMode="tail"
                         numberOfLines={1}>
                         {name}
-                      </Text>
+                      </CustomText>
                     </View>
 
                     <TouchableOpacity onPress={handleChange}>
-                      <Text style={styles.changeText}>{t('change')}</Text>
+                      <CustomText style={styles.changeText}>
+                        {t('change')}
+                      </CustomText>
                     </TouchableOpacity>
                   </View>
                 </View>
@@ -539,7 +544,9 @@ const CreateProduct = () => {
                   <TouchableOpacity
                     style={styles.addButton}
                     onPress={handleChooseImages}>
-                    <Text style={styles.addButtonText}>{t('addImages')}</Text>
+                    <CustomText style={styles.addButtonText}>
+                      {t('addImages')}
+                    </CustomText>
                   </TouchableOpacity>
                 ) : (
                   <View>
@@ -563,9 +570,9 @@ const CreateProduct = () => {
                                   height={22}
                                   style={styles.uploadIcon}
                                 />
-                                <Text style={styles.uploadText}>
+                                <CustomText style={styles.uploadText}>
                                   {t('uploadImage')}
-                                </Text>
+                                </CustomText>
                               </TouchableOpacity>
                             ) : (
                               <View style={styles.imageWrapper}>
@@ -577,7 +584,9 @@ const CreateProduct = () => {
                                   style={styles.removeIcon}
                                   onPress={() => handleRemoveImage(index - 1)} // subtract 1 due to upload icon
                                 >
-                                  <Text style={styles.removeIconText}>✕</Text>
+                                  <CustomText style={styles.removeIconText}>
+                                    ✕
+                                  </CustomText>
                                 </TouchableOpacity>
                               </View>
                             )
@@ -589,16 +598,18 @@ const CreateProduct = () => {
                 )}
                 <View></View>
 
-                <Text style={styles.noteText}>{t('coverNote')} </Text>
+                <CustomText style={styles.noteText}>
+                  {t('coverNote')}{' '}
+                </CustomText>
               </View>
             </View>
 
             {/* Name Section */}
             <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>
+              <CustomText style={styles.sectionTitle}>
                 {t('name')}
-                <Text style={{color: colors.red}}>*</Text>
-              </Text>
+                <CustomText style={{color: colors.red}}>*</CustomText>
+              </CustomText>
               <TextInput
                 style={styles.input}
                 placeholder={t('namePlaceholder')}
@@ -610,10 +621,10 @@ const CreateProduct = () => {
 
             {/* Description Section */}
             <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>
+              <CustomText style={styles.sectionTitle}>
                 {t('description')}
-                <Text style={{color: colors.red}}>*</Text>
-              </Text>
+                <CustomText style={{color: colors.red}}>*</CustomText>
+              </CustomText>
               <TextInput
                 style={[styles.input, {height: mvs(100)}]}
                 placeholder={t('descriptionPlaceholder')}
@@ -626,10 +637,10 @@ const CreateProduct = () => {
 
             {/* Location Section - Fixed */}
             <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>
+              <CustomText style={styles.sectionTitle}>
                 {t('location')}
-                <Text style={{color: colors.red}}>*</Text>
-              </Text>
+                <CustomText style={{color: colors.red}}>*</CustomText>
+              </CustomText>
               <View style={styles.locationContainer}>
                 {/* <GooglePlacesSuggestion
                   initialValue={formData.location}
@@ -644,10 +655,10 @@ const CreateProduct = () => {
 
             {/* Price Section */}
             <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>
+              <CustomText style={styles.sectionTitle}>
                 {t('price')}
-                <Text style={{color: colors.red}}>*</Text>
-              </Text>
+                <CustomText style={{color: colors.red}}>*</CustomText>
+              </CustomText>
               <PriceInputWithDropdown
                 value={formData.price}
                 onChangeText={text => handleInputChange('price', text)}
@@ -670,7 +681,9 @@ const CreateProduct = () => {
 
             <View style={styles.sectionContainer}>
               <View style={styles.fieldContainer}>
-                <Text style={styles.sectionTitle}>{t('contactInfo')}</Text>
+                <CustomText style={styles.sectionTitle}>
+                  {t('contactInfo')}
+                </CustomText>
                 <TextInput
                   style={styles.input}
                   placeholder={t('contactInfo')}
@@ -682,10 +695,10 @@ const CreateProduct = () => {
               </View>
             </View>
             {/* <View style={styles.sectionContainer}> */}
-            {/* <Text style={styles.sectionTitle}>
+            {/* <CustomText style={styles.sectionTitle}>
                 {/* {t('negotiable')} */}
-            {/* <Text style={{color: colors.red}}>*</Text> */}
-            {/* </Text> */}
+            {/* <CustomText style={{color: colors.red}}>*</CustomText> */}
+            {/* </CustomText> */}
 
             {/* <View style={styles.radioContainer}>
                 <TouchableOpacity
@@ -703,7 +716,7 @@ const CreateProduct = () => {
                       )}
                     </View>
                   </View>
-                  <Text style={styles.radioText}>{t('yes')}</Text>
+                  <CustomText style={styles.radioText}>{t('yes')}</CustomText>
                 </TouchableOpacity>
 
                 <TouchableOpacity
@@ -720,17 +733,17 @@ const CreateProduct = () => {
                       )}
                     </View>
                   </View>
-                  <Text style={styles.radioText}>{t('no')}</Text>
+                  <CustomText style={styles.radioText}>{t('no')}</CustomText>
                 </TouchableOpacity>
               </View>
             </View> */}
 
             {/* Discount Section */}
             {/* <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>
+              <CustomText style={styles.sectionTitle}>
                 {t('discount')} */}
-            {/* <Text style={{color: colors.red}}>*</Text> */}
-            {/* </Text>
+            {/* <CustomText style={{color: colors.red}}>*</CustomText> */}
+            {/* </CustomText>
               <TextInput
                 style={styles.input}
                 placeholder={t('discountPlaceholder')}
@@ -743,10 +756,10 @@ const CreateProduct = () => {
 
             {/* Special Offer Section */}
             {/* <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>
+              <CustomText style={styles.sectionTitle}>
                 {t('specialOffer')} */}
-            {/* <Text style={{color: colors.red}}>*</Text> */}
-            {/* </Text>
+            {/* <CustomText style={{color: colors.red}}>*</CustomText> */}
+            {/* </CustomText>
               <TextInput
                 style={styles.input}
                 placeholder={t('specialOfferPlaceholder')}
@@ -758,9 +771,9 @@ const CreateProduct = () => {
 
             {/* Stock Section */}
             {/* <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>
+              <CustomText style={styles.sectionTitle}>
                 {t('availableStock')}
-              </Text>
+              </CustomText>
               <TextInput
                 style={styles.input}
                 placeholder={t('stockPlaceholder')}
@@ -787,7 +800,9 @@ const CreateProduct = () => {
               {loading ? (
                 <ActivityIndicator color={colors.green} />
               ) : (
-                <Text style={styles.submitButtonText}>{t('Post Ad')}</Text>
+                <CustomText style={styles.submitButtonText}>
+                  {t('Post Ad')}
+                </CustomText>
               )}
             </MyButton>
           </ScrollView>

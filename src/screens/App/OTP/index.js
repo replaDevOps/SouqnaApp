@@ -19,6 +19,7 @@ import {Snackbar} from 'react-native-paper';
 import {useRoute} from '@react-navigation/native';
 import {useTranslation} from 'react-i18next';
 import {useSelector} from 'react-redux';
+import CustomText from '../../../components/CustomText';
 
 const OTPScreen = ({navigation}) => {
   const route = useRoute();
@@ -172,11 +173,13 @@ const OTPScreen = ({navigation}) => {
               style={{height: 50, width: 50}}
             />
           </View>
-          <Text style={styles.instruction}>{t('enterCodeSent')}</Text>
+          <CustomText style={styles.instruction}>
+            {t('enterCodeSent')}
+          </CustomText>
 
-          <Text style={styles.phoneNumber}>
+          <CustomText style={styles.phoneNumber}>
             {t('sentTo')} ({email})
-          </Text>
+          </CustomText>
 
           <View style={[styles.codeContainer, styles.ltrContainer]}>
             {code.map((digit, index) => (
@@ -205,7 +208,9 @@ const OTPScreen = ({navigation}) => {
             {loading ? (
               <ActivityIndicator color="#fff" size="small" />
             ) : (
-              <Text style={styles.continueButtonText}>{t('continue')}</Text>
+              <CustomText style={styles.continueButtonText}>
+                {t('continue')}
+              </CustomText>
             )}
           </TouchableOpacity>
 
@@ -220,14 +225,14 @@ const OTPScreen = ({navigation}) => {
             {resendLoading ? (
               <ActivityIndicator size="small" color={colors.lightgreen} />
             ) : (
-              <Text
+              <CustomText
                 style={[
                   styles.resendButtonText,
                   !resendEnabled && {color: 'gray'},
                 ]}>
                 {t('resendCode')}
                 {!resendEnabled ? ` (${countdown} ${t('sec')})` : ''}
-              </Text>
+              </CustomText>
             )}
           </TouchableOpacity>
         </View>

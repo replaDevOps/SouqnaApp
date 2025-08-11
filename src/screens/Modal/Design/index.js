@@ -5,7 +5,8 @@ import {useNavigation} from '@react-navigation/native';
 import Regular from '../../../typography/RegularText';
 import styles from './style';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
+import CustomText from '../../../components/CustomText';
 
 const DesignScreen = () => {
   const navigation = useNavigation();
@@ -26,9 +27,7 @@ const DesignScreen = () => {
       <ModalHeader title={t('Design')} onBack={handleBack} />
 
       <View style={styles.menuContainer}>
-        <Regular style={styles.regularText}>
-         {t('designDescription')}
-        </Regular>
+        <Regular style={styles.regularText}>{t('designDescription')}</Regular>
 
         <TouchableOpacity
           style={styles.menuItem}
@@ -48,7 +47,7 @@ const DesignScreen = () => {
             ]}>
             {selectedOption === 'dark' && <View style={styles.radioDot} />}
           </View>
-          <Text style={styles.menuText}>{t('Dark Design')}</Text>
+          <CustomText style={styles.menuText}>{t('Dark Design')}</CustomText>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -61,7 +60,7 @@ const DesignScreen = () => {
             ]}>
             {selectedOption === 'light' && <View style={styles.radioDot} />}
           </View>
-          <Text style={styles.menuText}>{t('Light Design')}</Text>
+          <CustomText style={styles.menuText}>{t('Light Design')}</CustomText>
         </TouchableOpacity>
       </View>
     </SafeAreaView>

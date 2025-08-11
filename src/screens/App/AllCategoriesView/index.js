@@ -173,7 +173,7 @@ export const AllCategoriesView = () => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" />
-      <MainHeader title={t('titleProduct')} showBackIcon={true} />
+      <MainHeader title={t('titleCategories')} showBackIcon={true} />
       {loading ? (
         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
           <Loader width={mvs(250)} height={mvs(250)} />

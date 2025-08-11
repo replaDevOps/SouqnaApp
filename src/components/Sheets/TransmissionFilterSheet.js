@@ -2,6 +2,7 @@ import React from 'react';
 import {Text, TouchableOpacity} from 'react-native';
 import {BottomSheetScrollView} from '@gorhom/bottom-sheet';
 import {useTranslation} from 'react-i18next';
+import CustomText from '../CustomText';
 
 const options = ['Automatic', 'Manual'];
 
@@ -13,9 +14,9 @@ const TransmissionFilterSheet = ({filters, setFilters, closeSheet}) => {
         padding: 20,
         paddingBottom: 40,
       }}>
-      <Text style={{fontSize: 16, fontWeight: 'bold', marginBottom: 10}}>
+      <CustomText style={{fontSize: 16, fontWeight: 'bold', marginBottom: 10}}>
         {t('Select Transmission')}
-      </Text>
+      </CustomText>
       {options.map(option => (
         <TouchableOpacity
           key={option}
@@ -30,7 +31,7 @@ const TransmissionFilterSheet = ({filters, setFilters, closeSheet}) => {
             borderRadius: 10,
             marginBottom: 10,
           }}>
-          <Text>{t(option)}</Text>
+          <CustomText>{t(option)}</CustomText>
         </TouchableOpacity>
       ))}
     </BottomSheetScrollView>

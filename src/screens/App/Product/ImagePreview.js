@@ -1,6 +1,7 @@
 import React from 'react';
 import {View, Image, TouchableOpacity, Text} from 'react-native';
 import {useRoute, useNavigation} from '@react-navigation/native';
+import CustomText from '../../../components/CustomText';
 
 const ImagePreview = () => {
   const route = useRoute();
@@ -12,7 +13,7 @@ const ImagePreview = () => {
       <TouchableOpacity
         onPress={() => navigation.goBack()}
         style={{position: 'absolute', top: 50, right: 20, zIndex: 10}}>
-        <Text style={{color: 'white', fontSize: 18}}>Close</Text>
+        <CustomText style={{color: 'white', fontSize: 18}}>Close</CustomText>
       </TouchableOpacity>
       <Image
         source={{uri}}

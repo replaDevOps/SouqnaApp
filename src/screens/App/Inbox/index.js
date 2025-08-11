@@ -19,12 +19,13 @@ import {mvs} from '../../../util/metrices';
 import MainHeader from '../../../components/Headers/MainHeader';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import InboxSkeleton from './InboxSkeleton';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
+import CustomText from '../../../components/CustomText';
 
 const InboxScreen = () => {
   const navigation = useNavigation();
   const {token, id: userId, role} = useSelector(state => state.user);
-    const {t} = useTranslation();
+  const {t} = useTranslation();
 
   const [searchText, setSearchText] = useState('');
   const [conversations, setConversations] = useState([]);
@@ -222,25 +223,29 @@ const InboxScreen = () => {
 
           <View style={styles.messageContentWrapper}>
             <View style={styles.messageTopRow}>
-              <Text style={styles.senderName}>{otherUser.name || 'User'}</Text>
+              <CustomText style={styles.senderName}>
+                {otherUser.name || 'User'}
+              </CustomText>
 
               <View style={styles.messageBody}>
-                <Text style={styles.messageTime}>
+                <CustomText style={styles.messageTime}>
                   {formatTimestamp(lastMessage.createdAt)}
-                </Text>
+                </CustomText>
               </View>
             </View>
 
             <View
               style={{flexDirection: 'row', justifyContent: 'space-between'}}>
               <View style={styles.messagePreviewContainer}>
-                <Text style={styles.messageText} numberOfLines={1}>
+                <CustomText style={styles.messageText} numberOfLines={1}>
                   {lastMessage.text || 'Start a conversation...'}
-                </Text>
+                </CustomText>
               </View>
               {unreadCount > 0 ? (
                 <View style={styles.unreadBadge}>
-                  <Text style={styles.unreadBadgeText}>{unreadCount}</Text>
+                  <CustomText style={styles.unreadBadgeText}>
+                    {unreadCount}
+                  </CustomText>
                 </View>
               ) : (
                 ''
@@ -255,15 +260,17 @@ const InboxScreen = () => {
 
   const EmptyComponent = () => (
     <View style={styles.emptyInbox}>
-            <Image
-              source={require('../../../assets/img/empty.png')}
-              style={{width: '90%', resizeMode: 'contain', height: mvs(200)}}
-            />
-            {/* <Bold style={styles.emptyCartText}>{t('empty')}</Bold> */}
-            <Text style={styles.emptyInboxText}>{t('noTextReceived')}</Text>
-          </View>
+      <Image
+        source={require('../../../assets/img/empty.png')}
+        style={{width: '90%', resizeMode: 'contain', height: mvs(200)}}
+      />
+      {/* <Bold style={styles.emptyCartText}>{t('empty')}</Bold> */}
+      <CustomText style={styles.emptyInboxText}>
+        {t('noTextReceived')}
+      </CustomText>
+    </View>
   );
-console.log('{FilteredConverations}',filteredConversations);
+  console.log('{FilteredConverations}', filteredConversations);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -272,32 +279,32 @@ console.log('{FilteredConverations}',filteredConversations);
         style={{flex: 1, backgroundColor: '#fbfbfb', paddingBottom: mvs(40)}}>
         <MainHeader title={t('messages')} />
         {/* {filteredConversations.length > 0 ? ( */}
-          <View style={styles.messagesWrapper}>
-            <Text style={styles.header}>{t('messages')}</Text>
+        <View style={styles.messagesWrapper}>
+          <CustomText style={styles.header}>{t('messages')}</CustomText>
 
-            {isLoading ? (
-              <InboxSkeleton count={5} />
-            ) : (
-              <FlatList
-                data={filteredConversations}
-                keyExtractor={item => item.id}
-                renderItem={renderItem}
-                ListEmptyComponent={EmptyComponent}
-                contentContainerStyle={{
-                  gap: 15,
-                  marginHorizontal: mvs(14),
-                  paddingBottom: mvs(100),
-                }}
-                refreshControl={
-                  <RefreshControl
-                    refreshing={refreshing}
-                    onRefresh={refreshInbox}
-                  />
-                }
-                showsVerticalScrollIndicator={false}
-              />
-            )}
-          </View>
+          {isLoading ? (
+            <InboxSkeleton count={5} />
+          ) : (
+            <FlatList
+              data={filteredConversations}
+              keyExtractor={item => item.id}
+              renderItem={renderItem}
+              ListEmptyComponent={EmptyComponent}
+              contentContainerStyle={{
+                gap: 15,
+                marginHorizontal: mvs(14),
+                paddingBottom: mvs(100),
+              }}
+              refreshControl={
+                <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={refreshInbox}
+                />
+              }
+              showsVerticalScrollIndicator={false}
+            />
+          )}
+        </View>
         {/* // ) : ( */}
         {/* //   <View style={styles.emptyInbox}> */}
         {/* //     <Image */}
@@ -305,10 +312,10 @@ console.log('{FilteredConverations}',filteredConversations);
         //       style={{width: '90%', resizeMode: 'contain', height: mvs(200)}}
         //     />
         //     {/* <Bold style={styles.emptyCartText}>{t('empty')}</Bold> */}
-        {/* //     <Text style={styles.emptyInboxText}>No text recieved yet</Text>
+        {/* //     <CustomText style={styles.emptyInboxText}>No text recieved yet</CustomText>
         //   </View>
         // )
-        } */} 
+        } */}
       </ScrollView>
     </SafeAreaView>
   );

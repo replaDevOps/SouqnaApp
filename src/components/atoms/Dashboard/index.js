@@ -13,7 +13,7 @@ import {useSelector} from 'react-redux';
 import API from '../../../api/apiServices';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useTranslation} from 'react-i18next';
-import Loader from '../../Loader';
+import CustomText from '../../CustomText';
 
 const ProductDashboard = ({onRefresh}) => {
   const [activeView, setActiveView] = useState('total'); // 'total' or 'monthly'
@@ -237,9 +237,9 @@ const ProductDashboard = ({onRefresh}) => {
               <View
                 style={[styles.legendColor, {backgroundColor: category.color}]}
               />
-              <Text style={styles.legendText}>
+              <CustomText style={styles.legendText}>
                 {category.name} ({category.count})
-              </Text>
+              </CustomText>
             </View>
           ))}
         </View>
@@ -268,7 +268,7 @@ const ProductDashboard = ({onRefresh}) => {
           styles.container,
           {justifyContent: 'center', alignItems: 'center'},
         ]}>
-        <Text style={{color: 'red'}}>{error}</Text>
+        <CustomText style={{color: 'red'}}>{error}</CustomText>
       </View>
     );
   }
@@ -280,7 +280,7 @@ const ProductDashboard = ({onRefresh}) => {
           styles.container,
           {justifyContent: 'center', alignItems: 'center'},
         ]}>
-        <Text>{t('noDataAvailable')}</Text>
+        <CustomText>{t('noDataAvailable')}</CustomText>
       </View>
     );
   }
@@ -298,14 +298,16 @@ const ProductDashboard = ({onRefresh}) => {
             },
           ]}
           onPress={() => setActiveView('total')}>
-          <Text
+          <CustomText
             style={[
               styles.statLabel,
               activeView === 'total' && {color: '#000'},
             ]}>
             {t('totalProducts')}
-          </Text>
-          <Text style={[styles.statValue]}>{dashboardData.total_ads}</Text>
+          </CustomText>
+          <CustomText style={[styles.statValue]}>
+            {dashboardData.total_ads}
+          </CustomText>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -317,20 +319,20 @@ const ProductDashboard = ({onRefresh}) => {
             },
           ]}
           onPress={() => setActiveView('monthly')}>
-          <Text
+          <CustomText
             style={[
               styles.statLabel,
               activeView === 'monthly' && {color: '#000'},
             ]}>
             {t('productsThisMonth')}
-          </Text>
-          <Text
+          </CustomText>
+          <CustomText
             style={[
               styles.statValue,
               activeView === 'monthly' && {color: '#000'},
             ]}>
             {dashboardData.ads_this_month}
-          </Text>
+          </CustomText>
         </TouchableOpacity>
       </View>
 

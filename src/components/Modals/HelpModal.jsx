@@ -12,12 +12,13 @@ import {colors} from '../../util/color';
 import {mvs} from '../../util/metrices';
 import Regular from '../../typography/RegularText';
 import {useNavigation} from '@react-navigation/native';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
+import CustomText from '../CustomText';
 
 const HelpModal = ({visible, onClose}) => {
   const navigation = useNavigation();
   const {t} = useTranslation();
-  
+
   return (
     <Modal
       animationType="slide"
@@ -27,7 +28,7 @@ const HelpModal = ({visible, onClose}) => {
       <View style={styles.modalOverlay}>
         <View style={styles.modalContainer}>
           <View style={styles.headerSection}>
-            <Text style={styles.title}>{t('Settings')}</Text>
+            <CustomText style={styles.title}>{t('Settings')}</CustomText>
             <TouchableOpacity onPress={onClose}>
               <Regular style={styles.closeText}>{t('close')}</Regular>
             </TouchableOpacity>
@@ -40,7 +41,9 @@ const HelpModal = ({visible, onClose}) => {
                 ToastAndroid.show('Search History Deleted', ToastAndroid.SHORT);
               }}>
               <TrashSVG width={24} height={24} />
-              <Regular style={styles.menuText}>{t('Delete Search History')}</Regular>
+              <Regular style={styles.menuText}>
+                {t('Delete Search History')}
+              </Regular>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.menuItem}
@@ -48,7 +51,9 @@ const HelpModal = ({visible, onClose}) => {
                 navigation.navigate('Data');
               }}>
               <LockSVG width={24} height={24} />
-              <Text style={styles.menuText}>{t('Data Protection')}</Text>
+              <CustomText style={styles.menuText}>
+                {t('Data Protection')}
+              </CustomText>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.menuItem}
@@ -56,7 +61,7 @@ const HelpModal = ({visible, onClose}) => {
                 navigation.navigate('Design');
               }}>
               <SunSVG width={24} height={24} />
-              <Text style={styles.menuText}>{t('Design')}</Text>
+              <CustomText style={styles.menuText}>{t('Design')}</CustomText>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.menuItem}
@@ -64,7 +69,9 @@ const HelpModal = ({visible, onClose}) => {
                 navigation.navigate('About');
               }}>
               <StarSVG width={24} height={24} />
-              <Text style={styles.menuText}>{t('About Souqna')}</Text>
+              <CustomText style={styles.menuText}>
+                {t('About Souqna')}
+              </CustomText>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.menuItem}
@@ -72,7 +79,9 @@ const HelpModal = ({visible, onClose}) => {
                 navigation.navigate('Help');
               }}>
               <HelpSVG width={24} height={24} />
-              <Text style={styles.menuText}>{t('Help and Feedback')}</Text>
+              <CustomText style={styles.menuText}>
+                {t('Help and Feedback')}
+              </CustomText>
             </TouchableOpacity>
           </View>
         </View>

@@ -13,6 +13,7 @@ import {BackSVG, HeartSVG, OpenSVG} from '../../assets/svg'; // Replace these wi
 import {mvs} from '../../util/metrices';
 import {colors} from '../../util/color';
 import {useSelector} from 'react-redux';
+import CustomText from '../CustomText';
 
 const {width} = Dimensions.get('window');
 const ProductHeader = ({
@@ -52,9 +53,9 @@ const ProductHeader = ({
         {/* Title - centered */}
         {headerTitleVisible && title && (
           <View style={styles.titleWrapper}>
-            <Text style={styles.headerTitle} numberOfLines={1}>
+            <CustomText style={styles.headerTitle} numberOfLines={1}>
               {title}
-            </Text>
+            </CustomText>
           </View>
         )}
 

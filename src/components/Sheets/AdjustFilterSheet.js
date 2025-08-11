@@ -12,6 +12,7 @@ import {
 import {colors} from '../../util/color';
 import {t} from 'i18next';
 import {useTranslation} from 'react-i18next';
+import CustomText from '../CustomText';
 const AdjustFilterSheet = ({
   filters,
   setFilters,
@@ -89,20 +90,22 @@ const AdjustFilterSheet = ({
       <BottomSheetScrollView
         contentContainerStyle={{padding: 20, paddingBottom: 60}}>
         {/* --- BASIC FILTERS --- */}
-        <Text style={sectionTitleStyle}>{t('Basic Filters')}</Text>
+        <CustomText style={sectionTitleStyle}>{t('Basic Filters')}</CustomText>
 
         {/* Brand */}
-        <Text style={labelStyle}>{t('Brand / Make') || 'Brand / Make'}</Text>
+        <CustomText style={labelStyle}>
+          {t('Brand / Make') || 'Brand / Make'}
+        </CustomText>
         <TouchableOpacity
           onPress={() => {
             onOpenBrandSheet?.(); // this should be passed from parent
           }}
           style={[inputStyle, {justifyContent: 'center'}]}>
-          <Text>{filters.brand || t('Select brand')}</Text>
+          <CustomText>{filters.brand || t('Select brand')}</CustomText>
         </TouchableOpacity>
 
         {/* Model */}
-        <Text style={labelStyle}>{t('Model')}</Text>
+        <CustomText style={labelStyle}>{t('Model')}</CustomText>
         <TextInput
           placeholder={t('Enter model')}
           value={filters.model}
@@ -111,11 +114,11 @@ const AdjustFilterSheet = ({
         />
 
         {/* Price Range */}
-        <Text style={labelStyle}>{t('priceRange')}</Text>
+        <CustomText style={labelStyle}>{t('priceRange')}</CustomText>
         <TouchableOpacity
           onPress={onOpenPriceSheet}
           style={[inputStyle, {justifyContent: 'center'}]}>
-          <Text>
+          <CustomText>
             {filters.minPrice || filters.maxPrice
               ? `${
                   filters.minPrice ? `${t('From')} ${filters.minPrice}` : ''
@@ -123,15 +126,15 @@ const AdjustFilterSheet = ({
                   filters.maxPrice ? `${t('Up to')}${filters.maxPrice}` : ''
                 }`.trim()
               : t('Select price range')}
-          </Text>
+          </CustomText>
         </TouchableOpacity>
 
         {/* Year Range */}
-        <Text style={labelStyle}>{t('yearRange')}</Text>
+        <CustomText style={labelStyle}>{t('yearRange')}</CustomText>
         <TouchableOpacity
           onPress={onOpenBuildYearSheet}
           style={[inputStyle, {justifyContent: 'center'}]}>
-          <Text>
+          <CustomText>
             {filters.buildYearMin || filters.buildYearMax
               ? `${
                   filters.buildYearMin
@@ -143,11 +146,11 @@ const AdjustFilterSheet = ({
                     : ''
                 }`.trim()
               : t('Select year range')}
-          </Text>
+          </CustomText>
         </TouchableOpacity>
 
         {/* Mileage Range */}
-        <Text style={labelStyle}>{t('mileageRange')}</Text>
+        <CustomText style={labelStyle}>{t('mileageRange')}</CustomText>
         <View style={{flexDirection: 'row', gap: 10}}>
           <TextInput
             placeholder="Min (km)"
@@ -170,7 +173,7 @@ const AdjustFilterSheet = ({
         </View>
 
         {/* Fuel Type */}
-        <Text style={labelStyle}> {t('fuelType')} </Text>
+        <CustomText style={labelStyle}> {t('fuelType')} </CustomText>
         <View
           style={{
             zIndex: fuelOpen ? 1000 : 1,
@@ -196,15 +199,17 @@ const AdjustFilterSheet = ({
         </View>
 
         {/* Transmission */}
-        <Text style={labelStyle}> {t('transmissionType')} </Text>
+        <CustomText style={labelStyle}> {t('transmissionType')} </CustomText>
         <TouchableOpacity
           onPress={onOpenTransmissionSheet}
           style={[inputStyle, {justifyContent: 'center'}]}>
-          <Text>{filters.transmission || t('Select transmission')}</Text>
+          <CustomText>
+            {filters.transmission || t('Select transmission')}
+          </CustomText>
         </TouchableOpacity>
 
         {/* Location (from registrationCity) */}
-        {/* <Text style={labelStyle}>Location</Text>
+        {/* <CustomText style={labelStyle}>Location</CustomText>
         <TextInput
           placeholder="Enter location"
           value={filters.location}
@@ -212,7 +217,7 @@ const AdjustFilterSheet = ({
           style={inputStyle}
         /> */}
 
-        {/* <Text style={labelStyle}>Location</Text> */}
+        {/* <CustomText style={labelStyle}>Location</CustomText> */}
         {/* <View style={inputStyle}>
   <GooglePlacesSuggestion
     initialValue={filters.location}
@@ -228,10 +233,12 @@ const AdjustFilterSheet = ({
 </View> */}
 
         {/* --- ADDITIONAL FILTERS --- */}
-        <Text style={sectionTitleStyle}>{t('Additional Filters')}</Text>
+        <CustomText style={sectionTitleStyle}>
+          {t('Additional Filters')}
+        </CustomText>
 
         {/* Color */}
-        {/* <Text style={labelStyle}>Color</Text>
+        {/* <CustomText style={labelStyle}>Color</CustomText>
         <TextInput
           placeholder="Enter color"
           value={filters.color}
@@ -240,10 +247,10 @@ const AdjustFilterSheet = ({
         /> */}
 
         {/* Power */}
-        <Text style={labelStyle}>
+        <CustomText style={labelStyle}>
           {}
           {t('power') || 'Power (HP/kW)'}
-        </Text>
+        </CustomText>
         <TextInput
           placeholder="Enter power"
           keyboardType="numeric"
@@ -253,9 +260,9 @@ const AdjustFilterSheet = ({
         />
 
         {/* Inspection Validity */}
-        <Text style={labelStyle}>
+        <CustomText style={labelStyle}>
           {t('inspectionValidity') || 'Inspection Validity'}
-        </Text>
+        </CustomText>
         <TextInput
           placeholder="Valid till (e.g. 2026)"
           value={filters.inspection}
@@ -267,9 +274,9 @@ const AdjustFilterSheet = ({
 
         {/* --- RESET FILTERS BUTTON --- */}
         <TouchableOpacity onPress={resetFilters} style={resetButtonStyle}>
-          <Text style={{color: 'red', fontWeight: 'bold'}}>
+          <CustomText style={{color: 'red', fontWeight: 'bold'}}>
             {t('resetFilters')}
-          </Text>
+          </CustomText>
         </TouchableOpacity>
 
         {/* --- DONE BUTTON --- */}
@@ -285,7 +292,9 @@ const AdjustFilterSheet = ({
               borderRadius: 8,
               alignItems: 'center',
             }}>
-            <Text style={{color: '#fff', fontWeight: 'bold'}}>{t('Done')}</Text>
+            <CustomText style={{color: '#fff', fontWeight: 'bold'}}>
+              {t('Done')}
+            </CustomText>
           </TouchableOpacity>
         </View>
       </BottomSheetScrollView>

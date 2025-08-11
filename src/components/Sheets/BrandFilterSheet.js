@@ -5,6 +5,7 @@ import {mvs} from '../../util/metrices';
 import {TickSVG} from '../../assets/svg';
 import {t} from 'i18next';
 import {colors} from '../../util/color';
+import CustomText from '../CustomText';
 
 const BrandFilterSheet = ({
   refBrandSheet,
@@ -66,7 +67,7 @@ const BrandFilterSheet = ({
               justifyContent: 'space-between',
               alignItems: 'center',
             }}>
-            <Text style={{fontSize: 16}}>{t(brand)}</Text>
+            <CustomText style={{fontSize: 16}}>{t(brand)}</CustomText>
             {isSelected && <TickSVG width={20} height={20} />}
           </Pressable>
         );
@@ -74,7 +75,9 @@ const BrandFilterSheet = ({
       ListHeaderComponent={
         <>
           <View style={{alignItems: 'center', paddingVertical: 10}}>
-            <Text style={{fontSize: 18, fontWeight: '600'}}>{t('brand')}</Text>
+            <CustomText style={{fontSize: 18, fontWeight: '600'}}>
+              {t('brand')}
+            </CustomText>
           </View>
           <View style={{paddingHorizontal: mvs(15), paddingBottom: 10}}>
             <TextInput
@@ -107,9 +110,9 @@ const BrandFilterSheet = ({
               backgroundColor: '#fff',
               paddingHorizontal: mvs(15),
             }}>
-            <Text style={{fontSize: 16, color: 'red'}}>
+            <CustomText style={{fontSize: 16, color: 'red'}}>
               {t('Clear Brand Filter')}
-            </Text>
+            </CustomText>
           </Pressable>
         </>
       }
@@ -126,9 +129,10 @@ const BrandFilterSheet = ({
               borderRadius: 10,
               alignItems: 'center',
             }}>
-            <Text style={{color: '#fff', fontSize: 16, fontWeight: '600'}}>
+            <CustomText
+              style={{color: '#fff', fontSize: 16, fontWeight: '600'}}>
               {t('done')}
-            </Text>
+            </CustomText>
           </Pressable>
         </View>
       }

@@ -4,6 +4,7 @@ import DownArrowSvg from '../../assets/svg/down-arrow-svg';
 import {colors} from '../../util/color';
 import {AdjustSVG, TrashSVG} from '../../assets/svg';
 import {t} from 'i18next';
+import CustomText from '../CustomText';
 
 const CarFilters = ({
   filters,
@@ -49,7 +50,7 @@ const CarFilters = ({
         <TouchableOpacity
           style={styles.resetButton}
           onPress={onOpenAdjustSheet}>
-          {/* <Text style={styles.filterText}>Adjust</Text> */}
+          {/* <CustomText style={styles.filterText}>Adjust</CustomText> */}
           <AdjustSVG height={16} width={16} />
         </TouchableOpacity>
       ),
@@ -66,12 +67,12 @@ const CarFilters = ({
               justifyContent: 'space-evenly',
               width: '100%',
             }}>
-            <Text
+            <CustomText
               numberOfLines={1}
               ellipsizeMode="tail"
               style={styles.filterText}>
               {getPriceLabel()}
-            </Text>
+            </CustomText>
             <DownArrowSvg />
           </View>
         </TouchableOpacity>
@@ -88,14 +89,14 @@ const CarFilters = ({
               justifyContent: 'space-evenly',
               width: '100%',
             }}>
-            <Text
+            <CustomText
               numberOfLines={1}
               ellipsizeMode="tail"
               style={{color: '#000', flex: 1, marginRight: 8}}>
               {filters.make_brand && filters.make_brand?.length > 0
                 ? filters.make_brand.join(', ')
                 : t('brand')}
-            </Text>
+            </CustomText>
 
             <DownArrowSvg />
           </View>
@@ -113,7 +114,7 @@ const CarFilters = ({
               justifyContent: 'space-evenly',
               width: '100%',
             }}>
-            <Text
+            <CustomText
               style={{
                 color: '#000',
               }}>
@@ -124,7 +125,7 @@ const CarFilters = ({
                 : filters.buildYearMax
                 ? `Up to ${filters.buildYearMax}`
                 : t('buildyear')}
-            </Text>
+            </CustomText>
             <DownArrowSvg />
           </View>
         </TouchableOpacity>
@@ -143,9 +144,9 @@ const CarFilters = ({
               justifyContent: 'space-evenly',
               width: '100%',
             }}>
-            <Text style={{color: '#000'}}>
+            <CustomText style={{color: '#000'}}>
               {filters.transmission || t('transmission')}
-            </Text>
+            </CustomText>
             <DownArrowSvg />
           </View>
         </TouchableOpacity>
@@ -162,12 +163,12 @@ const CarFilters = ({
               justifyContent: 'space-evenly',
               width: '100%',
             }}>
-            <Text
+            <CustomText
               style={styles.filterText}
               numberOfLines={1}
               ellipsizeMode="tail">
               {t(sortOption) || t('sort')}
-            </Text>
+            </CustomText>
             <DownArrowSvg />
           </View>
         </TouchableOpacity>
@@ -180,7 +181,9 @@ const CarFilters = ({
         <TouchableOpacity style={styles.resetButton} onPress={resetFilters}>
           <View style={{flexDirection: 'row', gap: 4}}>
             <TrashSVG height={20} width={20} color="#000" />
-            <Text style={styles.resetButtonText}>{t('resetfilters')}</Text>
+            <CustomText style={styles.resetButtonText}>
+              {t('resetfilters')}
+            </CustomText>
           </View>
         </TouchableOpacity>
       ),

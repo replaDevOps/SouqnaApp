@@ -3,15 +3,16 @@ import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import {mvs} from '../../util/metrices';
 import {colors} from '../../util/color';
 import {BackSVG} from '../../assets/svg';
+import CustomText from '../CustomText';
 
 const ModalHeader = ({title, onBack, backText = 'Back'}) => {
   return (
     <View style={styles.headerContainer}>
       <TouchableOpacity onPress={onBack} style={styles.backButton}>
         <BackSVG width={mvs(24)} height={mvs(24)} />
-        <Text style={styles.backText}>{backText}</Text>
+        <CustomText style={styles.backText}>{backText}</CustomText>
       </TouchableOpacity>
-      <Text style={styles.title}>{title}</Text>
+      <CustomText style={styles.title}>{title}</CustomText>
     </View>
   );
 };

@@ -6,11 +6,12 @@ import {OpenSVG} from '../../../assets/svg';
 import Regular from '../../../typography/RegularText';
 import styles from './style';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
+import CustomText from '../../../components/CustomText';
 
 const DataScreen = () => {
   const navigation = useNavigation();
-    const {t} = useTranslation();
+  const {t} = useTranslation();
   const handleBack = () => {
     navigation.goBack();
   };
@@ -29,7 +30,7 @@ const DataScreen = () => {
             console.log('Privacy Settings Pressed');
           }}>
           <Regular style={styles.menuText}>
-           {t('privacySettingsMeasurement')}
+            {t('privacySettingsMeasurement')}
           </Regular>
         </TouchableOpacity>
         <TouchableOpacity
@@ -37,7 +38,7 @@ const DataScreen = () => {
           onPress={() => {
             openUrl('https://themen.kleinanzeigen.de/datenschutzerklaerung/');
           }}>
-          <Text style={styles.menuText}>{t('Privacy Policy')}</Text>
+          <CustomText style={styles.menuText}>{t('Privacy Policy')}</CustomText>
           <OpenSVG width={20} height={20} />
         </TouchableOpacity>
         <TouchableOpacity
@@ -45,7 +46,7 @@ const DataScreen = () => {
           onPress={() => {
             openUrl('https://themen.kleinanzeigen.de/nutzungsbedingungen/');
           }}>
-          <Text style={styles.menuText}>{t('termsOfUse')}</Text>
+          <CustomText style={styles.menuText}>{t('termsOfUse')}</CustomText>
           <OpenSVG width={20} height={20} />
         </TouchableOpacity>
       </View>

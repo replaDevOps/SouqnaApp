@@ -4,6 +4,7 @@ import {BackSVG, CloseSvg} from '../../assets/svg'; // Assuming CloseSvg is an S
 import {colors} from '../../util/color';
 import {mvs} from '../../util/metrices';
 import {useNavigation} from '@react-navigation/native';
+import CustomText from '../CustomText';
 
 const MainHeader = ({
   title,
@@ -29,7 +30,7 @@ const MainHeader = ({
         </TouchableOpacity>
       )}
 
-      <Text style={styles.title}>{title}</Text>
+      <CustomText style={styles.title}>{title}</CustomText>
 
       {showCloseIcon && (
         <TouchableOpacity onPress={handleClose} style={styles.rightIcon}>

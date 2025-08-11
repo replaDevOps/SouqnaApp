@@ -25,6 +25,7 @@ import {useTranslation} from 'react-i18next';
 import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import {CurrentLocationSVG} from '../../assets/svg';
 import {styles} from './styles';
+import CustomText from '../CustomText';
 
 const {width, height} = Dimensions.get('window');
 const GOOGLE_PLACES_API_KEY = config.GOOGLE_PLACES_API_KEY;
@@ -339,23 +340,27 @@ const LocationModal = ({visible, onLocationSelected, onClose}) => {
 
       {/* Location info overlay */}
       <View style={styles.locationInfo}>
-        <Text style={styles.dragToSelectText}>{t('tapOrDragToSelect')}</Text>
+        <CustomText style={styles.dragToSelectText}>
+          {t('tapOrDragToSelect')}
+        </CustomText>
         <View style={styles.selectedLocationContainer}>
-          <Text style={styles.selectedLocationLabel}>
+          <CustomText style={styles.selectedLocationLabel}>
             {t('selectedLocation')}
-          </Text>
+          </CustomText>
           {isLoadingAddress ? (
             <View style={styles.loadingContainer}>
               <ActivityIndicator size="small" color={colors.black} />
-              <Text style={styles.loadingText}>{t('loadingAddress')}</Text>
+              <CustomText style={styles.loadingText}>
+                {t('loadingAddress')}
+              </CustomText>
             </View>
           ) : (
-            <Text
+            <CustomText
               style={styles.selectedLocationText}
               numberOfLines={1}
               ellipsizeMode="tail">
               {selectedLocation.address || t('unknownLocation')}
-            </Text>
+            </CustomText>
           )}
         </View>
       </View>
@@ -368,11 +373,13 @@ const LocationModal = ({visible, onLocationSelected, onClose}) => {
       style={styles.manualContainer}
       contentContainerStyle={styles.manualContent}>
       <View style={styles.manualSection}>
-        <Text style={styles.manualTitle}>{t('manualEntry')}</Text>
-        <Text style={styles.manualDescription}>{t('noInternetDesc')}</Text>
+        <CustomText style={styles.manualTitle}>{t('manualEntry')}</CustomText>
+        <CustomText style={styles.manualDescription}>
+          {t('noInternetDesc')}
+        </CustomText>
 
         <View style={styles.inputContainer}>
-          <Text style={styles.inputLabel}>{t('manualNote')}</Text>
+          <CustomText style={styles.inputLabel}>{t('manualNote')}</CustomText>
           <TextInput
             style={styles.manualInput}
             placeholder={t('manualNotePlaceholder')}
@@ -387,12 +394,12 @@ const LocationModal = ({visible, onLocationSelected, onClose}) => {
 
         {selectedLocation.address && (
           <View style={styles.currentLocationContainer}>
-            <Text style={styles.currentLocationLabel}>
+            <CustomText style={styles.currentLocationLabel}>
               {t('selectedLocation')}
-            </Text>
-            <Text style={styles.currentLocationText}>
+            </CustomText>
+            <CustomText style={styles.currentLocationText}>
               {selectedLocation.address}
-            </Text>
+            </CustomText>
           </View>
         )}
       </View>
@@ -405,15 +412,15 @@ const LocationModal = ({visible, onLocationSelected, onClose}) => {
       {/* <TouchableOpacity
         onPress={() => setCurrentView(currentView === 'map' ? 'manual' : 'map')}
         style={styles.toggleViewButton}>
-        <Text style={styles.toggleViewText}>
+        <CustomText style={styles.toggleViewText}>
           {currentView === 'map' ? '✏️ Manual Entry' : '🗺️ Map View'}
-        </Text>
+        </CustomText>
       </TouchableOpacity> */}
 
       <TouchableOpacity
         onPress={handleConfirmLocation}
         style={styles.confirmButton}>
-        <Text style={styles.confirmButtonText}>{t('confirm')}</Text>
+        <CustomText style={styles.confirmButtonText}>{t('confirm')}</CustomText>
       </TouchableOpacity>
     </View>
   );

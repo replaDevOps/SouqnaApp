@@ -1,12 +1,21 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
-import { colors } from '../../../util/color';
+import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
+import {BottomSheetScrollView} from '@gorhom/bottom-sheet';
+import {colors} from '../../../util/color';
+import CustomText from '../../CustomText';
 
-const PROPERTY_TYPES = ['Apartment', 'House', 'Villa', 'Commercial', 'Farmhouse', 'Upper Portion', 'Lower Portion'];
+const PROPERTY_TYPES = [
+  'Apartment',
+  'House',
+  'Villa',
+  'Commercial',
+  'Farmhouse',
+  'Upper Portion',
+  'Lower Portion',
+];
 
-const PropertyTypeFilterSheet = ({ filters, setFilters, closeSheet }) => {
-  const handleSelect = (type) => {
+const PropertyTypeFilterSheet = ({filters, setFilters, closeSheet}) => {
+  const handleSelect = type => {
     setFilters(prev => ({
       ...prev,
       propertyType: type,
@@ -23,11 +32,15 @@ const PropertyTypeFilterSheet = ({ filters, setFilters, closeSheet }) => {
           style={[
             styles.option,
             filters.propertyType === type && styles.selectedOption,
-          ]}
-        >
-          <Text style={filters.propertyType === type ? styles.selectedText : styles.optionText}>
+          ]}>
+          <CustomText
+            style={
+              filters.propertyType === type
+                ? styles.selectedText
+                : styles.optionText
+            }>
             {type}
-          </Text>
+          </CustomText>
         </TouchableOpacity>
       ))}
     </BottomSheetScrollView>

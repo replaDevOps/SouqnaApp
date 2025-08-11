@@ -6,6 +6,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {useIsFocused} from '@react-navigation/native';
 import API from '../../api/apiServices';
 import {setVerificationStatus} from '../../redux/slices/userSlice';
+import CustomText from '../CustomText';
 
 const VerificationStatus = () => {
   const {t} = useTranslation();
@@ -50,7 +51,7 @@ const VerificationStatus = () => {
     return (
       <View style={styles.verifiedContainer}>
         <View style={styles.greenDot} />
-        <Text style={styles.verifiedText}>{t('verified')}</Text>
+        <CustomText style={styles.verifiedText}>{t('verified')}</CustomText>
       </View>
     );
   }
@@ -59,7 +60,7 @@ const VerificationStatus = () => {
     return (
       <View style={styles.unverifiedContainer}>
         <View style={styles.redDot} />
-        <Text style={styles.unverifiedText}>{t('rejected')}</Text>
+        <CustomText style={styles.unverifiedText}>{t('rejected')}</CustomText>
       </View>
     );
   }
@@ -68,7 +69,7 @@ const VerificationStatus = () => {
     return (
       <View style={styles.unverifiedContainer}>
         <View style={styles.redDot} />
-        <Text style={styles.unverifiedText}>{t('unverified')}</Text>
+        <CustomText style={styles.unverifiedText}>{t('unverified')}</CustomText>
       </View>
     );
   }
@@ -78,7 +79,9 @@ const VerificationStatus = () => {
       <View style={styles.progressContainer}>
         <View style={styles.InprogressContainer}>
           <View style={styles.orangeDot} />
-          <Text style={styles.InprogressText}>{t('inProgress')}</Text>
+          <CustomText style={styles.InprogressText}>
+            {t('inProgress')}
+          </CustomText>
         </View>
       </View>
     );

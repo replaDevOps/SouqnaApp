@@ -12,6 +12,7 @@ import {colors} from '../../util/color';
 import {CallSVG, ChatSVG2, TrashSVG, UpdateSVG} from '../../assets/svg';
 import {useSelector} from 'react-redux';
 import {useTranslation} from 'react-i18next';
+import CustomText from '../CustomText';
 
 const ProductFooter = ({
   onBuyPress,
@@ -95,7 +96,7 @@ const ProductFooter = ({
             {loading ? (
               <ActivityIndicator size="small" color={colors.lightgreen} />
             ) : (
-              <Text style={[styles.buttonText]}>{text}</Text>
+              <CustomText style={[styles.buttonText]}>{text}</CustomText>
             )}
           </TouchableOpacity>
         ))}

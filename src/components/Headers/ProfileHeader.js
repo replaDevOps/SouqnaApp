@@ -22,6 +22,7 @@ import SwitchModal from '../Modals/SwitchModal';
 import {switchUserRole} from '../../api/apiServices'; // Updated to match the import from your document
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {showSnackbar} from '../../redux/slices/snackbarSlice';
+import CustomText from '../CustomText';
 // const {height} = Dimensions.get('window');
 
 // const headerHeight = height * 0.28;
@@ -151,7 +152,7 @@ export default function ProfileHeader({OnPressLogout, onRoleSwitch}) {
         />
       </View>
       <View style={styles.sellerContainer}>
-        <Text style={styles.sellerText}>
+        <CustomText style={[styles.sellerText, {fontFamily: 'Asal'}]}>
           {activeRole === '2' || activeRole === 2
             ? t('Seller Account')
             : activeRole === '3' || activeRole === 3
@@ -159,7 +160,7 @@ export default function ProfileHeader({OnPressLogout, onRoleSwitch}) {
             : isSellerOn
             ? t('Seller Account')
             : t('buyeraccount')}
-        </Text>
+        </CustomText>
         <TouchableOpacity onPress={toggleSellerMode} activeOpacity={0.8}>
           {isSellerOn ? (
             <OnSVG width={mvs(40)} height={mvs(45)} fill={colors.white} />
@@ -241,6 +242,7 @@ const styles = StyleSheet.create({
     color: colors.white,
     fontWeight: 'bold',
     fontSize: mvs(20),
+    fontFamily: 'Asal',
   },
   logo: {
     width: '100%',

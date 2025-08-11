@@ -1,7 +1,6 @@
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {
   View,
-  Text,
   StyleSheet,
   Image,
   KeyboardAvoidingView,
@@ -35,6 +34,7 @@ import {app} from '../../../firebase';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useTranslation} from 'react-i18next';
 import Loader from '../../../components/Loader';
+import CustomText from '../../../components/CustomText';
 
 const Chat = () => {
   const route = useRoute();
@@ -276,12 +276,12 @@ const Chat = () => {
             />
           )}
           <View style={styles.productInfo}>
-            <Text style={styles.productName}>
+            <CustomText style={styles.productName}>
               {currentMessage.product.name}
-            </Text>
-            <Text style={styles.productPrice}>
+            </CustomText>
+            <CustomText style={styles.productPrice}>
               $ {Number(currentMessage.product.price).toLocaleString()}
-            </Text>
+            </CustomText>
           </View>
         </View>
       );
@@ -345,9 +345,9 @@ const Chat = () => {
         {isUploading ? (
           <ActivityIndicator size="small" color="#fff" />
         ) : (
-          <Text style={{color: '#fff', fontWeight: 'bold'}}>
+          <CustomText style={{color: '#fff', fontWeight: 'bold'}}>
             {t('chatSend')}
-          </Text>
+          </CustomText>
         )}
       </View>
     </Send>

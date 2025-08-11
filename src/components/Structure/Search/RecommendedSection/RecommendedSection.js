@@ -32,6 +32,7 @@ import {mvs} from '../../../../util/metrices';
 import ProductCardSkeleton from './ProductCardSkeleton';
 import {useNavigation} from '@react-navigation/native';
 import {showSnackbar} from '../../../../redux/slices/snackbarSlice';
+import CustomText from '../../../CustomText';
 
 const RecommendedSection = forwardRef(({onRefreshRef}, ref) => {
   const hideTitle = false;
@@ -186,7 +187,12 @@ const RecommendedSection = forwardRef(({onRefreshRef}, ref) => {
   return (
     <View style={[styles.recommendedContainer, {flex: 1}]}>
       {!hideTitle && (
-        <Bold style={[{marginVertical: mvs(20)}, styles.recommendedText]}>
+        <Bold
+          style={[
+            {marginVertical: mvs(20)},
+            styles.recommendedText,
+            // {fontFamily: 'Asal'},
+          ]}>
           {role === 2
             ? t('yourListings')
             : role === 3
@@ -226,9 +232,9 @@ const RecommendedSection = forwardRef(({onRefreshRef}, ref) => {
                     height: mvs(200),
                   }}
                 />
-                <Text style={{textAlign: 'center', marginTop: mvs(20)}}>
+                <CustomText style={{textAlign: 'center', marginTop: mvs(20)}}>
                   {t('noProductsFound')}
-                </Text>
+                </CustomText>
               </View>
             )
           }

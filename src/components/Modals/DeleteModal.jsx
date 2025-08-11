@@ -11,9 +11,10 @@ import {Close} from '../../assets/images';
 import DeleteSvg from '../../assets/icons/user/deleteSvg';
 import {colors} from '../../config/colors';
 import {mvs} from '../../config/metrices';
+import CustomText from '../CustomText';
 
 const DeleteModal = ({visible, onClose}) => {
-    const {t} = useTranslation();
+  const {t} = useTranslation();
   return (
     <Modal
       visible={visible}
@@ -30,16 +31,18 @@ const DeleteModal = ({visible, onClose}) => {
             <DeleteSvg />
           </View>
 
-          <Text style={styles.text}>
+          <CustomText style={styles.text}>
             {t('accountWillBeDeleted')}
-          </Text>
-          <Text style={styles.text2}>
+          </CustomText>
+          <CustomText style={styles.text2}>
             {t('confirmDeleteAccount')}
-          </Text>
+          </CustomText>
 
           <View style={{marginTop: 10, width: '100%', alignSelf: 'center'}}>
             <TouchableOpacity style={styles.redButton} onPress={onClose}>
-              <Text style={styles.buttonText}>{t('deleteAccount')}</Text>
+              <CustomText style={styles.buttonText}>
+                {t('deleteAccount')}
+              </CustomText>
             </TouchableOpacity>
           </View>
         </View>

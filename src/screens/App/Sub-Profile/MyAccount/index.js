@@ -17,6 +17,7 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {useTranslation} from 'react-i18next';
 import {useSelector} from 'react-redux';
 import {GetSeller} from '../../../../api/apiServices';
+import CustomText from '../../../../components/CustomText';
 
 export default function MyAccount() {
   const [isEditing, setIsEditing] = useState(false);
@@ -98,14 +99,18 @@ export default function MyAccount() {
 
               {/* Personal Info */}
               <View style={styles.card}>
-                <Text style={styles.cardTitle}>{t('Personal Info')}</Text>
+                <CustomText style={styles.cardTitle}>
+                  {t('Personal Info')}
+                </CustomText>
 
                 {renderEditableRow(t('yourName'), 'name')}
                 {/* {renderEditableRow(t('occupation'), 'occupation')} */}
                 {/* {renderEditableRow(t('address'), 'address')} */}
 
                 <View style={styles.row}>
-                  <Text style={styles.label}>{t('sellerType')}</Text>
+                  <CustomText style={styles.label}>
+                    {t('sellerType')}
+                  </CustomText>
                   {isEditing ? (
                     <TouchableOpacity
                       onPress={() =>
@@ -131,18 +136,20 @@ export default function MyAccount() {
                       )}
                     </TouchableOpacity>
                   ) : (
-                    <Text style={styles.value}>
+                    <CustomText style={styles.value}>
                       {editedData.sellerType === 1
                         ? t('Company')
                         : t('Private')}
-                    </Text>
+                    </CustomText>
                   )}
                 </View>
               </View>
 
               {/* Contact Info */}
               <View style={[styles.card, {marginTop: 16, marginBottom: 24}]}>
-                <Text style={styles.cardTitle}>{t('Contact Info')}</Text>
+                <CustomText style={styles.cardTitle}>
+                  {t('Contact Info')}
+                </CustomText>
 
                 {renderEditableRow(t('phoneNumber'), 'phone', 'phone-pad')}
                 {renderEditableRow(t('email'), 'email', 'email-address')}
@@ -157,19 +164,25 @@ export default function MyAccount() {
                     <TouchableOpacity
                       style={styles.cancelBtn}
                       onPress={handleCancel}>
-                      <Text style={styles.cancelText}>{t('Cancel')}</Text>
+                      <CustomText style={styles.cancelText}>
+                        {t('Cancel')}
+                      </CustomText>
                     </TouchableOpacity>
                     <TouchableOpacity
                       style={styles.saveBtn}
                       onPress={handleEditToggle}>
-                      <Text style={styles.saveText}>{t('save')}</Text>
+                      <CustomText style={styles.saveText}>
+                        {t('save')}
+                      </CustomText>
                     </TouchableOpacity>
                   </>
                 ) : (
                   <TouchableOpacity
                     style={styles.editBtn}
                     onPress={handleEditToggle}>
-                    <Text style={styles.editText}>{t('editProfile')}</Text>
+                    <CustomText style={styles.editText}>
+                      {t('editProfile')}
+                    </CustomText>
                   </TouchableOpacity>
                 )}
               </View>
@@ -184,9 +197,9 @@ export default function MyAccount() {
     return (
       <View style={styles.row}>
         <View style={styles.labelContainer}>
-          <Text style={styles.label} numberOfLines={1}>
+          <CustomText style={styles.label} numberOfLines={1}>
             {label}
-          </Text>
+          </CustomText>
         </View>
         <View style={styles.valueContainer}>
           {isEditing ? (
@@ -199,9 +212,12 @@ export default function MyAccount() {
               placeholderTextColor="#9CA3AF"
             />
           ) : (
-            <Text style={styles.value} numberOfLines={1} ellipsizeMode="tail">
+            <CustomText
+              style={styles.value}
+              numberOfLines={1}
+              ellipsizeMode="tail">
               {editedData[field]}
-            </Text>
+            </CustomText>
           )}
         </View>
       </View>

@@ -17,6 +17,7 @@ import styles from './style';
 import {Snackbar} from 'react-native-paper';
 import {placeOrder} from '../../api/apiServices';
 import {useSelector} from 'react-redux';
+import CustomText from '../../components/CustomText';
 
 const CheckoutScreen = ({navigation, onSubmit}) => {
   const {token} = useSelector(state => state.user);
@@ -118,7 +119,7 @@ const CheckoutScreen = ({navigation, onSubmit}) => {
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           style={{flex: 1}}>
           <ScrollView contentContainerStyle={styles.container}>
-            <Text style={styles.title}>Delivery Details</Text>
+            <CustomText style={styles.title}>Delivery Details</CustomText>
 
             <TextInput
               style={styles.input}
@@ -145,7 +146,7 @@ const CheckoutScreen = ({navigation, onSubmit}) => {
               value={city}
               onChangeText={setCity}
             />
-            {/* <Text style={styles.label}>Region</Text> */}
+            {/* <CustomText style={styles.label}>Region</CustomText> */}
             <DropDownPicker
               open={regionOpen}
               value={region}
@@ -173,7 +174,7 @@ const CheckoutScreen = ({navigation, onSubmit}) => {
               onChangeText={setNotes}
             />
 
-            <Text style={styles.label}>Payment Method</Text>
+            <CustomText style={styles.label}>Payment Method</CustomText>
             <DropDownPicker
               open={openDropdown}
               value={paymentMethod}
@@ -190,9 +191,9 @@ const CheckoutScreen = ({navigation, onSubmit}) => {
               style={styles.button}
               onPress={handleConfirm}
               disabled={loading}>
-              <Text style={styles.buttonText}>
+              <CustomText style={styles.buttonText}>
                 {loading ? 'Processing...' : 'Confirm Order'}
-              </Text>
+              </CustomText>
             </TouchableOpacity>
           </ScrollView>
           <Snackbar

@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import {mvs} from '../../../util/metrices';
 import {useTranslation} from 'react-i18next';
+import CustomText from '../../CustomText';
 
 const CarDetailsCard = ({ProductData}) => {
   const {i18n, t} = useTranslation();
@@ -84,8 +85,8 @@ const CarDetailsCard = ({ProductData}) => {
 
   const DetailRow = ({label, value, isLast = false}) => (
     <View style={[styles.detailRow, !isLast && styles.borderBottom]}>
-      <Text style={styles.label}>{label}</Text>
-      <Text style={styles.value}>{value}</Text>
+      <CustomText style={styles.label}>{label}</CustomText>
+      <CustomText style={styles.value}>{value}</CustomText>
     </View>
   );
 
@@ -107,12 +108,14 @@ const CarDetailsCard = ({ProductData}) => {
           <TouchableOpacity
             onPress={toggleExpansion}
             style={styles.toggleButton}>
-            <Text style={styles.toggleText}>
+            <CustomText style={styles.toggleText}>
               {isExpanded
                 ? t('viewLess')
                 : `${t('view')} +${remainingCount} ${t('more')}`}{' '}
-              <Text style={styles.arrow}>{isExpanded ? '▲' : '▼'}</Text>
-            </Text>
+              <CustomText style={styles.arrow}>
+                {isExpanded ? '▲' : '▼'}
+              </CustomText>
+            </CustomText>
           </TouchableOpacity>
         </View>
       )}

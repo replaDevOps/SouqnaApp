@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
 
   bigCard: {
     alignItems: 'center',
-    width: '45%',
+    width: '48%',
     paddingVertical: mvs(10),
   },
 

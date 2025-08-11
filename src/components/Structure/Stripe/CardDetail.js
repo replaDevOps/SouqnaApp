@@ -12,6 +12,7 @@ import {
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
 import {submitCardDetails} from '../../../api/apiServices';
+import CustomText from '../../CustomText';
 
 const CardDetailsScreen = () => {
   const navigation = useNavigation();
@@ -59,7 +60,7 @@ const CardDetailsScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.cardBox}>
-        <Text style={styles.title}>Enter Stripe Card Details</Text>
+        <CustomText style={styles.title}>Enter Stripe Card Details</CustomText>
 
         <TextInput
           placeholder="Card Number"
@@ -104,10 +105,10 @@ const CardDetailsScreen = () => {
           <TouchableOpacity
             onPress={() => navigation.goBack()}
             style={styles.cancelBtn}>
-            <Text style={styles.btnText}>Cancel</Text>
+            <CustomText style={styles.btnText}>Cancel</CustomText>
           </TouchableOpacity>
           <TouchableOpacity onPress={handleSave} style={styles.saveBtn}>
-            <Text style={styles.btnText}>Save</Text>
+            <CustomText style={styles.btnText}>Save</CustomText>
           </TouchableOpacity>
         </View>
       </View>

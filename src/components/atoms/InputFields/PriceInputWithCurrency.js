@@ -8,6 +8,7 @@ import {
   FlatList,
   StyleSheet,
 } from 'react-native';
+import CustomText from '../../CustomText';
 
 const currencies = ['USD', 'TRY', 'SYP'];
 
@@ -61,9 +62,9 @@ const PriceInputWithDropdown = ({
           ref={buttonRef}
           style={styles.currencyButton}
           onPress={toggleDropdown}>
-          <Text style={styles.currencyText}>
+          <CustomText style={styles.currencyText}>
             {selectedCurrency} {'\u25BC'} {/* Unicode Down Arrow */}
-          </Text>
+          </CustomText>
         </TouchableOpacity>
       </View>
 
@@ -89,7 +90,7 @@ const PriceInputWithDropdown = ({
                   <TouchableOpacity
                     onPress={() => handleSelect(item)}
                     style={styles.dropdownItem}>
-                    <Text>{item}</Text>
+                    <CustomText>{item}</CustomText>
                   </TouchableOpacity>
                 )}
               />

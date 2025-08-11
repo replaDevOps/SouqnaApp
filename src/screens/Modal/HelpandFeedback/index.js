@@ -5,7 +5,8 @@ import ModalHeader from '../../../components/Headers/ModalHeader';
 import {OpenSVG} from '../../../assets/svg';
 import styles from './style';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
+import CustomText from '../../../components/CustomText';
 
 const HelpScreen = () => {
   const navigation = useNavigation();
@@ -24,14 +25,18 @@ const HelpScreen = () => {
           onPress={() => {
             openUrl('https://hilfe.kleinanzeigen.de/hc/de');
           }}>
-          <Text style={styles.menuText}>{t('Help Area')}</Text>
+          <CustomText style={styles.menuText}>{t('Help Area')}</CustomText>
           <OpenSVG width={20} height={20} />
         </TouchableOpacity>
         <TouchableOpacity style={styles.menuItem} onPress={() => {}}>
-          <Text style={styles.menuText}>{t('Report a Problem')}</Text>
+          <CustomText style={styles.menuText}>
+            {t('Report a Problem')}
+          </CustomText>
         </TouchableOpacity>
         <TouchableOpacity style={styles.menuItem} onPress={() => {}}>
-          <Text style={styles.menuText}>{t('Give us Feedback')}</Text>
+          <CustomText style={styles.menuText}>
+            {t('Give us Feedback')}
+          </CustomText>
         </TouchableOpacity>
       </View>
     </SafeAreaView>

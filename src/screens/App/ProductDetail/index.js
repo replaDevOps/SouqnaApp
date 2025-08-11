@@ -41,6 +41,7 @@ import {getOrCreateConversation} from '../../../firebase/chatService';
 import DetailsTable from '../../../components/Structure/Details/DetailsTable';
 import LocationMapModal from '../../../components/Modals/LocationMapModal';
 import {useTranslation} from 'react-i18next';
+import CustomText from '../../../components/CustomText';
 
 const {height} = Dimensions.get('window');
 
@@ -375,10 +376,10 @@ const ProductDetail = () => {
                     //                onPress={()=>
                     // console.log('{modal triggered sucessfully}')}
                   >
-                    <Text
+                    <CustomText
                       style={{color: 'blue', textDecorationLine: 'underline'}}>
                       {t('viewOnMap')}
-                    </Text>
+                    </CustomText>
                     {/* {product.location} */}
                   </TouchableOpacity>
                 </View>
@@ -400,20 +401,27 @@ const ProductDetail = () => {
               }
               /> */}
             <View style={{}}>
-              <Bold style={{fontSize: mvs(22), marginHorizontal: mvs(10)}}>
+              <Bold
+                style={{
+                  fontSize: mvs(22),
+                  marginHorizontal: mvs(10),
+                  fontFamily: 'Asal',
+                }}>
                 {t('details')}
               </Bold>
               <DetailsTable ProductData={product.custom_fields} />
             </View>
             <View style={styles.descriptionContainer}>
-              <Bold style={{fontSize: mvs(22)}}>{t('Description')}</Bold>
+              <Bold style={{fontSize: mvs(22), fontFamily: 'Asal'}}>
+                {t('Description')}
+              </Bold>
               <Regular
-                style={styles.description}
+                style={{...styles.description, fontFamily: 'Asal'}}
                 numberOfLines={isReadMore ? 3 : 0}>
                 {product.description}
               </Regular>
               {product.description?.split(' ').length > 20 && (
-                <Text
+                <CustomText
                   style={{
                     color: '#000',
                     marginTop: 4,
@@ -422,7 +430,7 @@ const ProductDetail = () => {
                   }}
                   onPress={() => setIsReadMore(!isReadMore)}>
                   {isReadMore ? t('readMore') : t('showLess')}
-                </Text>
+                </CustomText>
               )}
             </View>
 

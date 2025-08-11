@@ -6,6 +6,7 @@ import {mvs} from '../../util/metrices';
 import {CloseSvg, SearchSVG} from '../../assets/svg';
 import {colors} from '../../util/color';
 import LocationModal from './LocationModal';
+import CustomText from '../CustomText';
 
 const EnhancedLocationSelector = ({
   onPlaceSelected,
@@ -50,9 +51,10 @@ const EnhancedLocationSelector = ({
         <View style={styles.leftButton}>
           <SearchSVG width={25} height={25} />
         </View>
-        <Text style={[styles.placeholderText, text && styles.selectedText]}>
+        <CustomText
+          style={[styles.placeholderText, text && styles.selectedText]}>
           {text || placeholder}
-        </Text>
+        </CustomText>
         {text.length > 0 && (
           <TouchableOpacity onPress={clearLocation}>
             <CloseSvg width={16} height={16} />

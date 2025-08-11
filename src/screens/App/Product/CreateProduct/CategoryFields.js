@@ -10,6 +10,7 @@ import {
 import {colors} from '../../../../util/color';
 import {mvs} from '../../../../util/metrices';
 import {useTranslation} from 'react-i18next';
+import CustomText from '../../../../components/CustomText';
 
 // Simple Dropdown Component
 const CustomDropdown = ({
@@ -31,16 +32,17 @@ const CustomDropdown = ({
       <TouchableOpacity
         style={[dropdownStyles.selector, isOpen && dropdownStyles.selectorOpen]}
         onPress={() => setIsOpen(!isOpen)}>
-        <Text
+        <CustomText
           style={[
             dropdownStyles.selectorText,
             !selectedValue && dropdownStyles.placeholderText,
           ]}>
           {selectedValue || placeholder}
-        </Text>
-        <Text style={[dropdownStyles.arrow, isOpen && dropdownStyles.arrowUp]}>
+        </CustomText>
+        <CustomText
+          style={[dropdownStyles.arrow, isOpen && dropdownStyles.arrowUp]}>
           ▼
-        </Text>
+        </CustomText>
       </TouchableOpacity>
 
       {isOpen && (
@@ -55,13 +57,13 @@ const CustomDropdown = ({
                   selectedValue === item && dropdownStyles.selectedOption,
                 ]}
                 onPress={() => handleSelect(item)}>
-                <Text
+                <CustomText
                   style={[
                     dropdownStyles.optionText,
                     selectedValue === item && dropdownStyles.selectedOptionText,
                   ]}>
                   {item}
-                </Text>
+                </CustomText>
               </TouchableOpacity>
             )}
             nestedScrollEnabled={true}
@@ -114,12 +116,12 @@ const CategoryFields = ({categoryFields, formData, handleInputChange}) => {
       case 'text':
         return (
           <View key={index} style={fieldStyles.fieldContainer}>
-            <Text style={fieldStyles.fieldLabel}>
+            <CustomText style={fieldStyles.fieldLabel}>
               {label}
               {field.required === 1 && (
-                <Text style={fieldStyles.required}>*</Text>
+                <CustomText style={fieldStyles.required}>*</CustomText>
               )}
-            </Text>
+            </CustomText>
             <TextInput
               style={[fieldStyles.textInput, isArabic && {textAlign: 'right'}]}
               placeholder={label}
@@ -148,12 +150,12 @@ const CategoryFields = ({categoryFields, formData, handleInputChange}) => {
         console.log('Options for field:', field.name, options);
         return (
           <View key={index} style={fieldStyles.fieldContainer}>
-            <Text style={fieldStyles.fieldLabel}>
+            <CustomText style={fieldStyles.fieldLabel}>
               {label}
               {field.required === 1 && (
-                <Text style={fieldStyles.required}>*</Text>
+                <CustomText style={fieldStyles.required}>*</CustomText>
               )}
-            </Text>
+            </CustomText>
             <CustomDropdown
               options={isArabic ? options.ar : options.en}
               selectedValue={fieldValue}
@@ -175,12 +177,12 @@ const CategoryFields = ({categoryFields, formData, handleInputChange}) => {
         const optionsToUse = isArabic ? radioOptions.ar : radioOptions.en;
         return (
           <View key={index} style={fieldStyles.fieldContainer}>
-            <Text style={fieldStyles.fieldLabel}>
+            <CustomText style={fieldStyles.fieldLabel}>
               {label}
               {field.required === 1 && (
-                <Text style={fieldStyles.required}>*</Text>
+                <CustomText style={fieldStyles.required}>*</CustomText>
               )}
-            </Text>
+            </CustomText>
             <View style={fieldStyles.radioContainer}>
               {optionsToUse.map((option, idx) => (
                 <TouchableOpacity
@@ -213,9 +215,9 @@ const CategoryFields = ({categoryFields, formData, handleInputChange}) => {
                       )}
                     </View>
                   </View>
-                  <Text style={fieldStyles.radioText}>
+                  <CustomText style={fieldStyles.radioText}>
                     {isArabic ? radioOptions.ar[idx] : radioOptions.en[idx]}
-                  </Text>
+                  </CustomText>
                 </TouchableOpacity>
               ))}
             </View>
@@ -238,12 +240,12 @@ const CategoryFields = ({categoryFields, formData, handleInputChange}) => {
         <TouchableOpacity
           style={fieldStyles.toggleButton}
           onPress={() => setIsExpanded(!isExpanded)}>
-          <Text style={fieldStyles.toggleButtonText}>
+          <CustomText style={fieldStyles.toggleButtonText}>
             {isArabic
               ? 'انقر لعرض معلومات اضافية'
               : 'Click to expand additional information'}
             {isExpanded ? '▲' : '▼'}
-          </Text>
+          </CustomText>
         </TouchableOpacity>
       )}
 
@@ -256,11 +258,11 @@ const CategoryFields = ({categoryFields, formData, handleInputChange}) => {
           <TouchableOpacity
             style={fieldStyles.closeButton}
             onPress={() => setIsExpanded(false)}>
-            <Text style={fieldStyles.closeButtonText}>
+            <CustomText style={fieldStyles.closeButtonText}>
               {isArabic
                 ? 'إغلاق المعلومات الاضافية'
                 : 'Close additional information'}
-            </Text>
+            </CustomText>
           </TouchableOpacity>
         </View>
       )}

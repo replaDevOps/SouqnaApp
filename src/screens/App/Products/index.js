@@ -11,7 +11,6 @@ import {
   KeyboardAvoidingView,
   Platform,
   StatusBar,
-  Text,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -61,6 +60,7 @@ import {init} from 'i18next';
 import {colors} from '../../../util/color';
 import {showSnackbar} from '../../../redux/slices/snackbarSlice';
 import Loader from '../../../components/Loader';
+import CustomText from '../../../components/CustomText';
 
 const Products = () => {
   const [filters, setFilters] = useState({
@@ -567,14 +567,14 @@ const Products = () => {
               backdropComponent={renderBackdrop}
               style={{borderRadius: mvs(30), overflow: 'hidden'}}>
               <View style={{padding: 16}}>
-                <Text
+                <CustomText
                   style={{
                     fontSize: 16,
                     fontWeight: 'bold',
                     textAlign: 'center',
                   }}>
                   {t('price')}
-                </Text>
+                </CustomText>
                 {/* Your custom controls here */}
               </View>
               <PriceFilterSheet
@@ -601,14 +601,14 @@ const Products = () => {
               backdropComponent={renderBackdrop}
               style={{borderRadius: mvs(30), overflow: 'hidden'}}>
               <View style={{padding: 16}}>
-                <Text
+                <CustomText
                   style={{
                     fontSize: 16,
                     fontWeight: 'bold',
                     textAlign: 'center',
                   }}>
                   {t('buildyear')}
-                </Text>
+                </CustomText>
               </View>
               <BuildYearFilterSheet
                 filters={filters}
@@ -633,14 +633,14 @@ const Products = () => {
               backdropComponent={renderBackdrop}
               style={{borderRadius: mvs(30), overflow: 'hidden'}}>
               <View style={{padding: 16}}>
-                <Text
+                <CustomText
                   style={{
                     fontSize: 16,
                     fontWeight: 'bold',
                     textAlign: 'center',
                   }}>
                   Transmission
-                </Text>
+                </CustomText>
                 {/* Your custom controls here */}
               </View>
               <TransmissionFilterSheet
@@ -666,14 +666,14 @@ const Products = () => {
               backdropComponent={renderBackdrop}
               style={{borderRadius: mvs(30), overflow: 'hidden'}}>
               <View style={{padding: 16}}>
-                <Text
+                <CustomText
                   style={{
                     fontSize: 16,
                     fontWeight: 'bold',
                     textAlign: 'center',
                   }}>
                   Size (sqft)
-                </Text>
+                </CustomText>
               </View>
               <AreaFilterSheet
                 ref={refAreaInput}
@@ -698,14 +698,14 @@ const Products = () => {
               backdropComponent={renderBackdrop}
               style={{borderRadius: mvs(30), overflow: 'hidden'}}>
               <View style={{padding: 16}}>
-                <Text
+                <CustomText
                   style={{
                     fontSize: 16,
                     fontWeight: 'bold',
                     textAlign: 'center',
                   }}>
                   Property Type
-                </Text>
+                </CustomText>
               </View>
               <PropertyTypeFilterSheet
                 filters={filters}

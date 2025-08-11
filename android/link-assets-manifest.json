@@ -3,7 +3,7 @@
   "data": [
     {
       "path": "src/assets/fonts/Asal.ttf",
-      "sha1": "69062e24d9081b0665e73a68a84e4dcc0723a92d"
+      "sha1": "38b8469e7447526b7b2b8fa67b20651d3a59830b"
     },
     {
       "path": "src/assets/fonts/DMSans_18pt-Bold.ttf",
@@ -40,6 +40,10 @@
     {
       "path": "src/assets/fonts/Poppins-Regular.ttf",
       "sha1": "fdd3002e7d814ee47c1c1b8487c72c6bbb3a2d00"
+    },
+    {
+      "path": "src/assets/fonts/asal_eng.ttf",
+      "sha1": "69062e24d9081b0665e73a68a84e4dcc0723a92d"
     },
     {
       "path": "src/assets/fonts/index.tsx",

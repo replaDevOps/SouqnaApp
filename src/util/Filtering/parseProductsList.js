@@ -34,7 +34,7 @@ export const parseProductList = products => {
         furnished: extractField('furnished'),
         elevator: extractField('elevator'),
         balcony: extractField('balcony'),
-        titleDeed_Document: extractField('titleDeed_Document'),
+        ownership_document: extractField('ownership_document'),
         nearbyLandmarks: extractField('nearbyLandmarks'),
         distancefroCityCenter_transport: extractField(
           'distancefroCityCenter_transport',

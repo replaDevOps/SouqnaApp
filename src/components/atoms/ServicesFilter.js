@@ -5,6 +5,7 @@ import DownArrowSvg from '../../assets/svg/down-arrow-svg';
 import {colors} from '../../util/color';
 import {AdjustSVG, TrashSVG} from '../../assets/svg';
 import {t} from 'i18next';
+import CustomText from '../CustomText';
 
 const ServicesFilters = ({
   filters,
@@ -54,12 +55,12 @@ const ServicesFilters = ({
       render: () => (
         <TouchableOpacity style={styles.input} onPress={onOpenPriceSheet}>
           <View style={styles.inputRow}>
-            <Text
+            <CustomText
               numberOfLines={1}
               ellipsizeMode="tail"
               style={styles.filterText}>
               {getPriceLabel()}
-            </Text>
+            </CustomText>
             <DownArrowSvg />
           </View>
         </TouchableOpacity>
@@ -76,12 +77,12 @@ const ServicesFilters = ({
               justifyContent: 'space-evenly',
               width: '100%',
             }}>
-            <Text
+            <CustomText
               style={styles.filterText}
               numberOfLines={1}
               ellipsizeMode="tail">
               {sortOption || t('sort')}
-            </Text>
+            </CustomText>
             <DownArrowSvg />
           </View>
         </TouchableOpacity>
@@ -93,7 +94,9 @@ const ServicesFilters = ({
         <TouchableOpacity style={styles.resetButton} onPress={resetFilters}>
           <View style={{flexDirection: 'row', gap: 4}}>
             <TrashSVG height={20} width={20} color="#000" />
-            <Text style={styles.resetButtonText}>{t('resetfilters')}</Text>
+            <CustomText style={styles.resetButtonText}>
+              {t('resetfilters')}
+            </CustomText>
           </View>
         </TouchableOpacity>
       ),
