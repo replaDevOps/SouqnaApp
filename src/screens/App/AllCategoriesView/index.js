@@ -20,6 +20,7 @@ import {LocationSvg} from '../../../assets/svg';
 import i18n from '../../../i18n/i18n';
 import styles from './style';
 import {SafeAreaView} from 'react-native-safe-area-context';
+// import {ForwardSVG} from '../../../assets/svg';
 
 export const AllCategoriesView = () => {
   const [loading, setLoading] = useState(true);
@@ -106,12 +107,19 @@ export const AllCategoriesView = () => {
             item.id,
           )
         }
-        style={styles.categoryItem}>
+        style={{...styles.categoryItem}}>
         <View style={styles.IconContainer}>
           {imageURL ? (
             <Image
               source={{uri: imageURL}}
-              style={{width: mvs(60), height: mvs(60), borderRadius: 30}}
+              style={{
+                width: '100%',
+                height: '100%',
+                // backgroundColor: 'blue',
+                // height: mvs(80),
+                // borderRadius: 30,
+                resizeMode: 'contain',
+              }}
             />
           ) : (
             <LocationSvg width={24} height={24} />
@@ -124,11 +132,11 @@ export const AllCategoriesView = () => {
             ellipsizeMode="tail">
             {i18n.language === 'ar' ? item.ar_name : item.name}
           </Bold>
-          {item.hasSubcategories && (
+          {/* {item.hasSubcategories && (
             <View style={{marginTop: mvs(5), alignItems: 'center'}}>
-              {/* <ForwardSVG width={18} height={18} /> */}
+              <ForwardSVG width={18} height={18} />
             </View>
-          )}
+          )} */}
         </View>
       </TouchableOpacity>
     );

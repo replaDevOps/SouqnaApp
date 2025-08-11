@@ -108,7 +108,14 @@ const AdvertiseScreen = () => {
           {imageURL ? (
             <Image
               source={{uri: imageURL}}
-              style={{width: mvs(60), height: mvs(60), borderRadius: 30}}
+              style={{
+                width: '100%',
+                height: '100%',
+                // backgroundColor: 'blue',
+                // height: mvs(80),
+                // borderRadius: 30,
+                resizeMode: 'contain',
+              }}
             />
           ) : (
             <LocationSvg width={24} height={24} />
