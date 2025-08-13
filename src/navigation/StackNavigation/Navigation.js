@@ -39,6 +39,7 @@ import SubCategory from '../../screens/App/UpdateAdvertise/SubCategory';
 import ForgetPassword from '../../screens/App/ForgetPassword';
 import Notification from '../../screens/App/Notification';
 import AllCategoriesView from '../../screens/App/AllCategoriesView';
+import SellerProfile from '../../screens/App/SellerProfile';
 
 const Stack = createStackNavigator();
 
@@ -61,6 +62,7 @@ const AppNavigator = () => {
           name="SearchResultsScreen"
           component={SearchResultsScreen}
         />
+        <Stack.Screen name="SellerProfile" component={SellerProfile} />
         <Stack.Screen name="ProductDetail" component={ProductDetail} />
         <Stack.Screen name="AllCategories" component={AllCategories} />
         <Stack.Screen name="AllCategoriesView" component={AllCategoriesView} />

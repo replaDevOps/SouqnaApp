@@ -1,13 +1,12 @@
-import React from 'react';
-import {Image, View} from 'react-native';
+import {View, TouchableOpacity} from 'react-native';
 import {Row} from '../../atoms/row';
-import {WorldSVG, ProfileSVG, ActiveSVG} from '../../../assets/svg';
+import {ProfileSVG, ActiveSVG} from '../../../assets/svg';
 import Line from '../../atoms/InputFields/Line';
 import Bold from '../../../typography/BoldText';
 import Regular from '../../../typography/RegularText';
 import styles from './style';
-import {BASE_URL_Product} from '../../../api/apiServices';
 import {useTranslation} from 'react-i18next';
+import {useNavigation} from '@react-navigation/native';
 
 const ProviderInfo = ({provider}) => {
   const {t, i18n} = useTranslation();
@@ -18,6 +17,7 @@ const ProviderInfo = ({provider}) => {
       : provider?.user?.role === '3'
       ? t('buyer')
       : t('seller');
+  const navigation = useNavigation();
   return (
     <View style={styles.providerContainer}>
       <Bold style={styles.providerTitle}>{t('Provider')}</Bold>
@@ -51,7 +51,17 @@ const ProviderInfo = ({provider}) => {
         </View>
       </View>
 
-      <View style={{paddingVertical: 10}}>
+      <TouchableOpacity
+        style={{paddingVertical: 10}}
+        onPress={() => {
+          console.log(
+            'Provider email:',
+            provider.user?.email || provider.seller?.email,
+          );
+          navigation.navigate('SellerProfile', {
+            sellerId: provider.user?.id || provider.seller?.id,
+          });
+        }}>
         <Row>
           <Regular>
             <ProfileSVG width={15} height={15} />
@@ -59,7 +69,7 @@ const ProviderInfo = ({provider}) => {
             {provider.user?.email || provider.seller?.email}
           </Regular>
         </Row>
-      </View>
+      </TouchableOpacity>
 
       <Row>
         <Regular>
