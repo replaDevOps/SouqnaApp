@@ -23,7 +23,7 @@ const Bold: React.FC<FcProps> = ({
   style,
   ...props
 }) => {
-  const fontFamily = i18n.language === 'ar' ? 'Asal' : 'System';
+  const fontFamily = i18n.language === 'ar' ? 'Amiri-Bold' : 'System';
   return (
     <CustomText
       numberOfLines={numberOfLines}

@@ -1,28 +1,27 @@
 import {
   View,
-  Text,
-  Dimensions,
   TouchableOpacity,
   StyleSheet,
   Image,
   Animated,
   StatusBar,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import {colors} from '../../util/color';
 import {mvs} from '../../util/metrices';
-import {OffSVG, PowerOffSVG, SouqnaLogo} from '../../assets/svg';
+import {OffSVG, PowerOffSVG} from '../../assets/svg';
 import OnSVG from '../../assets/svg/OnSVG';
 import {t} from 'i18next';
 import {useDispatch, useSelector} from 'react-redux';
 import {setActualRole, setRole} from '../../redux/slices/userSlice';
 import {Snackbar} from 'react-native-paper';
-import {CommonActions, useNavigation} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import SwitchModal from '../Modals/SwitchModal';
 import {switchUserRole} from '../../api/apiServices'; // Updated to match the import from your document
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {showSnackbar} from '../../redux/slices/snackbarSlice';
 import CustomText from '../CustomText';
+import {useTranslation} from 'react-i18next';
 // const {height} = Dimensions.get('window');
 
 // const headerHeight = height * 0.28;
@@ -37,6 +36,8 @@ export default function ProfileHeader({OnPressLogout, onRoleSwitch}) {
   const [isSellerOn, setIsSellerOn] = useState(
     activeRole === '2' || activeRole === 2,
   );
+  const {i18n} = useTranslation();
+  const isArabic = i18n.language === 'ar';
   const [modalVisible, setModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [snackbarVisible, setSnackbarVisible] = useState(false);
@@ -135,6 +136,8 @@ export default function ProfileHeader({OnPressLogout, onRoleSwitch}) {
     }).start();
   };
 
+  const styles = customStyles(isArabic);
+
   return (
     <SafeAreaView style={{...styles.headerContainer}}>
       <StatusBar
@@ -152,7 +155,11 @@ export default function ProfileHeader({OnPressLogout, onRoleSwitch}) {
         />
       </View>
       <View style={styles.sellerContainer}>
-        <CustomText style={[styles.sellerText, {fontFamily: 'Asal'}]}>
+        <CustomText
+          style={[
+            styles.sellerText,
+            {fontFamily: isArabic ? 'Amiri-Regular' : 'System'},
+          ]}>
           {activeRole === '2' || activeRole === 2
             ? t('Seller Account')
             : activeRole === '3' || activeRole === 3
@@ -194,61 +201,62 @@ export default function ProfileHeader({OnPressLogout, onRoleSwitch}) {
   );
 }
 
-const styles = StyleSheet.create({
-  headerContainer: {
-    backgroundColor: colors.white,
-    // height: headerHeight,
-    // paddingTop: 40,
-    paddingHorizontal: mvs(15),
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-  },
-  logoutButton: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    paddingVertical: mvs(8),
-  },
-  logoRow: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  logoWrapper: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexDirection: 'column',
-    marginBottom: mvs(45),
-  },
-  appTitle: {
-    marginLeft: mvs(10),
-    fontWeight: 'bold',
-    fontSize: mvs(24),
-    color: colors.green,
-  },
-  sellerContainer: {
-    backgroundColor: '#008e91',
-    flexDirection: 'row',
-    paddingHorizontal: mvs(8),
-    borderRadius: mvs(10),
-    paddingVertical: mvs(0),
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    position: 'absolute',
-    bottom: -15,
-    left: 20,
-    right: 20,
-  },
-  sellerText: {
-    color: colors.white,
-    fontWeight: 'bold',
-    fontSize: mvs(20),
-    fontFamily: 'Asal',
-  },
-  logo: {
-    width: '100%',
-    // height: '100%',
-    // width: mvs(200),
-    height: mvs(250),
-    resizeMode: 'cover',
-  },
-});
+const customStyles = (isArabic = false) =>
+  StyleSheet.create({
+    headerContainer: {
+      backgroundColor: colors.white,
+      // height: headerHeight,
+      // paddingTop: 40,
+      paddingHorizontal: mvs(15),
+      flexDirection: 'column',
+      justifyContent: 'space-between',
+    },
+    logoutButton: {
+      flexDirection: 'row',
+      justifyContent: 'flex-end',
+      alignItems: 'center',
+      paddingVertical: mvs(8),
+    },
+    logoRow: {
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    logoWrapper: {
+      justifyContent: 'center',
+      alignItems: 'center',
+      flexDirection: 'column',
+      marginBottom: mvs(45),
+    },
+    appTitle: {
+      marginLeft: mvs(10),
+      fontWeight: 'bold',
+      fontSize: mvs(24),
+      color: colors.green,
+    },
+    sellerContainer: {
+      backgroundColor: '#008e91',
+      flexDirection: 'row',
+      paddingHorizontal: mvs(8),
+      borderRadius: mvs(10),
+      paddingVertical: mvs(0),
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      position: 'absolute',
+      bottom: -15,
+      left: 20,
+      right: 20,
+    },
+    sellerText: {
+      color: colors.white,
+      fontWeight: 'bold',
+      fontSize: mvs(20),
+      fontFamily: isArabic ? 'Amiri-Regular' : 'default',
+    },
+    logo: {
+      width: '100%',
+      // height: '100%',
+      // width: mvs(200),
+      height: mvs(250),
+      resizeMode: 'cover',
+    },
+  });

@@ -23,7 +23,7 @@ const Medium: React.FC<FcProps> = ({
   style,
   ...props
 }) => {
-  const fontFamily = i18n.language === 'ar' ? 'Asal' : 'System';
+  const fontFamily = i18n.language === 'ar' ? 'Amiri-Regular' : 'System';
   return (
     <CustomText
       numberOfLines={numberOfLines}

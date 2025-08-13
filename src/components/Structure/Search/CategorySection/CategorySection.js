@@ -1,5 +1,5 @@
 import {useState, useEffect} from 'react';
-import {Image, Text, TouchableOpacity, View} from 'react-native';
+import {Image, TouchableOpacity, View} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import styles from './style';
 import dummyData from '../../../../util/dummyData';
@@ -11,7 +11,6 @@ import API, {
   fetchCategories,
 } from '../../../../api/apiServices';
 import {setCategories} from '../../../../redux/slices/categorySlice';
-import i18n from '../../../../i18n/i18n';
 import {useTranslation} from 'react-i18next';
 import CustomText from '../../../CustomText';
 
@@ -23,7 +22,7 @@ const CategorySection = () => {
   const [isLoading, setIsLoading] = useState(true);
   const categories = useSelector(state => state.category.categories);
   const {token} = useSelector(state => state.user);
-  const {t} = useTranslation();
+  const {t, i18n} = useTranslation();
 
   // Simulate loading time
   useEffect(() => {
@@ -125,8 +124,6 @@ const CategorySection = () => {
         style={{
           ...cardStyle,
           backgroundColor: '#F2F2F2',
-          // borderWidth: 1,
-          // borderColor: 'black',
           borderRadius: 10,
         }}
         onPress={() =>
@@ -147,7 +144,7 @@ const CategorySection = () => {
               iconStyle,
               {justifyContent: 'center', alignItems: 'center'},
             ]}>
-            <Icon width={isBig ? 30 : 24} height={isBig ? 30 : 24} />
+            <Icon width={isBig ? 70 : 45} height={isBig ? 70 : 45} />
           </View>
         )}
         <CustomText
@@ -181,41 +178,23 @@ const CategorySection = () => {
           renderCategoryItem(item, false),
         )}
         <TouchableOpacity
-          // eslint-disable-next-line react-native/no-inline-styles
           style={{
             ...styles.smallCard,
             backgroundColor: '#F2F2F2',
-            // borderWidth: 1,
-            // borderColor: 'black',
             borderRadius: 10,
             justifyContent: 'center',
             alignItems: 'center',
           }}
-          onPress={
-            () => navigation.navigate('AllCategoriesView')
-            // handleCategoryPress(
-            //   i18n.language === 'ar' ? item.ar_name : item.name,
-            //   item.id,
-            // )
-          }>
-          {/* {imageURL ? (
-          <Image
-            resizeMode="contain"
-            source={{uri: imageURL}}
-            style={iconStyle}
-          />
-        )  */}
-          {/* : ( */}
+          onPress={() => navigation.navigate('AllCategoriesView')}>
           {/* <View
             style={[
-              styles.smallCard,
+              styles.smallIcon,
               {justifyContent: 'center', alignItems: 'center'},
             ]}>
-            <HOMESVG width={24} height={24} />
+            <HOMESVG width={45} height={45} />
           </View> */}
-          {/* )} */}
           <CustomText
-            style={{...styles.categoryText}}
+            style={styles.categoryText}
             numberOfLines={2}
             ellipsizeMode="tail">
             {t('All Categories')}

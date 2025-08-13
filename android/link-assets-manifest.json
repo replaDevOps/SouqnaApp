@@ -2,6 +2,22 @@
   "migIndex": 1,
   "data": [
     {
+      "path": "src/assets/fonts/Amiri-Bold.ttf",
+      "sha1": "7ef8ec23e521e60b26113f577e4d61bcb7d04bfc"
+    },
+    {
+      "path": "src/assets/fonts/Amiri-BoldItalic.ttf",
+      "sha1": "bd71db7f9aae09655cb5a30623ffe2a27c3015c6"
+    },
+    {
+      "path": "src/assets/fonts/Amiri-Italic.ttf",
+      "sha1": "5754ff37c273dadaf4d11a2965ea01055cbcb5e8"
+    },
+    {
+      "path": "src/assets/fonts/Amiri-Regular.ttf",
+      "sha1": "54761ecc5c999143024e969a8416465f91edc0e3"
+    },
+    {
       "path": "src/assets/fonts/Asal.ttf",
       "sha1": "38b8469e7447526b7b2b8fa67b20651d3a59830b"
     },

@@ -1,10 +1,9 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import {
   View,
   Dimensions,
   ScrollView,
-  Text,
   Alert,
   TouchableOpacity,
 } from 'react-native';
@@ -405,18 +404,18 @@ const ProductDetail = () => {
                 style={{
                   fontSize: mvs(22),
                   marginHorizontal: mvs(10),
-                  fontFamily: 'Asal',
+                  fontFamily: 'Amiri-Bold',
                 }}>
                 {t('details')}
               </Bold>
               <DetailsTable ProductData={product.custom_fields} />
             </View>
             <View style={styles.descriptionContainer}>
-              <Bold style={{fontSize: mvs(22), fontFamily: 'Asal'}}>
+              <Bold style={{fontSize: mvs(22), fontFamily: 'Amiri-Bold'}}>
                 {t('Description')}
               </Bold>
               <Regular
-                style={{...styles.description, fontFamily: 'Asal'}}
+                style={{...styles.description, fontFamily: 'Amiri-Bold'}}
                 numberOfLines={isReadMore ? 3 : 0}>
                 {product.description}
               </Regular>

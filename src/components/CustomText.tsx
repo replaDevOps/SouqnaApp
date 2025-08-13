@@ -3,7 +3,7 @@ import { Text, TextProps, TextStyle } from 'react-native';
 import i18n from '../i18n/i18n';
 
 const CustomText: React.FC<TextProps> = ({ style, children, ...rest }) => {
-  const fontFamily = i18n.language === 'ar' ? 'Asal' : 'System';
+  const fontFamily = i18n.language === 'ar' ? 'Amiri-Regular' : 'System';
 
   return (
     <Text {...rest} style={[{ fontFamily }, style as TextStyle]}>

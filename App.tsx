@@ -25,7 +25,7 @@ const updateAppFont = (language) => {
   if (TextComponent.defaultProps == null) TextComponent.defaultProps = {};
   TextComponent.defaultProps.allowFontScaling = false;
   TextComponent.defaultProps.style = {
-    fontFamily: language === 'ar' ? 'Asal' : 'System',
+    fontFamily: language === 'ar' ? 'Amiri-Regular' : 'System',
   };
 };
 

@@ -60,6 +60,10 @@
 		<string>Poppins-Regular.ttf</string>
 		<string>Asal.ttf</string>
 		<string>asal_eng.ttf</string>
+		<string>Amiri-Bold.ttf</string>
+		<string>Amiri-BoldItalic.ttf</string>
+		<string>Amiri-Italic.ttf</string>
+		<string>Amiri-Regular.ttf</string>
 	</array>
 </dict>
 </plist>

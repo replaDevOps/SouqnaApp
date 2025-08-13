@@ -24,6 +24,10 @@
 		2633732AC2F94546AA38C76F /* index.tsx in Resources */ = {isa = PBXBuildFile; fileRef = A51AF1D206F940E4B58ACF3D /* index.tsx */; };
 		EBB7561DCC264E10AEEE3822 /* Asal.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7E4951F0DBFD4AC68A73AF55 /* Asal.ttf */; };
 		27DF0148BA37453CB2AEC0FB /* asal_eng.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C0DB676E02524851A2CCFAE8 /* asal_eng.ttf */; };
+		5450D13614414594989E77C6 /* Amiri-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 25FD169B28C24088ABF6C472 /* Amiri-Bold.ttf */; };
+		9BB09F5D5A8441C2A111F4C6 /* Amiri-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6F64CEAC9ED3450DBC94A85C /* Amiri-BoldItalic.ttf */; };
+		9C7C054AC8414D5EA485E060 /* Amiri-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5487ECD66FF245A0A4569C11 /* Amiri-Italic.ttf */; };
+		C02CBE6D42DD4C1D94337372 /* Amiri-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D169BC9A35F54F78A93CACC0 /* Amiri-Regular.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -49,6 +53,10 @@
 		A51AF1D206F940E4B58ACF3D /* index.tsx */ = {isa = PBXFileReference; name = "index.tsx"; path = "../src/assets/fonts/index.tsx"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		7E4951F0DBFD4AC68A73AF55 /* Asal.ttf */ = {isa = PBXFileReference; name = "Asal.ttf"; path = "../src/assets/fonts/Asal.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		C0DB676E02524851A2CCFAE8 /* asal_eng.ttf */ = {isa = PBXFileReference; name = "asal_eng.ttf"; path = "../src/assets/fonts/asal_eng.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		25FD169B28C24088ABF6C472 /* Amiri-Bold.ttf */ = {isa = PBXFileReference; name = "Amiri-Bold.ttf"; path = "../src/assets/fonts/Amiri-Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		6F64CEAC9ED3450DBC94A85C /* Amiri-BoldItalic.ttf */ = {isa = PBXFileReference; name = "Amiri-BoldItalic.ttf"; path = "../src/assets/fonts/Amiri-BoldItalic.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		5487ECD66FF245A0A4569C11 /* Amiri-Italic.ttf */ = {isa = PBXFileReference; name = "Amiri-Italic.ttf"; path = "../src/assets/fonts/Amiri-Italic.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		D169BC9A35F54F78A93CACC0 /* Amiri-Regular.ttf */ = {isa = PBXFileReference; name = "Amiri-Regular.ttf"; path = "../src/assets/fonts/Amiri-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -138,6 +146,10 @@
 				A51AF1D206F940E4B58ACF3D /* index.tsx */,
 				7E4951F0DBFD4AC68A73AF55 /* Asal.ttf */,
 				C0DB676E02524851A2CCFAE8 /* asal_eng.ttf */,
+				25FD169B28C24088ABF6C472 /* Amiri-Bold.ttf */,
+				6F64CEAC9ED3450DBC94A85C /* Amiri-BoldItalic.ttf */,
+				5487ECD66FF245A0A4569C11 /* Amiri-Italic.ttf */,
+				D169BC9A35F54F78A93CACC0 /* Amiri-Regular.ttf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -219,6 +231,10 @@
 				2633732AC2F94546AA38C76F /* index.tsx in Resources */,
 				EBB7561DCC264E10AEEE3822 /* Asal.ttf in Resources */,
 				27DF0148BA37453CB2AEC0FB /* asal_eng.ttf in Resources */,
+				5450D13614414594989E77C6 /* Amiri-Bold.ttf in Resources */,
+				9BB09F5D5A8441C2A111F4C6 /* Amiri-BoldItalic.ttf in Resources */,
+				9C7C054AC8414D5EA485E060 /* Amiri-Italic.ttf in Resources */,
+				C02CBE6D42DD4C1D94337372 /* Amiri-Regular.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
