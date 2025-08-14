@@ -24,18 +24,20 @@ const styles = StyleSheet.create({
   bigCard: {
     alignItems: 'center',
     width: '48%',
+    height: mvs(190),
     paddingVertical: mvs(10),
   },
 
   smallCard: {
     alignItems: 'center',
     width: '23%',
+    height: mvs(115),
     paddingVertical: mvs(8),
   },
 
   bigIcon: {
-    width: '100%',
-    height: mvs(80),
+    width: mvs(150),
+    height: mvs(150),
     // flex: 1,
     // contain: 'cover',
     marginBottom: mvs(10),
@@ -45,8 +47,8 @@ const styles = StyleSheet.create({
   },
 
   smallIcon: {
-    width: '100%',
-    height: mvs(50),
+    width: mvs(75),
+    height: mvs(75),
     marginBottom: mvs(8),
     resizeMode: 'contain',
     // borderRadius: mvs(25),
