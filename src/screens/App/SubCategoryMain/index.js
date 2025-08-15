@@ -136,6 +136,7 @@ const SubCategoryMain = () => {
             showsVerticalScrollIndicator={false}
             keyExtractor={item => item.id}
             renderItem={renderSubCategoryItem}
+            contentContainerStyle={{paddingBottom: mvs(80)}}
             ListHeaderComponent={() => (
               <TouchableOpacity
                 style={styles.subCategoryItem}
