@@ -66,6 +66,12 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
+    externalNativeBuild {
+        cmake {
+            path "src/main/jni/CMakeLists.txt"
+        }
+    }
+
     namespace "com.souqnaapp"
     defaultConfig {
     manifestPlaceholders = [GOOGLE_PLACES_API_KEY: project.GOOGLE_PLACES_API_KEY ?: ""]

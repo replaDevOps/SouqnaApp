@@ -21,11 +21,57 @@ const styles = StyleSheet.create({
     marginBottom: mvs(20),
   },
 
+  // Enhanced shadow styles
+  cardShadow: {
+    backgroundColor: '#ffffff',
+    borderRadius: 20,
+    // iOS Shadow
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    // Android Shadow
+    elevation: 8,
+  },
+
+  // Alternative deeper shadow for emphasis
+  cardShadowDeep: {
+    backgroundColor: '#ffffff',
+    borderRadius: 20,
+    // iOS Shadow
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 0,
+      height: 6,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 12,
+    // Android Shadow
+    elevation: 12,
+  },
+
   bigCard: {
     alignItems: 'center',
     width: '48%',
     height: mvs(190),
     paddingVertical: mvs(10),
+    ...StyleSheet.create({
+      shadow: {
+        backgroundColor: '#ffffff',
+        borderRadius: 20,
+        shadowColor: '#000000',
+        shadowOffset: {
+          width: 0,
+          height: 4,
+        },
+        shadowOpacity: 0.15,
+        shadowRadius: 8,
+        elevation: 8,
+      },
+    }).shadow,
   },
 
   smallCard: {
@@ -33,17 +79,27 @@ const styles = StyleSheet.create({
     width: '23%',
     height: mvs(115),
     paddingVertical: mvs(8),
+    ...StyleSheet.create({
+      shadow: {
+        backgroundColor: '#ffffff',
+        borderRadius: 20,
+        shadowColor: '#000000',
+        shadowOffset: {
+          width: 0,
+          height: 3,
+        },
+        shadowOpacity: 0.12,
+        shadowRadius: 6,
+        elevation: 6,
+      },
+    }).shadow,
   },
 
   bigIcon: {
     width: mvs(150),
     height: mvs(150),
-    // flex: 1,
-    // contain: 'cover',
     marginBottom: mvs(10),
     resizeMode: 'contain',
-    // borderRadius: mvs(30),
-    // backgroundColor: colors.lightorange,
   },
 
   smallIcon: {
@@ -51,8 +107,6 @@ const styles = StyleSheet.create({
     height: mvs(75),
     marginBottom: mvs(8),
     resizeMode: 'contain',
-    // borderRadius: mvs(25),
-    // backgroundColor: colors.lightorange,
   },
 
   categoryText: {
@@ -75,7 +129,6 @@ const styles = StyleSheet.create({
     width: mvs(55),
     height: mvs(55),
     borderRadius: mvs(27),
-    backgroundColor: colors.lightorange,
   },
   textContainer: {
     width: mvs(65),

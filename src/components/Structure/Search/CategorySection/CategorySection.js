@@ -121,11 +121,8 @@ const CategorySection = () => {
     return (
       <TouchableOpacity
         key={item.id.toString()}
-        style={{
-          ...cardStyle,
-          backgroundColor: '#F2F2F2',
-          borderRadius: 10,
-        }}
+        style={{...cardStyle}} // Now includes improved shadows
+        // style={{...cardStyle, ...styles.cardShadowDeep}} // Now includes improved shadows
         onPress={() =>
           handleCategoryPress(
             i18n.language === 'ar' ? item.ar_name : item.name,
@@ -178,21 +175,14 @@ const CategorySection = () => {
           renderCategoryItem(item, false),
         )}
         <TouchableOpacity
-          style={{
-            ...styles.smallCard,
-            backgroundColor: '#F2F2F2',
-            borderRadius: 10,
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
+          style={[
+            styles.smallCard,
+            {
+              justifyContent: 'center',
+              alignItems: 'center',
+            },
+          ]}
           onPress={() => navigation.navigate('AllCategoriesView')}>
-          {/* <View
-            style={[
-              styles.smallIcon,
-              {justifyContent: 'center', alignItems: 'center'},
-            ]}>
-            <HOMESVG width={45} height={45} />
-          </View> */}
           <CustomText
             style={styles.categoryText}
             numberOfLines={2}
