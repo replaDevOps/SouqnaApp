@@ -13,6 +13,7 @@ import {CallSVG, ChatSVG2, TrashSVG, UpdateSVG} from '../../assets/svg';
 import {useSelector} from 'react-redux';
 import {useTranslation} from 'react-i18next';
 import CustomText from '../CustomText';
+import Bold from '../../typography/BoldText';
 
 const ProductFooter = ({
   onBuyPress,
@@ -96,7 +97,7 @@ const ProductFooter = ({
             {loading ? (
               <ActivityIndicator size="small" color={colors.lightgreen} />
             ) : (
-              <CustomText style={[styles.buttonText]}>{text}</CustomText>
+              <Bold style={[styles.buttonText]}>{text}</Bold>
             )}
           </TouchableOpacity>
         ))}
@@ -140,6 +141,6 @@ const styles = StyleSheet.create({
     color: colors.white,
     fontSize: mvs(16),
     marginLeft: mvs(10),
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
   },
 });
