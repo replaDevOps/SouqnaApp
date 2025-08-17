@@ -3,8 +3,7 @@ import { ColorValue, StyleProp, StyleSheet, TextStyle } from 'react-native';
 import { mvs } from '../util/metrices';
 import { colors } from '../util/color';
 import CustomText from '../components/CustomText';
-import fonts from '../assets/fonts';
-import i18n from '../i18n/i18n';
+import { getFontFamily } from '../util/fonts';
 type FcProps = {
   label?: string | number;
   numberOfLines?: number;
@@ -23,12 +22,11 @@ const Medium: React.FC<FcProps> = ({
   style,
   ...props
 }) => {
-  const fontFamily = i18n.language === 'ar' ? 'Amiri-Regular' : 'System';
   return (
     <CustomText
       numberOfLines={numberOfLines}
       {...props}
-      style={[{ ...styles.label, color: color, fontSize: fontSize, fontFamily }, style]}>
+      style={[{ ...styles.label, color: color, fontSize: fontSize }, style]}>
       {label}
       {children}
     </CustomText>
@@ -37,7 +35,9 @@ const Medium: React.FC<FcProps> = ({
 export default Medium;
 const styles = StyleSheet.create({
   label: {
-    fontFamily: fonts.medium,
+    // fontFamily: 'Amiri-Regular',
+    ...getFontFamily('regular'),
+    // fontFamily: fonts.medium,
     fontSize: mvs(16),
     color: colors.gray,
   },

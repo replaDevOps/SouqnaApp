@@ -10,7 +10,7 @@ import {
   FlatList,
   KeyboardAvoidingView,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import {CommonActions, useNavigation, useRoute} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
 import {Snackbar} from 'react-native-paper';
@@ -576,7 +576,8 @@ const UpdateProduct = () => {
 
           {/* Name Section */}
           <View style={styles.sectionContainer}>
-            <CustomText style={styles.sectionTitle}>
+            <CustomText
+              style={{...styles.sectionTitle, fontFamily: 'Amiri-Regular'}}>
               {t('Ad Name')}
               <CustomText style={{color: colors.red}}>*</CustomText>
             </CustomText>

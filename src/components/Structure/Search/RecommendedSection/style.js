@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   recommendedText: {
-    fontSize: mvs(16),
+    fontSize: mvs(18),
     color: '#333',
     paddingHorizontal: mvs(6),
     lineHeight: mvs(16),
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
   },
   recommendedTitle: {
     fontSize: mvs(14),
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
   },
   recommendedPrice: {
     fontSize: mvs(15),

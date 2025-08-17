@@ -1,5 +1,4 @@
-import React from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
+import {View, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import {colors} from '../../../util/color';
 import {mvs} from '../../../util/metrices';
 import CustomText from '../../CustomText';
@@ -38,7 +37,7 @@ const styles = StyleSheet.create({
     fontSize: mvs(17),
     fontWeight: '400',
     color: colors.white,
-    fontFamily: 'DMSans',
+    fontFamily: 'Amiri-Regular',
   },
   view1: {
     flexDirection: 'row',

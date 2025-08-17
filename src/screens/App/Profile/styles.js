@@ -1,4 +1,4 @@
-import {StatusBar, StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {mvs} from '../../../util/metrices';
 import {colors} from '../../../util/color';
 
@@ -43,10 +43,10 @@ const styles = StyleSheet.create({
   },
   regularText: {
     fontSize: mvs(24),
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
     color: colors.black,
     paddingLeft: mvs(20),
-    paddingTop: mvs(10),
+    // paddingTop: mvs(10),
   },
   regularText1: {
     fontSize: mvs(18),
@@ -54,8 +54,9 @@ const styles = StyleSheet.create({
   },
   menuText: {
     fontSize: mvs(17),
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
     marginLeft: mvs(10),
+    // fontFamily: 'Amiri-Bold',
     color: colors.black,
   },
   radioCircle: {
@@ -146,6 +147,7 @@ const styles = StyleSheet.create({
   menuItemContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    fontFamily: 'Amiri-Bold',
     justifyContent: 'space-between',
     paddingVertical: mvs(10),
     paddingHorizontal: mvs(10),

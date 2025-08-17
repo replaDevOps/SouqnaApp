@@ -1,12 +1,5 @@
-import React, {useState} from 'react';
-import {
-  View,
-  FlatList,
-  TouchableOpacity,
-  StatusBar,
-  ActivityIndicator,
-  Image,
-} from 'react-native';
+import {useState} from 'react';
+import {View, FlatList, TouchableOpacity, StatusBar, Image} from 'react-native';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import Regular from '../../../typography/RegularText';
 import CategoryHeader from '../../../components/Headers/CategoryHeader';
@@ -20,12 +13,14 @@ import Loader from '../../../components/Loader';
 import {mvs} from '../../../util/metrices';
 import {BASE_URL_Product} from '../../../api/apiServices';
 import {useSelector} from 'react-redux';
+import {colors} from '../../../util/color';
 
 const SubCategoryMain = () => {
   const route = useRoute();
   const {category, subcategories, categoryId} = route.params;
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
+  const [pressedItem, setPressedItem] = useState(null);
   const {token} = useSelector(state => state.user);
 
   const getLocalizedName = item =>
@@ -49,12 +44,6 @@ const SubCategoryMain = () => {
         const response = await fetchBuyerProducts(filters, isLoggedIn);
 
         if (response?.data?.length > 0) {
-          // const parsedProducts = response.data.filter(
-          //   p =>
-          //     p.category?.id === categoryId &&
-          //     p.category?.name?.toLowerCase() ===
-          //       (category.name || category).toLowerCase(),
-          // );
           const parsedProducts = response.data.filter(
             p => p.category?.id === categoryId,
           );
@@ -91,16 +80,27 @@ const SubCategoryMain = () => {
 
   const renderSubCategoryItem = ({item}) => {
     const imageURL = item.image ? `${BASE_URL_Product}${item.image}` : null;
+    const isPressed = pressedItem === item.id;
 
     return (
       <TouchableOpacity
-        style={styles.subCategoryItem}
-        onPress={() => handleSubcategoryPress(item)}>
+        style={[
+          styles.subCategoryItem,
+          isPressed && styles.subCategoryItemPressed,
+        ]}
+        onPressIn={() => setPressedItem(item.id)}
+        onPressOut={() => setPressedItem(null)}
+        onPress={() => handleSubcategoryPress(item)}
+        activeOpacity={0.95}>
         <View style={styles.IconContainer}>
           {imageURL && (
             <Image
               source={{uri: imageURL}}
-              style={{width: mvs(60), height: mvs(60), resizeMode: 'contain'}}
+              style={{
+                width: mvs(60),
+                height: mvs(60),
+                resizeMode: 'contain',
+              }}
             />
           )}
         </View>
@@ -114,9 +114,37 @@ const SubCategoryMain = () => {
     );
   };
 
+  const renderAllCategoryHeader = () => {
+    const isPressed = pressedItem === 'all';
+
+    return (
+      <TouchableOpacity
+        style={[
+          styles.subCategoryItemHighlight, // Use highlight style for "All" item
+          isPressed && styles.subCategoryItemPressed,
+        ]}
+        onPressIn={() => setPressedItem('all')}
+        onPressOut={() => setPressedItem(null)}
+        onPress={() =>
+          handleSubcategoryPress({
+            id: null,
+            name: `${t('all')} ${localizedCategory}`,
+          })
+        }
+        activeOpacity={0.95}>
+        <View style={styles.titleContainer}>
+          <Regular style={[styles.subCategoryText, {fontWeight: '600'}]}>
+            {t('all')} {localizedCategory}
+          </Regular>
+        </View>
+        <ForwardSVG width={26} height={26} />
+      </TouchableOpacity>
+    );
+  };
+
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" />
+    <SafeAreaView style={[styles.container, {backgroundColor: colors.white}]}>
+      <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
       <CategoryHeader title={localizedCategory} onBack={handleBack} />
       <View style={styles.headerContainer}>
         <Regular style={styles.header}>
@@ -125,35 +153,25 @@ const SubCategoryMain = () => {
       </View>
 
       {loading ? (
-        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <View
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: colors.white,
+          }}>
           <Loader width={mvs(250)} height={mvs(250)} />
-          {/* <ActivityIndicator size="large" color="#000" /> */}
         </View>
       ) : (
         <View style={styles.content}>
           <FlatList
             data={subcategories}
             showsVerticalScrollIndicator={false}
-            keyExtractor={item => item.id}
+            keyExtractor={item => item.id.toString()}
             renderItem={renderSubCategoryItem}
             contentContainerStyle={{paddingBottom: mvs(80)}}
-            ListHeaderComponent={() => (
-              <TouchableOpacity
-                style={styles.subCategoryItem}
-                onPress={() =>
-                  handleSubcategoryPress({
-                    id: null,
-                    name: `${t('all')} ${localizedCategory}`,
-                  })
-                }>
-                <View style={styles.titleContainer}>
-                  <Regular style={styles.subCategoryText}>
-                    {t('all')} {localizedCategory}
-                  </Regular>
-                </View>
-                <ForwardSVG width={26} height={26} />
-              </TouchableOpacity>
-            )}
+            ListHeaderComponent={renderAllCategoryHeader}
+            style={{backgroundColor: colors.white}} // Ensure FlatList background is white
           />
         </View>
       )}

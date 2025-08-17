@@ -12,7 +12,7 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    marginBottom: mvs(20),
+    marginBottom: mvs(5),
   },
 
   row1: {

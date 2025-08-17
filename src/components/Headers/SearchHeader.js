@@ -1,6 +1,4 @@
-import React, {useState} from 'react';
 import {View, TextInput, TouchableOpacity, StyleSheet} from 'react-native';
-import LocationSvg from '../../assets/svg/location-svg';
 import {CloseSvg, SearchSVG} from '../../assets/svg';
 import {colors} from '../../util/color';
 import {mvs} from '../../util/metrices';
@@ -89,8 +87,14 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 40,
     fontSize: 16,
+    fontFamily: 'Amiri-Regular',
     marginLeft: 10,
     color: colors.black,
+
+    // includeFontPadding: false, // helps with vertical clipping
+    textAlignVertical: 'center', // centers text properly
+    paddingVertical: 6, // let the font breathe vertically
+    lineHeight: 24, // adjust until text isn’t clipped
   },
   icon: {
     justifyContent: 'center',

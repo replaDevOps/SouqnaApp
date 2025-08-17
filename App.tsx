@@ -15,17 +15,16 @@ import useNotificationListener from './src/util/NotificationService';
 import GlobalSnackbar from './src/components/Structure/GlobalSnackbar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Text } from 'react-native';
-import React from 'react';
 
 LogBox.ignoreAllLogs();
 
 // Utility function to update font based on language
 const updateAppFont = (language) => {
   const TextComponent = Text as any;
-  if (TextComponent.defaultProps == null) TextComponent.defaultProps = {};
+  if (TextComponent.defaultProps == null) { TextComponent.defaultProps = {}; }
   TextComponent.defaultProps.allowFontScaling = false;
   TextComponent.defaultProps.style = {
-    fontFamily: language === 'ar' ? 'Amiri-Regular' : 'System',
+    fontFamily: language === 'ar' ? 'Amiri-Regular' : 'Amiri-Regular',
   };
 };
 

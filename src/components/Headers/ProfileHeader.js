@@ -155,11 +155,7 @@ export default function ProfileHeader({OnPressLogout, onRoleSwitch}) {
         />
       </View>
       <View style={styles.sellerContainer}>
-        <CustomText
-          style={[
-            styles.sellerText,
-            {fontFamily: isArabic ? 'Amiri-Regular' : 'System'},
-          ]}>
+        <CustomText style={[styles.sellerText]}>
           {activeRole === '2' || activeRole === 2
             ? t('Seller Account')
             : activeRole === '3' || activeRole === 3
@@ -248,9 +244,9 @@ const customStyles = (isArabic = false) =>
     },
     sellerText: {
       color: colors.white,
-      fontWeight: 'bold',
+      // fontWeight: 'bold',
       fontSize: mvs(20),
-      fontFamily: isArabic ? 'Amiri-Regular' : 'default',
+      fontFamily: isArabic ? 'Amiri-Bold' : 'Amiri-Bold',
     },
     logo: {
       width: '100%',

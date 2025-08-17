@@ -1,11 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {useCallback, useState} from 'react';
+import {useCallback, useState} from 'react';
 import {
   View,
   TouchableOpacity,
   ScrollView,
   RefreshControl,
-  Alert,
   Animated,
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
@@ -17,7 +16,6 @@ import {
 } from '../../../redux/slices/userSlice';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {
-  BackwardSVG,
   ChangePassSVG,
   ForwardSVG,
   LanguageSVG,
@@ -28,7 +26,6 @@ import Regular from '../../../typography/RegularText';
 import VerificationStatus from '../../../components/Structure/VerificationStatus';
 import ProfileHeader from '../../../components/Headers/ProfileHeader';
 import {colors} from '../../../util/color';
-import RNRestart from 'react-native-restart';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import API from '../../../api/apiServices';
 

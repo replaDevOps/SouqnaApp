@@ -1,20 +1,12 @@
 // RecommendedSection.js
-import React, {
+import {
   useCallback,
   useEffect,
-  useMemo,
   useState,
   useImperativeHandle,
   forwardRef,
 } from 'react';
-import {
-  FlatList,
-  View,
-  TouchableOpacity,
-  Image,
-  Text,
-  RefreshControl,
-} from 'react-native';
+import {FlatList, View, TouchableOpacity, Image} from 'react-native';
 import styles from './style';
 import Regular from '../../../../typography/RegularText';
 import {HeartSvg} from '../../../../assets/svg';
@@ -191,7 +183,7 @@ const RecommendedSection = forwardRef(({onRefreshRef}, ref) => {
           style={[
             {marginVertical: mvs(20)},
             styles.recommendedText,
-            // {fontFamily: 'Asal'},
+            // {fontFamily: 'Amiri-Regular'},
           ]}>
           {role === 2
             ? t('yourListings')

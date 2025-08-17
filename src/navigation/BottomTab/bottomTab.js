@@ -306,7 +306,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     width: mvs(60),
     marginTop: mvs(3),
-    fontFamily: 'DMSans-regular',
+    fontFamily: 'Amiri-Regular',
   },
   iconContainer: {
     alignItems: 'center',

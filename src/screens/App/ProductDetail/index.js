@@ -331,7 +331,6 @@ const ProductDetail = () => {
         <Loader width={mvs(250)} height={mvs(250)} />
       ) : (
         <>
-          {console.log('Product currency:', product.currency)}
           <ProductHeader
             title={product.name}
             filled={likedItems[product.id]}
@@ -404,21 +403,21 @@ const ProductDetail = () => {
                 style={{
                   fontSize: mvs(22),
                   marginHorizontal: mvs(10),
-                  fontFamily: 'Amiri-Bold',
+                  fontFamily: 'Amiri-Regular',
                 }}>
                 {t('details')}
               </Bold>
               <DetailsTable ProductData={product.custom_fields} />
             </View>
             <View style={styles.descriptionContainer}>
-              <Bold style={{fontSize: mvs(22), fontFamily: 'Amiri-Bold'}}>
+              <Bold style={{fontSize: mvs(22), fontFamily: 'Amiri-Regular'}}>
                 {t('Description')}
               </Bold>
-              <Regular
-                style={{...styles.description, fontFamily: 'Amiri-Bold'}}
+              <Bold
+                style={{...styles.description, fontFamily: 'Amiri-Regular'}}
                 numberOfLines={isReadMore ? 3 : 0}>
                 {product.description}
-              </Regular>
+              </Bold>
               {product.description?.split(' ').length > 20 && (
                 <CustomText
                   style={{

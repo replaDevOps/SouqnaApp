@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
   },
   header: {
     fontSize: mvs(16),
-    // fontWeight: 'bold',
+    fontWeight: 'bold',
     color: colors.grey,
   },
   content: {

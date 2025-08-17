@@ -124,14 +124,14 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: colors.lightgreen,
     marginBottom: mvs(20),
-    fontFamily: 'DMSans-Bold',
+    fontFamily: 'Amiri-Regular',
   },
   ForgetPassword: {
     textAlign: 'right',
     fontWeight: 'bold',
     color: colors.lightgreen,
     marginRight: mvs(20),
-    fontFamily: 'DMSans-Bold',
+    fontFamily: 'Amiri-Regular',
     textDecorationLine: 'underline',
   },
 });

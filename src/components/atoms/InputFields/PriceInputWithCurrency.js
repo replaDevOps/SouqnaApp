@@ -1,14 +1,16 @@
-import React, {useState, useRef} from 'react';
+import {useState, useRef} from 'react';
 import {
   View,
   TextInput,
   TouchableOpacity,
-  Text,
   Modal,
   FlatList,
   StyleSheet,
+  I18nManager,
 } from 'react-native';
 import CustomText from '../../CustomText';
+import {colors} from '../../../util/color';
+import {mvs} from '../../../util/metrices';
 
 const currencies = ['USD', 'TRY', 'SYP'];
 
@@ -22,6 +24,9 @@ const PriceInputWithDropdown = ({
   const [showDropdown, setShowDropdown] = useState(false);
   const buttonRef = useRef(null);
   const [buttonPosition, setButtonPosition] = useState({x: 0, y: 0, height: 0});
+
+  // Detect RTL layout
+  const isRTL = I18nManager.isRTL;
 
   const toggleDropdown = () => {
     if (buttonRef.current) {
@@ -37,20 +42,33 @@ const PriceInputWithDropdown = ({
     setShowDropdown(false);
   };
 
-  const dropdownHeight = 132; // Total height of the dropdown
-  const dropdownItemHeight = 44; // Each item height in the dropdown
+  const dropdownHeight = 132;
+  const dropdownItemHeight = 44;
   const dropdownItems = currencies.length;
 
-  // Calculate the position so the dropdown is centered above and below
-  const calculatedTop = buttonPosition.y - dropdownHeight / 2;
-  const calculatedBottom =
-    buttonPosition.y + buttonPosition.height + dropdownHeight / 2;
+  // Calculate dropdown position based on RTL
+  const getDropdownPosition = () => {
+    const baseLeft = isRTL
+      ? buttonPosition.x - 80 // Position dropdown to the left in RTL
+      : buttonPosition.x - 20; // Position dropdown to the right in LTR
+
+    return {
+      top: buttonPosition.y + buttonPosition.height + 5,
+      left: baseLeft,
+    };
+  };
+
+  const dropdownPosition = getDropdownPosition();
 
   return (
     <View style={styles.container}>
-      <View style={styles.inputWrapper}>
+      <View
+        style={[
+          styles.inputWrapper,
+          {flexDirection: isRTL ? 'row-reverse' : 'row'},
+        ]}>
         <TextInput
-          style={styles.textInput}
+          style={[styles.textInput, {textAlign: isRTL ? 'right' : 'left'}]}
           value={value}
           onChangeText={onChangeText}
           placeholder={placeholder}
@@ -60,10 +78,16 @@ const PriceInputWithDropdown = ({
         />
         <TouchableOpacity
           ref={buttonRef}
-          style={styles.currencyButton}
+          style={[
+            styles.currencyButton,
+            {
+              borderLeftWidth: isRTL ? 0 : 1,
+              borderRightWidth: isRTL ? 1 : 0,
+            },
+          ]}
           onPress={toggleDropdown}>
           <CustomText style={styles.currencyText}>
-            {selectedCurrency} {'\u25BC'} {/* Unicode Down Arrow */}
+            {selectedCurrency} {'\u25BC'}
           </CustomText>
         </TouchableOpacity>
       </View>
@@ -74,23 +98,24 @@ const PriceInputWithDropdown = ({
             style={styles.modalBackground}
             onPress={() => setShowDropdown(false)}
             activeOpacity={1}>
-            <View
-              style={[
-                styles.dropdown,
-                {
-                  top: buttonPosition.y + buttonPosition.height + 5,
-
-                  left: buttonPosition.x - 20,
-                },
-              ]}>
+            <View style={[styles.dropdown, dropdownPosition]}>
               <FlatList
                 data={currencies}
                 keyExtractor={item => item}
                 renderItem={({item}) => (
                   <TouchableOpacity
                     onPress={() => handleSelect(item)}
-                    style={styles.dropdownItem}>
-                    <CustomText>{item}</CustomText>
+                    style={[
+                      styles.dropdownItem,
+                      {alignItems: isRTL ? 'flex-end' : 'flex-start'},
+                    ]}>
+                    <CustomText
+                      style={[
+                        styles.dropdownItemText,
+                        {textAlign: isRTL ? 'right' : 'left'},
+                      ]}>
+                      {item}
+                    </CustomText>
                   </TouchableOpacity>
                 )}
               />
@@ -104,35 +129,38 @@ const PriceInputWithDropdown = ({
 
 const styles = StyleSheet.create({
   container: {
-    marginVertical: 8,
+    marginVertical: mvs(8),
   },
   inputWrapper: {
     flexDirection: 'row',
     borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
+    borderColor: '#cccccc', // Match your existing input border color
+    borderRadius: mvs(5), // Match your existing border radius
     alignItems: 'center',
     overflow: 'hidden',
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
+    minHeight: mvs(50), // Match your input height
   },
   textInput: {
     flex: 1,
-    paddingVertical: 12,
-    paddingHorizontal: 14,
-    fontSize: 16,
+    fontFamily: 'Amiri-Regular', // Match your existing font family
+    paddingVertical: mvs(12),
+    paddingHorizontal: mvs(14),
+    fontSize: mvs(16), // Match your existing font size
+    color: '#333', // Match your existing text color
   },
   currencyButton: {
-    width: 80,
-    paddingVertical: 10,
+    width: mvs(80),
+    paddingVertical: mvs(10),
     backgroundColor: '#f0f0f0',
-    borderLeftWidth: 1,
     borderColor: '#ddd',
     justifyContent: 'center',
     alignItems: 'center',
+    minHeight: mvs(48), // Slightly less than container to fit nicely
   },
   currencyText: {
-    fontWeight: '600',
-    fontSize: 14,
+    // fontWeight: '600',
+    fontSize: mvs(14),
     color: '#333',
   },
   modalBackground: {
@@ -140,20 +168,33 @@ const styles = StyleSheet.create({
   },
   dropdown: {
     position: 'absolute',
-    width: 100,
-    height: 132,
-    backgroundColor: '#fff',
-    borderRadius: 8,
+    width: mvs(100),
+    height: mvs(132),
+    backgroundColor: colors.white,
+    borderRadius: mvs(8),
     elevation: 5,
     shadowColor: '#000',
     shadowOpacity: 0.1,
     shadowRadius: 4,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
     zIndex: 999,
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
   },
   dropdownItem: {
-    padding: 12,
+    padding: mvs(12),
     borderBottomWidth: 1,
     borderColor: '#eee',
+    minHeight: mvs(44),
+    justifyContent: 'center',
+  },
+  dropdownItemText: {
+    fontSize: mvs(14),
+    color: '#333',
+    // fontWeight: '500',
   },
 });
 

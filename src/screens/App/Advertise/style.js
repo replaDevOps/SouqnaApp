@@ -22,16 +22,31 @@ const styles = StyleSheet.create({
     aspectRatio: 1.1, // Keeps card square
     marginHorizontal: CARD_MARGIN,
     marginBottom: mvs(16),
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#ffff',
     borderRadius: mvs(12),
     // elevation: 1,
-    shadowColor: colors.black,
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    // shadowColor: colors.black,
+    // shadowOffset: {width: 0, height: 2},
+    // shadowOpacity: 0.1,
+    // shadowRadius: 4,
     justifyContent: 'flex-start',
     paddingTop: mvs(10),
     alignItems: 'center',
+    // Enhanced iOS Shadow
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+
+    // Enhanced Android Shadow
+    elevation: 8,
+
+    // Optional: Add a subtle border for definition
+    borderWidth: 0.5,
+    borderColor: 'rgba(0,0,0,0.05)',
   },
   IconContainer: {
     justifyContent: 'center',

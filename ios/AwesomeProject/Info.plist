@@ -49,17 +49,6 @@
 	<false/>
 	<key>UIAppFonts</key>
 	<array>
-		<string>DMSans_18pt-Bold.ttf</string>
-		<string>DMSans_18pt-ExtraBold.ttf</string>
-		<string>DMSans_18pt-Medium.ttf</string>
-		<string>DMSans_18pt-Regular.ttf</string>
-		<string>DMSans_18pt-SemiBold.ttf</string>
-		<string>DMSans_24pt-Bold.ttf</string>
-		<string>Poppins-Bold.ttf</string>
-		<string>Poppins-Medium.ttf</string>
-		<string>Poppins-Regular.ttf</string>
-		<string>Asal.ttf</string>
-		<string>asal_eng.ttf</string>
 		<string>Amiri-Bold.ttf</string>
 		<string>Amiri-BoldItalic.ttf</string>
 		<string>Amiri-Italic.ttf</string>
