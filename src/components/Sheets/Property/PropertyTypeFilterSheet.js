@@ -3,16 +3,7 @@ import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import {BottomSheetScrollView} from '@gorhom/bottom-sheet';
 import {colors} from '../../../util/color';
 import CustomText from '../../CustomText';
-
-const PROPERTY_TYPES = [
-  'Apartment',
-  'House',
-  'Villa',
-  'Commercial',
-  'Farmhouse',
-  'Upper Portion',
-  'Lower Portion',
-];
+import {useTranslation} from 'react-i18next';
 
 const PropertyTypeFilterSheet = ({filters, setFilters, closeSheet}) => {
   const handleSelect = type => {
@@ -22,6 +13,29 @@ const PropertyTypeFilterSheet = ({filters, setFilters, closeSheet}) => {
     }));
     closeSheet?.();
   };
+
+  const {i18n} = useTranslation();
+  const isArabic = i18n.language === 'ar';
+
+  const PROPERTY_TYPES = isArabic
+    ? [
+        'شقة',
+        'منزل',
+        'فيلا',
+        'تجاري',
+        'مزرعة',
+        'الطابق العلوي',
+        'الطابق السفلي',
+      ]
+    : [
+        'Apartment',
+        'House',
+        'Villa',
+        'Commercial',
+        'Farmhouse',
+        'Upper Portion',
+        'Lower Portion',
+      ];
 
   return (
     <BottomSheetScrollView contentContainerStyle={styles.container}>

@@ -12,7 +12,7 @@ import CustomText from '../../CustomText';
 import {colors} from '../../../util/color';
 import {mvs} from '../../../util/metrices';
 
-const currencies = ['USD', 'TRY', 'SYP'];
+const currencies = ['USD', 'SYP', 'TRY'];
 
 const PriceInputWithDropdown = ({
   value,

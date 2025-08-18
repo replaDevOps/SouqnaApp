@@ -3,7 +3,7 @@ import {Image, TouchableOpacity, View} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import styles from './style';
 import dummyData from '../../../../util/dummyData';
-import {HOMESVG} from '../../../../assets/svg';
+import {HOMESVG, BurgerMenu} from '../../../../assets/svg';
 import CategorySkeleton from './CategorySkeleton';
 import {useDispatch, useSelector} from 'react-redux';
 import API, {
@@ -13,6 +13,7 @@ import API, {
 import {setCategories} from '../../../../redux/slices/categorySlice';
 import {useTranslation} from 'react-i18next';
 import CustomText from '../../../CustomText';
+import {mvs} from '../../../../util/metrices';
 
 const {categoryIcons} = dummyData;
 
@@ -145,7 +146,7 @@ const CategorySection = () => {
           </View>
         )}
         <CustomText
-          style={styles.categoryText}
+          style={{...styles.categoryText, fontSize: isBig ? mvs(25) : mvs(13)}}
           numberOfLines={2}
           ellipsizeMode="tail">
           {i18n.language === 'ar' ? item.ar_name : item.name}
@@ -183,6 +184,13 @@ const CategorySection = () => {
             },
           ]}
           onPress={() => navigation.navigate('AllCategoriesView')}>
+          <View
+            style={[
+              styles.smallIcon,
+              {justifyContent: 'center', alignItems: 'center'},
+            ]}>
+            <BurgerMenu width={45} height={45} />
+          </View>
           <CustomText
             style={styles.categoryText}
             numberOfLines={2}

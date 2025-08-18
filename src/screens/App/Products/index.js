@@ -328,6 +328,9 @@ const Products = () => {
     return result;
   }, [products, filters, sortOption, category, role, userEmail]);
 
+  console.log('category:', category);
+  console.log('translation:', t('Cars'));
+
   const renderRecommendedItem = useCallback(
     ({item}) => (
       <TouchableOpacity
@@ -639,7 +642,7 @@ const Products = () => {
                     fontWeight: 'bold',
                     textAlign: 'center',
                   }}>
-                  Transmission
+                  {t('transmission')}
                 </CustomText>
                 {/* Your custom controls here */}
               </View>
@@ -672,7 +675,7 @@ const Products = () => {
                     fontWeight: 'bold',
                     textAlign: 'center',
                   }}>
-                  Size (sqft)
+                  {t('Size (sqft)')}
                 </CustomText>
               </View>
               <AreaFilterSheet
@@ -704,7 +707,7 @@ const Products = () => {
                     fontWeight: 'bold',
                     textAlign: 'center',
                   }}>
-                  Property Type
+                  {t('Property Type')}
                 </CustomText>
               </View>
               <PropertyTypeFilterSheet

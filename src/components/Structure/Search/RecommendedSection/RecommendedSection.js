@@ -142,8 +142,8 @@ const RecommendedSection = forwardRef(({onRefreshRef}, ref) => {
           <Regular style={styles.recommendedTitle}>{item.name}</Regular>
           <Regular style={styles.recommendedPrice}>
             {' '}
-            {getCurrencySymbol(item?.currency)}{' '}
-            {Number(item.price).toLocaleString()}
+            {getCurrencySymbol(item?.currency)} {Number(item?.price)}
+            {/* {Number(item.price).toLocaleString()} */}
           </Regular>
         </View>
         {role !== 2 && Boolean(token) && (

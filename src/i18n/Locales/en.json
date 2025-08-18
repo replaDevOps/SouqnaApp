@@ -159,6 +159,7 @@
   "dateOfBirth": "Date of Birth",
   "enterDOB": "Enter Date of Birth (YYYY-MM-DD)",
   "gender": "Gender",
+  "Size (sqft)": "Size (sqft)",
   "male": "Male",
   "female": "Female",
   "other": "Other",

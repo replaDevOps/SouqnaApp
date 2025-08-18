@@ -96,9 +96,9 @@ const styles = StyleSheet.create({
   },
 
   bigIcon: {
-    width: mvs(150),
-    height: mvs(150),
-    marginBottom: mvs(10),
+    width: mvs(140),
+    height: mvs(140),
+    // marginBottom: mvs(5),
     resizeMode: 'contain',
   },
 
@@ -110,11 +110,11 @@ const styles = StyleSheet.create({
   },
 
   categoryText: {
-    fontSize: mvs(13),
+    // fontSize: mvs(13),
     fontWeight: '500',
     textAlign: 'center',
     color: colors.black,
-    lineHeight: mvs(16),
+    lineHeight: mvs(25),
   },
 
   // Legacy styles (kept for compatibility)
