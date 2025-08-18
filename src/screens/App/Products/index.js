@@ -157,7 +157,7 @@ const Products = () => {
   const handleHeartClick = useCallback(
     async (id, item) => {
       if (role === 2) {
-        showSnackbar('Log in as buyer');
+        showSnackbar(t('loginAsBuyer'));
         return;
       }
 
@@ -389,7 +389,7 @@ const Products = () => {
               source={require('../../../assets/img/empty.png')}
               style={{width: '90%', resizeMode: 'contain', height: mvs(200)}}
             />
-            <Bold>{t('No Listings Right Now')}</Bold>
+            <Bold>{t('noListingsRightNow')}</Bold>
           </View>
         ) : (
           <>

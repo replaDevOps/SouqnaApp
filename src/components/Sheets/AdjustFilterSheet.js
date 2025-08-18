@@ -153,7 +153,7 @@ const AdjustFilterSheet = ({
         <CustomText style={labelStyle}>{t('mileageRange')}</CustomText>
         <View style={{flexDirection: 'row', gap: 10}}>
           <TextInput
-            placeholder="Min (km)"
+            placeholder={t('Min (km)')}
             keyboardType="numeric"
             value={filters.minMileage}
             onChangeText={text =>
@@ -162,7 +162,7 @@ const AdjustFilterSheet = ({
             style={[inputStyle, {flex: 1}]}
           />
           <TextInput
-            placeholder="Max (km)"
+            placeholder={t('Max (km)')}
             keyboardType="numeric"
             value={filters.maxMileage}
             onChangeText={text =>
@@ -252,7 +252,7 @@ const AdjustFilterSheet = ({
           {t('power') || 'Power (HP/kW)'}
         </CustomText>
         <TextInput
-          placeholder="Enter power"
+          placeholder={t('Enter power')}
           keyboardType="numeric"
           value={filters.power}
           onChangeText={text => setFilters(prev => ({...prev, power: text}))}
@@ -264,7 +264,7 @@ const AdjustFilterSheet = ({
           {t('inspectionValidity') || 'Inspection Validity'}
         </CustomText>
         <TextInput
-          placeholder="Valid till (e.g. 2026)"
+          placeholder={t('Valid till (e.g. 2026)')}
           value={filters.inspection}
           onChangeText={text =>
             setFilters(prev => ({...prev, inspection: text}))

@@ -100,7 +100,7 @@ export default function MyAccount() {
               {/* Personal Info */}
               <View style={styles.card}>
                 <CustomText style={styles.cardTitle}>
-                  {t('Personal Info')}
+                  {t('personalInfo')}
                 </CustomText>
 
                 {renderEditableRow(t('yourName'), 'name')}
@@ -138,8 +138,8 @@ export default function MyAccount() {
                   ) : (
                     <CustomText style={styles.value}>
                       {editedData.sellerType === 1
-                        ? t('Company')
-                        : t('Private')}
+                        ? t('company')
+                        : t('private')}
                     </CustomText>
                   )}
                 </View>
@@ -148,7 +148,7 @@ export default function MyAccount() {
               {/* Contact Info */}
               <View style={[styles.card, {marginTop: 16, marginBottom: 24}]}>
                 <CustomText style={styles.cardTitle}>
-                  {t('Contact Info')}
+                  {t('contactInfo')}
                 </CustomText>
 
                 {renderEditableRow(t('phoneNumber'), 'phone', 'phone-pad')}

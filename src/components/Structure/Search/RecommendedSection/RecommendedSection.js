@@ -95,7 +95,7 @@ const RecommendedSection = forwardRef(({onRefreshRef}, ref) => {
   const handleHeartClick = useCallback(
     async (id, item) => {
       if (role === 2) {
-        showSnackbar('Log in as buyer');
+        showSnackbar(t('loginAsBuyer'));
         return;
       }
 

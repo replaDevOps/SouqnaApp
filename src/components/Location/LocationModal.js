@@ -125,7 +125,7 @@ const LocationModal = ({visible, onLocationSelected, onClose}) => {
             Alert.alert(t('permissionDenied'), t('locationPermissionMessage'));
           } else if (error.code === 2 || error.code === 3) {
             Alert.alert(t('locationUnavailable'), t('enableGPS'), [
-              {text: 'Cancel', style: 'cancel'},
+              {text: t('Cancel'), style: 'cancel'},
               {
                 text: t('openSettings'),
                 onPress: () => Linking.openSettings(),

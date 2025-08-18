@@ -37,7 +37,7 @@ const FavouriteScreen = () => {
 
   const handleHeartClick = async (id, product) => {
     if (role === 2) {
-      showSnackbar('Log in as buyer');
+      showSnackbar(t('loginAsBuyer'));
       return;
     }
     // Check if the product is already in favorites
@@ -56,7 +56,7 @@ const FavouriteScreen = () => {
         })
         .catch(err => {
           // Revert optimistic update
-          showSnackbar('Error removing from favorites', err?.message);
+          showSnackbar(t('Error removing from favorites'), err?.message);
           setFavorites(favorites);
         });
     }

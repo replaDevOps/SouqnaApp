@@ -112,7 +112,7 @@ const PropertyAdjustFilterSheet = ({filters, setFilters, closeSheet}) => {
         {/* Size */}
         <CustomText style={labelStyle}>{t('size')}</CustomText>
         <TextInput
-          placeholder="e.g. 1 Kanal, 10 Marla"
+          placeholder={t('e.g. 1 Kanal, 10 Marla')}
           value={filters.size || ''}
           onChangeText={text => updateField('size', text)}
           style={inputStyle}
@@ -122,14 +122,14 @@ const PropertyAdjustFilterSheet = ({filters, setFilters, closeSheet}) => {
         <CustomText style={labelStyle}>{t('areaRange')}</CustomText>
         <View style={{flexDirection: 'row', gap: 10}}>
           <TextInput
-            placeholder="Min"
+            placeholder={t('Min')}
             keyboardType="numeric"
             value={filters.minArea}
             onChangeText={text => updateField('minArea', text)}
             style={[inputStyle, {flex: 1}]}
           />
           <TextInput
-            placeholder="Max"
+            placeholder={t('Max')}
             keyboardType="numeric"
             value={filters.maxArea}
             onChangeText={text => updateField('maxArea', text)}
@@ -140,7 +140,7 @@ const PropertyAdjustFilterSheet = ({filters, setFilters, closeSheet}) => {
         {/* Rooms */}
         <CustomText style={labelStyle}>{t('Rooms')}</CustomText>
         <TextInput
-          placeholder="e.g. 4"
+          placeholder={t('e.g. 4')}
           keyboardType="numeric"
           value={filters.rooms || ''}
           onChangeText={text => updateField('rooms', text)}
@@ -150,7 +150,7 @@ const PropertyAdjustFilterSheet = ({filters, setFilters, closeSheet}) => {
         {/* Bathrooms */}
         <CustomText style={labelStyle}>{t('Bathrooms')}</CustomText>
         <TextInput
-          placeholder="e.g. 2"
+          placeholder={t('e.g. 2')}
           keyboardType="numeric"
           value={filters.bathrooms || ''}
           onChangeText={text => updateField('bathrooms', text)}

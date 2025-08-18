@@ -376,7 +376,7 @@ const CreateProduct = () => {
         );
       } else {
         setSnackbarMessage(
-          response.data.message || 'Failed to create product.',
+          response.data.message || t('Failed to create product.'),
         );
       }
 

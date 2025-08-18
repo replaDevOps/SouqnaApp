@@ -23,6 +23,7 @@ import {useSelector} from 'react-redux';
 import {colors} from '../../../util/color';
 import {useTranslation} from 'react-i18next';
 import CustomText from '../../../components/CustomText';
+import i18n from '../../../i18n/i18n';
 // Memoized Marker Component to prevent unnecessary re-renders
 const MarkerComponent = React.memo(({item, onPress}) => (
   <Marker
@@ -347,16 +348,19 @@ export default function MapScreen() {
         // Better error handling
         switch (error.code) {
           case 1: // PERMISSION_DENIED
-            Alert.alert('Permission Denied', 'Location access was denied');
+            Alert.alert(t('permissionDenied'), t('Location access was denied'));
             break;
           case 2: // POSITION_UNAVAILABLE
-            Alert.alert('Location Unavailable', 'Unable to determine location');
+            Alert.alert(
+              t('locationUnavailable'),
+              t('Unable to determine location'),
+            );
             break;
           case 3: // TIMEOUT
-            Alert.alert('Location Timeout', 'Location request timed out');
+            Alert.alert(t('Location Timeout'), t('Location request timed out'));
             break;
           default:
-            Alert.alert('Location Error', 'Failed to get location');
+            Alert.alert(t('Location Error'), t('Failed to get location'));
         }
         setDefaultRegion();
       },
@@ -589,7 +593,7 @@ export default function MapScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <MainHeader showBackIcon={true} title="Map" />
+      <MainHeader showBackIcon={true} title={t('map')} />
 
       <View style={styles.categoryListContainer}>
         <TouchableOpacity
@@ -602,7 +606,7 @@ export default function MapScreen() {
               ellipsizeMode="tail"
               style={{fontSize: mvs(18), fontWeight: 'bold', flexShrink: 1}}>
               {' '}
-              {activeCategory ? `${activeCategory}` : 'Categories'}
+              {activeCategory ? `${activeCategory}` : t('Categories')}
             </CustomText>
           </View>
         </TouchableOpacity>
@@ -645,7 +649,7 @@ export default function MapScreen() {
                 style={styles.dropdownText}
                 numberOfLines={1}
                 ellipsizeMode="tail">
-                {category.name}
+                {i18n.language === 'ar' ? category.ar_name : category.name}
               </CustomText>
             </TouchableOpacity>
           ))}
@@ -684,10 +688,10 @@ export default function MapScreen() {
         ) : (
           <View style={{alignItems: 'center'}}>
             <CustomText style={{fontSize: mvs(15), fontWeight: '400'}}>
-              In this region:
+              {t('In this region:')}
             </CustomText>
             <CustomText style={{fontSize: mvs(22), fontWeight: 'bold'}}>
-              {visibleProducts.length} ads
+              {visibleProducts.length} {t('ads')}
             </CustomText>
           </View>
         )}

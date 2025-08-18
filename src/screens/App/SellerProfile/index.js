@@ -88,12 +88,12 @@ export const SellerProfile = ({route}) => {
   const handleHeartClick = useCallback(
     async (id, item) => {
       if (role === 2 || role === '2') {
-        dispatch(showSnackbar('Log in as buyer'));
+        dispatch(showSnackbar(t('loginAsBuyer')));
         return;
       }
 
       if (!token) {
-        dispatch(showSnackbar('Please log in to add favorites'));
+        dispatch(showSnackbar(t('Please log in to add favorites')));
         return;
       }
 
@@ -118,7 +118,7 @@ export const SellerProfile = ({route}) => {
 
             setAllProducts(updatedAllProducts);
             setFilteredProducts(updatedFilteredProducts);
-            dispatch(showSnackbar('Removed from favorites'));
+            dispatch(showSnackbar(t('removedFromFavorites')));
           });
         } else {
           await addToFavorite(id, token).then(res => {
@@ -138,12 +138,12 @@ export const SellerProfile = ({route}) => {
 
             setAllProducts(updatedAllProducts);
             setFilteredProducts(updatedFilteredProducts);
-            dispatch(showSnackbar('Added to favorites'));
+            dispatch(showSnackbar(t('Added to favorites')));
           });
         }
       } catch (error) {
         console.error('Error updating favorite:', error);
-        dispatch(showSnackbar('Failed to update favorite'));
+        dispatch(showSnackbar(t('Failed to update favorite')));
       }
     },
     [role, token, filteredProducts, allProducts, dispatch],

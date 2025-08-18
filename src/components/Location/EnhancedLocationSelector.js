@@ -6,6 +6,7 @@ import {mvs} from '../../util/metrices';
 import {CloseSvg, SearchSVG} from '../../assets/svg';
 import {colors} from '../../util/color';
 import LocationModal from './LocationModal';
+import {useTranslation} from 'react-i18next';
 import CustomText from '../CustomText';
 
 const EnhancedLocationSelector = ({
@@ -15,6 +16,7 @@ const EnhancedLocationSelector = ({
 }) => {
   const [text, setText] = useState(initialValue);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const {t} = useTranslation();
 
   useEffect(() => {
     setText(initialValue);
@@ -53,7 +55,7 @@ const EnhancedLocationSelector = ({
         </View>
         <CustomText
           style={[styles.placeholderText, text && styles.selectedText]}>
-          {text || placeholder}
+          {text || t(placeholder)}
         </CustomText>
         {text.length > 0 && (
           <TouchableOpacity onPress={clearLocation}>

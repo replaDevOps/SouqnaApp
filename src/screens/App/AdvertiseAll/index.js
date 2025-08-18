@@ -22,7 +22,7 @@ const AdvertiseAll = () => {
     navigation.navigate('CreateProduct', {
       categoryId: categoryId,
       id: subcategory.id,
-      name: subcategory.name,
+      name: i18n.language === 'ar' ? subcategory.ar_name : subcategory.name,
       category: category,
       categoryImage: categoryImage,
     });

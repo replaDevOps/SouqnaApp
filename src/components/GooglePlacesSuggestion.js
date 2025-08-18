@@ -16,6 +16,7 @@ import {colors} from '../util/color';
 import config from '../util/config';
 import Geolocation from '@react-native-community/geolocation';
 import CustomText from './CustomText';
+import {useTranslation} from 'react-i18next';
 
 const GOOGLE_PLACES_API_KEY = config.GOOGLE_PLACES_API_KEY;
 const AUTOCOMPLETE_URL =
@@ -34,6 +35,7 @@ const GooglePlacesSuggestion = ({
   const textInputRef = useRef(null);
   const [isPlaceSelected, setIsPlaceSelected] = useState(false);
   const [isFetchingLocation, setIsFetchingLocation] = useState(false);
+  const {t} = useTranslation();
   const suggestionData = showlivelocation
     ? [{isCurrentLocation: true, key: 'current-location'}, ...suggestions]
     : suggestions;
@@ -144,8 +146,8 @@ const GooglePlacesSuggestion = ({
             title: 'Location Permission',
             message: 'This app needs access to your location.',
             buttonNeutral: 'Ask Me Later',
-            buttonNegative: 'Cancel',
-            buttonPositive: 'OK',
+            buttonNegative: t('Cancel'),
+            buttonPositive: t('ok'),
           },
         );
         if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
@@ -328,7 +330,7 @@ const GooglePlacesSuggestion = ({
         <TextInput
           ref={textInputRef}
           style={styles.textInput}
-          placeholder={placeholder}
+          placeholder={t(placeholder)}
           placeholderTextColor={colors.grey}
           value={text}
           onChangeText={setText}

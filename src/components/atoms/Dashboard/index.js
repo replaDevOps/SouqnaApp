@@ -125,6 +125,8 @@ const ProductDashboard = ({onRefresh}) => {
   const getActiveCategories = () => {
     if (!dashboardData) return [];
 
+    console.log('dashboard data:', dashboardData);
+
     return assignColorsToCategories(
       activeView === 'total'
         ? dashboardData.category_distribution.all_time
@@ -238,7 +240,7 @@ const ProductDashboard = ({onRefresh}) => {
                 style={[styles.legendColor, {backgroundColor: category.color}]}
               />
               <CustomText style={styles.legendText}>
-                {category.name} ({category.count})
+                {t(category.name)} ({category.count})
               </CustomText>
             </View>
           ))}

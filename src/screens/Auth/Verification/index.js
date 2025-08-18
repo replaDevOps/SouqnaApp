@@ -203,11 +203,11 @@ const VerificationScreen = () => {
         const granted = await PermissionsAndroid.request(
           PermissionsAndroid.PERMISSIONS.CAMERA,
           {
-            title: 'Camera Permission',
-            message: 'App needs access to your camera',
-            buttonNeutral: 'Ask Me Later',
-            buttonNegative: 'Cancel',
-            buttonPositive: 'OK',
+            title: t('Camera Permission'),
+            message: t('App needs access to your camera'),
+            buttonNeutral: t('Ask Me Later'),
+            buttonNegative: t('Cancel'),
+            buttonPositive: t('OK'),
           },
         );
         return granted === PermissionsAndroid.RESULTS.GRANTED;
@@ -454,9 +454,9 @@ const VerificationScreen = () => {
       console.log('API Response:', response.data);
       if (response.status === 200 && response.data.success) {
         if (isVerified) {
-          Alert.alert('Success', 'Verification in progress!');
+          Alert.alert('Success', t('Verification in progress!'));
         } else {
-          Alert.alert('Success', 'Verification completed!');
+          Alert.alert('Success', t('verificationCompleted'));
         }
 
         navigation.replace('MainTabs', {
@@ -608,7 +608,7 @@ const VerificationScreen = () => {
                 handleInputChange('country', selectedValue);
               }}
               setItems={setCountryItems}
-              placeholder="Select Country"
+              placeholder={t('selectCountry')}
               zIndex={3000}
               zIndexInverse={1000}
               style={{
@@ -652,7 +652,7 @@ const VerificationScreen = () => {
             };
             const placeholderMap = {
               // country: 'Enter Country',
-              address: 'Enter Address',
+              address: t('enterAddress'),
               // idNumber: 'Enter ID Number',
             };
             return (
@@ -673,12 +673,12 @@ const VerificationScreen = () => {
             <CustomText style={styles.label}>{t('idType')}</CustomText>
             <View style={[styles.radioGroup, {justifyContent: 'space-around'}]}>
               <RadioButton
-                label="NIN"
+                label={t('NIN')}
                 selected={idType === 'cnic'}
                 onPress={isEditable ? () => setIdType('cnic') : undefined}
               />
               <RadioButton
-                label="Driving License"
+                label={t('Driving License')}
                 selected={idType === 'drivingLicense'}
                 onPress={
                   isEditable ? () => setIdType('drivingLicense') : undefined
@@ -696,7 +696,7 @@ const VerificationScreen = () => {
               style={styles.input}
               value={formData.idNumber}
               onChangeText={text => handleInputChange('idNumber', text)}
-              placeholder="ID Number"
+              placeholder={t('idNumber')}
               keyboardType="numeric"
               // editable={formData.idNumber.replace(/\D/g, '').length < 13}
               maxLength={15}

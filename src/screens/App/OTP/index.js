@@ -74,14 +74,14 @@ const OTPScreen = ({navigation}) => {
       const result = await resendOtp(email);
 
       if (result?.success) {
-        showSnackbar('OTP resent successfully.');
+        showSnackbar(t('OTP resent successfully.'));
       } else {
-        showSnackbar(result?.message || 'Failed to resend OTP.');
+        showSnackbar(result?.message || t('Failed to resend OTP.'));
       }
       setResendEnabled(false);
       setTimeout(() => setResendEnabled(true), 60000);
     } catch (error) {
-      showSnackbar('Failed to resend OTP. Please try again.');
+      showSnackbar(t('Failed to resend OTP. Please try again.'));
     } finally {
       setResendLoading(false);
     }
@@ -116,7 +116,7 @@ const OTPScreen = ({navigation}) => {
     console.log('Verification code submitted:', verificationCode);
 
     if (!verificationCode || verificationCode.length !== 4) {
-      showSnackbar('Please enter a valid 6-digit OTP.');
+      showSnackbar(t('Please enter a valid 6-digit OTP.'));
       return;
     }
 
@@ -126,7 +126,7 @@ const OTPScreen = ({navigation}) => {
       const response = await verifyOtp(verificationCode);
 
       if (response?.success) {
-        showSnackbar(response.message || 'OTP verified successfully.');
+        showSnackbar(response.message || t('OTP verified successfully.'));
 
         if (resetPassword) {
           navigation.navigate('ChangePassword', {resetToken: response.token});
@@ -135,13 +135,13 @@ const OTPScreen = ({navigation}) => {
         }
       } else {
         console.warn('OTP verification failed:', response?.error);
-        showSnackbar(response?.error || 'Invalid OTP, please try again.');
+        showSnackbar(response?.error || t('Invalid OTP, please try again.'));
       }
     } catch (error) {
       console.error('Verification error:', error);
       showSnackbar(
         error?.response?.data?.message ||
-          'Something went wrong. Please try again.',
+          t('Something went wrong. Please try again.'),
       );
     } finally {
       setLoading(false); // Hide loader

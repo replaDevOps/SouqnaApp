@@ -282,26 +282,26 @@ const ProductDetail = () => {
   };
 
   const handleDeletePress = () => {
-    Alert.alert('Confirm Delete', 'Are you sure you want to delete this Ad?', [
-      {text: 'Cancel', style: 'cancel'},
+    Alert.alert('Confirm Delete', t('confirmDeleteProduct'), [
+      {text: t('Cancel'), style: 'cancel'},
       {
-        text: 'Delete',
+        text: t('delete'),
         style: 'destructive',
         onPress: async () => {
           try {
             const response = await deleteProduct(productId, token);
             if (response.success) {
-              setSnackbarMessage('Ad deleted successfully.');
+              setSnackbarMessage(t('Ad deleted successfully.'));
               setSnackbarVisible(true);
               navigation.replace('MainTabs');
             } else {
               console.warn('Failed to delete Ad:', response.message);
-              setSnackbarMessage(response.message || 'Failed to delete Ad.');
+              setSnackbarMessage(response.message || t('Failed to delete Ad.'));
               setSnackbarVisible(true);
             }
           } catch (error) {
             console.error('Error deleting Ad:', error.message || error);
-            setSnackbarMessage('An error occurred while deleting the Ad.');
+            setSnackbarMessage(t('An error occurred while deleting the Ad.'));
             setSnackbarVisible(true);
           }
         },

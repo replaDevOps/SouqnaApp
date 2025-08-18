@@ -62,14 +62,14 @@ const Register = () => {
     console.log('Register button pressed');
 
     if (!profilename.trim()) {
-      dispatch(showSnackbar(t('Please enter your name.')));
+      dispatch(showSnackbar(t('enterName')));
       console.log('Dispatch:', dispatch);
       // showSnackbar('Please enter your name.');
 
       return;
     }
     if (!isEmailValid(email)) {
-      dispatch(showSnackbar(t('Please enter a valid email.')));
+      dispatch(showSnackbar(t('enterValidEmail')));
       console.log('Dispatch:', dispatch);
       // showSnackbar('Please enter a valid email.');
       return;
@@ -78,7 +78,7 @@ const Register = () => {
     }
 
     if (!isPasswordValid(password)) {
-      dispatch(showSnackbar(t('Password must be at least 8 characters.')));
+      dispatch(showSnackbar(t('passwordMinLength')));
       console.log('Dispatch:', dispatch);
       // showSnackbar('Password must be at least 8 characters.');
       return;
@@ -96,7 +96,7 @@ const Register = () => {
       password,
       role,
       fcm: storedFcmToken,
-        sellerType: 1, // 1 = Company, 2 = Private
+      sellerType: 1, // 1 = Company, 2 = Private
       // ...(isSeller && {
       //   sellerType: sellerType === 'Company' ? 1 : 2,
       // }),
