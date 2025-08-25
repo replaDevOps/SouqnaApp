@@ -12,6 +12,8 @@ import {colors} from '../../util/color';
 import {CallSVG, ChatSVG2, TrashSVG, UpdateSVG} from '../../assets/svg';
 import {useSelector} from 'react-redux';
 import {useTranslation} from 'react-i18next';
+import CustomText from '../CustomText';
+import Bold from '../../typography/BoldText';
 
 const ProductFooter = ({
   onBuyPress,
@@ -74,7 +76,7 @@ const ProductFooter = ({
         onPress: handleDeletePress,
         loading: loadingDelete,
         text: t('deleteProduct'),
-        Icon: TrashSVG ,
+        Icon: TrashSVG,
       },
     );
   }
@@ -89,12 +91,13 @@ const ProductFooter = ({
           <TouchableOpacity
             key={key}
             style={[styles.buyButton]}
+            disabled={loading}
             onPress={onPress}>
             <Icon width={24} height={24} />
             {loading ? (
               <ActivityIndicator size="small" color={colors.lightgreen} />
             ) : (
-              <Text style={[styles.buttonText]}>{text}</Text>
+              <Bold style={[styles.buttonText]}>{text}</Bold>
             )}
           </TouchableOpacity>
         ))}
@@ -138,6 +141,6 @@ const styles = StyleSheet.create({
     color: colors.white,
     fontSize: mvs(16),
     marginLeft: mvs(10),
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
   },
 });

@@ -4,7 +4,8 @@ import {View, Text, StyleSheet, TouchableOpacity, FlatList} from 'react-native';
 import DownArrowSvg from '../../assets/svg/down-arrow-svg';
 import {colors} from '../../util/color';
 import {AdjustSVG, TrashSVG} from '../../assets/svg';
-import { t } from 'i18next';
+import {t} from 'i18next';
+import CustomText from '../CustomText';
 
 const PropertyFilters = ({
   filters,
@@ -19,10 +20,10 @@ const PropertyFilters = ({
 }) => {
   const getPriceLabel = () => {
     if (filters.minPrice && !filters.maxPrice) {
-      return `From ${filters.minPrice}`;
+      return `${t('From')} ${filters.minPrice}`;
     }
     if (!filters.minPrice && filters.maxPrice) {
-      return `Up to ${filters.maxPrice}`;
+      return `${t('Up to')} ${filters.maxPrice}`;
     }
     if (filters.minPrice && filters.maxPrice) {
       return `${filters.minPrice} - ${filters.maxPrice}`;
@@ -32,10 +33,10 @@ const PropertyFilters = ({
 
   const getAreaLabel = () => {
     if (filters.minArea && !filters.maxArea) {
-      return `From ${filters.minArea} sqft`;
+      return `${t('From')} ${filters.minArea} sqft`;
     }
     if (!filters.minArea && filters.maxArea) {
-      return `Up to ${filters.maxArea} sqft`;
+      return `${t('Up to')} ${filters.maxArea} sqft`;
     }
     if (filters.minArea && filters.maxArea) {
       return `${filters.minArea} - ${filters.maxArea} sqft`;
@@ -70,12 +71,12 @@ const PropertyFilters = ({
       render: () => (
         <TouchableOpacity style={styles.input} onPress={onOpenPriceSheet}>
           <View style={styles.inputRow}>
-            <Text
+            <CustomText
               numberOfLines={1}
               ellipsizeMode="tail"
               style={styles.filterText}>
               {getPriceLabel()}
-            </Text>
+            </CustomText>
             <DownArrowSvg />
           </View>
         </TouchableOpacity>
@@ -88,12 +89,12 @@ const PropertyFilters = ({
           style={styles.input}
           onPress={onOpenPropertyTypeSheet}>
           <View style={styles.inputRow}>
-            <Text
+            <CustomText
               style={styles.filterText}
               numberOfLines={1}
               ellipsizeMode="tail">
               {filters.propertyType || t('propertytype')}
-            </Text>
+            </CustomText>
             <DownArrowSvg />
           </View>
         </TouchableOpacity>
@@ -104,12 +105,12 @@ const PropertyFilters = ({
       render: () => (
         <TouchableOpacity style={styles.input} onPress={onOpenAreaSheet}>
           <View style={styles.inputRow}>
-            <Text
+            <CustomText
               numberOfLines={1}
               ellipsizeMode="tail"
               style={styles.filterText}>
               {getAreaLabel()}
-            </Text>
+            </CustomText>
             <DownArrowSvg />
           </View>
         </TouchableOpacity>
@@ -127,12 +128,12 @@ const PropertyFilters = ({
               justifyContent: 'space-evenly',
               width: '100%',
             }}>
-            <Text
+            <CustomText
               style={styles.filterText}
               numberOfLines={1}
               ellipsizeMode="tail">
               {sortOption || t('sort')}
-            </Text>
+            </CustomText>
             <DownArrowSvg />
           </View>
         </TouchableOpacity>
@@ -143,8 +144,10 @@ const PropertyFilters = ({
       render: () => (
         <TouchableOpacity style={styles.resetButton} onPress={resetFilters}>
           <View style={{flexDirection: 'row', gap: 4}}>
-            <TrashSVG height={20} width={20} color='#000'/>
-            <Text style={styles.resetButtonText}>{t('resetfilters')}</Text>
+            <TrashSVG height={20} width={20} color="#000" />
+            <CustomText style={styles.resetButtonText}>
+              {t('resetfilters')}
+            </CustomText>
           </View>
         </TouchableOpacity>
       ),

@@ -1,8 +1,9 @@
-import React, { forwardRef, useImperativeHandle, useRef } from 'react';
-import { TextInput } from 'react-native';
-import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
+import React, {forwardRef, useImperativeHandle, useRef} from 'react';
+import {TextInput} from 'react-native';
+import {BottomSheetScrollView} from '@gorhom/bottom-sheet';
+import {useTranslation} from 'react-i18next';
 
-const PriceFilterSheet = ({ filters, setFilters }, ref) => {
+const PriceFilterSheet = ({filters, setFilters}, ref) => {
   const minPriceRef = useRef(null);
 
   useImperativeHandle(ref, () => ({
@@ -10,6 +11,8 @@ const PriceFilterSheet = ({ filters, setFilters }, ref) => {
       minPriceRef.current?.focus();
     },
   }));
+
+  const {t} = useTranslation();
 
   return (
     <BottomSheetScrollView
@@ -28,10 +31,10 @@ const PriceFilterSheet = ({ filters, setFilters }, ref) => {
           borderRadius: 10,
         }}
         ref={minPriceRef}
-        placeholder="Min Price"
+        placeholder={t('Min Price')}
         keyboardType="numeric"
         value={filters.minPrice}
-        onChangeText={text => setFilters(prev => ({ ...prev, minPrice: text }))}
+        onChangeText={text => setFilters(prev => ({...prev, minPrice: text}))}
       />
       <TextInput
         style={{
@@ -41,10 +44,10 @@ const PriceFilterSheet = ({ filters, setFilters }, ref) => {
           padding: 10,
           borderRadius: 10,
         }}
-        placeholder="Max Price"
+        placeholder={t('Max Price')}
         keyboardType="numeric"
         value={filters.maxPrice}
-        onChangeText={text => setFilters(prev => ({ ...prev, maxPrice: text }))}
+        onChangeText={text => setFilters(prev => ({...prev, maxPrice: text}))}
       />
     </BottomSheetScrollView>
   );

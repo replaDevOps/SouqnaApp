@@ -1,6 +1,4 @@
-import React, {useState} from 'react';
 import {View, TextInput, TouchableOpacity, StyleSheet} from 'react-native';
-import LocationSvg from '../../assets/svg/location-svg';
 import {CloseSvg, SearchSVG} from '../../assets/svg';
 import {colors} from '../../util/color';
 import {mvs} from '../../util/metrices';
@@ -31,6 +29,7 @@ const SearchHeader = ({
           style={styles.searchBar}
           onPressIn={onFocusSearch}
           placeholder={t('SearchBarplaceholder')}
+          // placeholder={t('SearchBarplaceholder')}
           placeholderTextColor={colors.grey}
           keyboardType="default"
           value={searchText}
@@ -61,8 +60,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: mvs(7),
     paddingTop: mvs(20),
+    width: '90%',
     paddingBottom: mvs(10),
-    backgroundColor: '#fbfbfb',
+    // backgroundColor: '#fbfbfb',
   },
   searchBarContainer: {
     // add shadow here
@@ -81,14 +81,20 @@ const styles = StyleSheet.create({
     borderRadius: mvs(4),
     paddingHorizontal: mvs(10),
     paddingVertical: mvs(4),
-    marginHorizontal: mvs(10),
+    // marginHorizontal: mvs(10),
   },
   searchBar: {
     flex: 1,
     height: 40,
     fontSize: 16,
+    fontFamily: 'Amiri-Regular',
     marginLeft: 10,
     color: colors.black,
+
+    // includeFontPadding: false, // helps with vertical clipping
+    textAlignVertical: 'center', // centers text properly
+    paddingVertical: 6, // let the font breathe vertically
+    lineHeight: 24, // adjust until text isn’t clipped
   },
   icon: {
     justifyContent: 'center',

@@ -1,7 +1,6 @@
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {
   View,
-  Text,
   StyleSheet,
   Image,
   KeyboardAvoidingView,
@@ -34,6 +33,8 @@ import {getStorage, ref, uploadBytes, getDownloadURL} from 'firebase/storage';
 import {app} from '../../../firebase';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useTranslation} from 'react-i18next';
+import Loader from '../../../components/Loader';
+import CustomText from '../../../components/CustomText';
 
 const Chat = () => {
   const route = useRoute();
@@ -275,12 +276,12 @@ const Chat = () => {
             />
           )}
           <View style={styles.productInfo}>
-            <Text style={styles.productName}>
+            <CustomText style={styles.productName}>
               {currentMessage.product.name}
-            </Text>
-            <Text style={styles.productPrice}>
+            </CustomText>
+            <CustomText style={styles.productPrice}>
               $ {Number(currentMessage.product.price).toLocaleString()}
-            </Text>
+            </CustomText>
           </View>
         </View>
       );
@@ -344,9 +345,9 @@ const Chat = () => {
         {isUploading ? (
           <ActivityIndicator size="small" color="#fff" />
         ) : (
-          <Text style={{color: '#fff', fontWeight: 'bold'}}>
+          <CustomText style={{color: '#fff', fontWeight: 'bold'}}>
             {t('chatSend')}
-          </Text>
+          </CustomText>
         )}
       </View>
     </Send>
@@ -405,7 +406,8 @@ const Chat = () => {
 
   const renderLoading = () => (
     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-      <ActivityIndicator size="large" color="#008e91" />
+      <Loader width={mvs(250)} height={mvs(250)} />
+      {/* {/* <ActivityIndicator size="large" color="#008e91" /> */}
     </View>
   );
 

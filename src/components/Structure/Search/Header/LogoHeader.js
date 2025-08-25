@@ -40,7 +40,7 @@ export default function LogoHeader() {
           paddingHorizontal: mvs(12),
         }}>
         <Image
-          source={require('../../../../assets/img/Souqna_Logo3.png')}
+          source={require('../../../../assets/img/Souqna_Logo4.jpeg')}
           style={{width: mvs(145), height: mvs(28), resizeMode: 'contain'}}
         />
         {/* {role !== 2 && (

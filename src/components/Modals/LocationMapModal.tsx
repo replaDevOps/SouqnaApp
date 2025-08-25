@@ -8,6 +8,7 @@ import {
   Dimensions,
 } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
+import CustomText from '../CustomText';
 
 const { width, height } = Dimensions.get('window');
 
@@ -34,9 +35,9 @@ const LocationMapModal = ({ visible, onClose, latitude, longitude, title = "Prod
         <View style={styles.modalContainer}>
           {/* Header */}
           <View style={styles.header}>
-            <Text style={styles.headerTitle}>{title}</Text>
+            <CustomText style={styles.headerTitle}>{title}</CustomText>
             <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-              <Text style={styles.closeButtonText}>✕</Text>
+              <CustomText style={styles.closeButtonText}>✕</CustomText>
             </TouchableOpacity>
           </View>
 
@@ -45,10 +46,10 @@ const LocationMapModal = ({ visible, onClose, latitude, longitude, title = "Prod
             <MapView
               style={styles.map}
               region={region}
-              // scrollEnabled={false}
-              // zoomEnabled={false}
-              // rotateEnabled={false}
-              // pitchEnabled={false}
+            // scrollEnabled={false}
+            // zoomEnabled={false}
+            // rotateEnabled={false}
+            // pitchEnabled={false}
             >
               <Marker
                 coordinate={{
@@ -63,9 +64,9 @@ const LocationMapModal = ({ visible, onClose, latitude, longitude, title = "Prod
 
           {/* Footer with coordinates */}
           <View style={styles.footer}>
-            <Text style={styles.coordinatesText}>
+            <CustomText style={styles.coordinatesText}>
               Coordinates: {latNum.toFixed(6)}, {longNum.toFixed(6)}
-            </Text>
+            </CustomText>
           </View>
         </View>
       </View>

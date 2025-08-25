@@ -20,6 +20,8 @@ import {fetchNotifications} from '../../../api/apiServices';
 import {useSelector} from 'react-redux';
 import {mvs} from '../../../util/metrices';
 import MainHeader from '../../../components/Headers/MainHeader';
+import Loader from '../../../components/Loader';
+import CustomText from '../../../components/CustomText';
 
 const Notification = () => {
   const navigation = useNavigation();
@@ -55,8 +57,10 @@ const Notification = () => {
         </TouchableOpacity>
 
         <View style={styles.notificationTextContainer}>
-          <Text style={styles.notificationTitle}>{item.title}</Text>
-          <Text style={styles.notificationText}>{item.message}</Text>
+          <CustomText style={styles.notificationTitle}>{item.title}</CustomText>
+          <CustomText style={styles.notificationText}>
+            {item.message}
+          </CustomText>
         </View>
       </View>
     );
@@ -69,7 +73,8 @@ const Notification = () => {
 
       {loading ? (
         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-          <ActivityIndicator size="large" color={colors.green} />
+          <Loader width={mvs(250)} height={mvs(250)} />
+          {/* {/* <ActivityIndicator size="large" color={colors.green} /> */}
         </View>
       ) : (
         <FlatList
@@ -96,9 +101,9 @@ const Notification = () => {
                   height: mvs(200),
                 }}
               />
-              <Text style={{textAlign: 'center', marginTop: mvs(20)}}>
+              <CustomText style={{textAlign: 'center', marginTop: mvs(20)}}>
                 {t('noNotificationsFound')}
-              </Text>
+              </CustomText>
             </View>
           }
         />

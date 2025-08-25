@@ -12,6 +12,8 @@ import {
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
 import {submitCardDetails} from '../../../api/apiServices';
+import CustomText from '../../CustomText';
+import {useTranslation} from 'react-i18next';
 
 const CardDetailsScreen = () => {
   const navigation = useNavigation();
@@ -25,6 +27,7 @@ const CardDetailsScreen = () => {
   const [expiryMonth, setExpiryMonth] = useState('12');
   const [expiryYear, setExpiryYear] = useState('2025');
   const [cvc, setCvc] = useState('');
+  const {t} = useTranslation();
 
   const handleSave = async () => {
     if (!cardNumber || !cardName || !expiryMonth || !expiryYear || !cvc) {
@@ -59,7 +62,7 @@ const CardDetailsScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.cardBox}>
-        <Text style={styles.title}>Enter Stripe Card Details</Text>
+        <CustomText style={styles.title}>Enter Stripe Card Details</CustomText>
 
         <TextInput
           placeholder="Card Number"
@@ -104,10 +107,10 @@ const CardDetailsScreen = () => {
           <TouchableOpacity
             onPress={() => navigation.goBack()}
             style={styles.cancelBtn}>
-            <Text style={styles.btnText}>Cancel</Text>
+            <CustomText style={styles.btnText}>{t('Cancel')}</CustomText>
           </TouchableOpacity>
           <TouchableOpacity onPress={handleSave} style={styles.saveBtn}>
-            <Text style={styles.btnText}>Save</Text>
+            <CustomText style={styles.btnText}>{t('save')}</CustomText>
           </TouchableOpacity>
         </View>
       </View>

@@ -23,6 +23,7 @@ export {default as CrossIconSVG} from './crossIconSVG';
 export {default as InfoSVG} from './infoSVG';
 export {default as TrashSVG} from './trashSVG';
 export {default as LockSVG} from './lockSVG';
+export {default as BurgerMenu} from './burgerMenu';
 export {default as SunSVG} from './sunSVG';
 export {default as StarSVG} from './starSVG';
 export {default as HelpSVG} from './helpSVG';

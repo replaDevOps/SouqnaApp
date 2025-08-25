@@ -36,6 +36,7 @@ import ImageResizer from 'react-native-image-resizer';
 import CategoryFields from './CategoryFields';
 import EnhancedLocationSelector from '../../../../components/Location/EnhancedLocationSelector';
 import i18n from '../../../../i18n/i18n';
+import CustomText from '../../../../components/CustomText';
 // import EnhancedCategoryFields from './CategoryFields';
 const BRANDS = [
   'Audi',
@@ -76,6 +77,25 @@ const BRANDS = [
   'United Motors',
   'Volkswagen',
 ];
+
+const fieldOrder = [
+  // Vehicle Details
+  'category',
+  'make_brand',
+  'model',
+  'year_of_manufacture',
+  'mileage',
+  'fuel_type',
+  'transmission',
+  'power',
+  'number_of_doors',
+  'vehicle_type',
+  'condition',
+  'color',
+  // Registration and Ownership
+  'first_registration_date',
+  'inspection_valid_until',
+];
 const CreateProduct = () => {
   const route = useRoute();
   const {
@@ -91,13 +111,13 @@ const CreateProduct = () => {
   const [brandModalVisible, setBrandModalVisible] = useState(false);
   // const isArabic = i18n.language === 'ar'; // useTranslation should be imported and initialized
   const {t, i18n} = useTranslation();
-  console.log('Current Language:', i18n.language);
+  // console.log('Current Language:', i18n.language);
 
   const [formData, setFormData] = useState({
     name: '',
     description: '',
     price: '',
-    stock: '',
+    // stock: '',
     // discount: '',
     // specialOffer: '',
     images: [],
@@ -107,7 +127,7 @@ const CreateProduct = () => {
     contactInfo: phoneNo,
     negotiable: '',
     currency: '',
-    fields: [],
+    custom_fields: [],
   });
 
   const [loading, setLoading] = useState(false);
@@ -116,7 +136,7 @@ const CreateProduct = () => {
   const [selectedCondition, setSelectedCondition] = useState('');
   const [categories, setCategories] = useState([]);
   const [categoryFields, setCategoryFields] = useState([]);
-  console.log('{stored phone no:}', phoneNo);
+  // console.log('{stored phone no:}', phoneNo);
   // const conditionValue =
   //   selectedCondition === 'Yes' ? 1 : selectedCondition === 'No' ? 2 : null;
 
@@ -131,6 +151,26 @@ const CreateProduct = () => {
   //       .catch(e => console.log('Cleanup error:', e));
   //   };
   // }, []);
+
+  const sortCategoryFields = fields => {
+    return fields.sort((a, b) => {
+      const indexA = fieldOrder.indexOf(a.name);
+      const indexB = fieldOrder.indexOf(b.name);
+
+      // If field is not in the order array, put it at the end
+      if (indexA === -1 && indexB === -1) {
+        return 0;
+      }
+      if (indexA === -1) {
+        return 1;
+      }
+      if (indexB === -1) {
+        return -1;
+      }
+
+      return indexA - indexB;
+    });
+  };
 
   const getImageSize = uri =>
     new Promise((resolve, reject) => {
@@ -254,19 +294,25 @@ const CreateProduct = () => {
     data.append('subCategoryID', subCategoryId);
 
     // Prepare fields array
+
+    console.log('categoryFields: ', categoryFields);
+    // console.log('categoryFields: ', JSON.stringify(categoryFields, null, 4));
+
     const customFieldsArray = categoryFields.map(field => ({
       name: field.name,
+      ar_name: field.ar_name,
       value: formData[field.name],
+      ar_value: formData[field.ar_name], // Assuming you have Arabic values in formData
     }));
 
     for (let i = 0; i < formData.images.length; i++) {
       const image = formData.images[i];
-      if (image.fileSize > 2 * 1024 * 1024) {
-        setSnackbarMessage(`Image ${i + 1} must be under 2MB.`);
-        setSnackbarVisible(true);
-        setLoading(false);
-        return;
-      }
+      // if (image.fileSize > 2 * 1024 * 1024) {
+      //   setSnackbarMessage(`Image ${i + 1} must be under 2MB.`);
+      //   setSnackbarVisible(true);
+      //   setLoading(false);
+      //   return;
+      // }
 
       data.append('images[]', {
         uri: image.uri,
@@ -274,18 +320,20 @@ const CreateProduct = () => {
         type: image.type || 'image/jpeg',
       });
     }
+    console.log('customFieldsArray: ', customFieldsArray);
     console.log('FORMDATA TILL NOW : ', data);
-    data.append('fields', JSON.stringify(customFieldsArray));
+    data.append('custom_fields', JSON.stringify(customFieldsArray));
 
-    data.append('stock', formData.stock);
+    // data.append('stock', formData.stock);
     // data.append('discount', formData.discount);
     // data.append('specialOffer', formData.specialOffer);
     data.append('location', formData.location);
     data.append('lat', formData.lat);
     data.append('long', formData.long);
     data.append('contactInfo', formData.contactInfo);
-    data.append('negotiable', selectedCondition);
+    // data.append('negotiable', selectedCondition);
     console.log('FORMDATA BEING SENT : ', data);
+    // return;
     try {
       setLoading(true);
       const response = await API.post('createProduct', data, {
@@ -303,7 +351,7 @@ const CreateProduct = () => {
           name: '',
           description: '',
           price: '',
-          stock: '',
+          // stock: '',
           images: [],
           location: '',
           lat: '',
@@ -311,9 +359,9 @@ const CreateProduct = () => {
           // discount: '',
           // specialOffer: '',
           contactInfo: '', // Reset additional field
-          negotiable: '',
+          // negotiable: '',
           currency: '',
-          fields: [],
+          custom_fields: [],
         });
 
         navigation.dispatch(
@@ -328,7 +376,7 @@ const CreateProduct = () => {
         );
       } else {
         setSnackbarMessage(
-          response.data.message || 'Failed to create product.',
+          response.data.message || t('Failed to create product.'),
         );
       }
 
@@ -402,12 +450,14 @@ const CreateProduct = () => {
         // Match category name from route
         const matchedCategory = fetchedCategories.find(
           cat =>
-            cat.name.trim().toLowerCase() === category.trim().toLowerCase(),
+            cat.name.trim().toLowerCase() === category.trim().toLowerCase() ||
+            cat.ar_name.trim() === category.trim(),
         );
 
         if (matchedCategory) {
           console.log('MATCHED CATEGORY FIELDS: ', matchedCategory.fields);
-          setCategoryFields(matchedCategory.fields); // Set the dynamic fields
+          const sortedFields = sortCategoryFields(matchedCategory.fields);
+          setCategoryFields(sortedFields);
         }
       } else {
         setSnackbarMessage('Failed to fetch categories.');
@@ -450,7 +500,9 @@ const CreateProduct = () => {
             }}
             contentContainerStyle={{paddingBottom: mvs(60)}}>
             <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>{t('category')}</Text>
+              <CustomText style={styles.sectionTitle}>
+                {t('category')}
+              </CustomText>
               <View style={styles.categoryBox}>
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
                   <Image
@@ -464,22 +516,24 @@ const CreateProduct = () => {
                       // justifyContent: 'space-between',
                     }}>
                     <View style={styles.fixedTextBox}>
-                      <Text
+                      <CustomText
                         style={styles.categoryTitle}
                         ellipsizeMode="tail"
                         numberOfLines={1}>
                         {category}
-                      </Text>
-                      <Text
+                      </CustomText>
+                      <CustomText
                         style={styles.categorySubtitle}
                         ellipsizeMode="tail"
                         numberOfLines={1}>
                         {name}
-                      </Text>
+                      </CustomText>
                     </View>
 
                     <TouchableOpacity onPress={handleChange}>
-                      <Text style={styles.changeText}>{t('change')}</Text>
+                      <CustomText style={styles.changeText}>
+                        {t('change')}
+                      </CustomText>
                     </TouchableOpacity>
                   </View>
                 </View>
@@ -490,7 +544,9 @@ const CreateProduct = () => {
                   <TouchableOpacity
                     style={styles.addButton}
                     onPress={handleChooseImages}>
-                    <Text style={styles.addButtonText}>{t('addImages')}</Text>
+                    <CustomText style={styles.addButtonText}>
+                      {t('addImages')}
+                    </CustomText>
                   </TouchableOpacity>
                 ) : (
                   <View>
@@ -514,9 +570,9 @@ const CreateProduct = () => {
                                   height={22}
                                   style={styles.uploadIcon}
                                 />
-                                <Text style={styles.uploadText}>
+                                <CustomText style={styles.uploadText}>
                                   {t('uploadImage')}
-                                </Text>
+                                </CustomText>
                               </TouchableOpacity>
                             ) : (
                               <View style={styles.imageWrapper}>
@@ -528,7 +584,9 @@ const CreateProduct = () => {
                                   style={styles.removeIcon}
                                   onPress={() => handleRemoveImage(index - 1)} // subtract 1 due to upload icon
                                 >
-                                  <Text style={styles.removeIconText}>✕</Text>
+                                  <CustomText style={styles.removeIconText}>
+                                    ✕
+                                  </CustomText>
                                 </TouchableOpacity>
                               </View>
                             )
@@ -540,16 +598,18 @@ const CreateProduct = () => {
                 )}
                 <View></View>
 
-                <Text style={styles.noteText}>{t('coverNote')} </Text>
+                <CustomText style={styles.noteText}>
+                  {t('coverNote')}{' '}
+                </CustomText>
               </View>
             </View>
 
             {/* Name Section */}
             <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>
+              <CustomText style={styles.sectionTitle}>
                 {t('name')}
-                <Text style={{color: colors.red}}>*</Text>
-              </Text>
+                <CustomText style={{color: colors.red}}>*</CustomText>
+              </CustomText>
               <TextInput
                 style={styles.input}
                 placeholder={t('namePlaceholder')}
@@ -561,10 +621,10 @@ const CreateProduct = () => {
 
             {/* Description Section */}
             <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>
+              <CustomText style={styles.sectionTitle}>
                 {t('description')}
-                <Text style={{color: colors.red}}>*</Text>
-              </Text>
+                <CustomText style={{color: colors.red}}>*</CustomText>
+              </CustomText>
               <TextInput
                 style={[styles.input, {height: mvs(100)}]}
                 placeholder={t('descriptionPlaceholder')}
@@ -577,10 +637,10 @@ const CreateProduct = () => {
 
             {/* Location Section - Fixed */}
             <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>
+              <CustomText style={styles.sectionTitle}>
                 {t('location')}
-                <Text style={{color: colors.red}}>*</Text>
-              </Text>
+                <CustomText style={{color: colors.red}}>*</CustomText>
+              </CustomText>
               <View style={styles.locationContainer}>
                 {/* <GooglePlacesSuggestion
                   initialValue={formData.location}
@@ -595,13 +655,16 @@ const CreateProduct = () => {
 
             {/* Price Section */}
             <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>
+              <CustomText style={styles.sectionTitle}>
                 {t('price')}
-                <Text style={{color: colors.red}}>*</Text>
-              </Text>
+                <CustomText style={{color: colors.red}}>*</CustomText>
+              </CustomText>
               <PriceInputWithDropdown
                 value={formData.price}
-                onChangeText={text => handleInputChange('price', text)}
+                onChangeText={text => {
+                  const numericText = text.replace(/[^0-9]/g, '');
+                  handleInputChange('price', numericText);
+                }}
                 selectedCurrency={formData.currency}
                 onCurrencyChange={currency =>
                   handleInputChange('currency', currency)
@@ -621,7 +684,9 @@ const CreateProduct = () => {
 
             <View style={styles.sectionContainer}>
               <View style={styles.fieldContainer}>
-                <Text style={styles.sectionTitle}>{t('contactInfo')}</Text>
+                <CustomText style={styles.sectionTitle}>
+                  {t('contactInfo')}
+                </CustomText>
                 <TextInput
                   style={styles.input}
                   placeholder={t('contactInfo')}
@@ -632,13 +697,13 @@ const CreateProduct = () => {
                 />
               </View>
             </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>
-                {t('negotiable')}
-                {/* <Text style={{color: colors.red}}>*</Text> */}
-              </Text>
+            {/* <View style={styles.sectionContainer}> */}
+            {/* <CustomText style={styles.sectionTitle}>
+                {/* {t('negotiable')} */}
+            {/* <CustomText style={{color: colors.red}}>*</CustomText> */}
+            {/* </CustomText> */}
 
-              <View style={styles.radioContainer}>
+            {/* <View style={styles.radioContainer}>
                 <TouchableOpacity
                   style={styles.radioOption}
                   onPress={() => handleConditionSelect('Yes')}>
@@ -654,7 +719,7 @@ const CreateProduct = () => {
                       )}
                     </View>
                   </View>
-                  <Text style={styles.radioText}>{t('yes')}</Text>
+                  <CustomText style={styles.radioText}>{t('yes')}</CustomText>
                 </TouchableOpacity>
 
                 <TouchableOpacity
@@ -671,17 +736,17 @@ const CreateProduct = () => {
                       )}
                     </View>
                   </View>
-                  <Text style={styles.radioText}>{t('no')}</Text>
+                  <CustomText style={styles.radioText}>{t('no')}</CustomText>
                 </TouchableOpacity>
               </View>
-            </View>
+            </View> */}
 
             {/* Discount Section */}
             {/* <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>
+              <CustomText style={styles.sectionTitle}>
                 {t('discount')} */}
-                {/* <Text style={{color: colors.red}}>*</Text> */}
-              {/* </Text>
+            {/* <CustomText style={{color: colors.red}}>*</CustomText> */}
+            {/* </CustomText>
               <TextInput
                 style={styles.input}
                 placeholder={t('discountPlaceholder')}
@@ -694,10 +759,10 @@ const CreateProduct = () => {
 
             {/* Special Offer Section */}
             {/* <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>
+              <CustomText style={styles.sectionTitle}>
                 {t('specialOffer')} */}
-                {/* <Text style={{color: colors.red}}>*</Text> */}
-              {/* </Text>
+            {/* <CustomText style={{color: colors.red}}>*</CustomText> */}
+            {/* </CustomText>
               <TextInput
                 style={styles.input}
                 placeholder={t('specialOfferPlaceholder')}
@@ -708,11 +773,10 @@ const CreateProduct = () => {
             </View> */}
 
             {/* Stock Section */}
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>
+            {/* <View style={styles.sectionContainer}>
+              <CustomText style={styles.sectionTitle}>
                 {t('availableStock')}
-                {/* <Text style={{color: colors.red}}>*</Text> */}
-              </Text>
+              </CustomText>
               <TextInput
                 style={styles.input}
                 placeholder={t('stockPlaceholder')}
@@ -721,7 +785,7 @@ const CreateProduct = () => {
                 value={formData.stock}
                 onChangeText={text => handleInputChange('stock', text)}
               />
-            </View>
+            </View> */}
 
             {/* Additional Fields Section */}
             <CategoryFields
@@ -739,7 +803,9 @@ const CreateProduct = () => {
               {loading ? (
                 <ActivityIndicator color={colors.green} />
               ) : (
-                <Text style={styles.submitButtonText}>{t('Post Ad')}</Text>
+                <CustomText style={styles.submitButtonText}>
+                  {t('Post Ad')}
+                </CustomText>
               )}
             </MyButton>
           </ScrollView>

@@ -13,13 +13,14 @@ import {CloseSvg} from '../../assets/svg';
 import {placeOrder} from '../../api/apiServices';
 import {useSelector} from 'react-redux';
 import {colors} from '../../util/color';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
+import CustomText from '../CustomText';
 
 const PaymentModal = ({visible, onClose, onSelectPaymentMethod}) => {
   const {token} = useSelector(state => state.user);
   const [loading, setLoading] = useState(false);
   const [selectedMethod, setSelectedMethod] = useState('CARD');
-const {t} = useTranslation();
+  const {t} = useTranslation();
 
   const handleOrderSubmit = async () => {
     setLoading(true);
@@ -71,7 +72,9 @@ const {t} = useTranslation();
           <TouchableOpacity onPress={onClose} style={styles.closeButton}>
             <CloseSvg />
           </TouchableOpacity>
-          <Text style={styles.title}>{t('selectPaymentMethod')}</Text>
+          <CustomText style={styles.title}>
+            {t('selectPaymentMethod')}
+          </CustomText>
 
           <View style={styles.content}>
             <TouchableOpacity
@@ -85,7 +88,7 @@ const {t} = useTranslation();
                 color={colors.green}
                 status={selectedMethod === 'CARD' ? 'checked' : 'unchecked'}
               />
-              <Text style={styles.label}>{t('stripe')}</Text>
+              <CustomText style={styles.label}>{t('stripe')}</CustomText>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -99,14 +102,16 @@ const {t} = useTranslation();
                 color={colors.green}
                 status={selectedMethod === 'COD' ? 'checked' : 'unchecked'}
               />
-              <Text style={styles.label}>{t('cashOnDelivery')}</Text>
+              <CustomText style={styles.label}>
+                {t('cashOnDelivery')}
+              </CustomText>
             </TouchableOpacity>
           </View>
 
           <TouchableOpacity onPress={handleOrderSubmit} style={styles.button}>
-            <Text style={styles.buttonText}>
+            <CustomText style={styles.buttonText}>
               {loading ? t('processing') : t('confirm')}
-            </Text>
+            </CustomText>
           </TouchableOpacity>
         </View>
       </View>

@@ -8,13 +8,17 @@ import {
   labelStyle,
   inputStyle,
 } from '../../../util/Filtering/filterStyles';
-import { colors } from '../../../util/color';
-import { t } from 'i18next';
+import {colors} from '../../../util/color';
+import {t} from 'i18next';
+import {useTranslation} from 'react-i18next';
+import CustomText from '../../CustomText';
 
 const PropertyAdjustFilterSheet = ({filters, setFilters, closeSheet}) => {
   const updateField = (key, value) => {
     setFilters(prev => ({...prev, [key]: value}));
   };
+
+  const {i18n} = useTranslation();
 
   const resetFilters = () => {
     setFilters({});
@@ -24,24 +28,43 @@ const PropertyAdjustFilterSheet = ({filters, setFilters, closeSheet}) => {
   const [availabilityOpen, setAvailabilityOpen] = useState(false);
   const [purposeOpen, setPurposeOpen] = useState(false);
 
-  const purposeItems = [
-    {label: 'For Sale', value: 'For Sale'},
-    {label: 'For Rent', value: 'For Rent'},
-    {label: 'Other', value: 'Other'},
-  ];
+  const isArabic = i18n.language === 'ar';
 
-  const heatingCoolingItems = [
-    {label: 'Installed', value: 'Installed'},
-    {label: 'Not Installed', value: 'Not Installed'},
-  ];
+  const purposeItems = isArabic
+    ? [
+        {label: 'للبيع', value: 'للبيع'},
+        {label: 'للإيجار', value: 'للإيجار'},
+        {label: 'أخرى', value: 'أخرى'},
+      ]
+    : [
+        {label: 'For Sale', value: 'For Sale'},
+        {label: 'For Rent', value: 'For Rent'},
+        {label: 'Other', value: 'Other'},
+      ];
 
-  const availabilityItems = [
-    {label: 'Available', value: 'Available'},
-    {label: 'Not Available', value: 'Not Available'},
-  ];
+  const heatingCoolingItems = isArabic
+    ? [
+        {label: 'مثبت', value: 'مثبت'},
+        {label: 'غير مثبت', value: 'غير مثبت'},
+      ]
+    : [
+        {label: 'Installed', value: 'Installed'},
+        {label: 'Not Installed', value: 'Not Installed'},
+      ];
+
+  const availabilityItems = isArabic
+    ? [
+        {label: 'متوفر', value: 'متوفر'},
+        {label: 'غير متوفر', value: 'غير متوفر'},
+      ]
+    : [
+        {label: 'Available', value: 'Available'},
+        {label: 'Not Available', value: 'Not Available'},
+      ];
+
   const booleanOptions = [
-    {label: 'Yes', value: true},
-    {label: 'No', value: false},
+    {label: isArabic ? 'نعم' : 'Yes', value: true},
+    {label: isArabic ? 'لا' : 'No', value: false},
   ];
 
   // Define state for each dropdown open status
@@ -51,7 +74,7 @@ const PropertyAdjustFilterSheet = ({filters, setFilters, closeSheet}) => {
     furnished: false,
     elevator: false,
     balcony: false,
-    titleDeed_Document: false,
+    ownership_document: false,
     purpose: false,
   });
 
@@ -60,10 +83,10 @@ const PropertyAdjustFilterSheet = ({filters, setFilters, closeSheet}) => {
       <BottomSheetScrollView
         contentContainerStyle={{padding: 20, paddingBottom: 60}}>
         {/* --- BASIC FILTERS --- */}
-        <Text style={sectionTitleStyle}>Basic Filters</Text>
+        <CustomText style={sectionTitleStyle}>{t('Basic Filters')}</CustomText>
 
         {/* Property Type */}
-        <Text style={labelStyle}>Property Type</Text>
+        <CustomText style={labelStyle}>{t('Property Type')}</CustomText>
         <TextInput
           placeholder="e.g. Villa, Apartment"
           value={filters.propertyType || ''}
@@ -71,7 +94,7 @@ const PropertyAdjustFilterSheet = ({filters, setFilters, closeSheet}) => {
           style={inputStyle}
         />
 
-        <Text style={labelStyle}>Purpose</Text>
+        <CustomText style={labelStyle}>{t('Purpose')}</CustomText>
         <View style={{zIndex: purposeOpen ? 1000 : 1}}>
           <DropDownPicker
             open={purposeOpen}
@@ -80,33 +103,33 @@ const PropertyAdjustFilterSheet = ({filters, setFilters, closeSheet}) => {
             setOpen={setPurposeOpen}
             setValue={val => updateField('purpose', val())}
             setItems={() => {}}
-            placeholder="Select Purpose"
+            placeholder={t('Select Purpose')}
             style={[inputStyle, {marginBottom: purposeOpen ? 120 : 12}]}
             dropDownContainerStyle={{...inputStyle, marginBottom: 12}}
           />
         </View>
 
         {/* Size */}
-        <Text style={labelStyle}>Size</Text>
+        <CustomText style={labelStyle}>{t('size')}</CustomText>
         <TextInput
-          placeholder="e.g. 1 Kanal, 10 Marla"
+          placeholder={t('e.g. 1 Kanal, 10 Marla')}
           value={filters.size || ''}
           onChangeText={text => updateField('size', text)}
           style={inputStyle}
         />
 
         {/* Area Range */}
-        <Text style={labelStyle}>Area Range (sqft)</Text>
+        <CustomText style={labelStyle}>{t('areaRange')}</CustomText>
         <View style={{flexDirection: 'row', gap: 10}}>
           <TextInput
-            placeholder="Min"
+            placeholder={t('Min')}
             keyboardType="numeric"
             value={filters.minArea}
             onChangeText={text => updateField('minArea', text)}
             style={[inputStyle, {flex: 1}]}
           />
           <TextInput
-            placeholder="Max"
+            placeholder={t('Max')}
             keyboardType="numeric"
             value={filters.maxArea}
             onChangeText={text => updateField('maxArea', text)}
@@ -115,9 +138,9 @@ const PropertyAdjustFilterSheet = ({filters, setFilters, closeSheet}) => {
         </View>
 
         {/* Rooms */}
-        <Text style={labelStyle}>Rooms</Text>
+        <CustomText style={labelStyle}>{t('Rooms')}</CustomText>
         <TextInput
-          placeholder="e.g. 4"
+          placeholder={t('e.g. 4')}
           keyboardType="numeric"
           value={filters.rooms || ''}
           onChangeText={text => updateField('rooms', text)}
@@ -125,9 +148,9 @@ const PropertyAdjustFilterSheet = ({filters, setFilters, closeSheet}) => {
         />
 
         {/* Bathrooms */}
-        <Text style={labelStyle}>Bathrooms</Text>
+        <CustomText style={labelStyle}>{t('Bathrooms')}</CustomText>
         <TextInput
-          placeholder="e.g. 2"
+          placeholder={t('e.g. 2')}
           keyboardType="numeric"
           value={filters.bathrooms || ''}
           onChangeText={text => updateField('bathrooms', text)}
@@ -135,10 +158,12 @@ const PropertyAdjustFilterSheet = ({filters, setFilters, closeSheet}) => {
         />
 
         {/* --- ADDITIONAL FILTERS --- */}
-        <Text style={sectionTitleStyle}>Additional Filters</Text>
+        <CustomText style={sectionTitleStyle}>
+          {t('Additional Filters')}
+        </CustomText>
 
         {/* Floor Number */}
-        <Text style={labelStyle}>Floor Number</Text>
+        <CustomText style={labelStyle}>{t('Floor Number')}</CustomText>
         <TextInput
           placeholder="e.g. 1"
           keyboardType="numeric"
@@ -148,7 +173,7 @@ const PropertyAdjustFilterSheet = ({filters, setFilters, closeSheet}) => {
         />
 
         {/* Total Floors */}
-        <Text style={labelStyle}>Total Floors in Building</Text>
+        <CustomText style={labelStyle}>{t('Total Floors')}</CustomText>
         <TextInput
           placeholder="e.g. 5"
           keyboardType="numeric"
@@ -158,7 +183,7 @@ const PropertyAdjustFilterSheet = ({filters, setFilters, closeSheet}) => {
         />
 
         {/* Heating / Cooling */}
-        <Text style={labelStyle}>Heating / Cooling</Text>
+        <CustomText style={labelStyle}>{t('Heating / Cooling')}</CustomText>
         <View style={{zIndex: heatingCoolingOpen ? 1000 : 1}}>
           <DropDownPicker
             open={heatingCoolingOpen}
@@ -167,14 +192,14 @@ const PropertyAdjustFilterSheet = ({filters, setFilters, closeSheet}) => {
             setOpen={setHeatingCoolingOpen}
             setValue={val => updateField('heating_Cooling', val())}
             setItems={() => {}}
-            placeholder="Select option"
+            placeholder={t('Select Option')}
             style={[inputStyle, {marginBottom: heatingCoolingOpen ? 120 : 12}]}
             dropDownContainerStyle={{...inputStyle, marginBottom: 12}}
           />
         </View>
 
         {/* Water & Electricity Availability */}
-        <Text style={labelStyle}>Water & Electricity</Text>
+        <CustomText style={labelStyle}>{t('Water & Electricity')}</CustomText>
         <View style={{zIndex: availabilityOpen ? 999 : 1}}>
           <DropDownPicker
             open={availabilityOpen}
@@ -185,7 +210,7 @@ const PropertyAdjustFilterSheet = ({filters, setFilters, closeSheet}) => {
               updateField('water_electricityAvailability', val())
             }
             setItems={() => {}}
-            placeholder="Select option"
+            placeholder={t('Select Option')}
             style={[inputStyle, {marginBottom: availabilityOpen ? 120 : 12}]}
             dropDownContainerStyle={{...inputStyle, marginBottom: 12}}
           />
@@ -208,7 +233,7 @@ const PropertyAdjustFilterSheet = ({filters, setFilters, closeSheet}) => {
               alignItems: 'center',
               marginBottom: 12,
             }}>
-            <Text>{label}</Text>
+            <CustomText>{label}</CustomText>
             <Switch
               value={filters[key]}
               onValueChange={val => updateField(key, val)}
@@ -217,17 +242,17 @@ const PropertyAdjustFilterSheet = ({filters, setFilters, closeSheet}) => {
         ))} */}
 
         {[
-          {label: 'Pets Allowed', key: 'petsAllowed'},
-          {label: 'Parking', key: 'parking'},
-          {label: 'Furnished', key: 'furnished'},
-          {label: 'Elevator', key: 'elevator'},
-          {label: 'Balcony', key: 'balcony'},
-          {label: 'Title Deed / Document', key: 'titleDeed_Document'},
+          {label: t('Pets Allowed'), key: 'pets_allowed'},
+          {label: t('Parking'), key: 'parking'},
+          {label: t('Furnished'), key: 'furnished'},
+          {label: t('Elevator'), key: 'elevator'},
+          {label: t('Balcony / Terrace'), key: 'balcony_terrace'},
+          {label: t('Title Deed'), key: 'ownership_document'},
         ].map(({label, key}) => (
           <View
             key={key}
             style={{zIndex: dropdownStates[key] ? 1000 : 1, marginBottom: 12}}>
-            <Text style={labelStyle}>{label}</Text>
+            <CustomText style={labelStyle}>{label}</CustomText>
             <DropDownPicker
               open={dropdownStates[key]}
               value={filters[key]}
@@ -237,7 +262,7 @@ const PropertyAdjustFilterSheet = ({filters, setFilters, closeSheet}) => {
               }
               setValue={val => updateField(key, val())}
               setItems={() => {}}
-              placeholder="Select option"
+              placeholder={t('Select Option')}
               style={inputStyle}
               dropDownContainerStyle={inputStyle}
             />
@@ -245,7 +270,7 @@ const PropertyAdjustFilterSheet = ({filters, setFilters, closeSheet}) => {
         ))}
 
         {/* Nearby Landmarks */}
-        <Text style={labelStyle}>Nearby Landmarks</Text>
+        <CustomText style={labelStyle}>{t('Nearby Landmarks')}</CustomText>
         <TextInput
           placeholder="e.g. Near Faisal Mosque"
           value={filters.nearbyLandmarks || ''}
@@ -254,7 +279,7 @@ const PropertyAdjustFilterSheet = ({filters, setFilters, closeSheet}) => {
         />
 
         {/* Distance from City Center */}
-        <Text style={labelStyle}>Distance from City Center / Transport</Text>
+        <CustomText style={labelStyle}>{t('Transport')}</CustomText>
         <TextInput
           placeholder="e.g. 5km from Metro"
           value={filters.distancefroCityCenter_transport || ''}
@@ -268,7 +293,9 @@ const PropertyAdjustFilterSheet = ({filters, setFilters, closeSheet}) => {
         <TouchableOpacity
           onPress={resetFilters}
           style={{marginTop: 20, alignSelf: 'center'}}>
-          <Text style={{color: 'red', fontWeight: 'bold'}}>Reset Filters</Text>
+          <CustomText style={{color: 'red', fontWeight: 'bold'}}>
+            Reset Filters
+          </CustomText>
         </TouchableOpacity>
 
         {/* --- DONE BUTTON --- */}
@@ -283,7 +310,9 @@ const PropertyAdjustFilterSheet = ({filters, setFilters, closeSheet}) => {
               borderRadius: 8,
               alignItems: 'center',
             }}>
-            <Text style={{color: '#fff', fontWeight: 'bold'}}>{t('Done')}</Text>
+            <CustomText style={{color: '#fff', fontWeight: 'bold'}}>
+              {t('Done')}
+            </CustomText>
           </TouchableOpacity>
         </View>
       </BottomSheetScrollView>

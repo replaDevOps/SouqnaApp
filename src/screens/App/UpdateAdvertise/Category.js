@@ -17,6 +17,7 @@ import {mvs} from '../../../util/metrices';
 import Bold from '../../../typography/BoldText';
 import API, {BASE_URL_Product} from '../../../api/apiServices';
 import styles from '../Advertise/style';
+import Loader from '../../../components/Loader';
 
 const Category = () => {
   // const {categories, categoryIcons} = dummyData;
@@ -139,7 +140,8 @@ const Category = () => {
       <MainHeader title={t('updateCategory')} showBackIcon={true} />
       {loading ? (
         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-          <ActivityIndicator size="large" color="#008e91" />
+          <Loader width={mvs(250)} height={mvs(250)} />
+          {/* <ActivityIndicator size="large" color="#008e91" />*/}
         </View>
       ) : (
         <FlatList

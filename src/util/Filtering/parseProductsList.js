@@ -8,15 +8,15 @@ export const parseProductList = products => {
 
       return {
         ...product,
-        buildYear: extractField('yearofManufacture'),
-        brand: extractField('make_Brand'),
+        buildYear: extractField('year_of_manufacture'),
+        brand: extractField('make_brand'),
         transmission: extractField('transmission'),
-        fuelType: extractField('fuelType'),
+        fuelType: extractField('fuel_type'),
         mileage: extractField('mileage'),
         model: extractField('model'),
         power: extractField('power'),
         condition: extractField('condition'),
-        inspection: extractField('inspectionValidUntil'),
+        inspection: extractField('inspection_valid_until'),
         color: extractField('color'),
         location: extractField('registrationCity'),
         area: (() => {
@@ -34,7 +34,7 @@ export const parseProductList = products => {
         furnished: extractField('furnished'),
         elevator: extractField('elevator'),
         balcony: extractField('balcony'),
-        titleDeed_Document: extractField('titleDeed_Document'),
+        ownership_document: extractField('ownership_document'),
         nearbyLandmarks: extractField('nearbyLandmarks'),
         distancefroCityCenter_transport: extractField(
           'distancefroCityCenter_transport',

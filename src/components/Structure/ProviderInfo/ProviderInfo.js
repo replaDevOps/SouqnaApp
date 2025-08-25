@@ -1,22 +1,25 @@
-import React from 'react';
-import {Image, View} from 'react-native';
-import {Row} from '../../atoms/row';
-import {WorldSVG, ProfileSVG, ActiveSVG} from '../../../assets/svg';
+import {View, TouchableOpacity, I18nManager} from 'react-native';
+import {ProfileSVG, ActiveSVG} from '../../../assets/svg';
 import Line from '../../atoms/InputFields/Line';
 import Bold from '../../../typography/BoldText';
 import Regular from '../../../typography/RegularText';
 import styles from './style';
-import {BASE_URL_Product} from '../../../api/apiServices';
 import {useTranslation} from 'react-i18next';
+import {useNavigation} from '@react-navigation/native';
 
 const ProviderInfo = ({provider}) => {
-  const {t} = useTranslation();
+  const {t, i18n} = useTranslation();
+  const isArabic = i18n.language === 'ar';
+  const isRTL = I18nManager.isRTL;
+
   const roleText =
     provider?.user?.role === '2'
-      ? 'Seller'
+      ? t('seller')
       : provider?.user?.role === '3'
-      ? 'Buyer'
-      : 'Seller';
+      ? t('buyer')
+      : t('seller');
+  const navigation = useNavigation();
+
   return (
     <View style={styles.providerContainer}>
       <Bold style={styles.providerTitle}>{t('Provider')}</Bold>
@@ -37,31 +40,58 @@ const ProviderInfo = ({provider}) => {
 
       <View style={styles.attributes}>
         <View style={styles.attributeBox}>
-          <Regular style={styles.leftText}>{provider.category?.name}</Regular>
+          <Regular style={styles.leftText}>
+            {isArabic ? provider.category?.ar_name : provider.category?.name}
+          </Regular>
         </View>
         <View style={styles.attributeBox}>
           <Regular style={styles.leftText}>
-            {provider.sub_category?.name}
+            {isArabic
+              ? provider.sub_category?.ar_name
+              : provider.sub_category?.name}
           </Regular>
         </View>
       </View>
 
-      <View style={{paddingVertical: 10}}>
-        <Row>
-          <Regular>
-            <ProfileSVG width={15} height={15} />
-            {'  '}
+      <TouchableOpacity
+        style={{paddingVertical: 10}}
+        onPress={() => {
+          console.log(
+            'Provider email:',
+            provider.user?.email || provider.seller?.email,
+          );
+          navigation.navigate('SellerProfile', {
+            sellerId: provider.user?.id || provider.seller?.id,
+          });
+        }}>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'flex-start',
+            alignSelf: 'flex-start',
+          }}>
+          <ProfileSVG width={15} height={15} />
+          <Regular
+            style={{marginLeft: isRTL ? 0 : 5, marginRight: isRTL ? 5 : 0}}>
             {provider.user?.email || provider.seller?.email}
           </Regular>
-        </Row>
-      </View>
+        </View>
+      </TouchableOpacity>
 
-      <Row>
-        <Regular>
-          <ActiveSVG width={15} height={15} /> {t('activeSince')}
-          {provider.date}
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'flex-start',
+          alignSelf: 'flex-start',
+        }}>
+        <ActiveSVG width={15} height={15} />
+        <Regular
+          style={{marginLeft: isRTL ? 0 : 5, marginRight: isRTL ? 5 : 0}}>
+          {`${t('activeSince')} ${provider.date}`}
         </Regular>
-      </Row>
+      </View>
     </View>
   );
 };

@@ -1,6 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
 import {
-  Text,
   TextInput,
   View,
   ScrollView,
@@ -11,7 +10,7 @@ import {
   FlatList,
   KeyboardAvoidingView,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import {CommonActions, useNavigation, useRoute} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
 import {Snackbar} from 'react-native-paper';
@@ -28,6 +27,7 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {launchImageLibrary} from 'react-native-image-picker';
 import {styles} from '../CreateProduct/styles';
 import {showSnackbar} from '../../../../redux/slices/snackbarSlice';
+import CustomText from '../../../../components/CustomText';
 
 const UpdateProduct = () => {
   const route = useRoute();
@@ -55,7 +55,7 @@ const UpdateProduct = () => {
     location: '',
     lat: '',
     long: '',
-    fields: [],
+    custom_fields: [],
     currency: '',
     contactInfo: '',
   });
@@ -89,7 +89,7 @@ const UpdateProduct = () => {
         location,
         lat,
         long,
-        fields = [],
+        custom_fields = [],
         currency,
         contactInfo,
         // condition,
@@ -119,7 +119,7 @@ const UpdateProduct = () => {
           fileSize: 1000,
         })) || [];
       try {
-        const parsedCustomFields = JSON.parse(fields);
+        const parsedCustomFields = JSON.parse(custom_fields);
         setFormData({
           name: productName || '',
           description: description || '',
@@ -131,12 +131,12 @@ const UpdateProduct = () => {
           location: location || '',
           lat: lat || '',
           long: long || '',
-          fields: parsedCustomFields, // Use the parsed array
+          custom_fields: parsedCustomFields, // Use the parsed array
           currency: currency || '',
           contactInfo: contactInfo || '',
         });
       } catch (error) {
-        console.error('Error parsing fields:', error);
+        console.error('Error parsing custom_fields:', error);
         setFormData({
           name: productName || '',
           description: description || '',
@@ -148,7 +148,7 @@ const UpdateProduct = () => {
           location: location || '',
           lat: lat || '',
           long: long || '',
-          fields: [], // Default to an empty array if parsing fails
+          custom_fields: [], // Default to an empty array if parsing fails
           currency: currency || '',
           contactInfo: contactInfo || '',
         });
@@ -315,7 +315,7 @@ const UpdateProduct = () => {
       // condition: conditionValue,
       // negotiable: formData.negotiable,
       // contactInfo: formData.contactInfo,
-      fields: formData.fields,
+      custom_fields: formData.custom_fields,
       currency: formData.currency,
       contactInfo: formData.contactInfo,
     };
@@ -410,7 +410,7 @@ const UpdateProduct = () => {
           }}
           contentContainerStyle={{paddingBottom: mvs(60)}}>
           <View style={styles.sectionContainer}>
-            <Text style={styles.sectionTitle}>{t('Category')}</Text>
+            <CustomText style={styles.sectionTitle}>{t('Category')}</CustomText>
             <View style={styles.categoryBox}>
               <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <Image
@@ -424,22 +424,24 @@ const UpdateProduct = () => {
                     // justifyContent: 'space-between',
                   }}>
                   <View style={styles.fixedTextBox}>
-                    <Text
+                    <CustomText
                       style={styles.categoryTitle}
                       ellipsizeMode="tail"
                       numberOfLines={1}>
                       {selectedCategory?.name || category}
-                    </Text>
-                    <Text
+                    </CustomText>
+                    <CustomText
                       style={styles.categorySubtitle}
                       ellipsizeMode="tail"
                       numberOfLines={1}>
                       {selectedSubCategory?.name || name}
-                    </Text>
+                    </CustomText>
                   </View>
 
                   <TouchableOpacity onPress={handleChange}>
-                    <Text style={styles.changeText}>{t('Change')}</Text>
+                    <CustomText style={styles.changeText}>
+                      {t('Change')}
+                    </CustomText>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -450,7 +452,9 @@ const UpdateProduct = () => {
                 <TouchableOpacity
                   style={styles.addButton}
                   onPress={pickAndUploadImages}>
-                  <Text style={styles.addButtonText}>{t('addImages')}</Text>
+                  <CustomText style={styles.addButtonText}>
+                    {t('addImages')}
+                  </CustomText>
                 </TouchableOpacity>
               ) : (
                 <View>
@@ -476,9 +480,9 @@ const UpdateProduct = () => {
                                 height={22}
                                 style={styles.uploadIcon}
                               />
-                              <Text style={styles.uploadText}>
+                              <CustomText style={styles.uploadText}>
                                 {t('uploadImage')}
-                              </Text>
+                              </CustomText>
                             </TouchableOpacity>
                           ) : (
                             <View style={styles.imageWrapper}>
@@ -508,7 +512,9 @@ const UpdateProduct = () => {
                                 style={styles.removeIcon}
                                 onPress={() => handleRemoveImage(index - 1)} // subtract 1 due to upload icon
                               >
-                                <Text style={styles.removeIconText}>✕</Text>
+                                <CustomText style={styles.removeIconText}>
+                                  ✕
+                                </CustomText>
                               </TouchableOpacity>
                             </View>
                           )
@@ -520,16 +526,16 @@ const UpdateProduct = () => {
               )}
               <View>{/* Display Selected Images */}</View>
 
-              <Text style={styles.noteText}>{t('coverNote')} </Text>
+              <CustomText style={styles.noteText}>{t('coverNote')} </CustomText>
             </View>
           </View>
 
           {/* Condition Section - Updated to Radio Buttons */}
           {/* <View style={styles.sectionContainer}>
-            <Text style={styles.sectionTitle}>
+            <CustomText style={styles.sectionTitle}>
               {t('condition')}
-              <Text style={{color: colors.red}}>*</Text>
-            </Text>
+              <CustomText style={{color: colors.red}}>*</CustomText>
+            </CustomText>
 
             <View style={styles.radioContainer}>
               <TouchableOpacity
@@ -546,7 +552,7 @@ const UpdateProduct = () => {
                     )}
                   </View>
                 </View>
-                <Text style={styles.radioText}>{t('new')}</Text>
+                <CustomText style={styles.radioText}>{t('new')}</CustomText>
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -563,17 +569,18 @@ const UpdateProduct = () => {
                     )}
                   </View>
                 </View>
-                <Text style={styles.radioText}>{t('used')}</Text>
+                <CustomText style={styles.radioText}>{t('used')}</CustomText>
               </TouchableOpacity>
             </View>
           </View> */}
 
           {/* Name Section */}
           <View style={styles.sectionContainer}>
-            <Text style={styles.sectionTitle}>
+            <CustomText
+              style={{...styles.sectionTitle, fontFamily: 'Amiri-Regular'}}>
               {t('Ad Name')}
-              <Text style={{color: colors.red}}>*</Text>
-            </Text>
+              <CustomText style={{color: colors.red}}>*</CustomText>
+            </CustomText>
             <TextInput
               style={styles.input}
               placeholder={t('namePlaceholder')}
@@ -585,10 +592,10 @@ const UpdateProduct = () => {
 
           {/* Description Section */}
           <View style={styles.sectionContainer}>
-            <Text style={styles.sectionTitle}>
+            <CustomText style={styles.sectionTitle}>
               {t('description')}
-              <Text style={{color: colors.red}}>*</Text>
-            </Text>
+              <CustomText style={{color: colors.red}}>*</CustomText>
+            </CustomText>
             <TextInput
               style={[styles.input, {height: mvs(100)}]}
               placeholder={t('descriptionPlaceholder')}
@@ -601,10 +608,10 @@ const UpdateProduct = () => {
 
           {/* Location Section - Fixed */}
           <View style={styles.sectionContainer}>
-            <Text style={styles.sectionTitle}>
+            <CustomText style={styles.sectionTitle}>
               {t('location')}
-              <Text style={{color: colors.red}}>*</Text>
-            </Text>
+              <CustomText style={{color: colors.red}}>*</CustomText>
+            </CustomText>
             <View style={styles.locationContainer}>
               <GooglePlacesSuggestion
                 initialValue={formData.location}
@@ -615,10 +622,10 @@ const UpdateProduct = () => {
 
           {/* Price Section */}
           <View style={styles.sectionContainer}>
-            <Text style={styles.sectionTitle}>
+            <CustomText style={styles.sectionTitle}>
               {t('price')}
-              <Text style={{color: colors.red}}>*</Text>
-            </Text>
+              <CustomText style={{color: colors.red}}>*</CustomText>
+            </CustomText>
             <PriceInputWithDropdown
               value={formData.price}
               onChangeText={text => handleInputChange('price', text)}
@@ -641,10 +648,10 @@ const UpdateProduct = () => {
 
           {/* Discount Section */}
           <View style={styles.sectionContainer}>
-            <Text style={styles.sectionTitle}>
+            <CustomText style={styles.sectionTitle}>
               {t('discount')}
-              {/* <Text style={{color: colors.red}}>*</Text> */}
-            </Text>
+              {/* <CustomText style={{color: colors.red}}>*</CustomText> */}
+            </CustomText>
             <TextInput
               style={styles.input}
               placeholder={t('discountPlaceholder')}
@@ -657,10 +664,10 @@ const UpdateProduct = () => {
 
           {/* Special Offer Section */}
           <View style={styles.sectionContainer}>
-            <Text style={styles.sectionTitle}>
+            <CustomText style={styles.sectionTitle}>
               {t('specialOffer')}
-              {/* <Text style={{color: colors.red}}>*</Text> */}
-            </Text>
+              {/* <CustomText style={{color: colors.red}}>*</CustomText> */}
+            </CustomText>
             <TextInput
               style={styles.input}
               placeholder={t('specialOfferPlaceholder')}
@@ -671,10 +678,10 @@ const UpdateProduct = () => {
           </View>
 
           <View style={styles.sectionContainer}>
-            <Text style={styles.sectionTitle}>
+            <CustomText style={styles.sectionTitle}>
               {t('contactInfo')}
-              {/* <Text style={{color: colors.red}}>*</Text> */}
-            </Text>
+              {/* <CustomText style={{color: colors.red}}>*</CustomText> */}
+            </CustomText>
             <TextInput
               style={styles.input}
               placeholder={t('contactInfo')}
@@ -686,10 +693,10 @@ const UpdateProduct = () => {
 
           {/* Stock Section */}
           {/* <View style={styles.sectionContainer}>
-            <Text style={styles.sectionTitle}>
+            <CustomText style={styles.sectionTitle}>
               {t('availableStock')}
-              <Text style={{color: colors.red}}>*</Text>
-            </Text>
+              <CustomText style={{color: colors.red}}>*</CustomText>
+            </CustomText>
             <TextInput
               style={styles.input}
               placeholder={t('stockPlaceholder')}
@@ -701,29 +708,33 @@ const UpdateProduct = () => {
           </View> */}
 
           <View style={styles.sectionContainer}>
-            <Text style={styles.sectionTitle}>{t('customFields')}</Text>
-            {Array.isArray(formData.fields) ? (
-              formData.fields.map((field, index) => (
+            <CustomText style={styles.sectionTitle}>
+              {t('customFields')}
+            </CustomText>
+            {Array.isArray(formData.custom_fields) ? (
+              formData.custom_fields.map((field, index) => (
                 <View key={index} style={styles.fieldContainer}>
-                  <Text style={styles.sectionTitle}>{field.name}</Text>
+                  <CustomText style={styles.sectionTitle}>
+                    {field.name}
+                  </CustomText>
                   <TextInput
                     style={styles.input}
                     placeholder={t('enterValue')}
                     placeholderTextColor={colors.grey}
                     value={field.value || ''}
                     onChangeText={text => {
-                      const updatedFields = formData.fields.map((f, idx) =>
-                        idx === index ? {...f, value: text} : f,
+                      const updatedFields = formData.custom_fields.map(
+                        (f, idx) => (idx === index ? {...f, value: text} : f),
                       );
-                      handleInputChange('fields', updatedFields);
+                      handleInputChange('custom_fields', updatedFields);
                     }}
                   />
                 </View>
               ))
             ) : (
-              <Text style={styles.errorText}>
+              <CustomText style={styles.errorText}>
                 Custom fields are not available
-              </Text>
+              </CustomText>
             )}
           </View>
 
@@ -736,7 +747,9 @@ const UpdateProduct = () => {
             {loading ? (
               <ActivityIndicator color={colors.green} />
             ) : (
-              <Text style={styles.submitButtonText}>{t('updateProduct')}</Text>
+              <CustomText style={styles.submitButtonText}>
+                {t('updateProduct')}
+              </CustomText>
             )}
           </MyButton>
         </ScrollView>

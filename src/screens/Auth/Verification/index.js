@@ -28,6 +28,7 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {useTranslation} from 'react-i18next';
 import DropDownPicker from 'react-native-dropdown-picker';
 import {setUser} from '../../../redux/slices/userSlice';
+import CustomText from '../../../components/CustomText';
 
 // Radio Button Component
 const RadioButton = ({selected, onPress, label}) => {
@@ -40,7 +41,7 @@ const RadioButton = ({selected, onPress, label}) => {
         <View style={styles.radioOuter}>
           {selected && <View style={styles.radioInner} />}
         </View>
-        <Text style={styles.radioLabel}>{label}</Text>
+        <CustomText style={styles.radioLabel}>{label}</CustomText>
       </View>
     </TouchableOpacity>
   );
@@ -202,11 +203,11 @@ const VerificationScreen = () => {
         const granted = await PermissionsAndroid.request(
           PermissionsAndroid.PERMISSIONS.CAMERA,
           {
-            title: 'Camera Permission',
-            message: 'App needs access to your camera',
-            buttonNeutral: 'Ask Me Later',
-            buttonNegative: 'Cancel',
-            buttonPositive: 'OK',
+            title: t('Camera Permission'),
+            message: t('App needs access to your camera'),
+            buttonNeutral: t('Ask Me Later'),
+            buttonNegative: t('Cancel'),
+            buttonPositive: t('OK'),
           },
         );
         return granted === PermissionsAndroid.RESULTS.GRANTED;
@@ -453,9 +454,9 @@ const VerificationScreen = () => {
       console.log('API Response:', response.data);
       if (response.status === 200 && response.data.success) {
         if (isVerified) {
-          Alert.alert('Success', 'Verification in progress!');
+          Alert.alert('Success', t('Verification in progress!'));
         } else {
-          Alert.alert('Success', 'Verification completed!');
+          Alert.alert('Success', t('verificationCompleted'));
         }
 
         navigation.replace('MainTabs', {
@@ -511,13 +512,14 @@ const VerificationScreen = () => {
     minDate,
   ) => (
     <View key={key} style={styles.inputContainer}>
-      <Text style={styles.label}>{label}</Text>
+      <CustomText style={styles.label}>{label}</CustomText>
       <TouchableOpacity
         style={styles.dateInput}
         onPress={isEditable ? () => setOpenState(true) : undefined}>
-        <Text style={formData[key] ? styles.dateText : styles.datePlaceholder}>
+        <CustomText
+          style={formData[key] ? styles.dateText : styles.datePlaceholder}>
           {formData[key] || placeholder}
-        </Text>
+        </CustomText>
         <View style={styles.calendarIcon}>
           <CalendersSVG height={22} width={22} fill={colors.gray} />
         </View>
@@ -544,7 +546,7 @@ const VerificationScreen = () => {
         <View style={styles.container}>
           {/* Full Name input (first field) */}
           <View style={styles.inputContainer}>
-            <Text style={styles.label}>{t('fullName')}</Text>
+            <CustomText style={styles.label}>{t('fullName')}</CustomText>
             <TextInput
               editable={isEditable}
               style={styles.input}
@@ -568,7 +570,7 @@ const VerificationScreen = () => {
 
           {/* Gender Radio Buttons */}
           <View style={styles.inputContainer}>
-            <Text style={styles.label}>{t('gender')}</Text>
+            <CustomText style={styles.label}>{t('gender')}</CustomText>
 
             <View style={styles.radioGroup}>
               <RadioButton
@@ -595,7 +597,7 @@ const VerificationScreen = () => {
             </View>
           </View>
           <View style={styles.inputContainer}>
-            <Text style={styles.label}>{t('country')}</Text>
+            <CustomText style={styles.label}>{t('country')}</CustomText>
             <DropDownPicker
               open={countryOpen}
               value={formData.country}
@@ -606,7 +608,7 @@ const VerificationScreen = () => {
                 handleInputChange('country', selectedValue);
               }}
               setItems={setCountryItems}
-              placeholder="Select Country"
+              placeholder={t('selectCountry')}
               zIndex={3000}
               zIndexInverse={1000}
               style={{
@@ -625,7 +627,7 @@ const VerificationScreen = () => {
           </View>
 
           <View style={styles.inputContainer}>
-            <Text style={styles.label}>{t('Phone No')}</Text>
+            <CustomText style={styles.label}>{t('Phone No')}</CustomText>
             <TextInput
               style={styles.input}
               placeholder={
@@ -650,12 +652,12 @@ const VerificationScreen = () => {
             };
             const placeholderMap = {
               // country: 'Enter Country',
-              address: 'Enter Address',
+              address: t('enterAddress'),
               // idNumber: 'Enter ID Number',
             };
             return (
               <View key={key} style={styles.inputContainer}>
-                <Text style={styles.label}>{t(`${key}`)}</Text>
+                <CustomText style={styles.label}>{t(`${key}`)}</CustomText>
                 <TextInput
                   editable={isEditable}
                   style={styles.input}
@@ -668,15 +670,15 @@ const VerificationScreen = () => {
           })}
 
           <View style={styles.inputContainer}>
-            <Text style={styles.label}>{t('idType')}</Text>
+            <CustomText style={styles.label}>{t('idType')}</CustomText>
             <View style={[styles.radioGroup, {justifyContent: 'space-around'}]}>
               <RadioButton
-                label="NIN"
+                label={t('NIN')}
                 selected={idType === 'cnic'}
                 onPress={isEditable ? () => setIdType('cnic') : undefined}
               />
               <RadioButton
-                label="Driving License"
+                label={t('Driving License')}
                 selected={idType === 'drivingLicense'}
                 onPress={
                   isEditable ? () => setIdType('drivingLicense') : undefined
@@ -687,14 +689,14 @@ const VerificationScreen = () => {
           </View>
 
           <View style={styles.inputContainer}>
-            <Text style={styles.label}>{t('idNumber')}</Text>
+            <CustomText style={styles.label}>{t('idNumber')}</CustomText>
 
             <TextInput
               editable={isEditable}
               style={styles.input}
               value={formData.idNumber}
               onChangeText={text => handleInputChange('idNumber', text)}
-              placeholder="ID Number"
+              placeholder={t('idNumber')}
               keyboardType="numeric"
               // editable={formData.idNumber.replace(/\D/g, '').length < 13}
               maxLength={15}
@@ -763,7 +765,9 @@ const VerificationScreen = () => {
                         height={16}
                         style={styles.uploadIcon}
                       />
-                      <Text style={styles.uploadLabel}>{label}</Text>
+                      <CustomText style={styles.uploadLabel}>
+                        {label}
+                      </CustomText>
                     </View>
                   )}
                 </TouchableOpacity>
@@ -772,7 +776,7 @@ const VerificationScreen = () => {
                   <TouchableOpacity
                     onPress={() => setter(null)}
                     style={styles.removeIcon}>
-                    <Text style={styles.removeIconText}>✕</Text>
+                    <CustomText style={styles.removeIconText}>✕</CustomText>
                   </TouchableOpacity>
                 )}
               </View>
@@ -797,7 +801,9 @@ const VerificationScreen = () => {
                       height={16}
                       style={styles.uploadIcon}
                     />
-                    <Text style={styles.uploadLabel}>{t('uploadSelfie')}</Text>
+                    <CustomText style={styles.uploadLabel}>
+                      {t('uploadSelfie')}
+                    </CustomText>
                   </View>
                 )}
               </TouchableOpacity>
@@ -806,7 +812,7 @@ const VerificationScreen = () => {
                 <TouchableOpacity
                   onPress={() => setSelfie(null)}
                   style={styles.removeIcon}>
-                  <Text style={styles.removeIconText}>✕</Text>
+                  <CustomText style={styles.removeIconText}>✕</CustomText>
                 </TouchableOpacity>
               )}
             </View>
@@ -823,9 +829,9 @@ const VerificationScreen = () => {
             {loading ? (
               <ActivityIndicator size="large" color={colors.green} />
             ) : (
-              <Text style={{color: '#fff', fontWeight: 'bold'}}>
+              <CustomText style={{color: '#fff', fontWeight: 'bold'}}>
                 {isVerified ? t('updateVerification') : t('submitVerification')}
-              </Text>
+              </CustomText>
             )}
           </MyButton>
         </View>
@@ -837,7 +843,9 @@ const VerificationScreen = () => {
           onRequestClose={() => setModalVisible(false)}>
           <View style={styles.modalOverlay}>
             <View style={styles.modalContainer}>
-              <Text style={styles.modalText}>{t('documentPending')}</Text>
+              <CustomText style={styles.modalText}>
+                {t('documentPending')}
+              </CustomText>
               <TouchableOpacity
                 style={styles.modalButton}
                 onPress={() => setModalVisible(false)}>

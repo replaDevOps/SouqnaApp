@@ -1,10 +1,9 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import {
   View,
   Dimensions,
   ScrollView,
-  Text,
   Alert,
   TouchableOpacity,
 } from 'react-native';
@@ -41,6 +40,7 @@ import {getOrCreateConversation} from '../../../firebase/chatService';
 import DetailsTable from '../../../components/Structure/Details/DetailsTable';
 import LocationMapModal from '../../../components/Modals/LocationMapModal';
 import {useTranslation} from 'react-i18next';
+import CustomText from '../../../components/CustomText';
 
 const {height} = Dimensions.get('window');
 
@@ -275,33 +275,33 @@ const ProductDetail = () => {
       lat: product.lat,
       long: product.long,
       condition: product.condition, // assuming it's 1 or 2
-      fields: product.fields,
+      custom_fields: product.custom_fields,
       currency: product.currency,
       contactInfo: product.contactInfo,
     });
   };
 
   const handleDeletePress = () => {
-    Alert.alert('Confirm Delete', 'Are you sure you want to delete this Ad?', [
-      {text: 'Cancel', style: 'cancel'},
+    Alert.alert('Confirm Delete', t('confirmDeleteProduct'), [
+      {text: t('Cancel'), style: 'cancel'},
       {
-        text: 'Delete',
+        text: t('delete'),
         style: 'destructive',
         onPress: async () => {
           try {
             const response = await deleteProduct(productId, token);
             if (response.success) {
-              setSnackbarMessage('Ad deleted successfully.');
+              setSnackbarMessage(t('Ad deleted successfully.'));
               setSnackbarVisible(true);
               navigation.replace('MainTabs');
             } else {
               console.warn('Failed to delete Ad:', response.message);
-              setSnackbarMessage(response.message || 'Failed to delete Ad.');
+              setSnackbarMessage(response.message || t('Failed to delete Ad.'));
               setSnackbarVisible(true);
             }
           } catch (error) {
             console.error('Error deleting Ad:', error.message || error);
-            setSnackbarMessage('An error occurred while deleting the Ad.');
+            setSnackbarMessage(t('An error occurred while deleting the Ad.'));
             setSnackbarVisible(true);
           }
         },
@@ -331,7 +331,6 @@ const ProductDetail = () => {
         <Loader width={mvs(250)} height={mvs(250)} />
       ) : (
         <>
-          {console.log('Product currency:', product.currency)}
           <ProductHeader
             title={product.name}
             filled={likedItems[product.id]}
@@ -375,10 +374,10 @@ const ProductDetail = () => {
                     //                onPress={()=>
                     // console.log('{modal triggered sucessfully}')}
                   >
-                    <Text
+                    <CustomText
                       style={{color: 'blue', textDecorationLine: 'underline'}}>
                       {t('viewOnMap')}
-                    </Text>
+                    </CustomText>
                     {/* {product.location} */}
                   </TouchableOpacity>
                 </View>
@@ -400,20 +399,27 @@ const ProductDetail = () => {
               }
               /> */}
             <View style={{}}>
-              <Bold style={{fontSize: mvs(22), marginHorizontal: mvs(10)}}>
+              <Bold
+                style={{
+                  fontSize: mvs(22),
+                  marginHorizontal: mvs(10),
+                  fontFamily: 'Amiri-Regular',
+                }}>
                 {t('details')}
               </Bold>
-              <DetailsTable ProductData={product.fields} />
+              <DetailsTable ProductData={product.custom_fields} />
             </View>
             <View style={styles.descriptionContainer}>
-              <Bold style={{fontSize: mvs(22)}}>{t('Description')}</Bold>
-              <Regular
-                style={styles.description}
+              <Bold style={{fontSize: mvs(22), fontFamily: 'Amiri-Regular'}}>
+                {t('Description')}
+              </Bold>
+              <Bold
+                style={{...styles.description, fontFamily: 'Amiri-Regular'}}
                 numberOfLines={isReadMore ? 3 : 0}>
                 {product.description}
-              </Regular>
+              </Bold>
               {product.description?.split(' ').length > 20 && (
-                <Text
+                <CustomText
                   style={{
                     color: '#000',
                     marginTop: 4,
@@ -422,7 +428,7 @@ const ProductDetail = () => {
                   }}
                   onPress={() => setIsReadMore(!isReadMore)}>
                   {isReadMore ? t('readMore') : t('showLess')}
-                </Text>
+                </CustomText>
               )}
             </View>
 

@@ -20,6 +20,7 @@ import Bold from '../../../typography/BoldText';
 import {ForwardSVG} from '../../../assets/svg';
 import API, {BASE_URL_Product} from '../../../api/apiServices';
 import i18n from '../../../i18n/i18n';
+import Loader from '../../../components/Loader';
 
 const AdvertiseScreen = () => {
   // const {categories, categoryIcons} = dummyData;
@@ -107,7 +108,14 @@ const AdvertiseScreen = () => {
           {imageURL ? (
             <Image
               source={{uri: imageURL}}
-              style={{width: mvs(60), height: mvs(60), borderRadius: 30}}
+              style={{
+                width: '100%',
+                height: '100%',
+                // backgroundColor: 'blue',
+                // height: mvs(80),
+                // borderRadius: 30,
+                resizeMode: 'contain',
+              }}
             />
           ) : (
             <LocationSvg width={24} height={24} />
@@ -134,17 +142,50 @@ const AdvertiseScreen = () => {
     category => category.name !== 'Other Categories' && category.status !== 2,
   );
 
+  const desiredOrder = [
+    'Vehicle',
+    'Property',
+    'Spare Parts',
+    'Services',
+    'New & Used',
+  ];
+
+  // Function to sort categories
+  const sortCategories = categoriestoSort => {
+    return categoriestoSort.sort((a, b) => {
+      const indexA = desiredOrder.indexOf(a.name);
+      const indexB = desiredOrder.indexOf(b.name);
+
+      // If both categories are in the desired order, sort by their position
+      if (indexA !== -1 && indexB !== -1) {
+        return indexA - indexB;
+      }
+
+      // If only one is in the desired order, prioritize it
+      if (indexA !== -1) {
+        return -1;
+      }
+      if (indexB !== -1) {
+        return 1;
+      }
+
+      // If neither is in the desired order, maintain original order
+      return 0;
+    });
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" />
       <MainHeader title={t('titleProduct')} />
       {loading ? (
         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-          <ActivityIndicator size="large" color="#008e91" />
+          <Loader width={mvs(250)} height={mvs(250)} />
+          {/* <ActivityIndicator size="large" color="#008e91" /> */}
         </View>
       ) : (
         <FlatList
-          data={filteredCategories}
+          data={sortCategories([...filteredCategories])}
           numColumns={2}
           keyExtractor={(item, index) => index.toString()}
           renderItem={renderCategoryItem}

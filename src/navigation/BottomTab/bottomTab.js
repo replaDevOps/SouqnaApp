@@ -25,23 +25,20 @@ import {fetchNotifications} from '../../api/apiServices';
 import {setRole} from '../../redux/slices/userSlice';
 import AddModal from '../../components/Modals/AddModal';
 import VerificationModal from '../../components/Modals/VerificationModal';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 
 const Tab = createBottomTabNavigator();
 
 const MyTabs = () => {
-  const {
-    token,
-    role,
-    actualRole,
-    verificationStatus,
-  } = useSelector(state => state.user);
+  const {token, role, actualRole, verificationStatus} = useSelector(
+    state => state.user,
+  );
   const activeRole = role ?? 3;
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [verificationModalVisible, setVerificationModalVisible] =
     useState(false);
-const {tokens} = useSelector(state => state.user);
+  const {tokens} = useSelector(state => state.user);
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigation = useNavigation();
@@ -55,16 +52,16 @@ const {tokens} = useSelector(state => state.user);
   // const [isSeller, setIsSeller] = useState(
   //   activeRole === '2' || activeRole === 2,
   // );
-console.log('{Tokens}',tokens);
+  console.log('{Tokens}', tokens);
 
   useEffect(() => {
     console.log('TOKEN: ', token);
   }, [token]);
-useEffect(() => {
-  if (role == null) {
-    dispatch(setRole(3));
-  }
-}, [dispatch, role]);
+  useEffect(() => {
+    if (role == null) {
+      dispatch(setRole(3));
+    }
+  }, [dispatch, role]);
 
   const handleLoginSuccess = () => {
     setIsModalVisible(false);
@@ -150,7 +147,7 @@ useEffect(() => {
   }, []);
 
   const renderTabs = () => {
-    if ((activeRole == 2 ) && token) {
+    if (activeRole == 2 && token) {
       // Seller: Home, Inbox, Advertise, Profile
       return (
         <>
@@ -169,9 +166,16 @@ useEffect(() => {
               tabPress: e => handleTabPress(e, route, navigation),
             })}
           />
-          <Tab.Screen
+          {/* <Tab.Screen
             name="Notification"
             component={Notification}
+            listeners={({navigation, route}) => ({
+              tabPress: e => handleTabPress(e, route, navigation),
+            })}
+          /> */}
+          <Tab.Screen
+            name="Favourite"
+            component={FavouriteScreen}
             listeners={({navigation, route}) => ({
               tabPress: e => handleTabPress(e, route, navigation),
             })}
@@ -185,7 +189,7 @@ useEffect(() => {
           />
         </>
       );
-    } else if (activeRole == 3 ) {
+    } else if (activeRole == 3) {
       // Buyer: Home, Inbox, Favourites, Cart, Profile
       return (
         <>
@@ -204,13 +208,13 @@ useEffect(() => {
               tabPress: e => handleTabPress(e, route, navigation),
             })}
           />
-          <Tab.Screen
+          {/* <Tab.Screen
             name="Notification"
             component={Notification}
             listeners={({navigation, route}) => ({
               tabPress: e => handleTabPress(e, route, navigation),
             })}
-          />
+          /> */}
           <Tab.Screen
             name="Profile"
             component={Profile}
@@ -302,7 +306,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     width: mvs(60),
     marginTop: mvs(3),
-    fontFamily: 'DMSans-regular',
+    fontFamily: 'Amiri-Regular',
   },
   iconContainer: {
     alignItems: 'center',

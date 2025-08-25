@@ -1,8 +1,9 @@
 import React from 'react';
-import {ColorValue, StyleProp, StyleSheet, Text, TextStyle} from 'react-native';
-import {mvs} from '../util/metrices';
-import {colors} from '../util/color';
-import fonts from '../assets/fonts';
+import { ColorValue, StyleProp, StyleSheet, TextStyle } from 'react-native';
+import { mvs } from '../util/metrices';
+import { colors } from '../util/color';
+import CustomText from '../components/CustomText';
+import { getFontFamily } from '../util/fonts';
 type FcProps = {
   label?: string | number;
   numberOfLines?: number;
@@ -22,19 +23,21 @@ const Medium: React.FC<FcProps> = ({
   ...props
 }) => {
   return (
-    <Text
+    <CustomText
       numberOfLines={numberOfLines}
       {...props}
-      style={[{...styles.label, color: color, fontSize: fontSize}, style]}>
+      style={[{ ...styles.label, color: color, fontSize: fontSize }, style]}>
       {label}
       {children}
-    </Text>
+    </CustomText>
   );
 };
 export default Medium;
 const styles = StyleSheet.create({
   label: {
-    fontFamily: fonts.medium,
+    // fontFamily: 'Amiri-Regular',
+    ...getFontFamily('regular'),
+    // fontFamily: fonts.medium,
     fontSize: mvs(16),
     color: colors.gray,
   },

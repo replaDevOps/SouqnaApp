@@ -21,6 +21,7 @@ import Bold from '../../../../typography/BoldText';
 import {colors} from '../../../../util/color';
 import {mvs} from '../../../../util/metrices';
 import {useTranslation} from 'react-i18next';
+import CustomText from '../../../CustomText';
 
 const {width} = Dimensions.get('window');
 
@@ -119,7 +120,8 @@ const GalleryContainer = ({
         response = await fetchSellerProducts(token, filters);
       } else {
         // Buyer or Guest (role 3 or others)
-        response = await fetchBuyerProducts(filters);
+        const isLoggedIn = Boolean(token);
+        response = await fetchBuyerProducts(filters, isLoggedIn);
       }
       console.log('API Response:', response);
       if (response?.success && Array.isArray(response.data)) {
@@ -179,7 +181,9 @@ const GalleryContainer = ({
             ItemSeparatorComponent={() => <View style={{width: mvs(4)}} />}
             contentContainerStyle={styles.flatListContainer}
             ListEmptyComponent={
-              <Text style={styles.noProductsText}>{t('noProducts')}</Text>
+              <CustomText style={styles.noProductsText}>
+                {t('noProducts')}
+              </CustomText>
             }
             refreshControl={
               <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />

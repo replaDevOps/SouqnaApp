@@ -177,6 +177,139 @@ API.interceptors.response.use(
   },
 );
 
+export const GetSellerDetails = async (sellerId, token = null) => {
+  try {
+    const config = {};
+    if (token) {
+      config.headers = {
+        Authorization: `Bearer ${token}`,
+      };
+    }
+
+    const response = await API.get(`getSellerDetails/${sellerId}`, config);
+    console.log('response for seller details:', response);
+    return response.data;
+  } catch (error) {
+    console.error(
+      'Error fetching seller details:',
+      error?.response?.data || error.message,
+    );
+    return null;
+  }
+};
+
+export const GetSellerProducts = async (
+  sellerId,
+  filters = {},
+  isLoggedIn = false,
+  token = null,
+) => {
+  try {
+    const requestBody = {
+      productName: filters.productName || '',
+      fromDate: filters.fromDate || '',
+      toDate: filters.toDate || '',
+      status: filters.status || '',
+      customField: filters.customField || '',
+      sellerID: sellerId,
+    };
+
+    const config = {
+      headers: {
+        pageNo: filters.pageNo || 1,
+        recordsPerPage: filters.recordsPerPage || 20,
+      },
+    };
+
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+
+    const endpoint = isLoggedIn ? 'showProducts' : 'showProductsWithoutAuth';
+    console.log(`Endpoint Used: ${endpoint} (Seller Products)`);
+
+    const response = await API.post(endpoint, requestBody, config);
+
+    console.log('response for seller products:', response);
+
+    if (response.status === 200) {
+      return response.data;
+    }
+
+    console.error(`Error: Received status code ${response.status}`);
+    return null;
+  } catch (error) {
+    console.error(
+      'Error fetching seller products:',
+      error?.response?.data || error.message,
+    );
+    return null;
+  }
+};
+
+export const GetSellerProfile = async (sellerId, options = {}) => {
+  const {filters = {}, isLoggedIn = false, token = null} = options;
+
+  try {
+    // Fetch seller details and products in parallel
+    const [sellerDetailsResponse, sellerProductsResponse] = await Promise.all([
+      GetSellerDetails(sellerId, token),
+      GetSellerProducts(sellerId, filters, isLoggedIn, token),
+    ]);
+
+    // Check if API calls were successful
+    if (!sellerDetailsResponse || !sellerDetailsResponse.success) {
+      throw new Error('Failed to fetch seller details');
+    }
+
+    if (!sellerProductsResponse || !sellerProductsResponse.success) {
+      throw new Error('Failed to fetch seller products');
+    }
+
+    const sellerDetails = sellerDetailsResponse.data;
+    const sellerProducts = sellerProductsResponse.data || [];
+
+    // Process and combine the data
+    const processedData = {
+      seller: {
+        id: sellerDetails.id,
+        name: sellerDetails.name,
+        email: sellerDetails.email,
+        image: sellerDetails.image,
+        phone: sellerDetails.phone,
+        address: sellerDetails.address,
+        country: sellerDetails.country,
+        dateJoined: sellerDetails.created_at,
+        sellerType: parseInt(sellerDetails.role, 10) === 4 ? 1 : 0, // Assuming role 4 is company
+        status: sellerDetails.status,
+        role: sellerDetails.role,
+        fcm: sellerDetails.fcm,
+        updated_at: sellerDetails.updated_at,
+      },
+      products: sellerProducts,
+      stats: {
+        totalListings: sellerProducts.length,
+        activeListings: sellerProducts.filter(product => product.status === 0)
+          .length,
+        inactiveListings: sellerProducts.filter(product => product.status !== 0)
+          .length,
+      },
+    };
+
+    return {
+      success: true,
+      data: processedData,
+    };
+  } catch (error) {
+    console.error('Error fetching seller profile:', error);
+    return {
+      success: false,
+      error: error.message,
+      data: null,
+    };
+  }
+};
+
 export const uploadProductImages = async (productId, imageFiles, token) => {
   const formData = new FormData();
 
@@ -212,7 +345,7 @@ export const uploadProductImages = async (productId, imageFiles, token) => {
   }
 };
 
-export const GetSeller = async ( token) => {
+export const GetSeller = async token => {
   try {
     const response = await API.get('get-seller', {
       headers: {
@@ -317,17 +450,23 @@ export const fetchSellerProducts = async (token, filters = {}) => {
   }
 };
 
-export const fetchBuyerProducts = async (filters = {}) => {
+export const fetchBuyerProducts = async (filters = {}, isLoggedIn) => {
   try {
-    const response = await API.post('showProducts', filters, {
-      headers: {
-        pageNo: 1,
-        recordsPerPage: 20,
+    const response = await API.post(
+      isLoggedIn ? 'showProducts' : 'showProductsWithoutAuth',
+      filters,
+      {
+        headers: {
+          pageNo: 1,
+          recordsPerPage: 20,
+        },
       },
-    });
+    );
     console.log('Endpoint Used: showProducts (Buyer/Guest)');
 
-    if (response.status === 200) return response.data;
+    if (response.status === 200) {
+      return response.data;
+    }
     console.error(`Error: Received status code ${response.status}`);
     return null;
   } catch (error) {
@@ -626,7 +765,7 @@ export const submitCardDetails = async (cardData, token) => {
 
 export const verifyOtp = async otp => {
   try {
-    const response = await API.post('verifyOtp', {
+    const response = await API.post('verifyRegisterOtp', {
       // phone: phoneNumber,
       otp: otp,
     });
@@ -675,6 +814,63 @@ export const deleteProduct = async (productId, token) => {
     return response.data;
   } catch (error) {
     console.error('Error deleting product:', error.response?.data || error);
+    throw error;
+  }
+};
+
+export const addToFavorite = async (productId, token) => {
+  try {
+    const response = await API.post(
+      'addToFavorite',
+      {
+        productID: productId,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error adding to favorites:', error.response?.data || error);
+    throw error;
+  }
+};
+
+export const removeFromFavorite = async (productId, token) => {
+  try {
+    const response = await API.post(
+      'removeFromFavorite',
+      {
+        productID: productId,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    return response.data;
+  } catch (error) {
+    console.error(
+      'Error removing from favorites:',
+      error.response?.data || error,
+    );
+    throw error;
+  }
+};
+
+export const getFavorites = async token => {
+  try {
+    const response = await API.get('getFavorites', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching favorites:', error.response?.data || error);
     throw error;
   }
 };

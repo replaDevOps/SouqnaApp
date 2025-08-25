@@ -1,8 +1,8 @@
-import React from 'react';
-import {ColorValue, StyleProp, StyleSheet, Text, TextStyle} from 'react-native';
-import {colors} from '../util/color';
-import {mvs} from '../util/metrices';
-import fonts from '../assets/fonts';
+import React, { JSX } from 'react';
+import { ColorValue, StyleProp, StyleSheet, TextStyle, Text } from 'react-native';
+import { colors } from '../util/color';
+import { mvs } from '../util/metrices';
+import { getFontFamily } from '../util/fonts';
 type FcProps = {
   label?: string | number;
   numberOfLines?: number;
@@ -21,20 +21,22 @@ const Regular: React.FC<FcProps> = ({
   style,
   ...props
 }) => {
+  // const fontFamily = 'Amiri-Bold';
   return (
     <Text
       numberOfLines={numberOfLines}
       {...props}
-      style={[{...styles.label, color: color, fontSize: fontSize}, style]}>
+      style={[{ ...styles.label, color: color, fontSize: fontSize }, style]}>
       {label}
       {children}
     </Text>
   );
 };
 export default Regular;
+
 const styles = StyleSheet.create({
   label: {
-    fontFamily: fonts.regular,
+    ...getFontFamily('bold'),
     fontSize: mvs(12),
   },
 });

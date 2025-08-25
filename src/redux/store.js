@@ -11,10 +11,10 @@ const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
 };
-const favoritesPersistConfig = {
-  key: 'favorites', // ← Unique key for favorites data
-  storage: AsyncStorage,
-};
+// const favoritesPersistConfig = {
+//   key: 'favorites', // ← Unique key for favorites data
+//   storage: AsyncStorage,
+// };
 const cartPersistConfig = {
   key: 'cart',
   storage: AsyncStorage,
@@ -29,16 +29,16 @@ const persistedSnackbarReducer = persistReducer(
   snackbarConfig,
   snackbarReducer,
 );
-const persistedFavoritesReducer = persistReducer(
-  favoritesPersistConfig,
-  favoritesReducer,
-);
+// const persistedFavoritesReducer = persistReducer(
+//   favoritesPersistConfig,
+//   favoritesReducer,
+// );
 const persistedCartReducer = persistReducer(cartPersistConfig, cartReducer);
 
 const store = configureStore({
   reducer: {
     user: persistedUserReducer,
-    favorites: persistedFavoritesReducer,
+    favorites: favoritesReducer,
     cart: persistedCartReducer,
     category: categoryReducer,
     snackbar: snackbarReducer,

@@ -22,6 +22,7 @@ import {EYESVG} from '../../../assets/svg';
 import MainHeader from '../../../components/Headers/MainHeader';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {resetPassword, ChangePasswords} from '../../../api/apiServices';
+import CustomText from '../../../components/CustomText';
 // import {Snackbar} from 'react-native-paper';
 
 const ChangePassword = () => {
@@ -104,10 +105,12 @@ const ChangePassword = () => {
                   style={styles.logo}
                 />
               </View>
-              <Text style={styles.title}>{t('resetPassword')}</Text>
+              <CustomText style={styles.title}>{t('resetPassword')}</CustomText>
               {token && (
                 <>
-                  <Text style={styles.label}>{t('oldPasswordLabel')}</Text>
+                  <CustomText style={styles.label}>
+                    {t('oldPasswordLabel')}
+                  </CustomText>
                   <View style={styles.inputWrapper}>
                     <TextInput
                       style={styles.input}
@@ -126,7 +129,9 @@ const ChangePassword = () => {
                 </>
               )}
 
-              <Text style={styles.label}>{t('newPasswordLabel')}</Text>
+              <CustomText style={styles.label}>
+                {t('newPasswordLabel')}
+              </CustomText>
               <View style={styles.inputWrapper}>
                 <TextInput
                   style={styles.input}
@@ -143,7 +148,9 @@ const ChangePassword = () => {
                 </TouchableOpacity>
               </View>
 
-              <Text style={styles.label}>{t('confirmPasswordLabel')}</Text>
+              <CustomText style={styles.label}>
+                {t('confirmPasswordLabel')}
+              </CustomText>
               <View style={styles.inputWrapper}>
                 <TextInput
                   style={styles.input}
@@ -163,7 +170,9 @@ const ChangePassword = () => {
               <TouchableOpacity
                 style={styles.resetButton}
                 onPress={handleResetPassword}>
-                <Text style={styles.resetButtonText}>{t('resetButton')}</Text>
+                <CustomText style={styles.resetButtonText}>
+                  {t('resetButton')}
+                </CustomText>
               </TouchableOpacity>
             </View>
             {/* <Snackbar

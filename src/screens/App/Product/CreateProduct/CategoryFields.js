@@ -10,6 +10,7 @@ import {
 import {colors} from '../../../../util/color';
 import {mvs} from '../../../../util/metrices';
 import {useTranslation} from 'react-i18next';
+import CustomText from '../../../../components/CustomText';
 
 // Simple Dropdown Component
 const CustomDropdown = ({
@@ -31,16 +32,17 @@ const CustomDropdown = ({
       <TouchableOpacity
         style={[dropdownStyles.selector, isOpen && dropdownStyles.selectorOpen]}
         onPress={() => setIsOpen(!isOpen)}>
-        <Text
+        <CustomText
           style={[
             dropdownStyles.selectorText,
             !selectedValue && dropdownStyles.placeholderText,
           ]}>
           {selectedValue || placeholder}
-        </Text>
-        <Text style={[dropdownStyles.arrow, isOpen && dropdownStyles.arrowUp]}>
+        </CustomText>
+        <CustomText
+          style={[dropdownStyles.arrow, isOpen && dropdownStyles.arrowUp]}>
           ▼
-        </Text>
+        </CustomText>
       </TouchableOpacity>
 
       {isOpen && (
@@ -55,13 +57,13 @@ const CustomDropdown = ({
                   selectedValue === item && dropdownStyles.selectedOption,
                 ]}
                 onPress={() => handleSelect(item)}>
-                <Text
+                <CustomText
                   style={[
                     dropdownStyles.optionText,
                     selectedValue === item && dropdownStyles.selectedOptionText,
                   ]}>
                   {item}
-                </Text>
+                </CustomText>
               </TouchableOpacity>
             )}
             nestedScrollEnabled={true}
@@ -79,38 +81,89 @@ const CategoryFields = ({categoryFields, formData, handleInputChange}) => {
   const {i18n} = useTranslation();
   const isArabic = i18n.language === 'ar';
 
-  console.log('Current Language:', i18n.language); // Debug: Check current language
-
   const renderField = (field, index) => {
-    const fieldValue = formData[field.name] || '';
+    const fieldValue = formData[isArabic ? field.ar_name : field.name] || '';
     const label = isArabic ? field.ar_label : field.label;
     const placeholder = isArabic
       ? `اختر ${field.ar_label}`
       : `Select ${field.label.toLowerCase()}`;
 
-    console.log(`Field Label (${field.name}):`, label); // Debug: Check field label
-
     const parseOptions = options => {
-      if (!options) return [];
-      return options.split(',').map(option => option.trim());
+      if (!options) {
+        return [];
+      }
+
+      try {
+        // Try to parse JSON string
+        const parsed = JSON.parse(options);
+        const ar_options = parsed.ar || '';
+        const en_options = parsed.en || '';
+        const localized = {
+          ar: ar_options.split(',').map(opt => opt.trim()),
+          en: en_options.split(',').map(opt => opt.trim()),
+        };
+        // const localized = isArabic ? parsed.ar : parsed.en;
+        console.log('Parsed options:', localized);
+        return localized;
+        // return localized.split(',').map(opt => opt.trim());
+      } catch (e) {
+        // Fallback for legacy plain string
+        return options.split(',').map(opt => opt.trim());
+      }
     };
 
     switch (field.type) {
       case 'text':
         return (
           <View key={index} style={fieldStyles.fieldContainer}>
-            <Text style={fieldStyles.fieldLabel}>
+            <CustomText style={fieldStyles.fieldLabel}>
               {label}
               {field.required === 1 && (
-                <Text style={fieldStyles.required}>*</Text>
+                <CustomText style={fieldStyles.required}>*</CustomText>
               )}
-            </Text>
+            </CustomText>
             <TextInput
               style={[fieldStyles.textInput, isArabic && {textAlign: 'right'}]}
               placeholder={label}
               placeholderTextColor={colors.grey}
               value={fieldValue}
-              onChangeText={text => handleInputChange(field.name, text)}
+              onChangeText={text => {
+                handleInputChange(field.name, text);
+                handleInputChange(field.ar_name, text);
+              }}
+              multiline={
+                field.name.includes('description') ||
+                field.name.includes('requirement')
+              }
+              numberOfLines={
+                field.name.includes('description') ||
+                field.name.includes('requirement')
+                  ? 4
+                  : 1
+              }
+            />
+          </View>
+        );
+      case 'number':
+        return (
+          <View key={index} style={fieldStyles.fieldContainer}>
+            <CustomText style={fieldStyles.fieldLabel}>
+              {label}
+              {field.required === 1 && (
+                <CustomText style={fieldStyles.required}>*</CustomText>
+              )}
+            </CustomText>
+            <TextInput
+              style={[fieldStyles.textInput, isArabic && {textAlign: 'right'}]}
+              placeholder={label}
+              placeholderTextColor={colors.grey}
+              value={fieldValue}
+              onChangeText={text => {
+                const numericText = text.replace(/[^0-9]/g, '');
+                handleInputChange(field.name, numericText);
+                handleInputChange(field.ar_name, numericText);
+              }}
+              keyboardType="numeric"
               multiline={
                 field.name.includes('description') ||
                 field.name.includes('requirement')
@@ -127,18 +180,25 @@ const CategoryFields = ({categoryFields, formData, handleInputChange}) => {
 
       case 'select':
         const options = parseOptions(field.options);
+        console.log('Options for field:', field.name, options);
         return (
           <View key={index} style={fieldStyles.fieldContainer}>
-            <Text style={fieldStyles.fieldLabel}>
+            <CustomText style={fieldStyles.fieldLabel}>
               {label}
               {field.required === 1 && (
-                <Text style={fieldStyles.required}>*</Text>
+                <CustomText style={fieldStyles.required}>*</CustomText>
               )}
-            </Text>
+            </CustomText>
             <CustomDropdown
-              options={options}
+              options={isArabic ? options.ar : options.en}
               selectedValue={fieldValue}
-              onSelect={value => handleInputChange(field.name, value)}
+              onSelect={value => {
+                const idx = isArabic
+                  ? options.ar.indexOf(value)
+                  : options.en.indexOf(value);
+                handleInputChange(field.name, options.en[idx]);
+                handleInputChange(field.ar_name, options.ar[idx]);
+              }}
               placeholder={placeholder}
               label={label}
             />
@@ -147,32 +207,50 @@ const CategoryFields = ({categoryFields, formData, handleInputChange}) => {
 
       case 'radio':
         const radioOptions = parseOptions(field.options);
+        const optionsToUse = isArabic ? radioOptions.ar : radioOptions.en;
         return (
           <View key={index} style={fieldStyles.fieldContainer}>
-            <Text style={fieldStyles.fieldLabel}>
+            <CustomText style={fieldStyles.fieldLabel}>
               {label}
               {field.required === 1 && (
-                <Text style={fieldStyles.required}>*</Text>
+                <CustomText style={fieldStyles.required}>*</CustomText>
               )}
-            </Text>
+            </CustomText>
             <View style={fieldStyles.radioContainer}>
-              {radioOptions.map((option, idx) => (
+              {optionsToUse.map((option, idx) => (
                 <TouchableOpacity
                   key={idx}
                   style={fieldStyles.radioOption}
-                  onPress={() => handleInputChange(field.name, option)}>
+                  onPress={() => {
+                    handleInputChange(
+                      field.name,
+                      radioOptions.en[idx] || option,
+                    );
+                    handleInputChange(
+                      field.ar_name,
+                      radioOptions.ar[idx] || option,
+                    );
+                  }}>
                   <View style={fieldStyles.radioWrapper}>
                     <View
                       style={[
                         fieldStyles.radioOuter,
-                        fieldValue === option && fieldStyles.radioOuterSelected,
+                        (isArabic
+                          ? fieldValue === radioOptions.ar[idx]
+                          : fieldValue === radioOptions.en[idx]) &&
+                          fieldStyles.radioOuterSelected,
                       ]}>
-                      {fieldValue === option && (
+                      {(isArabic
+                        ? fieldValue === radioOptions.ar[idx]
+                        : fieldValue === radioOptions.en[idx]) && (
+                        // :fieldValue === option) && (
                         <View style={fieldStyles.radioInner} />
                       )}
                     </View>
                   </View>
-                  <Text style={fieldStyles.radioText}>{option}</Text>
+                  <CustomText style={fieldStyles.radioText}>
+                    {isArabic ? radioOptions.ar[idx] : radioOptions.en[idx]}
+                  </CustomText>
                 </TouchableOpacity>
               ))}
             </View>
@@ -195,12 +273,12 @@ const CategoryFields = ({categoryFields, formData, handleInputChange}) => {
         <TouchableOpacity
           style={fieldStyles.toggleButton}
           onPress={() => setIsExpanded(!isExpanded)}>
-          <Text style={fieldStyles.toggleButtonText}>
+          <CustomText style={fieldStyles.toggleButtonText}>
             {isArabic
               ? 'انقر لعرض معلومات اضافية'
               : 'Click to expand additional information'}
             {isExpanded ? '▲' : '▼'}
-          </Text>
+          </CustomText>
         </TouchableOpacity>
       )}
 
@@ -213,11 +291,11 @@ const CategoryFields = ({categoryFields, formData, handleInputChange}) => {
           <TouchableOpacity
             style={fieldStyles.closeButton}
             onPress={() => setIsExpanded(false)}>
-            <Text style={fieldStyles.closeButtonText}>
+            <CustomText style={fieldStyles.closeButtonText}>
               {isArabic
                 ? 'إغلاق المعلومات الاضافية'
                 : 'Close additional information'}
-            </Text>
+            </CustomText>
           </TouchableOpacity>
         </View>
       )}

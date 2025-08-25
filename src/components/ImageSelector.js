@@ -1,8 +1,10 @@
 import React from 'react';
 import {Button, View, Alert} from 'react-native';
 import ImagePicker from 'react-native-image-crop-picker';
+import {useTranslation} from 'react-i18next';
 
 const ImageSelector = ({onImageSelected}) => {
+  const {t} = useTranslation();
   const pickImage = () => {
     ImagePicker.openPicker({
       width: 800, // Adjust dimensions
@@ -17,8 +19,8 @@ const ImageSelector = ({onImageSelected}) => {
       cropperToolbarColor: '#fff',
       cropperToolbarWidgetColor: '#000',
       mediaType: 'photo',
-      cropperChooseText: 'Select',
-      cropperCancelText: 'Cancel',
+      cropperChooseText: t('selectField'),
+      cropperCancelText: t('Cancel'),
       cropperAspectRatio: {
         x: 1,
         y: 1, // Lock aspect ratio (e.g., square)

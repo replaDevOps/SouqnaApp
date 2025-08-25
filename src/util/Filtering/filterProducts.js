@@ -1,5 +1,3 @@
-// utils/filterUtils.js
-
 const includesAnyLetter = (productField, filterValue) => {
   if (!filterValue) return true;
   const field = (productField || '').toLowerCase();
@@ -32,7 +30,8 @@ const includesAnyLetter = (productField, filterValue) => {
 
 const normalize = str => (str || '').replace(/\s+/g, '').toLowerCase();
 
-export const filterVehicleProducts = (product, filters) => {
+export const filterVehicleProducts = (product, filters, isArabic) => {
+  // Move useTranslation inside the function
   const normalize = str =>
     typeof str === 'string' ? str.trim().toLowerCase() : '';
 
@@ -51,25 +50,31 @@ export const filterVehicleProducts = (product, filters) => {
   };
 
   // Step 1: Parse fields if necessary
-  const customFields = Array.isArray(product.fields)
-    ? product.fields
-    : JSON.parse(product.fields || '[]');
+  const customFields = Array.isArray(product.custom_fields)
+    ? product.custom_fields
+    : JSON.parse(product.custom_fields || '[]');
+
+  product?.id === '37ada34d-abd5-402d-a370-ca77af75689f' &&
+    console.log('Custom fields:', customFields);
 
   // Step 2: Flatten custom fields into an object
   const customFieldMap = {};
   for (const item of customFields) {
     if (item.name && item.value !== undefined) {
-      customFieldMap[item.name] = item.value;
+      customFieldMap[item.name] = isArabic ? item.ar_value : item.value;
     }
   }
+
+  product?.id === '37ada34d-abd5-402d-a370-ca77af75689f' &&
+    console.log('Custom field map:', customFieldMap);
 
   // Step 3: Build normalized product
   const normalizedProduct = {
     ...product,
     ...customFieldMap,
-    brand: product.brand || customFieldMap.make_Brand,
+    make_brand: product.make_brand || customFieldMap.make_brand,
     model: product.model || customFieldMap.model,
-    buildYear: product.buildYear || customFieldMap.yearofManufacture,
+    buildYear: product.buildYear || customFieldMap.year_of_manufacture,
     mileage: product.mileage || customFieldMap.mileage,
     transmission: product.transmission || customFieldMap.transmission,
     fuelType: product.fuelType || customFieldMap.fuelType,
@@ -88,11 +93,20 @@ export const filterVehicleProducts = (product, filters) => {
   return (
     (!filters.minPrice || price >= normalizeNum(filters.minPrice)) &&
     (!filters.maxPrice || price <= normalizeNum(filters.maxPrice)) &&
-(!filters.brand?.length ||
-  filters.brand.some(selectedBrand =>
-    includesNormalized(normalizedProduct.brand, selectedBrand),
-  ))
-&&
+    (!filters.make_brand?.length ||
+      filters.make_brand.some(selectedBrand => {
+        product?.id === '37ada34d-abd5-402d-a370-ca77af75689f' &&
+          console.log('Selected brand:', selectedBrand);
+        product?.id === '37ada34d-abd5-402d-a370-ca77af75689f' &&
+          console.log('Normalized product:', normalizedProduct);
+        product?.id === '37ada34d-abd5-402d-a370-ca77af75689f' &&
+          console.log(
+            'Normalized product make_brand:',
+            normalizedProduct.make_brand,
+          );
+
+        return includesNormalized(normalizedProduct.make_brand, selectedBrand);
+      })) &&
     (!filters.model ||
       includesNormalized(normalizedProduct.model, filters.model)) &&
     (!filters.buildYearMin ||
@@ -119,7 +133,7 @@ export const filterVehicleProducts = (product, filters) => {
   );
 };
 
-export const filterPropertyProducts = (product, filters) => {
+export const filterPropertyProducts = (product, filters, isArabic) => {
   const normalize = str =>
     typeof str === 'string' ? str.trim().toLowerCase() : '';
 
@@ -152,43 +166,47 @@ export const filterPropertyProducts = (product, filters) => {
     );
   };
 
-  let customFields = Array.isArray(product.fields)
-    ? product.fields
-    : JSON.parse(product.fields || '[]');
+  let customFields = Array.isArray(product.custom_fields)
+    ? product.custom_fields
+    : JSON.parse(product.custom_fields || '[]');
 
   const customFieldMap = {};
   for (const item of customFields) {
     if (item.name) {
-      customFieldMap[item.name] = item.value;
+      customFieldMap[item.name] = isArabic ? item.ar_value : item.value;
     }
   }
+
+  console.log('Custom field map:', customFieldMap);
 
   const normalizedProduct = {
     ...product,
     ...customFieldMap,
-    petsAllowed: normalizeBool(customFieldMap.petsAllowed),
+    pets_allowed: normalizeBool(customFieldMap.pets_allowed),
     parking: normalizeBool(customFieldMap.parking),
     furnished: normalizeBool(customFieldMap.furnished),
     elevator: normalizeBool(customFieldMap.elevator),
-    balcony: normalizeBool(customFieldMap.balcony),
-    titleDeed_Document: normalizeBool(customFieldMap.titleDeed_Document),
+    balcony_terrace: normalizeBool(customFieldMap.balcony_terrace),
+    ownership_document: normalizeBool(customFieldMap.ownership_document),
     rooms: customFieldMap.rooms,
     bathrooms: customFieldMap.bathrooms,
-    floorNumber: customFieldMap.floorNumber,
-    totalFloorsInBuilding: customFieldMap.totalFloorsInBuilding,
+    floor_number: customFieldMap.floor_number,
+    total_floors: customFieldMap.total_floors,
     size: normalizeNum(customFieldMap.size),
     price: normalizeNum(product.price),
   };
+
+  console.log('Normalized product:', normalizedProduct);
 
   return (
     (!filters.minPrice ||
       normalizedProduct.price >= normalizeNum(filters.minPrice)) &&
     (!filters.maxPrice ||
       normalizedProduct.price <= normalizeNum(filters.maxPrice)) &&
-    (!filters.propertyType ||
+    (!filters.property_type ||
       includesNormalized(
-        normalizedProduct.propertyType,
-        filters.propertyType,
+        normalizedProduct.property_type,
+        filters.property_type,
       )) &&
     (!filters.purpose ||
       equalsNormalized(normalizedProduct.purpose, filters.purpose)) &&
@@ -208,47 +226,44 @@ export const filterPropertyProducts = (product, filters) => {
         normalizedProduct.bathrooms,
         normalizeNum(filters.bathrooms),
       )) &&
-    (!filters.floorNumber ||
+    (!filters.floor_number ||
       looselyMatchesNumber(
-        normalizedProduct.floorNumber,
-        normalizeNum(filters.floorNumber),
+        normalizedProduct.floor_number,
+        normalizeNum(filters.floor_number),
       )) &&
-    (!filters.totalFloorsInBuilding ||
+    (!filters.total_floors ||
       looselyMatchesNumber(
-        normalizedProduct.totalFloorsInBuilding,
-        normalizeNum(filters.totalFloorsInBuilding),
+        normalizedProduct.total_floors,
+        normalizeNum(filters.total_floors),
       )) &&
     (!filters.heating_Cooling ||
       equalsNormalized(
         normalizedProduct.heating_Cooling,
         filters.heating_Cooling,
       )) &&
-    (!filters.water_electricityAvailability ||
-      equalsNormalized(
-        normalizedProduct.water_electricityAvailability,
-        filters.water_electricityAvailability,
-      )) &&
-    (filters.petsAllowed === undefined ||
-      normalizedProduct.petsAllowed === filters.petsAllowed) &&
+    (!filters.utilities ||
+      equalsNormalized(normalizedProduct.utilities, filters.utilities)) &&
+    (filters.pets_allowed === undefined ||
+      normalizedProduct.pets_allowed === filters.pets_allowed) &&
     (filters.parking === undefined ||
       normalizedProduct.parking === filters.parking) &&
     (filters.furnished === undefined ||
       normalizedProduct.furnished === filters.furnished) &&
     (filters.elevator === undefined ||
       normalizedProduct.elevator === filters.elevator) &&
-    (filters.balcony === undefined ||
-      normalizedProduct.balcony === filters.balcony) &&
-    (filters.titleDeed_Document === undefined ||
-      normalizedProduct.titleDeed_Document === filters.titleDeed_Document) &&
-    (!filters.nearbyLandmarks ||
+    (filters.balcony_terrace === undefined ||
+      normalizedProduct.balcony_terrace === filters.balcony_terrace) &&
+    (filters.ownership_document === undefined ||
+      normalizedProduct.ownership_document === filters.ownership_document) &&
+    (!filters.nearby_landmarks ||
       includesNormalized(
-        normalizedProduct.nearbyLandmarks,
-        filters.nearbyLandmarks,
+        normalizedProduct.nearby_landmarks,
+        filters.nearby_landmarks,
       )) &&
-    (!filters.distancefroCityCenter_transport ||
+    (!filters.distance_from_city_center ||
       includesNormalized(
-        normalizedProduct.distancefroCityCenter_transport,
-        filters.distancefroCityCenter_transport,
+        normalizedProduct.distance_from_city_center,
+        filters.distance_from_city_center,
       ))
   );
 };
@@ -256,9 +271,9 @@ export const filterPropertyProducts = (product, filters) => {
 const includesIgnoreCase = (target = '', search = '') =>
   target.toLowerCase().includes(search.toLowerCase());
 const getCustomField = (product, fieldName) => {
-  const fieldArray = Array.isArray(product.fields)
-    ? product.fields
-    : JSON.parse(product.fields || '[]');
+  const fieldArray = Array.isArray(product.custom_fields)
+    ? product.custom_fields
+    : JSON.parse(product.fielcustom_fieldsds || '[]');
 
   const found = fieldArray.find(f => f.name === fieldName);
   return found?.value || '';

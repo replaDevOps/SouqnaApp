@@ -1,16 +1,11 @@
-import React from 'react';
-import {
-  Text,
-  View,
-  TextInput,
-  Pressable,
-  Keyboard,
-} from 'react-native';
+/* eslint-disable react-native/no-inline-styles */
+import {Text, View, TextInput, Pressable, Keyboard} from 'react-native';
 import {BottomSheetFlatList} from '@gorhom/bottom-sheet';
 import {mvs} from '../../util/metrices';
-import { HOMESVG, TickSVG } from '../../assets/svg';
-import { t } from 'i18next';
-import { colors } from '../../util/color';
+import {TickSVG} from '../../assets/svg';
+import {t} from 'i18next';
+import {colors} from '../../util/color';
+import CustomText from '../CustomText';
 
 const BrandFilterSheet = ({
   refBrandSheet,
@@ -32,33 +27,37 @@ const BrandFilterSheet = ({
   //     };
   //   });
   // };
-  const toggleBrand = (brand) => {
-  setFilters(prev => {
-    const currentBrands = prev.brand || [];
-    const isSelected = currentBrands.includes(brand);
-    return {
-      ...prev,
-      brand: isSelected
-        ? currentBrands.filter(b => b !== brand)
-        : [...currentBrands, brand],
-    };
-  });
+  const toggleBrand = brand => {
+    console.log('brand', brand);
+    setFilters(prev => {
+      const currentBrands = prev.make_brand || [];
+      const isSelected = currentBrands.includes(brand);
+      return {
+        ...prev,
+        make_brand: isSelected
+          ? currentBrands.filter(b => b !== brand)
+          : [...currentBrands, brand],
+      };
+    });
 
-  setBrandSearch('');
-  Keyboard.dismiss();
-  refBrandSheet.current?.snapToIndex(1);
-};
+    setBrandSearch('');
+    Keyboard.dismiss();
+    refBrandSheet.current?.snapToIndex(1);
+  };
 
+  console.log('filteredBrands', filteredBrands);
 
   return (
     <BottomSheetFlatList
       data={filteredBrands}
       keyExtractor={item => item}
       renderItem={({item: brand}) => {
-const isSelected = Array.isArray(filters?.brand) && filters.brand.includes(brand);
+        const isSelected =
+          Array.isArray(filters?.make_brand) &&
+          filters.make_brand.includes(t(brand));
         return (
           <Pressable
-            onPress={() => toggleBrand(brand)}
+            onPress={() => toggleBrand(t(brand))}
             style={{
               paddingVertical: 12,
               borderBottomColor: '#eee',
@@ -68,20 +67,21 @@ const isSelected = Array.isArray(filters?.brand) && filters.brand.includes(brand
               justifyContent: 'space-between',
               alignItems: 'center',
             }}>
-            <Text style={{fontSize: 16}}>{brand}</Text>
+            <CustomText style={{fontSize: 16}}>{t(brand)}</CustomText>
             {isSelected && <TickSVG width={20} height={20} />}
-
           </Pressable>
         );
       }}
       ListHeaderComponent={
         <>
           <View style={{alignItems: 'center', paddingVertical: 10}}>
-            <Text style={{fontSize: 18, fontWeight: '600'}}>{t('brand')}</Text>
+            <CustomText style={{fontSize: 18, fontWeight: '600'}}>
+              {t('brand')}
+            </CustomText>
           </View>
           <View style={{paddingHorizontal: mvs(15), paddingBottom: 10}}>
             <TextInput
-              placeholder="Search brands..."
+              placeholder={t('Search brands...')}
               value={brandSearch}
               onChangeText={text => {
                 setBrandSearch(text);
@@ -99,7 +99,7 @@ const isSelected = Array.isArray(filters?.brand) && filters.brand.includes(brand
           </View>
           <Pressable
             onPress={() => {
-              setFilters(prev => ({...prev, brand: []}));
+              setFilters(prev => ({...prev, make_brand: []}));
               Keyboard.dismiss();
               refBrandSheet.current?.close();
             }}
@@ -110,11 +110,13 @@ const isSelected = Array.isArray(filters?.brand) && filters.brand.includes(brand
               backgroundColor: '#fff',
               paddingHorizontal: mvs(15),
             }}>
-            <Text style={{fontSize: 16, color: 'red'}}>Clear Brand Filter</Text>
+            <CustomText style={{fontSize: 16, color: 'red'}}>
+              {t('Clear Brand Filter')}
+            </CustomText>
           </Pressable>
         </>
       }
-            ListFooterComponent={
+      ListFooterComponent={
         <View style={{padding: mvs(20)}}>
           <Pressable
             onPress={() => {
@@ -127,9 +129,10 @@ const isSelected = Array.isArray(filters?.brand) && filters.brand.includes(brand
               borderRadius: 10,
               alignItems: 'center',
             }}>
-            <Text style={{color: '#fff', fontSize: 16, fontWeight: '600'}}>
+            <CustomText
+              style={{color: '#fff', fontSize: 16, fontWeight: '600'}}>
               {t('done')}
-            </Text>
+            </CustomText>
           </Pressable>
         </View>
       }

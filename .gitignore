@@ -21,6 +21,8 @@ DerivedData
 *.ipa
 *.xcuserstate
 **/.xcode.env.local
+bun.lockb
+yarn.lock
 
 # Ignore config with secrets
 config.private.js

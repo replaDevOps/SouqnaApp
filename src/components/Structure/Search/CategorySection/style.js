@@ -5,10 +5,119 @@ import {colors} from '../../../../util/color';
 const styles = StyleSheet.create({
   categoryContainer: {
     marginTop: mvs(10),
-    marginHorizontal: mvs(5),
+    marginHorizontal: mvs(15),
     flexDirection: 'column',
-    justifyContent: 'space-evenly',
   },
+
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginBottom: mvs(5),
+  },
+
+  row1: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginBottom: mvs(20),
+  },
+
+  // Enhanced shadow styles
+  cardShadow: {
+    backgroundColor: '#F2F2F2',
+    borderRadius: 20,
+    // iOS Shadow
+    // shadowColor: '#000000',
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 4,
+    // },
+    // shadowOpacity: 0.15,
+    // shadowRadius: 8,
+    // // Android Shadow
+    // elevation: 8,
+  },
+
+  // Alternative deeper shadow for emphasis
+  cardShadowDeep: {
+    backgroundColor: '#F2F2F2',
+    borderRadius: 20,
+    // iOS Shadow
+    // shadowColor: '#000000',
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 6,
+    // },
+    // shadowOpacity: 0.2,
+    // shadowRadius: 12,
+    // // Android Shadow
+    // elevation: 12,
+  },
+
+  bigCard: {
+    alignItems: 'center',
+    width: '48%',
+    height: mvs(190),
+    paddingVertical: mvs(10),
+    ...StyleSheet.create({
+      shadow: {
+        backgroundColor: '#F2F2F2',
+        borderRadius: 20,
+        // shadowColor: '#000000',
+        // shadowOffset: {
+        //   width: 0,
+        //   height: 4,
+        // },
+        // shadowOpacity: 0.15,
+        // shadowRadius: 8,
+        // elevation: 8,
+      },
+    }).shadow,
+  },
+
+  smallCard: {
+    alignItems: 'center',
+    width: '23%',
+    height: mvs(115),
+    paddingVertical: mvs(8),
+    ...StyleSheet.create({
+      shadow: {
+        backgroundColor: '#F2F2F2',
+        borderRadius: 20,
+        // shadowColor: '#000000',
+        // shadowOffset: {
+        //   width: 0,
+        //   height: 3,
+        // },
+        // shadowOpacity: 0.12,
+        // shadowRadius: 6,
+        // elevation: 6,
+      },
+    }).shadow,
+  },
+
+  bigIcon: {
+    width: mvs(140),
+    height: mvs(140),
+    // marginBottom: mvs(5),
+    resizeMode: 'contain',
+  },
+
+  smallIcon: {
+    width: mvs(75),
+    height: mvs(75),
+    marginBottom: mvs(8),
+    resizeMode: 'contain',
+  },
+
+  categoryText: {
+    // fontSize: mvs(13),
+    fontWeight: '500',
+    textAlign: 'center',
+    color: colors.black,
+    lineHeight: mvs(25),
+  },
+
+  // Legacy styles (kept for compatibility)
   categoryItem: {
     alignItems: 'center',
     justifyContent: 'center',
@@ -20,7 +129,6 @@ const styles = StyleSheet.create({
     width: mvs(55),
     height: mvs(55),
     borderRadius: mvs(27),
-    backgroundColor: colors.lightorange,
   },
   textContainer: {
     width: mvs(65),
@@ -29,64 +137,6 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     justifyContent: 'space-evenly',
   },
-  // categoryText: {
-  //   marginTop: mvs(8),
-  //   fontSize: mvs(13),
-  //   fontWeight: '400',
-  //   color: colors.black,
-  //   textAlign: 'center',
-  //   flexWrap: 'wrap',
-  //   width: '100%',
-  // },
-
-
-
-row: {
-  flexDirection: 'row',
-  justifyContent: 'space-around',
-  // marginBottom: mvs(30), // reduced slightly
-},
-row1: {
-  flexDirection: 'row',
-  justifyContent: 'space-around',
-  marginBottom: mvs(30), // reduced slightly
-},
-
-bigCard: {
-  alignItems: 'center',
-  width: '45%',
-},
-
-smallCard: {
-  alignItems: 'center',
-  width: '28%',
-},
-
-bigIcon: {
-  width: 50,
-  height: 50,
-  marginBottom: 8,
-  resizeMode: 'contain',
-    borderRadius: 50 / 2,
-  backgroundColor: colors.lightorange,
-},
-
-smallIcon: {
-  width: 40,
-  height: 40,
-  marginBottom: 6,
-  resizeMode: 'contain',
-    borderRadius: 45 / 2,
-  backgroundColor: colors.lightorange,
-},
-
-categoryText: {
-  fontSize: 14,
-  fontWeight: '500',
-  textAlign: 'center',
-},
-
-
 });
 
 export default styles;

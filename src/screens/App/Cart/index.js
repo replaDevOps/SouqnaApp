@@ -28,6 +28,7 @@ import {useSelector} from 'react-redux';
 import PaymentModal from '../../../components/Modals/PaymentModal';
 import {useNavigation} from '@react-navigation/native';
 import Bold from '../../../typography/BoldText';
+import CustomText from '../../../components/CustomText';
 
 export default function CartScreen() {
   const [cartData, setCartData] = useState([]);
@@ -230,8 +231,12 @@ export default function CartScreen() {
                 <View style={styles.itemContent}>
                   <View style={styles.itemHeader}>
                     <View style={{justifyContent: 'center'}}>
-                      <Text style={styles.itemName}>{item.name}</Text>
-                      <Text style={styles.itemPrice}>$ {item.price}</Text>
+                      <CustomText style={styles.itemName}>
+                        {item.name}
+                      </CustomText>
+                      <CustomText style={styles.itemPrice}>
+                        $ {item.price}
+                      </CustomText>
                     </View>
                     <View style={{justifyContent: 'center'}}>
                       <View style={styles.quantityContainer}>
@@ -239,13 +244,15 @@ export default function CartScreen() {
                           style={styles.quantityButton}
                           onPress={() => handleQuantityChange(item.id, -1)}
                           disabled={item.quantity <= 1}>
-                          <Text>➖</Text>
+                          <CustomText>➖</CustomText>
                         </TouchableOpacity>
-                        <Text style={styles.quantityText}>{item.quantity}</Text>
+                        <CustomText style={styles.quantityText}>
+                          {item.quantity}
+                        </CustomText>
                         <TouchableOpacity
                           style={styles.quantityButton}
                           onPress={() => handleQuantityChange(item.id, 1)}>
-                          <Text>➕</Text>
+                          <CustomText>➕</CustomText>
                         </TouchableOpacity>
                       </View>
                     </View>
@@ -253,7 +260,9 @@ export default function CartScreen() {
                   <TouchableOpacity
                     style={styles.removeButton}
                     onPress={() => handleRemoveItem(item.cartItemId)}>
-                    <Text style={styles.removeButtonText}>{t('remove')}</Text>
+                    <CustomText style={styles.removeButtonText}>
+                      {t('remove')}
+                    </CustomText>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -271,26 +280,40 @@ export default function CartScreen() {
             style={styles.summaryBackground}>
             <View style={styles.summaryContent}>
               <View style={styles.summaryRow}>
-                <Text style={styles.summaryLabel}>{t('subtotal')}</Text>
-                <Text style={styles.summaryLabel}>$ {subTotal}</Text>
+                <CustomText style={styles.summaryLabel}>
+                  {t('subtotal')}
+                </CustomText>
+                <CustomText style={styles.summaryLabel}>
+                  $ {subTotal}
+                </CustomText>
               </View>
               <View style={styles.summaryRow}>
-                <Text style={styles.summaryLabel}>{t('delivery')}</Text>
-                <Text style={styles.summaryLabel}>$ {deliveryCharge}</Text>
+                <CustomText style={styles.summaryLabel}>
+                  {t('delivery')}
+                </CustomText>
+                <CustomText style={styles.summaryLabel}>
+                  $ {deliveryCharge}
+                </CustomText>
               </View>
               <View style={styles.summaryRow}>
-                <Text style={styles.summaryLabel}>{t('discount')}</Text>
-                <Text style={styles.summaryLabel}>$ {discount}</Text>
+                <CustomText style={styles.summaryLabel}>
+                  {t('discount')}
+                </CustomText>
+                <CustomText style={styles.summaryLabel}>
+                  $ {discount}
+                </CustomText>
               </View>
               <View style={styles.totalRow}>
-                <Text style={styles.totalLabel}>{t('total')}</Text>
-                <Text style={styles.totalLabel}>$ {total}</Text>
+                <CustomText style={styles.totalLabel}>{t('total')}</CustomText>
+                <CustomText style={styles.totalLabel}>$ {total}</CustomText>
               </View>
 
               <TouchableOpacity
                 onPress={handlePlaceOrder}
                 style={styles.placeOrderButton}>
-                <Text style={styles.placeOrderText}>{t('checkout')}</Text>
+                <CustomText style={styles.placeOrderText}>
+                  {t('checkout')}
+                </CustomText>
               </TouchableOpacity>
             </View>
           </ImageBackground>

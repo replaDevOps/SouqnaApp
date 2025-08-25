@@ -1,6 +1,5 @@
-/* eslint-disable no-lone-blocks */
 /* eslint-disable no-unused-vars */
-/* eslint-disable no-shadow */
+
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable react-hooks/exhaustive-deps */
 import {
@@ -12,7 +11,6 @@ import {
   KeyboardAvoidingView,
   Platform,
   StatusBar,
-  Text,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -21,14 +19,13 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {useDispatch, useSelector} from 'react-redux';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import BottomSheet, {BottomSheetBackdrop} from '@gorhom/bottom-sheet';
-import {
-  addFavorite,
-  removeFavorite,
-} from '../../../redux/slices/favoritesSlice';
 import MainHeader from '../../../components/Headers/MainHeader';
 import {
+  addToFavorite,
   BASE_URL_Product,
   fetchProductsBySubCategory,
+  getFavorites,
+  removeFromFavorite,
 } from '../../../api/apiServices';
 import {mvs} from '../../../util/metrices';
 import Regular from '../../../typography/RegularText';
@@ -61,12 +58,15 @@ import {parseProductList} from '../../../util/Filtering/parseProductsList';
 import SortSheet from '../../../components/Sheets/SortSheet';
 import {init} from 'i18next';
 import {colors} from '../../../util/color';
+import {showSnackbar} from '../../../redux/slices/snackbarSlice';
+import Loader from '../../../components/Loader';
+import CustomText from '../../../components/CustomText';
 
 const Products = () => {
   const [filters, setFilters] = useState({
     minPrice: '',
     maxPrice: '',
-    brand: [],
+    make_brand: [],
     buildYearMin: '',
     buildYearMax: '',
     transmission: '',
@@ -101,8 +101,11 @@ const Products = () => {
   const [sortOption, setSortOption] = useState(null);
 
   const [loading, setLoading] = useState(false);
+  const {token} = useSelector(state => state.user);
   const [likedItems, setLikedItems] = useState({});
-  const {t} = useTranslation();
+  const {t, i18n} = useTranslation();
+
+  const isArabic = i18n.language === 'ar';
 
   const refBrandSheet = useRef(null);
   const refPriceSheet = useRef(null);
@@ -124,7 +127,7 @@ const Products = () => {
 
   const {role, id: userId, email: userEmail} = useSelector(state => state.user);
   const activeRole = role ?? 3;
-  const favorites = useSelector(state => state.favorites.favorites);
+  const [likedItemsMap, setLikedItemsMap] = useState([]);
   const [activeSheet, setActiveSheet] = useState(null);
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -142,13 +145,6 @@ const Products = () => {
     );
   }, [brandSearch]);
 
-  const likedItemsMap = useMemo(() => {
-    return favorites.reduce((acc, item) => {
-      acc[item.id] = true;
-      return acc;
-    }, {});
-  }, [favorites]);
-
   const navigateToProductDetails = useCallback(
     productId => {
       navigation.navigate('ProductDetail', {productId});
@@ -156,24 +152,54 @@ const Products = () => {
     [navigation],
   );
 
+  console.log('category====>', category, t('Property'));
+
   const handleHeartClick = useCallback(
-    (id, product) => {
-      if (likedItems[id]) {
-        dispatch(removeFavorite(product));
-        setLikedItems(prev => {
-          const updatedState = {...prev};
-          delete updatedState[id];
-          return updatedState;
+    async (id, item) => {
+      if (role === 2) {
+        showSnackbar(t('loginAsBuyer'));
+        return;
+      }
+
+      const isInFavorites = likedItemsMap?.some(fav => fav.product?.id === id);
+
+      const previousAllProducts = [...allProducts];
+      const previousLikedItemsMap = [...likedItemsMap];
+
+      if (isInFavorites) {
+        const updatedState = allProducts.map(product => {
+          if (product.id === id) {
+            product.isFavorite = false;
+          }
+          return product;
+        });
+        setAllProducts(updatedState);
+        setLikedItemsMap(prev => prev.filter(fav => fav.product?.id !== id));
+
+        await removeFromFavorite(id, token).catch(error => {
+          setAllProducts(previousAllProducts);
+          setLikedItemsMap(previousLikedItemsMap);
         });
       } else {
-        dispatch(addFavorite(product));
-        setLikedItems(prev => ({
-          ...prev,
-          [id]: true,
-        }));
+        const updatedState = allProducts.map(product => {
+          if (product.id === id) {
+            product.isFavorite = true;
+          }
+          return product;
+        });
+        setAllProducts(updatedState);
+        const newFavorite = {
+          product: {id: id},
+        };
+        setLikedItemsMap(prev => [...prev, newFavorite]);
+
+        await addToFavorite(id, token).catch(error => {
+          setAllProducts(previousAllProducts);
+          setLikedItemsMap(previousLikedItemsMap);
+        });
       }
     },
-    [likedItems, dispatch],
+    [role, token, likedItemsMap, allProducts],
   );
 
   const closeAllSheets = useCallback(async callback => {
@@ -207,7 +233,7 @@ const Products = () => {
 
   useEffect(() => {
     if (initialProducts?.length > 0) {
-      setLoading(true); // 👈 Start loader
+      setLoading(true);
       setProducts(initialProducts);
       setAllProducts(initialProducts);
       console.log('FETCHEDPRODUCTS:', initialProducts);
@@ -238,48 +264,72 @@ const Products = () => {
     fetchData();
   }, [subCategoryId, initialProducts]);
 
+  useEffect(() => {
+    getLikedItems();
+  }, [token]);
+
+  async function getLikedItems() {
+    await getFavorites(token).then(res => {
+      setLikedItemsMap(res?.data);
+    });
+  }
+
   const filteredAndSortedProducts = useMemo(() => {
     // Filter based on category filters
     let result = products.filter(product => {
       let passesCategoryFilter = true;
 
-      if (category === 'Vehicle') {
-        passesCategoryFilter = filterVehicleProducts(product, filters);
-      } else if (category === 'Property') {
-        passesCategoryFilter = filterPropertyProducts(product, filters);
+      // console.log('Filtering product:', product, filters);
+      // console.log('Category:', category);
+
+      if (category === t('Cars')) {
+        console.log('Filters:', filters);
+        // console.log('products: ', product);
+        passesCategoryFilter = filterVehicleProducts(
+          product,
+          filters,
+          isArabic,
+        );
+      } else if (category === t('Property')) {
+        passesCategoryFilter = filterPropertyProducts(
+          product,
+          filters,
+          isArabic,
+        );
       } else if (category === 'Services') {
         passesCategoryFilter = filterServiceProducts(product, filters);
       }
 
-      // ✅ Additionally filter by seller email if role === 3
       const isSellerMatch =
         activeRole === 2 ? product?.seller?.email === userEmail : true;
 
       return passesCategoryFilter && isSellerMatch;
     });
 
-    // Sort results
     switch (sortOption) {
-      case 'Newest First':
+      case t('Newest First'):
         result = result.sort(
           (a, b) => new Date(b.created_at) - new Date(a.created_at),
         );
         break;
-      case 'Oldest First':
+      case t('Oldest First'):
         result = result.sort(
           (a, b) => new Date(a.created_at) - new Date(b.created_at),
         );
         break;
-      case 'Price: Low to High':
+      case t('Price: Low to High'):
         result = result.sort((a, b) => a.price - b.price);
         break;
-      case 'Price: High to Low':
+      case t('Price: High to Low'):
         result = result.sort((a, b) => b.price - a.price);
         break;
     }
 
     return result;
   }, [products, filters, sortOption, category, role, userEmail]);
+
+  console.log('category:', category);
+  console.log('translation:', t('Cars'));
 
   const renderRecommendedItem = useCallback(
     ({item}) => (
@@ -297,16 +347,18 @@ const Products = () => {
             {Number(item.price).toLocaleString()}
           </Regular>
         </View>
-        {role !== 2 && (
+        {role !== 2 && Boolean(token) && (
           <TouchableOpacity
             onPress={() => handleHeartClick(item.id, item)}
             style={styles.heartIconContainer}>
-            <HeartSvg filled={likedItemsMap[item.id]} />
+            <HeartSvg
+              filled={likedItemsMap?.some(fav => fav.product?.id === item.id)}
+            />
           </TouchableOpacity>
         )}
       </TouchableOpacity>
     ),
-    [navigateToProductDetails, handleHeartClick, likedItemsMap],
+    [navigateToProductDetails, handleHeartClick, likedItemsMap, token],
   );
 
   return (
@@ -328,7 +380,8 @@ const Products = () => {
 
         {loading ? (
           <View style={styles.noListingsContainer}>
-            <ActivityIndicator size="large" style={{marginTop: 20}} />
+            <Loader width={mvs(250)} height={mvs(250)} />
+            {/* <ActivityIndicator size="large" style={{marginTop: 20}} /> */}
           </View>
         ) : products.length === 0 ? (
           <View style={styles.noListingsContainer}>
@@ -336,13 +389,13 @@ const Products = () => {
               source={require('../../../assets/img/empty.png')}
               style={{width: '90%', resizeMode: 'contain', height: mvs(200)}}
             />
-            <Bold>{t('No Listings Right Now')}</Bold>
+            <Bold>{t('noListingsRightNow')}</Bold>
           </View>
         ) : (
           <>
             {role !== 2 && (
               <>
-                {category?.toLowerCase() === 'vehicle' && (
+                {category === t('Cars') && (
                   <View style={{height: 60}}>
                     <CarFilters
                       filters={filters}
@@ -366,7 +419,7 @@ const Products = () => {
                           refPriceSheet.current?.expand();
                           setActiveSheet('price');
                           setTimeout(() => {
-                            refPriceInput.current?.focusMinPrice(); // wait for animation
+                            refPriceInput.current?.focusMinPrice();
                           }, 300);
                         });
                       }}
@@ -375,7 +428,7 @@ const Products = () => {
                           refBuildYearSheet.current?.expand();
                           setActiveSheet('year');
                           setTimeout(() => {
-                            refBuildYearInput.current?.focusMinYear(); // ✅ focus input after animation
+                            refBuildYearInput.current?.focusMinYear();
                           }, 300);
                         });
                       }}
@@ -394,7 +447,7 @@ const Products = () => {
                     />
                   </View>
                 )}
-                {category?.toLowerCase() === 'property' && (
+                {category === t('Property') && (
                   <View style={{height: 60}}>
                     <PropertyFilters
                       filters={filters}
@@ -429,7 +482,7 @@ const Products = () => {
                       onOpenPropertyAdjust={() => {
                         closeAllSheets(() => {
                           refPropertyAdjustSheet.current?.expand();
-                          setActiveSheet('property');
+                          setActiveSheet(t('Property'));
                         });
                       }}
                     />
@@ -517,14 +570,14 @@ const Products = () => {
               backdropComponent={renderBackdrop}
               style={{borderRadius: mvs(30), overflow: 'hidden'}}>
               <View style={{padding: 16}}>
-                <Text
+                <CustomText
                   style={{
                     fontSize: 16,
                     fontWeight: 'bold',
                     textAlign: 'center',
                   }}>
-                  Price
-                </Text>
+                  {t('price')}
+                </CustomText>
                 {/* Your custom controls here */}
               </View>
               <PriceFilterSheet
@@ -551,14 +604,14 @@ const Products = () => {
               backdropComponent={renderBackdrop}
               style={{borderRadius: mvs(30), overflow: 'hidden'}}>
               <View style={{padding: 16}}>
-                <Text
+                <CustomText
                   style={{
                     fontSize: 16,
                     fontWeight: 'bold',
                     textAlign: 'center',
                   }}>
-                  Build Year
-                </Text>
+                  {t('buildyear')}
+                </CustomText>
               </View>
               <BuildYearFilterSheet
                 filters={filters}
@@ -583,14 +636,14 @@ const Products = () => {
               backdropComponent={renderBackdrop}
               style={{borderRadius: mvs(30), overflow: 'hidden'}}>
               <View style={{padding: 16}}>
-                <Text
+                <CustomText
                   style={{
                     fontSize: 16,
                     fontWeight: 'bold',
                     textAlign: 'center',
                   }}>
-                  Transmission
-                </Text>
+                  {t('transmission')}
+                </CustomText>
                 {/* Your custom controls here */}
               </View>
               <TransmissionFilterSheet
@@ -616,14 +669,14 @@ const Products = () => {
               backdropComponent={renderBackdrop}
               style={{borderRadius: mvs(30), overflow: 'hidden'}}>
               <View style={{padding: 16}}>
-                <Text
+                <CustomText
                   style={{
                     fontSize: 16,
                     fontWeight: 'bold',
                     textAlign: 'center',
                   }}>
-                  Size (sqft)
-                </Text>
+                  {t('Size (sqft)')}
+                </CustomText>
               </View>
               <AreaFilterSheet
                 ref={refAreaInput}
@@ -648,14 +701,14 @@ const Products = () => {
               backdropComponent={renderBackdrop}
               style={{borderRadius: mvs(30), overflow: 'hidden'}}>
               <View style={{padding: 16}}>
-                <Text
+                <CustomText
                   style={{
                     fontSize: 16,
                     fontWeight: 'bold',
                     textAlign: 'center',
                   }}>
-                  Property Type
-                </Text>
+                  {t('Property Type')}
+                </CustomText>
               </View>
               <PropertyTypeFilterSheet
                 filters={filters}
@@ -712,7 +765,7 @@ const Products = () => {
               detached={false}
               backdropComponent={renderBackdrop}
               style={{borderRadius: mvs(30), overflow: 'hidden'}}>
-              {category?.toLowerCase() === 'vehicle' ? (
+              {category === t('Cars') ? (
                 <AdjustFilterSheet
                   filters={filters}
                   setFilters={setFilters}
@@ -754,7 +807,7 @@ const Products = () => {
             <BottomSheet
               ref={refPropertyAdjustSheet}
               onChange={index => {
-                if (index === -1 && activeSheet === 'property')
+                if (index === -1 && activeSheet === t('Property'))
                   setActiveSheet(null);
               }}
               index={-1}
@@ -765,7 +818,7 @@ const Products = () => {
               detached={false}
               backdropComponent={renderBackdrop}
               style={{borderRadius: mvs(30), overflow: 'hidden'}}>
-              {category?.toLowerCase() === 'property' ? (
+              {category === t('Property') ? (
                 <PropertyAdjustFilterSheet
                   filters={filters}
                   setFilters={setFilters}

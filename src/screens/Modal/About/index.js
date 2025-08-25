@@ -5,11 +5,12 @@ import ModalHeader from '../../../components/Headers/ModalHeader';
 import {OpenSVG} from '../../../assets/svg';
 import styles from './style';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
+import CustomText from '../../../components/CustomText';
 
 const AboutScreen = () => {
   const navigation = useNavigation();
-    const {t} = useTranslation();
+  const {t} = useTranslation();
   const handleBack = () => {
     navigation.goBack();
   };
@@ -26,7 +27,7 @@ const AboutScreen = () => {
           onPress={() => {
             openUrl('https://www.kleinanzeigen.de/impressum.html');
           }}>
-          <Text style={styles.menuText}>{t('Imprint')}</Text>
+          <CustomText style={styles.menuText}>{t('Imprint')}</CustomText>
           <OpenSVG width={20} height={20} />
         </TouchableOpacity>
         <TouchableOpacity
@@ -34,7 +35,7 @@ const AboutScreen = () => {
           onPress={() => {
             openUrl('https://themen.kleinanzeigen.de/careers/');
           }}>
-          <Text style={styles.menuText}>{t('Career Page')}</Text>
+          <CustomText style={styles.menuText}>{t('Career Page')}</CustomText>
           <OpenSVG width={20} height={20} />
         </TouchableOpacity>
       </View>

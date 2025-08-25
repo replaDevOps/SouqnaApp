@@ -9,8 +9,9 @@ import {
 import {BottomSheetScrollView} from '@gorhom/bottom-sheet';
 import DropDownPicker from 'react-native-dropdown-picker';
 import {resetButtonStyle} from '../../../util/Filtering/filterStyles';
-import { colors } from '../../../util/color';
-import { t } from 'i18next';
+import {colors} from '../../../util/color';
+import {t} from 'i18next';
+import CustomText from '../../CustomText';
 
 const ServiceAdjustFilterSheet = ({filters, setFilters, closeSheet}) => {
   const [genderOpen, setGenderOpen] = useState(false);
@@ -39,7 +40,7 @@ const ServiceAdjustFilterSheet = ({filters, setFilters, closeSheet}) => {
 
   const renderTextInput = (label, key, placeholder) => (
     <View key={key} style={styles.field}>
-      <Text style={styles.label}>{label}</Text>
+      <CustomText style={styles.label}>{label}</CustomText>
       <TextInput
         placeholder={placeholder}
         style={styles.input}
@@ -65,7 +66,7 @@ const ServiceAdjustFilterSheet = ({filters, setFilters, closeSheet}) => {
 
       {/* Gender Preference Dropdown */}
       <View style={[styles.field, {zIndex: 3000}]}>
-        <Text style={styles.label}>Gender Preference</Text>
+        <CustomText style={styles.label}>Gender Preference</CustomText>
         <DropDownPicker
           open={genderOpen}
           setOpen={open => {
@@ -113,7 +114,7 @@ const ServiceAdjustFilterSheet = ({filters, setFilters, closeSheet}) => {
 
       {/* Contact Method Dropdown */}
       <View style={[styles.field, {zIndex: 3000, elevation: 3}]}>
-        <Text style={styles.label}>Contact Method</Text>
+        <CustomText style={styles.label}>Contact Method</CustomText>
         <DropDownPicker
           open={contactOpen}
           setOpen={open => {
@@ -141,7 +142,7 @@ const ServiceAdjustFilterSheet = ({filters, setFilters, closeSheet}) => {
 
       {/* Salary Type Dropdown */}
       <View style={[styles.field, {zIndex: 2000, elevation: 2}]}>
-        <Text style={styles.label}>Salary Type</Text>
+        <CustomText style={styles.label}>Salary Type</CustomText>
         <DropDownPicker
           open={salaryOpen}
           setOpen={open => {
@@ -168,7 +169,7 @@ const ServiceAdjustFilterSheet = ({filters, setFilters, closeSheet}) => {
 
       {/* Employment Type Dropdown */}
       <View style={[styles.field, {zIndex: 1000, elevation: 1}]}>
-        <Text style={styles.label}>Employment Type</Text>
+        <CustomText style={styles.label}>Employment Type</CustomText>
         <DropDownPicker
           open={employmentOpen}
           setOpen={open => {
@@ -199,24 +200,28 @@ const ServiceAdjustFilterSheet = ({filters, setFilters, closeSheet}) => {
 
       {/* --- RESET FILTERS BUTTON --- */}
       <TouchableOpacity onPress={resetFilters} style={resetButtonStyle}>
-        <Text style={{color: 'red', fontWeight: 'bold'}}>Reset Filters</Text>
+        <CustomText style={{color: 'red', fontWeight: 'bold'}}>
+          Reset Filters
+        </CustomText>
       </TouchableOpacity>
 
       {/* --- DONE BUTTON --- */}
-        <View style={{padding: 20}}>
-          <TouchableOpacity
-            onPress={() => {
-              closeSheet?.();
-            }}
-            style={{
-              backgroundColor: colors.lightgreen,
-              paddingVertical: 12,
-              borderRadius: 8,
-              alignItems: 'center',
-            }}>
-            <Text style={{color: '#fff', fontWeight: 'bold'}}>{t('Done')}</Text>
-          </TouchableOpacity>
-        </View>
+      <View style={{padding: 20}}>
+        <TouchableOpacity
+          onPress={() => {
+            closeSheet?.();
+          }}
+          style={{
+            backgroundColor: colors.lightgreen,
+            paddingVertical: 12,
+            borderRadius: 8,
+            alignItems: 'center',
+          }}>
+          <CustomText style={{color: '#fff', fontWeight: 'bold'}}>
+            {t('Done')}
+          </CustomText>
+        </TouchableOpacity>
+      </View>
     </BottomSheetScrollView>
   );
 };

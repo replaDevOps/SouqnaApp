@@ -5,13 +5,14 @@ import styles from './styles';
 import MainHeader from '../../../components/Headers/MainHeader';
 import Regular from '../../../typography/RegularText';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
+import CustomText from '../../../components/CustomText';
 
 const PlansScreen = () => {
   const navigation = useNavigation();
   //   const {roleType} = useSelector(state => state.user);
   const [sellertype, setSellertype] = useState('2');
-    const {t} = useTranslation();
+  const {t} = useTranslation();
 
   const handlePlan = () => {
     navigation.navigate('Card');
@@ -24,9 +25,9 @@ const PlansScreen = () => {
           {/* <TouchableOpacity
           onPress={() => navigation.replace('MainTabs')}
           style={{alignItems: 'flex-end'}}>
-          <Text style={{fontSize: 18, fontWeight: 'bold', color: colors.grey}}>
+          <CustomText style={{fontSize: 18, fontWeight: 'bold', color: colors.grey}}>
             {t('Skip')}
-          </Text>
+          </CustomText>
         </TouchableOpacity> */}
           <View style={{alignItems: 'center'}}>
             <Image
@@ -36,34 +37,42 @@ const PlansScreen = () => {
           </View>
           {sellertype == 2 && (
             <>
-              {/* <Text style={styles.header}>{t('choosePlan')}</Text> */}
-              <Regular style={styles.subHeader}>
-               {t('findPerfectPlan')}
-              </Regular>
+              {/* <CustomText style={styles.header}>{t('choosePlan')}</CustomText> */}
+              <Regular style={styles.subHeader}>{t('findPerfectPlan')}</Regular>
             </>
           )}
           <View style={{justifyContent: 'flex-end', flex: 1}}>
             {sellertype == 1 && (
               // {/* Personal Seller Plan */}
               <View style={styles.card}>
-                <Text style={styles.planTitle}>{t('personalSeller')}</Text>
-                <Text style={styles.price}>{t('free')}</Text>
-                <Text style={styles.details}>
-                   {t('adPostingLimit2Week')}
-                </Text>
-                <Text style={styles.details}> {t('adExpiryOneYear')}</Text>
-                <Text style={styles.details}> {t('adVisibilityStandard')}</Text>
-                <Text style={styles.details}>
-                   {t('renewalAutomatic')}
-                </Text>
-                <Text style={styles.details}>
-                   {t('supportBasicEmail')}
-                </Text>
-                <Text style={styles.target}>
+                <CustomText style={styles.planTitle}>
+                  {t('personalSeller')}
+                </CustomText>
+                <CustomText style={styles.price}>{t('free')}</CustomText>
+                <CustomText style={styles.details}>
+                  {t('adPostingLimit2Week')}
+                </CustomText>
+                <CustomText style={styles.details}>
+                  {' '}
+                  {t('adExpiryOneYear')}
+                </CustomText>
+                <CustomText style={styles.details}>
+                  {' '}
+                  {t('adVisibilityStandard')}
+                </CustomText>
+                <CustomText style={styles.details}>
+                  {t('renewalAutomatic')}
+                </CustomText>
+                <CustomText style={styles.details}>
+                  {t('supportBasicEmail')}
+                </CustomText>
+                <CustomText style={styles.target}>
                   {t('idealForIndividuals')}
-                </Text>
+                </CustomText>
                 <TouchableOpacity style={styles.button}>
-                  <Text style={styles.buttonText}>{t('choosePlanButton')}</Text>
+                  <CustomText style={styles.buttonText}>
+                    {t('choosePlanButton')}
+                  </CustomText>
                 </TouchableOpacity>
               </View>
             )}
@@ -72,65 +81,98 @@ const PlansScreen = () => {
               <>
                 {/* Company Seller Plans */}
                 <View style={styles.card}>
-                  <Text style={styles.planTitle}>{t('starterPlan')}</Text>
-                  <Text style={styles.price}>{t('fiveDollarsMonth')}</Text>
-                  <Text style={styles.details}>
-                     {t('adPostingLimit2Month')}
-                  </Text>
-                  <Text style={styles.details}> {t('adExpiryOneYear')}</Text>
-                  <Text style={styles.details}> {t('adVisibilityStandard')}</Text>
-                  <Text style={styles.details}> {t('analyticsBasic')}</Text>
-                  <Text style={styles.details}> {t('supportEmail')}</Text>
-                  <Text style={styles.details}> {t('brandingNotIncluded')}</Text>
-                  <Text style={styles.details}>
-                     {t('employeeSubaccountsOne')}
-                  </Text>
+                  <CustomText style={styles.planTitle}>
+                    {t('starterPlan')}
+                  </CustomText>
+                  <CustomText style={styles.price}>
+                    {t('fiveDollarsMonth')}
+                  </CustomText>
+                  <CustomText style={styles.details}>
+                    {t('adPostingLimit2Month')}
+                  </CustomText>
+                  <CustomText style={styles.details}>
+                    {' '}
+                    {t('adExpiryOneYear')}
+                  </CustomText>
+                  <CustomText style={styles.details}>
+                    {' '}
+                    {t('adVisibilityStandard')}
+                  </CustomText>
+                  <CustomText style={styles.details}>
+                    {' '}
+                    {t('analyticsBasic')}
+                  </CustomText>
+                  <CustomText style={styles.details}>
+                    {' '}
+                    {t('supportEmail')}
+                  </CustomText>
+                  <CustomText style={styles.details}>
+                    {' '}
+                    {t('brandingNotIncluded')}
+                  </CustomText>
+                  <CustomText style={styles.details}>
+                    {t('employeeSubaccountsOne')}
+                  </CustomText>
                   <TouchableOpacity style={styles.button}>
-                    <Text style={styles.buttonText}>{t('getStarted')}</Text>
+                    <CustomText style={styles.buttonText}>
+                      {t('getStarted')}
+                    </CustomText>
                   </TouchableOpacity>
                 </View>
 
                 {/* <View style={styles.card}>
-                <Text style={styles.planTitle}>{t('Business Plan')}</Text>
-                <Text style={styles.price}>{t('$49/month')}</Text>
-                <Text style={styles.details}>
+                <CustomText style={styles.planTitle}>{t('Business Plan')}</CustomText>
+                <CustomText style={styles.price}>{t('$49/month')}</CustomText>
+                <CustomText style={styles.details}>
                    {t('Ad Posting Limit: 100 ads/month')}
-                </Text>
-                <Text style={styles.details}> {t('Ad Expiry: 1 year')}</Text>
-                <Text style={styles.details}>
+                </CustomText>
+                <CustomText style={styles.details}> {t('Ad Expiry: 1 year')}</CustomText>
+                <CustomText style={styles.details}>
                    {t('Ad Visibility: Priority Listing')}
-                </Text>
-                <Text style={styles.details}> {t('Analytics: Advanced')}</Text>
-                <Text style={styles.details}> {t('Support: Priority Email')}</Text>
-                <Text style={styles.details}> {t('Branding: Included')}</Text>
-                <Text style={styles.details}> {t('Employee Sub-accounts: 5')}</Text>
+                </CustomText>
+                <CustomText style={styles.details}> {t('Analytics: Advanced')}</CustomText>
+                <CustomText style={styles.details}> {t('Support: Priority Email')}</CustomText>
+                <CustomText style={styles.details}> {t('Branding: Included')}</CustomText>
+                <CustomText style={styles.details}> {t('Employee Sub-accounts: 5')}</CustomText>
                 <TouchableOpacity style={styles.button}>
-                  <Text style={styles.buttonText}>{t('Get Started')}</Text>
+                  <CustomText style={styles.buttonText}>{t('Get Started')}</CustomText>
                 </TouchableOpacity>
               </View> */}
 
                 <View style={styles.card}>
-                  <Text style={styles.planTitle}>{t('premiumPlan')}</Text>
-                  <Text style={styles.price}>{t('fifteenDollarsMonth')}</Text>
-                  <Text style={styles.details}>
-                     {t('adPostingUnlimited')}
-                  </Text>
-                  <Text style={styles.details}> {t('adExpiryOneYear')}</Text>
-                  <Text style={styles.details}>
-                     {t('adVisibilityTopFeatured')}
-                  </Text>
-                  <Text style={styles.details}>
-                     {t('analyticsFullInsights')}
-                  </Text>
-                  <Text style={styles.details}>
-                     {t('support24x7')}
-                  </Text>
-                  <Text style={styles.details}> {t('brandingIncluded')}</Text>
-                  <Text style={styles.details}>
-                     {t('employeeSubaccountsUnlimited')}
-                  </Text>
+                  <CustomText style={styles.planTitle}>
+                    {t('premiumPlan')}
+                  </CustomText>
+                  <CustomText style={styles.price}>
+                    {t('fifteenDollarsMonth')}
+                  </CustomText>
+                  <CustomText style={styles.details}>
+                    {t('adPostingUnlimited')}
+                  </CustomText>
+                  <CustomText style={styles.details}>
+                    {' '}
+                    {t('adExpiryOneYear')}
+                  </CustomText>
+                  <CustomText style={styles.details}>
+                    {t('adVisibilityTopFeatured')}
+                  </CustomText>
+                  <CustomText style={styles.details}>
+                    {t('analyticsFullInsights')}
+                  </CustomText>
+                  <CustomText style={styles.details}>
+                    {t('support24x7')}
+                  </CustomText>
+                  <CustomText style={styles.details}>
+                    {' '}
+                    {t('brandingIncluded')}
+                  </CustomText>
+                  <CustomText style={styles.details}>
+                    {t('employeeSubaccountsUnlimited')}
+                  </CustomText>
                   <TouchableOpacity style={styles.button} onPress={handlePlan}>
-                    <Text style={styles.buttonText}>{t('getStarted')}</Text>
+                    <CustomText style={styles.buttonText}>
+                      {t('getStarted')}
+                    </CustomText>
                   </TouchableOpacity>
                 </View>
               </>

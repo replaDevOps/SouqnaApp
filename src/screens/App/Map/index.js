@@ -2,33 +2,28 @@ import React, {useState, useEffect, useRef, useCallback, useMemo} from 'react';
 import {
   View,
   Text,
-  StyleSheet,
   TouchableOpacity,
   Platform,
   Alert,
   Image,
   FlatList,
-  Modal,
   ScrollView,
   TouchableWithoutFeedback,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import MapView, {PROVIDER_GOOGLE, Marker, Circle} from 'react-native-maps';
+import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import {request, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import MainHeader from '../../../components/Headers/MainHeader';
-import {
-  BarsSVG,
-  CurrentLocationSVG,
-  ForwardSVG,
-  NoneSVG,
-} from '../../../assets/svg';
+import {BarsSVG, CurrentLocationSVG} from '../../../assets/svg';
 import {mvs} from '../../../util/metrices';
 import styles from './styles';
 import {useSelector} from 'react-redux';
 import {colors} from '../../../util/color';
-
+import {useTranslation} from 'react-i18next';
+import CustomText from '../../../components/CustomText';
+import i18n from '../../../i18n/i18n';
 // Memoized Marker Component to prevent unnecessary re-renders
 const MarkerComponent = React.memo(({item, onPress}) => (
   <Marker
@@ -40,13 +35,17 @@ const MarkerComponent = React.memo(({item, onPress}) => (
         markerStyles.container,
         item.isMultiple ? markerStyles.multiple : markerStyles.single,
       ]}>
-      {!item.isMultiple && <Text style={markerStyles.dollarSign}>$</Text>}
-      <Text
+      {!item.isMultiple && (
+        <CustomText style={markerStyles.dollarSign}>$</CustomText>
+      )}
+      <CustomText
         style={[markerStyles.priceText, {fontSize: item.isMultiple ? 10 : 12}]}>
         {item.formattedPrice}
-      </Text>
+      </CustomText>
       {item.isMultiple && (
-        <Text style={markerStyles.itemCount}>{item.products.length} items</Text>
+        <CustomText style={markerStyles.itemCount}>
+          {item.products.length} items
+        </CustomText>
       )}
     </View>
   </Marker>
@@ -95,6 +94,7 @@ export default function MapScreen() {
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [mapReady, setMapReady] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
+  const {t} = useTranslation();
 
   // Add refs for debouncing
   const regionUpdateTimeoutRef = useRef(null);
@@ -348,16 +348,19 @@ export default function MapScreen() {
         // Better error handling
         switch (error.code) {
           case 1: // PERMISSION_DENIED
-            Alert.alert('Permission Denied', 'Location access was denied');
+            Alert.alert(t('permissionDenied'), t('Location access was denied'));
             break;
           case 2: // POSITION_UNAVAILABLE
-            Alert.alert('Location Unavailable', 'Unable to determine location');
+            Alert.alert(
+              t('locationUnavailable'),
+              t('Unable to determine location'),
+            );
             break;
           case 3: // TIMEOUT
-            Alert.alert('Location Timeout', 'Location request timed out');
+            Alert.alert(t('Location Timeout'), t('Location request timed out'));
             break;
           default:
-            Alert.alert('Location Error', 'Failed to get location');
+            Alert.alert(t('Location Error'), t('Failed to get location'));
         }
         setDefaultRegion();
       },
@@ -404,7 +407,7 @@ export default function MapScreen() {
   };
 
   const filterProductsByCategory = (products, categoryName) => {
-    if (!categoryName || categoryName === 'All') {
+    if (!categoryName || categoryName === t('All')) {
       return products;
     } else {
       return products.filter(
@@ -560,26 +563,26 @@ export default function MapScreen() {
             />
           ) : (
             <View style={[styles.productImage, styles.noImagePlaceholder]}>
-              <Text>No Image</Text>
+              <CustomText>No Image</CustomText>
             </View>
           )}
         </View>
         <View style={styles.productInfo}>
-          <Text style={styles.productTitle} numberOfLines={1}>
+          <CustomText style={styles.productTitle} numberOfLines={1}>
             {item.name}
-          </Text>
-          <Text
+          </CustomText>
+          <CustomText
             style={styles.productLocation}
             numberOfLines={1}
             ellipsizeMode="tail">
             {item.location}
-          </Text>
+          </CustomText>
           <View style={styles.priceTagContainer}>
-            <Text style={styles.priceTag}>{item.price} - USD</Text>
+            <CustomText style={styles.priceTag}>{item.price} - USD</CustomText>
             {item.condition != 2 ? (
-              <Text style={styles.conditionTag}>New</Text>
+              <CustomText style={styles.conditionTag}>New</CustomText>
             ) : (
-              <Text style={styles.conditionTag}>Used</Text>
+              <CustomText style={styles.conditionTag}>Used</CustomText>
             )}
           </View>
         </View>
@@ -590,7 +593,7 @@ export default function MapScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <MainHeader showBackIcon={true} title="Map" />
+      <MainHeader showBackIcon={true} title={t('map')} />
 
       <View style={styles.categoryListContainer}>
         <TouchableOpacity
@@ -598,13 +601,13 @@ export default function MapScreen() {
           style={styles.dropdownButton}>
           <BarsSVG width={24} height={24} />
           <View style={{flexShrink: 1}}>
-            <Text
+            <CustomText
               numberOfLines={1}
               ellipsizeMode="tail"
               style={{fontSize: mvs(18), fontWeight: 'bold', flexShrink: 1}}>
               {' '}
-              {activeCategory ? `${activeCategory}` : 'Categories'}
-            </Text>
+              {activeCategory ? `${activeCategory}` : t('Categories')}
+            </CustomText>
           </View>
         </TouchableOpacity>
       </View>
@@ -625,12 +628,12 @@ export default function MapScreen() {
               setDropdownVisible(false);
             }}>
             <RadioButton selected={activeCategory === null} />
-            <Text
+            <CustomText
               style={styles.dropdownText}
               numberOfLines={1}
               ellipsizeMode="tail">
-              All Categories
-            </Text>
+              {t('All Categories')}
+            </CustomText>
           </TouchableOpacity>
 
           {categories.map(category => (
@@ -642,12 +645,12 @@ export default function MapScreen() {
                 setDropdownVisible(false);
               }}>
               <RadioButton selected={activeCategory === category.name} />
-              <Text
+              <CustomText
                 style={styles.dropdownText}
                 numberOfLines={1}
                 ellipsizeMode="tail">
-                {category.name}
-              </Text>
+                {i18n.language === 'ar' ? category.ar_name : category.name}
+              </CustomText>
             </TouchableOpacity>
           ))}
         </ScrollView>
@@ -658,14 +661,14 @@ export default function MapScreen() {
         {selectedProductsGroup ? (
           <View style={styles.productGroupContainer}>
             <View style={styles.productGroupHeader}>
-              <Text style={styles.productGroupTitle}>
+              <CustomText style={styles.productGroupTitle}>
                 {selectedProductsGroup.length} Ad
                 {selectedProductsGroup.length > 1 ? 's' : ''} Available
-              </Text>
+              </CustomText>
               <TouchableOpacity
                 style={styles.closeButton}
                 onPress={() => setSelectedProductsGroup(null)}>
-                <Text style={styles.closeButtonText}>×</Text>
+                <CustomText style={styles.closeButtonText}>×</CustomText>
               </TouchableOpacity>
             </View>
 
@@ -684,12 +687,12 @@ export default function MapScreen() {
           </View>
         ) : (
           <View style={{alignItems: 'center'}}>
-            <Text style={{fontSize: mvs(15), fontWeight: '400'}}>
-              In this region:
-            </Text>
-            <Text style={{fontSize: mvs(22), fontWeight: 'bold'}}>
-              {visibleProducts.length} ads
-            </Text>
+            <CustomText style={{fontSize: mvs(15), fontWeight: '400'}}>
+              {t('In this region:')}
+            </CustomText>
+            <CustomText style={{fontSize: mvs(22), fontWeight: 'bold'}}>
+              {visibleProducts.length} {t('ads')}
+            </CustomText>
           </View>
         )}
       </View>

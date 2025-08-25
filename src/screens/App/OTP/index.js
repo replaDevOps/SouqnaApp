@@ -14,12 +14,12 @@ import {
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {colors} from '../../../util/color';
 import MainHeader from '../../../components/Headers/MainHeader';
-import Bold from '../../../typography/BoldText';
 import {resendOtp, verifyOtp} from '../../../api/apiServices';
 import {Snackbar} from 'react-native-paper';
 import {useRoute} from '@react-navigation/native';
 import {useTranslation} from 'react-i18next';
 import {useSelector} from 'react-redux';
+import CustomText from '../../../components/CustomText';
 
 const OTPScreen = ({navigation}) => {
   const route = useRoute();
@@ -74,14 +74,14 @@ const OTPScreen = ({navigation}) => {
       const result = await resendOtp(email);
 
       if (result?.success) {
-        showSnackbar('OTP resent successfully.');
+        showSnackbar(t('OTP resent successfully.'));
       } else {
-        showSnackbar(result?.message || 'Failed to resend OTP.');
+        showSnackbar(result?.message || t('Failed to resend OTP.'));
       }
       setResendEnabled(false);
       setTimeout(() => setResendEnabled(true), 60000);
     } catch (error) {
-      showSnackbar('Failed to resend OTP. Please try again.');
+      showSnackbar(t('Failed to resend OTP. Please try again.'));
     } finally {
       setResendLoading(false);
     }
@@ -116,7 +116,7 @@ const OTPScreen = ({navigation}) => {
     console.log('Verification code submitted:', verificationCode);
 
     if (!verificationCode || verificationCode.length !== 4) {
-      showSnackbar('Please enter a valid 6-digit OTP.');
+      showSnackbar(t('Please enter a valid 6-digit OTP.'));
       return;
     }
 
@@ -126,7 +126,7 @@ const OTPScreen = ({navigation}) => {
       const response = await verifyOtp(verificationCode);
 
       if (response?.success) {
-        showSnackbar(response.message || 'OTP verified successfully.');
+        showSnackbar(response.message || t('OTP verified successfully.'));
 
         if (resetPassword) {
           navigation.navigate('ChangePassword', {resetToken: response.token});
@@ -135,13 +135,13 @@ const OTPScreen = ({navigation}) => {
         }
       } else {
         console.warn('OTP verification failed:', response?.error);
-        showSnackbar(response?.error || 'Invalid OTP, please try again.');
+        showSnackbar(response?.error || t('Invalid OTP, please try again.'));
       }
     } catch (error) {
       console.error('Verification error:', error);
       showSnackbar(
         error?.response?.data?.message ||
-          'Something went wrong. Please try again.',
+          t('Something went wrong. Please try again.'),
       );
     } finally {
       setLoading(false); // Hide loader
@@ -172,13 +172,14 @@ const OTPScreen = ({navigation}) => {
               source={require('../../../assets/img/logo1.png')}
               style={{height: 50, width: 50}}
             />
-            <Bold style={styles.title}>Souqna</Bold>
           </View>
-          <Text style={styles.instruction}>{t('enterCodeSent')}</Text>
+          <CustomText style={styles.instruction}>
+            {t('enterCodeSent')}
+          </CustomText>
 
-          <Text style={styles.phoneNumber}>
+          <CustomText style={styles.phoneNumber}>
             {t('sentTo')} ({email})
-          </Text>
+          </CustomText>
 
           <View style={[styles.codeContainer, styles.ltrContainer]}>
             {code.map((digit, index) => (
@@ -207,7 +208,9 @@ const OTPScreen = ({navigation}) => {
             {loading ? (
               <ActivityIndicator color="#fff" size="small" />
             ) : (
-              <Text style={styles.continueButtonText}>{t('continue')}</Text>
+              <CustomText style={styles.continueButtonText}>
+                {t('continue')}
+              </CustomText>
             )}
           </TouchableOpacity>
 
@@ -222,14 +225,14 @@ const OTPScreen = ({navigation}) => {
             {resendLoading ? (
               <ActivityIndicator size="small" color={colors.lightgreen} />
             ) : (
-              <Text
+              <CustomText
                 style={[
                   styles.resendButtonText,
                   !resendEnabled && {color: 'gray'},
                 ]}>
                 {t('resendCode')}
                 {!resendEnabled ? ` (${countdown} ${t('sec')})` : ''}
-              </Text>
+              </CustomText>
             )}
           </TouchableOpacity>
         </View>

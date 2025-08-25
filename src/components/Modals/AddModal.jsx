@@ -21,6 +21,7 @@ import HelpModal from './HelpModal';
 import {useTranslation} from 'react-i18next';
 import i18n from '../../i18n/i18n';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import CustomText from '../CustomText';
 
 const AddModal = ({visible, onClose, title, message}) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -95,39 +96,39 @@ const AddModal = ({visible, onClose, title, message}) => {
       onRequestClose={onClose}>
       <View style={styles.modalOverlay}>
         <View style={styles.modalContainer}>
-        <View style={{flex: 1}}>
-          <View style={styles.headerSection}>
-            <TouchableOpacity onPress={onClose}>
-              <CloseSvg width={mvs(24)} height={mvs(24)} />
-            </TouchableOpacity>
-            <View style={{flexDirection: 'column', alignItems: 'flex-end'}}>
-              <TouchableOpacity onPress={openHelp}>
-                <Text style={styles.helpText}>{t('Help')}</Text>
+          <View style={{flex: 1}}>
+            <View style={styles.headerSection}>
+              <TouchableOpacity onPress={onClose}>
+                <CloseSvg width={mvs(24)} height={mvs(24)} />
               </TouchableOpacity>
-              <TouchableOpacity
-                onPress={toggleLanguage}
-                style={{flexDirection: 'row'}}>
-                <LanguageSVG height={24} width={24} />
-                <Text style={[styles.helpText, {fontSize: 16, marginLeft: 5}]}>
-                  {i18n.language === 'en' ? 'Arabic' : 'English'}
-                </Text>
-              </TouchableOpacity>
+              <View style={{flexDirection: 'column', alignItems: 'flex-end'}}>
+                <TouchableOpacity onPress={openHelp}>
+                  <CustomText style={styles.helpText}>{t('Help')}</CustomText>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={toggleLanguage}
+                  style={{flexDirection: 'row'}}>
+                  <LanguageSVG height={24} width={24} />
+                  <CustomText
+                    style={[styles.helpText, {fontSize: 16, marginLeft: 5}]}>
+                    {i18n.language === 'en' ? 'Arabic' : 'English'}
+                  </CustomText>
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
-          
 
-          {/* <View style={styles.logoAndTitleContainer}> */}
+            {/* <View style={styles.logoAndTitleContainer}> */}
             {/* <SouqnaLogo width={40} height={40} /> */}
             {/* <Image
               source={require('../../assets/img/logo1.png')}
               style={styles.logo}
             />
-            <Text style={styles.title}>Souqna</Text>
+            <CustomText style={styles.title}>Souqna</CustomText>
           </View> */}
 
-          <Text style={styles.message}>{message}</Text>
+            <CustomText style={styles.message}>{message}</CustomText>
 
-          {/* <View style={styles.carouselSection}>
+            {/* <View style={styles.carouselSection}>
             <FlatList
               data={paginationImages}
               renderItem={renderItem}
@@ -146,14 +147,13 @@ const AddModal = ({visible, onClose, title, message}) => {
               viewabilityConfig={viewabilityConfig}
             />
           </View> */}
-          <View style={styles.singleImageContainer}>
-  <Image
-    source={require('../../assets/img/logo1.png')}
-    style={styles.image}
-  />
-</View>
-
-</View>
+            <View style={styles.singleImageContainer}>
+              <Image
+                source={require('../../assets/img/logo1.png')}
+                style={styles.image}
+              />
+            </View>
+          </View>
           <View style={styles.footerSection}>
             {/* <View style={styles.pagination}>
               {paginationImages.map((_, index) => (
@@ -175,7 +175,7 @@ const AddModal = ({visible, onClose, title, message}) => {
               <Regular style={styles.LoginButtonText}>{t('Login')}</Regular>
             </TouchableOpacity>
 
-            <Text style={styles.termsText}>
+            <CustomText style={styles.termsText}>
               {t('ourTermsApplyPart1')}{' '}
               <TouchableOpacity
                 onPress={() =>
@@ -183,7 +183,10 @@ const AddModal = ({visible, onClose, title, message}) => {
                     'https://themen.kleinanzeigen.de/nutzungsbedingungen/',
                   )
                 }>
-                <Text style={styles.termsLink}> {t('ourTermsApplyPart3')}</Text>
+                <CustomText style={styles.termsLink}>
+                  {' '}
+                  {t('ourTermsApplyPart3')}
+                </CustomText>
               </TouchableOpacity>{' '}
               {t('ourTermsApplyPart2')}{' '}
               <TouchableOpacity
@@ -192,10 +195,13 @@ const AddModal = ({visible, onClose, title, message}) => {
                     'https://themen.kleinanzeigen.de/datenschutzerklaerung/',
                   )
                 }>
-                <Text style={styles.termsLink}> {t('ourTermsApplyPart4')}</Text>
+                <CustomText style={styles.termsLink}>
+                  {' '}
+                  {t('ourTermsApplyPart4')}
+                </CustomText>
               </TouchableOpacity>
               .
-            </Text>
+            </CustomText>
           </View>
         </View>
         <HelpModal visible={showHelp} onClose={closeHelp} />
@@ -206,10 +212,10 @@ const AddModal = ({visible, onClose, title, message}) => {
 
 const styles = StyleSheet.create({
   singleImageContainer: {
-  justifyContent: 'center',
-  alignItems: 'center',
-  marginBottom: mvs(20),
-},
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: mvs(20),
+  },
 
   modalOverlay: {
     flex: 1,
@@ -271,13 +277,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: mvs(40),
   },
-image: {
-  width: '100%',
-  height: mvs(350), // Increase this for a taller image
-  resizeMode: 'cover',
-  
-  borderRadius: mvs(10),
-},
+  image: {
+    width: '100%',
+    height: mvs(350), // Increase this for a taller image
+    resizeMode: 'cover',
+
+    borderRadius: mvs(10),
+  },
 
   infoText: {
     textAlign: 'center',

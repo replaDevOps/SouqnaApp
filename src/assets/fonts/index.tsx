@@ -1,8 +1,8 @@
 const fonts = {
-  light: 'Poppins-Light',
-  regular: 'Poppins-Regular',
-  medium: 'Poppins-Medium',
-  semiBold: 'Poppins-Bold',
-  bold: 'Poppins-Bold',
+  light: 'Amiri-Regular',
+  regular: 'Amiri-Regular',
+  medium: 'Amiri-Regular',
+  semiBold: 'Amiri-Bold',
+  bold: 'Amiri-Bold',
 };
 export default fonts;

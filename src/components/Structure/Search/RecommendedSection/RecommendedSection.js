@@ -1,55 +1,38 @@
 // RecommendedSection.js
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {
-  FlatList,
-  View,
-  TouchableOpacity,
-  Image,
-  Text,
-  RefreshControl,
-  Button,
-  Linking,
-} from 'react-native';
+  useCallback,
+  useEffect,
+  useState,
+  useImperativeHandle,
+  forwardRef,
+} from 'react';
+import {FlatList, View, TouchableOpacity, Image} from 'react-native';
 import styles from './style';
 import Regular from '../../../../typography/RegularText';
 import {HeartSvg} from '../../../../assets/svg';
 import Bold from '../../../../typography/BoldText';
 import {useSelector} from 'react-redux';
 import {
+  addToFavorite,
   BASE_URL_Product,
   fetchBuyerProducts,
-  fetchProducts,
   fetchSellerProducts,
+  removeFromFavorite,
 } from '../../../../api/apiServices';
 import {useTranslation} from 'react-i18next';
 import {mvs} from '../../../../util/metrices';
 import ProductCardSkeleton from './ProductCardSkeleton';
+import {useNavigation} from '@react-navigation/native';
+import {showSnackbar} from '../../../../redux/slices/snackbarSlice';
+import CustomText from '../../../CustomText';
 
-const RecommendedSection = ({
-  products,
-  loadMoreProducts,
-  loading,
-  isEndOfResults,
-  // likedItems,
-  handleHeartClick,
-  navigateToProductDetails,
-  hideTitle,
-  refreshing,
-  onRefresh,
-}) => {
+const RecommendedSection = forwardRef(({onRefreshRef}, ref) => {
+  const hideTitle = false;
   const [apiProducts, setApiProducts] = useState([]);
   const [productsLoading, setProductsLoading] = useState(true);
+  const navigation = useNavigation();
 
   const {token, role} = useSelector(state => state.user);
-  const favorites = useSelector(state => state.favorites.favorites);
-
-  const likedItemes = useMemo(() => {
-    const map = {};
-    favorites.forEach(item => {
-      map[item.id] = true;
-    });
-    return map;
-  }, [favorites]);
 
   const {t} = useTranslation();
   const getCurrencySymbol = (currency = 'USD') => {
@@ -64,6 +47,7 @@ const RecommendedSection = ({
         return '$';
     }
   };
+
   const loadProducts = useCallback(async () => {
     setProductsLoading(true);
 
@@ -81,26 +65,75 @@ const RecommendedSection = ({
       response = await fetchSellerProducts(token, filters);
     } else {
       // Buyer or Guest (role 3 or others)
-      response = await fetchBuyerProducts(filters);
+      const isLoggedIn = Boolean(token);
+      response = await fetchBuyerProducts(filters, isLoggedIn);
     }
-    console.log('API Response:', response);
     if (response?.success && Array.isArray(response.data)) {
       setApiProducts(response.data);
     } else {
       console.error('Invalid products data', response);
     }
     setProductsLoading(false);
-  }, [token]);
+  }, [token, role]);
+
+  // Expose the refresh function to parent component
+  useImperativeHandle(ref, () => ({
+    refresh: loadProducts,
+  }));
+
+  // Set the ref for parent component to access
+  useEffect(() => {
+    if (onRefreshRef) {
+      onRefreshRef.current = loadProducts;
+    }
+  }, [loadProducts, onRefreshRef]);
 
   useEffect(() => {
     loadProducts();
   }, [loadProducts]);
 
+  const handleHeartClick = useCallback(
+    async (id, item) => {
+      if (role === 2) {
+        showSnackbar(t('loginAsBuyer'));
+        return;
+      }
+
+      const isInFavorites = item?.isFavorite;
+      if (isInFavorites) {
+        await removeFromFavorite(id, token).then(res => {
+          const updatedState = apiProducts.map(product => {
+            if (product.id === id) {
+              product.isFavorite = !product.isFavorite;
+            }
+            return product;
+          });
+          setApiProducts(updatedState);
+        });
+      } else {
+        await addToFavorite(id, token).then(res => {
+          const updatedState = apiProducts.map(product => {
+            if (product.id === id) {
+              product.isFavorite = !product.isFavorite;
+            }
+            return product;
+          });
+          setApiProducts(updatedState);
+        });
+      }
+    },
+    [role, token, apiProducts],
+  );
+
+  async function loadMoreProducts() {}
+
   const renderRecommendedItem = useCallback(
     ({item}) => (
       <TouchableOpacity
         style={styles.recommendedItem}
-        onPress={() => navigateToProductDetails(item.id)}>
+        onPress={() =>
+          navigation.navigate('ProductDetail', {productId: item.id})
+        }>
         <Image
           source={{uri: `${BASE_URL_Product}${item.images?.[0]?.path}`}}
           style={styles.recommendedImage}
@@ -109,20 +142,20 @@ const RecommendedSection = ({
           <Regular style={styles.recommendedTitle}>{item.name}</Regular>
           <Regular style={styles.recommendedPrice}>
             {' '}
-            {getCurrencySymbol(item?.currency)}{' '}
-            {Number(item.price).toLocaleString()}
+            {getCurrencySymbol(item?.currency)} {Number(item?.price)}
+            {/* {Number(item.price).toLocaleString()} */}
           </Regular>
         </View>
-        {role !== 2 && (
+        {role !== 2 && Boolean(token) && (
           <TouchableOpacity
             onPress={() => handleHeartClick(item.id, item)}
             style={styles.heartIconContainer}>
-            <HeartSvg filled={likedItemes[item.id]} />
+            <HeartSvg filled={item?.isFavorite} />
           </TouchableOpacity>
         )}
       </TouchableOpacity>
     ),
-    [handleHeartClick, likedItemes, navigateToProductDetails],
+    [handleHeartClick, role, navigation, token],
   );
 
   // Render skeleton items in the same layout as the actual product items
@@ -146,7 +179,12 @@ const RecommendedSection = ({
   return (
     <View style={[styles.recommendedContainer, {flex: 1}]}>
       {!hideTitle && (
-        <Bold style={[{marginVertical: mvs(20)}, styles.recommendedText]}>
+        <Bold
+          style={[
+            {marginVertical: mvs(20)},
+            styles.recommendedText,
+            // {fontFamily: 'Amiri-Regular'},
+          ]}>
           {role === 2
             ? t('yourListings')
             : role === 3
@@ -154,14 +192,6 @@ const RecommendedSection = ({
             : ''}
         </Bold>
       )}
-      {/* <Button
-        title="Test Deep Link"
-        onPress={() =>
-          Linking.openURL(
-            'myapp://product/ddf69a24-0c13-4185-a639-ec1372ece937',
-          )
-        }
-      /> */}
 
       {productsLoading ? (
         renderSkeletonList()
@@ -176,13 +206,13 @@ const RecommendedSection = ({
           // refreshControl={
           //   <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           // }
-          ListFooterComponent={
-            isEndOfResults ? (
-              <Regular style={styles.endOfResultsText}>
-                {t('endOfResults')}
-              </Regular>
-            ) : null
-          }
+          // ListFooterComponent={
+          //   isEndOfResults ? (
+          //     <Regular style={styles.endOfResultsText}>
+          //       {t('endOfResults')}
+          //     </Regular>
+          //   ) : null
+          // }
           ListEmptyComponent={
             !productsLoading && (
               <View style={{paddingVertical: mvs(100)}}>
@@ -194,9 +224,9 @@ const RecommendedSection = ({
                     height: mvs(200),
                   }}
                 />
-                <Text style={{textAlign: 'center', marginTop: mvs(20)}}>
+                <CustomText style={{textAlign: 'center', marginTop: mvs(20)}}>
                   {t('noProductsFound')}
-                </Text>
+                </CustomText>
               </View>
             )
           }
@@ -204,6 +234,6 @@ const RecommendedSection = ({
       )}
     </View>
   );
-};
+});
 
 export default RecommendedSection;

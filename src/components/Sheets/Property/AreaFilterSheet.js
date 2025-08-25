@@ -1,6 +1,7 @@
 import React, {forwardRef, useImperativeHandle, useRef} from 'react';
 import {TextInput} from 'react-native';
 import {BottomSheetScrollView} from '@gorhom/bottom-sheet';
+import {useTranslation} from 'react-i18next';
 
 const AreaFilterSheet = ({filters, setFilters}, ref) => {
   const minAreaRef = useRef(null);
@@ -10,6 +11,8 @@ const AreaFilterSheet = ({filters, setFilters}, ref) => {
       minAreaRef.current?.focus();
     },
   }));
+
+  const {t} = useTranslation();
 
   return (
     <BottomSheetScrollView
@@ -28,7 +31,7 @@ const AreaFilterSheet = ({filters, setFilters}, ref) => {
           borderRadius: 10,
         }}
         ref={minAreaRef}
-        placeholder="Min Size (sqft)"
+        placeholder={t('Min Size (sqft)')}
         keyboardType="numeric"
         value={filters.minArea}
         onChangeText={text => setFilters(prev => ({...prev, minArea: text}))}
@@ -41,7 +44,7 @@ const AreaFilterSheet = ({filters, setFilters}, ref) => {
           padding: 10,
           borderRadius: 10,
         }}
-        placeholder="Max Size (sqft)"
+        placeholder={t('Max Size (sqft)')}
         keyboardType="numeric"
         value={filters.maxArea}
         onChangeText={text => setFilters(prev => ({...prev, maxArea: text}))}

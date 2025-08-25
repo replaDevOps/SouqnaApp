@@ -3,6 +3,7 @@ import {Text, View} from 'react-native';
 import styles from './style';
 import {Row} from '../../atoms/row';
 import Regular from '../../../typography/RegularText';
+import CustomText from '../../CustomText';
 const ProductMenu = ({color, condition, material}) => {
   return (
     <View style={styles.menuContainer}>
@@ -12,9 +13,12 @@ const ProductMenu = ({color, condition, material}) => {
       </Row>
       <Row style={styles.menuItem}>
         <Regular style={styles.leftText}>Discounts</Regular>
-        <Text style={styles.menuText} numberOfLines={1} ellipsizeMode="tail">
+        <CustomText
+          style={styles.menuText}
+          numberOfLines={1}
+          ellipsizeMode="tail">
           {condition}
-        </Text>
+        </CustomText>
       </Row>
       <Row style={styles.menuItem}>
         <Regular style={styles.leftText}>Condition</Regular>

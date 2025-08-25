@@ -19,6 +19,7 @@ import {useTranslation} from 'react-i18next';
 import {mvs} from '../../../util/metrices';
 import {useNavigation} from '@react-navigation/native';
 import {ConfirmEmail} from '../../../api/apiServices';
+import CustomText from '../../../components/CustomText';
 
 const ForgetPassword = () => {
   const [email, setEmail] = useState('');
@@ -65,7 +66,8 @@ const ForgetPassword = () => {
             <Bold style={styles.title}>Souqna</Bold>
           </View>
           <View>
-            <Text style={{fontSize: mvs(16), fontWeight: 'bold'}}></Text>
+            <CustomText
+              style={{fontSize: mvs(16), fontWeight: 'bold'}}></CustomText>
             <PrimaryPasswordInput
               value={email}
               onChangeText={setEmail}
@@ -73,7 +75,7 @@ const ForgetPassword = () => {
               //error={emailError}
               clearText={() => setEmail('')}
             />
-            <Text>{emailError}</Text>
+            <CustomText>{emailError}</CustomText>
           </View>
 
           <View style={styles.buttonContainer}>

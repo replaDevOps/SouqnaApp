@@ -1,18 +1,41 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
-import { colors } from '../../../util/color';
+import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
+import {BottomSheetScrollView} from '@gorhom/bottom-sheet';
+import {colors} from '../../../util/color';
+import CustomText from '../../CustomText';
+import {useTranslation} from 'react-i18next';
 
-const PROPERTY_TYPES = ['Apartment', 'House', 'Villa', 'Commercial', 'Farmhouse', 'Upper Portion', 'Lower Portion'];
-
-const PropertyTypeFilterSheet = ({ filters, setFilters, closeSheet }) => {
-  const handleSelect = (type) => {
+const PropertyTypeFilterSheet = ({filters, setFilters, closeSheet}) => {
+  const handleSelect = type => {
     setFilters(prev => ({
       ...prev,
       propertyType: type,
     }));
     closeSheet?.();
   };
+
+  const {i18n} = useTranslation();
+  const isArabic = i18n.language === 'ar';
+
+  const PROPERTY_TYPES = isArabic
+    ? [
+        'شقة',
+        'منزل',
+        'فيلا',
+        'تجاري',
+        'مزرعة',
+        'الطابق العلوي',
+        'الطابق السفلي',
+      ]
+    : [
+        'Apartment',
+        'House',
+        'Villa',
+        'Commercial',
+        'Farmhouse',
+        'Upper Portion',
+        'Lower Portion',
+      ];
 
   return (
     <BottomSheetScrollView contentContainerStyle={styles.container}>
@@ -23,11 +46,15 @@ const PropertyTypeFilterSheet = ({ filters, setFilters, closeSheet }) => {
           style={[
             styles.option,
             filters.propertyType === type && styles.selectedOption,
-          ]}
-        >
-          <Text style={filters.propertyType === type ? styles.selectedText : styles.optionText}>
+          ]}>
+          <CustomText
+            style={
+              filters.propertyType === type
+                ? styles.selectedText
+                : styles.optionText
+            }>
             {type}
-          </Text>
+          </CustomText>
         </TouchableOpacity>
       ))}
     </BottomSheetScrollView>

@@ -1,7 +1,7 @@
-import React from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
+import {View, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import {colors} from '../../../util/color';
 import {mvs} from '../../../util/metrices';
+import CustomText from '../../CustomText';
 const MyButton = ({onPress, title, disabled, icon, widt, color, children}) => {
   return (
     <TouchableOpacity
@@ -21,7 +21,7 @@ const MyButton = ({onPress, title, disabled, icon, widt, color, children}) => {
       <View style={styles.view1}>
         {icon && <Image source={icon} style={styles.image1} />}
         {/* Conditionally render children (like ActivityIndicator) */}
-        {children || <Text style={styles.text}>{title}</Text>}
+        {children || <CustomText style={styles.text}>{title}</CustomText>}
       </View>
     </TouchableOpacity>
   );
@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
     fontSize: mvs(17),
     fontWeight: '400',
     color: colors.white,
-    fontFamily: 'DMSans',
+    fontFamily: 'Amiri-Regular',
   },
   view1: {
     flexDirection: 'row',
