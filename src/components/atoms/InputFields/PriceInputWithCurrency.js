@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
   textInput: {
     flex: 1,
     fontFamily: 'Amiri-Regular', // Match your existing font family
-    paddingVertical: mvs(12),
+    paddingVertical: mvs(8),
     paddingHorizontal: mvs(14),
     fontSize: mvs(16), // Match your existing font size
     color: '#333', // Match your existing text color

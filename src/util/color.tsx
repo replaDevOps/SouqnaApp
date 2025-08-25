@@ -24,7 +24,7 @@ export const colors = {
   grey: '#A4A4A4',
   orange: '#B77E0F',
   lightorange: '#FEECD4',
-  gray1: 'C2C1CD',
+  gray1: '#C2C1CD',
   lightBlue: '#7FA7E0',
   shadow: {
     shadowColor: '#000',

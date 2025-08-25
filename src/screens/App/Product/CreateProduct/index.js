@@ -661,7 +661,10 @@ const CreateProduct = () => {
               </CustomText>
               <PriceInputWithDropdown
                 value={formData.price}
-                onChangeText={text => handleInputChange('price', text)}
+                onChangeText={text => {
+                  const numericText = text.replace(/[^0-9]/g, '');
+                  handleInputChange('price', numericText);
+                }}
                 selectedCurrency={formData.currency}
                 onCurrencyChange={currency =>
                   handleInputChange('currency', currency)

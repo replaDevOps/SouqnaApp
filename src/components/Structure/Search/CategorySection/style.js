@@ -23,34 +23,34 @@ const styles = StyleSheet.create({
 
   // Enhanced shadow styles
   cardShadow: {
-    backgroundColor: '#ffffff',
+    backgroundColor: '#F2F2F2',
     borderRadius: 20,
     // iOS Shadow
-    shadowColor: '#000000',
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.15,
-    shadowRadius: 8,
-    // Android Shadow
-    elevation: 8,
+    // shadowColor: '#000000',
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 4,
+    // },
+    // shadowOpacity: 0.15,
+    // shadowRadius: 8,
+    // // Android Shadow
+    // elevation: 8,
   },
 
   // Alternative deeper shadow for emphasis
   cardShadowDeep: {
-    backgroundColor: '#ffffff',
+    backgroundColor: '#F2F2F2',
     borderRadius: 20,
     // iOS Shadow
-    shadowColor: '#000000',
-    shadowOffset: {
-      width: 0,
-      height: 6,
-    },
-    shadowOpacity: 0.2,
-    shadowRadius: 12,
-    // Android Shadow
-    elevation: 12,
+    // shadowColor: '#000000',
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 6,
+    // },
+    // shadowOpacity: 0.2,
+    // shadowRadius: 12,
+    // // Android Shadow
+    // elevation: 12,
   },
 
   bigCard: {
@@ -60,16 +60,16 @@ const styles = StyleSheet.create({
     paddingVertical: mvs(10),
     ...StyleSheet.create({
       shadow: {
-        backgroundColor: '#ffffff',
+        backgroundColor: '#F2F2F2',
         borderRadius: 20,
-        shadowColor: '#000000',
-        shadowOffset: {
-          width: 0,
-          height: 4,
-        },
-        shadowOpacity: 0.15,
-        shadowRadius: 8,
-        elevation: 8,
+        // shadowColor: '#000000',
+        // shadowOffset: {
+        //   width: 0,
+        //   height: 4,
+        // },
+        // shadowOpacity: 0.15,
+        // shadowRadius: 8,
+        // elevation: 8,
       },
     }).shadow,
   },
@@ -81,16 +81,16 @@ const styles = StyleSheet.create({
     paddingVertical: mvs(8),
     ...StyleSheet.create({
       shadow: {
-        backgroundColor: '#ffffff',
+        backgroundColor: '#F2F2F2',
         borderRadius: 20,
-        shadowColor: '#000000',
-        shadowOffset: {
-          width: 0,
-          height: 3,
-        },
-        shadowOpacity: 0.12,
-        shadowRadius: 6,
-        elevation: 6,
+        // shadowColor: '#000000',
+        // shadowOffset: {
+        //   width: 0,
+        //   height: 3,
+        // },
+        // shadowOpacity: 0.12,
+        // shadowRadius: 6,
+        // elevation: 6,
       },
     }).shadow,
   },

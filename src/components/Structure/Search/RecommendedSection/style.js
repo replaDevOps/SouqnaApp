@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
     // fontWeight: 'bold',
   },
   recommendedPrice: {
-    fontSize: mvs(15),
+    fontSize: mvs(18),
     fontWeight: '400',
     color: colors.green,
     paddingTop: mvs(4),

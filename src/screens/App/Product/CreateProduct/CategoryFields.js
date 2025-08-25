@@ -144,6 +144,39 @@ const CategoryFields = ({categoryFields, formData, handleInputChange}) => {
             />
           </View>
         );
+      case 'number':
+        return (
+          <View key={index} style={fieldStyles.fieldContainer}>
+            <CustomText style={fieldStyles.fieldLabel}>
+              {label}
+              {field.required === 1 && (
+                <CustomText style={fieldStyles.required}>*</CustomText>
+              )}
+            </CustomText>
+            <TextInput
+              style={[fieldStyles.textInput, isArabic && {textAlign: 'right'}]}
+              placeholder={label}
+              placeholderTextColor={colors.grey}
+              value={fieldValue}
+              onChangeText={text => {
+                const numericText = text.replace(/[^0-9]/g, '');
+                handleInputChange(field.name, numericText);
+                handleInputChange(field.ar_name, numericText);
+              }}
+              keyboardType="numeric"
+              multiline={
+                field.name.includes('description') ||
+                field.name.includes('requirement')
+              }
+              numberOfLines={
+                field.name.includes('description') ||
+                field.name.includes('requirement')
+                  ? 4
+                  : 1
+              }
+            />
+          </View>
+        );
 
       case 'select':
         const options = parseOptions(field.options);
