@@ -81,8 +81,14 @@ const CategoryFields = ({categoryFields, formData, handleInputChange}) => {
   const {i18n} = useTranslation();
   const isArabic = i18n.language === 'ar';
 
+  // console.log('Category Fields:', categoryFields);
+  // console.log('Form Data:', formData);
+
   const renderField = (field, index) => {
     const fieldValue = formData[isArabic ? field.ar_name : field.name] || '';
+    // console.log('form data:', formData);
+    // console.log('field: ', field);
+    // console.log('field value: ', formData.inspection_valid_until);
     const label = isArabic ? field.ar_label : field.label;
     const placeholder = isArabic
       ? `اختر ${field.ar_label}`

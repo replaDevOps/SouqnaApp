@@ -34,7 +34,10 @@ const PriceFilterSheet = ({filters, setFilters}, ref) => {
         placeholder={t('Min Price')}
         keyboardType="numeric"
         value={filters.minPrice}
-        onChangeText={text => setFilters(prev => ({...prev, minPrice: text}))}
+        onChangeText={text => {
+          const numericText = text.replace(/[^0-9]/g, '');
+          setFilters(prev => ({...prev, minPrice: numericText}));
+        }}
       />
       <TextInput
         style={{
@@ -47,7 +50,10 @@ const PriceFilterSheet = ({filters, setFilters}, ref) => {
         placeholder={t('Max Price')}
         keyboardType="numeric"
         value={filters.maxPrice}
-        onChangeText={text => setFilters(prev => ({...prev, maxPrice: text}))}
+        onChangeText={text => {
+          const numericText = text.replace(/[^0-9]/g, '');
+          setFilters(prev => ({...prev, maxPrice: numericText}));
+        }}
       />
     </BottomSheetScrollView>
   );
