@@ -3,6 +3,7 @@ import {useEffect, useState} from 'react';
 import {Text, View, TouchableOpacity, TextInput} from 'react-native';
 import {BottomSheetScrollView} from '@gorhom/bottom-sheet';
 import DropDownPicker from 'react-native-dropdown-picker';
+import {Dropdown} from 'react-native-element-dropdown';
 import {
   sectionTitleStyle,
   inputStyle,
@@ -36,6 +37,14 @@ const AdjustFilterSheet = ({
   }, [conditionOpen]);
 
   const {i18n} = useTranslation();
+
+  const mileages = [];
+  for (let mileage = 5; mileage <= 50; mileage++) {
+    mileages.push({
+      label: `${mileage} km/L`,
+      value: mileage.toString(),
+    });
+  }
 
   const resetFilters = () => {
     setFilters({
@@ -152,7 +161,42 @@ const AdjustFilterSheet = ({
         {/* Mileage Range */}
         <CustomText style={labelStyle}>{t('mileageRange')}</CustomText>
         <View style={{flexDirection: 'row', gap: 10}}>
-          <TextInput
+          <View style={{flex: 1}}>
+            <Text style={{marginBottom: 5, fontSize: 14, color: '#666'}}>
+              {t('Min (km)')}
+            </Text>
+            <Dropdown
+              // ref={minYearRef}
+              mode="default" // Ensures inline dropdown, not fullscreen modal
+              style={{
+                height: 50,
+                borderColor: '#ccc',
+                borderWidth: 1,
+                borderRadius: 10,
+                paddingHorizontal: 12,
+                backgroundColor: '#fff',
+              }}
+              placeholderStyle={{
+                fontSize: 16,
+                color: '#999',
+              }}
+              selectedTextStyle={{
+                fontSize: 16,
+                color: '#000',
+              }}
+              data={mileages}
+              maxHeight={200}
+              labelField="label"
+              valueField="value"
+              placeholder={t('Select Min Mileage')}
+              value={filters.minMileage || null}
+              onChange={item => {
+                setFilters(prev => ({...prev, minMileage: item.value}));
+              }}
+              dropdownPosition="auto"
+            />
+          </View>
+          {/* <TextInput
             placeholder={t('Min (km)')}
             keyboardType="numeric"
             value={filters.minMileage}
@@ -160,8 +204,43 @@ const AdjustFilterSheet = ({
               setFilters(prev => ({...prev, minMileage: text}))
             }
             style={[inputStyle, {flex: 1}]}
-          />
-          <TextInput
+          /> */}
+          <View style={{flex: 1}}>
+            <Text style={{marginBottom: 5, fontSize: 14, color: '#666'}}>
+              {t('Max (km)')}
+            </Text>
+            <Dropdown
+              // ref={minYearRef}
+              mode="default" // Ensures inline dropdown, not fullscreen modal
+              style={{
+                height: 50,
+                borderColor: '#ccc',
+                borderWidth: 1,
+                borderRadius: 10,
+                paddingHorizontal: 12,
+                backgroundColor: '#fff',
+              }}
+              placeholderStyle={{
+                fontSize: 16,
+                color: '#999',
+              }}
+              selectedTextStyle={{
+                fontSize: 16,
+                color: '#000',
+              }}
+              data={mileages}
+              maxHeight={200}
+              labelField="label"
+              valueField="value"
+              placeholder={t('Select Max Mileage')}
+              value={filters.maxMileage || null}
+              onChange={item => {
+                setFilters(prev => ({...prev, maxMileage: item.value}));
+              }}
+              dropdownPosition="auto"
+            />
+          </View>
+          {/* <TextInput
             placeholder={t('Max (km)')}
             keyboardType="numeric"
             value={filters.maxMileage}
@@ -169,7 +248,7 @@ const AdjustFilterSheet = ({
               setFilters(prev => ({...prev, maxMileage: text}))
             }
             style={[inputStyle, {flex: 1}]}
-          />
+          /> */}
         </View>
 
         {/* Fuel Type */}

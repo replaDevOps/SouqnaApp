@@ -9,6 +9,7 @@ import {
   StatusBar,
   FlatList,
   KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import {useEffect, useState} from 'react';
 import {CommonActions, useNavigation, useRoute} from '@react-navigation/native';
@@ -539,13 +540,13 @@ const UpdateProduct = () => {
                       style={styles.categoryTitle}
                       ellipsizeMode="tail"
                       numberOfLines={1}>
-                      {selectedCategory?.name || category}
+                      {t(selectedCategory?.name) || t(category)}
                     </CustomText>
                     <CustomText
                       style={styles.categorySubtitle}
                       ellipsizeMode="tail"
                       numberOfLines={1}>
-                      {selectedSubCategory?.name || name}
+                      {t(selectedSubCategory?.name) || t(name)}
                     </CustomText>
                   </View>
 
@@ -758,11 +759,11 @@ const UpdateProduct = () => {
           </View>
 
           {/* Discount Section */}
-          <View style={styles.sectionContainer}>
+          {/* <View style={styles.sectionContainer}>
             <CustomText style={styles.sectionTitle}>
-              {t('discount')}
-              {/* <CustomText style={{color: colors.red}}>*</CustomText> */}
-            </CustomText>
+              {t('discount')} */}
+          {/* <CustomText style={{color: colors.red}}>*</CustomText> */}
+          {/* </CustomText>
             <TextInput
               style={styles.input}
               placeholder={t('discountPlaceholder')}
@@ -771,14 +772,14 @@ const UpdateProduct = () => {
               value={formData.discount}
               onChangeText={text => handleInputChange('discount', text)}
             />
-          </View>
+          </View> */}
 
           {/* Special Offer Section */}
-          <View style={styles.sectionContainer}>
+          {/* <View style={styles.sectionContainer}>
             <CustomText style={styles.sectionTitle}>
-              {t('specialOffer')}
-              {/* <CustomText style={{color: colors.red}}>*</CustomText> */}
-            </CustomText>
+              {t('specialOffer')} */}
+          {/* <CustomText style={{color: colors.red}}>*</CustomText> */}
+          {/* </CustomText>
             <TextInput
               style={styles.input}
               placeholder={t('specialOfferPlaceholder')}
@@ -786,7 +787,7 @@ const UpdateProduct = () => {
               value={formData.specialOffer}
               onChangeText={text => handleInputChange('specialOffer', text)}
             />
-          </View>
+          </View> */}
 
           <View style={styles.sectionContainer}>
             <CustomText style={styles.sectionTitle}>

@@ -18,6 +18,7 @@ import Bold from '../../../typography/BoldText';
 import API, {BASE_URL_Product} from '../../../api/apiServices';
 import styles from '../Advertise/style';
 import Loader from '../../../components/Loader';
+import i18n from '../../../i18n/i18n';
 
 const Category = () => {
   // const {categories, categoryIcons} = dummyData;
@@ -83,7 +84,9 @@ const Category = () => {
       if (res.data.success) {
         const subcategories = res.data.data;
         navigation.navigate('SubCategory', {
-          category: categoryName,
+          category:
+            i18n.language === 'ar' ? categoryName.ar_name : categoryName.name,
+          // category: categoryName,
           categoryId: categoryId,
           categoryImage: image,
           subcategories,
@@ -101,13 +104,20 @@ const Category = () => {
     const imageURL = item.image ? `${BASE_URL_Product}${item.image}` : null;
     return (
       <TouchableOpacity
-        onPress={() => handleCategoryPress(item.name, item.id, imageURL)}
+        onPress={() => handleCategoryPress(item, item.id, imageURL)}
         style={styles.categoryItem}>
         <View style={styles.IconContainer}>
           {imageURL ? (
             <Image
               source={{uri: imageURL}}
-              style={{width: mvs(60), height: mvs(60), borderRadius: 30}}
+              style={{
+                width: '100%',
+                height: '100%',
+                // backgroundColor: 'blue',
+                // height: mvs(80),
+                // borderRadius: 30,
+                resizeMode: 'contain',
+              }}
             />
           ) : (
             <LocationSvg width={24} height={24} />
@@ -118,7 +128,8 @@ const Category = () => {
             style={styles.categoryText}
             numberOfLines={2}
             ellipsizeMode="tail">
-            {item.name}
+            {i18n.language === 'ar' ? item.ar_name : item.name}
+            {/* {item.name} */}
           </Bold>
           {item.hasSubcategories && (
             <View style={{marginTop: mvs(5), alignItems: 'center'}}>

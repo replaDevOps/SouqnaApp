@@ -1,18 +1,18 @@
-import {forwardRef, useImperativeHandle, useRef} from 'react';
+import {forwardRef} from 'react';
 import {View, Text} from 'react-native';
 import {Dropdown} from 'react-native-element-dropdown';
 import {BottomSheetScrollView} from '@gorhom/bottom-sheet';
 import {useTranslation} from 'react-i18next';
 
 const BuildYearFilterSheet = ({filters, setFilters}, ref) => {
-  const minYearRef = useRef(null);
+  // const minYearRef = useRef(null);
 
-  useImperativeHandle(ref, () => ({
-    focusMinYear: () => {
-      // Open the min year dropdown
-      minYearRef.current?.open();
-    },
-  }));
+  // useImperativeHandle(ref, () => ({
+  //   focusMinYear: () => {
+  //     // Open the min year dropdown
+  //     minYearRef.current?.open();
+  //   },
+  // }));
 
   const {t} = useTranslation();
 
@@ -36,7 +36,7 @@ const BuildYearFilterSheet = ({filters, setFilters}, ref) => {
           {t('Min Year')}
         </Text>
         <Dropdown
-          ref={minYearRef}
+          // ref={minYearRef}
           mode="default" // Ensures inline dropdown, not fullscreen modal
           style={{
             height: 50,

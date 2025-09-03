@@ -378,7 +378,7 @@ const dropdownStyles = StyleSheet.create({
     color: '#333',
   },
   selectedOptionText: {
-    color: colors.green || '#2e7d2e',
+    color: colors.white || '#2e7d2e',
     fontWeight: '600',
   },
 });
