@@ -6,7 +6,7 @@ export const getFontFamily = (weight = 'regular') => {
   if (Platform.OS === 'ios') {
     return {
       fontFamily: 'Amiri',
-      fontWeight: weight === 'bold' ? TextStyle.bold : TextStyle.normal,
+      fontWeight: weight === 'bold' ? 'Amiri-Bold' : 'Amiri-Regular',
     };
   } else {
     return {

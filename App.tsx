@@ -1,27 +1,30 @@
-import { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
 import './src/i18n/i18n';
 import 'react-native-gesture-handler';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { Provider } from 'react-redux';
-import { PersistGate } from 'redux-persist/integration/react';
-import { NavigationContainer } from '@react-navigation/native';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import {Provider} from 'react-redux';
+import {PersistGate} from 'redux-persist/integration/react';
+import {NavigationContainer} from '@react-navigation/native';
 import AppNavigator from './src/navigation/StackNavigation/Navigation';
-import { LogBox, PermissionsAndroid, View } from 'react-native';
-import { persistor, store } from './src/redux/store';
+import {LogBox, PermissionsAndroid, View} from 'react-native';
+import {persistor, store} from './src/redux/store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import i18n from './src/i18n/i18n';
 import messaging from '@react-native-firebase/messaging';
 import useNotificationListener from './src/util/NotificationService';
 import GlobalSnackbar from './src/components/Structure/GlobalSnackbar';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { Text } from 'react-native';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
+import {Text} from 'react-native';
+import {KeyboardProvider} from 'react-native-keyboard-controller';
 
 LogBox.ignoreAllLogs();
 
 // Utility function to update font based on language
-const updateAppFont = (language) => {
+const updateAppFont = language => {
   const TextComponent = Text as any;
-  if (TextComponent.defaultProps == null) { TextComponent.defaultProps = {}; }
+  if (TextComponent.defaultProps == null) {
+    TextComponent.defaultProps = {};
+  }
   TextComponent.defaultProps.allowFontScaling = false;
   TextComponent.defaultProps.style = {
     fontFamily: language === 'ar' ? 'Amiri-Regular' : 'Amiri-Regular',
@@ -82,7 +85,7 @@ const App = () => {
     initLanguage();
 
     // Listen for language changes during runtime
-    const handleLanguageChange = (lng) => {
+    const handleLanguageChange = lng => {
       console.log('Language changed to:', lng);
       updateAppFont(lng);
     };
@@ -111,8 +114,8 @@ const App = () => {
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <SafeAreaProvider>
-          <GestureHandlerRootView style={{ flex: 1 }}>
-            <View style={{ flex: 1, backgroundColor: '#fff' }}>
+          <GestureHandlerRootView style={{flex: 1}}>
+            <View style={{flex: 1, backgroundColor: '#fff'}}>
               <NavigationContainer linking={linking}>
                 <AppNavigator />
                 <GlobalSnackbar />

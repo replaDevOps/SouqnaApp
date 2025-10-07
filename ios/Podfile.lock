@@ -2662,9 +2662,29 @@ PODS:
     - Yoga
   - react-native-image-resizer (1.4.5):
     - React-Core
-  - react-native-maps (1.24.13):
-    - react-native-maps/Maps (= 1.24.13)
-  - react-native-maps/Generated (1.24.13):
+  - react-native-keyboard-controller (1.19.0):
+    - DoubleConversion
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2024.11.18.00)
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - react-native-keyboard-controller/common (= 1.19.0)
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - Yoga
+  - react-native-keyboard-controller/common (1.19.0):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -2685,7 +2705,30 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - react-native-maps/Maps (1.24.13):
+  - react-native-maps (1.26.14):
+    - react-native-maps/Maps (= 1.26.14)
+  - react-native-maps/Generated (1.26.14):
+    - DoubleConversion
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2024.11.18.00)
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - Yoga
+  - react-native-maps/Maps (1.26.14):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -3149,6 +3192,27 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
+  - RNCPicker (2.11.2):
+    - DoubleConversion
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2024.11.18.00)
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - Yoga
   - RNFastImage (8.6.3):
     - React-Core
     - SDWebImage (~> 5.11.1)
@@ -3165,7 +3229,7 @@ PODS:
     - FirebaseCoreExtension
     - React-Core
     - RNFBApp
-  - RNGestureHandler (2.27.2):
+  - RNGestureHandler (2.28.0):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -3196,7 +3260,7 @@ PODS:
     - React-Core
     - React-RCTImage
     - TOCropViewController (~> 2.7.4)
-  - RNLocalize (3.5.1):
+  - RNLocalize (3.5.2):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -3325,7 +3389,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - RNScreens (4.13.1):
+  - RNScreens (4.16.0):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -3346,9 +3410,9 @@ PODS:
     - ReactCodegen
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
-    - RNScreens/common (= 4.13.1)
+    - RNScreens/common (= 4.16.0)
     - Yoga
-  - RNScreens/common (4.13.1):
+  - RNScreens/common (4.16.0):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -3370,7 +3434,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - RNShare (12.1.1):
+  - RNShare (12.2.0):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -3391,7 +3455,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - RNSVG (15.12.0):
+  - RNSVG (15.12.1):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -3411,9 +3475,9 @@ PODS:
     - ReactCodegen
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
-    - RNSVG/common (= 15.12.0)
+    - RNSVG/common (= 15.12.1)
     - Yoga
-  - RNSVG/common (15.12.0):
+  - RNSVG/common (15.12.1):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -3489,6 +3553,7 @@ DEPENDENCIES:
   - react-native-get-random-values (from `../node_modules/react-native-get-random-values`)
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
   - react-native-image-resizer (from `../node_modules/react-native-image-resizer`)
+  - react-native-keyboard-controller (from `../node_modules/react-native-keyboard-controller`)
   - react-native-maps (from `../node_modules/react-native-maps`)
   - react-native-photo-manipulator (from `../node_modules/react-native-photo-manipulator`)
   - react-native-restart (from `../node_modules/react-native-restart`)
@@ -3525,6 +3590,7 @@ DEPENDENCIES:
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
   - "RNCClipboard (from `../node_modules/@react-native-clipboard/clipboard`)"
   - "RNCMaskedView (from `../node_modules/@react-native-masked-view/masked-view`)"
+  - "RNCPicker (from `../node_modules/@react-native-picker/picker`)"
   - RNFastImage (from `../node_modules/react-native-fast-image`)
   - "RNFBApp (from `../node_modules/@react-native-firebase/app`)"
   - "RNFBFirestore (from `../node_modules/@react-native-firebase/firestore`)"
@@ -3651,6 +3717,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-image-picker"
   react-native-image-resizer:
     :path: "../node_modules/react-native-image-resizer"
+  react-native-keyboard-controller:
+    :path: "../node_modules/react-native-keyboard-controller"
   react-native-maps:
     :path: "../node_modules/react-native-maps"
   react-native-photo-manipulator:
@@ -3723,6 +3791,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-clipboard/clipboard"
   RNCMaskedView:
     :path: "../node_modules/@react-native-masked-view/masked-view"
+  RNCPicker:
+    :path: "../node_modules/@react-native-picker/picker"
   RNFastImage:
     :path: "../node_modules/react-native-fast-image"
   RNFBApp:
@@ -3812,7 +3882,8 @@ SPEC CHECKSUMS:
   react-native-get-random-values: d16467cf726c618e9c7a8c3c39c31faa2244bbba
   react-native-image-picker: 5f9867b6a223594dbfdb456428638daef42e6e6c
   react-native-image-resizer: 17b2d73c030975b6543395c7e7368bc8774c5efa
-  react-native-maps: 273f44cf2c3e174c9b9850d973e24b3baa4890b3
+  react-native-keyboard-controller: f7d6048378ee30c69e31955c7f5f9dc75c64785b
+  react-native-maps: ded92257624598324b1494adc5ab4c59e968ec8e
   react-native-photo-manipulator: 48c2f3ba9cb88d7241c7757a775a14fd2fc2a1c1
   react-native-restart: 0bc732f4461709022a742bb29bcccf6bbc5b4863
   react-native-safe-area-context: c53dbc193c96dfaacde1962d2474ce69c8e689e5
@@ -3848,18 +3919,19 @@ SPEC CHECKSUMS:
   RNCAsyncStorage: 6a8127b6987dc9fbce778669b252b14c8355c7ce
   RNCClipboard: 9f7b908de4bf4353871fb454c15fc03db4917b88
   RNCMaskedView: f1d7a375655e54d0aca367a16692a04a8cb69a71
+  RNCPicker: 4b108854e09982dc14c2fc007cf8719b81862655
   RNFastImage: 462a183c4b0b6b26fdfd639e1ed6ba37536c3b87
   RNFBApp: 12884d3bf9b3a0223efe4a0adce516edf72c4102
   RNFBFirestore: 6d40977a1feac63f0110e41ffd1ce0ccaa61e2ab
   RNFBMessaging: e954bfb053a5c6bb10b26bae4bbc58a4edd41131
-  RNGestureHandler: 64139a6aa433bba9bf4c6d5fe5c3a27d9ec33b8d
+  RNGestureHandler: e986a1c140d854f5365945aec56dc95e282ce58b
   RNImageCropPicker: b0afedeefd8655254a15c34103718455fde6ce59
-  RNLocalize: 42425dd92b391313396032b2302a245065c94d7b
+  RNLocalize: 71bb066d9ed35bf828ac5ac7cf749ae544fdfeed
   RNPermissions: 34a056b3e81da28fafb55fb8f895acf4ac9504a1
   RNReanimated: 5b55896edb30f24afe430635cb6aecd110eb4b50
-  RNScreens: 7f6eb51c83b234bad37a07279567f371e7a23d07
-  RNShare: 4029634964aefaca826ffc9af7accaf170a0aff8
-  RNSVG: 8f087a33d647b797e53fc6ed08803c7418175238
+  RNScreens: 150e342212af4d9dd7ba8a2d786a32dbe15cca04
+  RNShare: e816de191f13f2d2a63e7ffdadbaa85a7539c1aa
+  RNSVG: f79679fe33eb77562fe7d6e3fbb0c8855829e549
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
   SDWebImageWebPCoder: 908b83b6adda48effe7667cd2b7f78c897e5111d
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
