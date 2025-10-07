@@ -12,11 +12,16 @@ import config from '../util/config';
 // };
 
 // firebase/firebaseConfig.js
+
+console.log('config in firebaseConfig:', config);
+
 export const firebaseConfig = {
-  apiKey: config.WALEED_FIREBASE,
-  authDomain: 'souqna-chat.firebaseapp.com',
-  projectId: 'souqna-chat',
-  storageBucket: 'souqna-chat.firebasestorage.app',
-  messagingSenderId: '318478732377',
-  appId: '1:318478732377:web:d1ccbb99a0a7bfce57f548',
+  apiKey: 'AIzaSyBpgnYdvj7nzNDqOYXKWP2lL1lgxK_cLUM',
+  // apiKey: config.WALEED_FIREBASE,
+  authDomain: 'souqnaapp-2c1da.firebaseapp.com',
+  projectId: 'souqnaapp-2c1da',
+  storageBucket: 'souqnaapp-2c1da.firebasestorage.app',
+  messagingSenderId: '560637546499',
+  appId: '1:560637546499:web:3f157609cf958e89e8fe36',
+  measurementId: 'G-DK9MB4K8KW',
 };
