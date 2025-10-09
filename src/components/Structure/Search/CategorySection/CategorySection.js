@@ -146,7 +146,7 @@ const CategorySection = () => {
           </View>
         )}
         <CustomText
-          style={{...styles.categoryText, fontSize: isBig ? mvs(25) : mvs(13)}}
+          style={{...styles.categoryText, fontSize: isBig ? mvs(20) : mvs(13)}}
           numberOfLines={2}
           ellipsizeMode="tail">
           {i18n.language === 'ar' ? item.ar_name : item.name}

@@ -380,6 +380,7 @@ const CreateProduct = () => {
 
       setSnackbarVisible(true);
     } catch (error) {
+      console.log('this is error in create product: ', error);
       console.error(
         '❌ Error creating product:',
         error.response?.data || error.message,

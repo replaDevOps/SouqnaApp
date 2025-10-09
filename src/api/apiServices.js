@@ -10,7 +10,14 @@ dayjs.extend(utc);
 
 const API = axios.create({
   baseURL: 'https://backend.souqna.net/api/',
-  timeout: 10000,
+  timeout: 30000,
+  headers: {
+    'User-Agent':
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
+    Accept: 'application/json, text/plain, */*',
+    Referer: 'https://backend.souqna.net/',
+    Origin: 'https://backend.souqna.net',
+  },
 });
 
 export const BASE_URL = 'https://backend.souqna.net/';
@@ -127,12 +134,33 @@ const handleTokenRefresh = async () => {
 // REQUEST INTERCEPTOR with queue support
 API.interceptors.request.use(
   async config => {
+    // Skip auth for public endpoints
+    const publicEndpoints = [
+      'showProductsWithoutAuth',
+      'forgotPassword',
+      'verifyRegisterOtp',
+      'resendOtp',
+      'getProductBySubCategory',
+      'viewCategories',
+    ];
+
+    const isPublic = publicEndpoints.some(endpoint =>
+      config.url.includes(endpoint),
+    );
+
+    if (isPublic) {
+      // Don't attach or refresh tokens for public APIs
+      return config;
+    }
+
+    // Otherwise, handle token normally
     if (!config.headers.Authorization) {
       const validToken = await handleTokenRefresh();
       if (validToken) {
         config.headers.Authorization = `Bearer ${validToken}`;
       }
     }
+
     return config;
   },
   error => Promise.reject(error),
@@ -478,6 +506,26 @@ export const fetchBuyerProducts = async (filters = {}, isLoggedIn) => {
   }
 };
 
+export const getChatMembers = async () => {
+  try {
+    const response = await API.get('getChatMembers');
+
+    console.log('getChatMembers response:', response);
+
+    if (response.status === 200) {
+      return response.data?.data || [];
+    }
+    console.error(`Error: Received status code ${response.status}`);
+    return null;
+  } catch (error) {
+    console.error(
+      'Error fetching chat members:',
+      error.response?.data || error.message,
+    );
+    return null;
+  }
+};
+
 export const addToCart = async (productId, qty = 1) => {
   try {
     const response = await API.post(
@@ -499,6 +547,31 @@ export const addToCart = async (productId, qty = 1) => {
   } catch (error) {
     console.error(
       'Error adding to cart:',
+      error?.response?.data || error.message,
+    );
+    return null;
+  }
+};
+
+export const storeChatId = async (userId, token) => {
+  try {
+    const response = await API.post(
+      'storeNewChatMembers',
+      {
+        userID: userId,
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token && {Authorization: `Bearer ${token}`}),
+        },
+      },
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error(
+      'Error storing chat id:',
       error?.response?.data || error.message,
     );
     return null;

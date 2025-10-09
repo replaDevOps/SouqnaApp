@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
     fontSize: mvs(18),
     color: '#333',
     paddingHorizontal: mvs(6),
-    lineHeight: mvs(16),
+    lineHeight: mvs(22),
   },
   // Recommended Section Styles
   recommendedContainer: {

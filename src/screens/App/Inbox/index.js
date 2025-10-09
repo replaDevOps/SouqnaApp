@@ -12,7 +12,8 @@ import {
 } from 'react-native';
 import {useNavigation, useFocusEffect} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
-import {getUserConversations, getUserInfo} from '../../../firebase/chatService';
+import {getUserConversations} from '../../../firebase/chatService';
+import {getChatMembers} from '../../../api/apiServices';
 import {formatDistanceToNow} from 'date-fns';
 import styles from './styles';
 import {mvs} from '../../../util/metrices';
@@ -100,9 +101,10 @@ const InboxScreen = () => {
 
               if (userIdsToFetch.length > 0) {
                 const newUsersInfo = {};
+                const chatMembers = await getChatMembers();
                 for (const id of userIdsToFetch) {
                   try {
-                    const userInfo = await getUserInfo(id);
+                    const userInfo = chatMembers?.find(user => user.id === id);
                     if (userInfo) newUsersInfo[id] = userInfo;
                   } catch (e) {
                     console.error(
