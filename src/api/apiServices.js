@@ -1,22 +1,33 @@
 import axios from 'axios';
 import {store} from '../redux/store';
+import {Platform} from 'react-native';
 import {updateTokens, logoutUser} from '../redux/slices/userSlice';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import utc from 'dayjs/plugin/utc';
+import DeviceInfo from 'react-native-device-info';
 
 dayjs.extend(customParseFormat);
 dayjs.extend(utc);
+
+// Use proper React Native user agent
+const getUserAgent = () => {
+  const appVersion = DeviceInfo.getVersion(); // Update with your actual app version
+  const platform = Platform.OS;
+  const platformVersion = Platform.Version;
+
+  return `Souqna/${appVersion} (${
+    platform === 'ios' ? 'iOS' : 'Android'
+  } ${platformVersion}; Mobile)`;
+};
 
 const API = axios.create({
   baseURL: 'https://backend.souqna.net/api/',
   timeout: 30000,
   headers: {
-    'User-Agent':
-      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
-    Accept: 'application/json, text/plain, */*',
-    Referer: 'https://backend.souqna.net/',
-    Origin: 'https://backend.souqna.net',
+    'User-Agent': getUserAgent(),
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
   },
 });
 
@@ -45,13 +56,21 @@ const refreshTokenAPI = async refreshToken => {
       'https://backend.souqna.net/api/refreshToken',
       {refreshToken},
       {
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+          'Content-Type': 'application/json',
+          'User-Agent': getUserAgent(),
+        },
+        timeout: 10000,
       },
     );
-    console.log('{Refresh token Sucess}', response.data);
+    console.log('✅ Refresh token Success', response.data);
     return response.data;
   } catch (error) {
-    console.error('Refresh token error:', error);
+    console.error(
+      '❌ Refresh token error:',
+      error.response?.status,
+      error.message,
+    );
     throw error;
   }
 };
@@ -63,7 +82,7 @@ const handleTokenRefresh = async () => {
   const state = store.getState();
   const {tokens} = state.user;
 
-  if (!tokens.accessToken || !tokens.refreshToken) {
+  if (!tokens?.accessToken || !tokens?.refreshToken) {
     console.log('❌ No tokens found');
     return null;
   }
@@ -73,68 +92,61 @@ const handleTokenRefresh = async () => {
     tokens.accessTokenExpiry,
     'YYYY-MM-DD HH:mm:ss',
   );
-  console.log('🕒 Current UTC:', currentTime.format());
-  console.log('📅 Expiry UTC:', accessTokenExpiry.format());
 
   const shouldRefresh = currentTime.isAfter(
     accessTokenExpiry.subtract(1, 'minute'),
   );
 
   if (shouldRefresh) {
-    console.log('🔄 Access token expired/expiring soon, attempting refresh...');
+    console.log('🔄 Token expired/expiring, refreshing...');
 
-    if (isRefreshing) {
-      console.log('⏳ Token refresh in progress, queuing request...');
-      return new Promise((resolve, reject) => {
-        failedQueue.push({resolve, reject});
-      });
+    if (isRefreshing && refreshPromise) {
+      console.log('⏳ Waiting for ongoing refresh...');
+      return refreshPromise;
     }
 
     isRefreshing = true;
 
-    try {
-      const refreshResponse = await refreshTokenAPI(tokens.refreshToken);
+    refreshPromise = (async () => {
+      try {
+        const refreshResponse = await refreshTokenAPI(tokens.refreshToken);
 
-      if (refreshResponse.success) {
-        store.dispatch(
-          updateTokens({
-            accessToken: refreshResponse.accessToken,
-            refreshToken: refreshResponse.refreshToken || tokens.refreshToken,
-            accessTokenExpiry: refreshResponse.tokenExpire,
-          }),
-        );
+        if (refreshResponse.success) {
+          store.dispatch(
+            updateTokens({
+              accessToken: refreshResponse.accessToken,
+              refreshToken: refreshResponse.refreshToken || tokens.refreshToken,
+              accessTokenExpiry: refreshResponse.tokenExpire,
+            }),
+          );
 
-        // store.dispatch(setUser({
-        //   token: refreshResponse.accessToken,
-        // }));
-
-        console.log('✅ Tokens refreshed successfully');
-        processQueue(null, refreshResponse.accessToken);
-        return refreshResponse.accessToken;
-      } else {
-        console.log('❌ Token refresh failed, logging out...');
+          console.log('✅ Tokens refreshed successfully');
+          return refreshResponse.accessToken;
+        } else {
+          console.log('❌ Token refresh failed, logging out...');
+          store.dispatch(logoutUser());
+          return null;
+        }
+      } catch (error) {
+        console.error('❌ Token refresh error:', error);
         store.dispatch(logoutUser());
-        processQueue(new Error('Token refresh failed'), null);
         return null;
+      } finally {
+        isRefreshing = false;
+        refreshPromise = null;
       }
-    } catch (error) {
-      console.error('❌ Token refresh failed:', error);
-      store.dispatch(logoutUser());
-      processQueue(error, null);
-      return null;
-    } finally {
-      isRefreshing = false;
-    }
+    })();
+
+    return refreshPromise;
   }
 
-  console.log('✅ Access token is still valid');
+  console.log('✅ Access token is valid');
   return tokens.accessToken;
 };
 
 // REQUEST INTERCEPTOR with queue support
 API.interceptors.request.use(
   async config => {
-    // Skip auth for public endpoints
     const publicEndpoints = [
       'showProductsWithoutAuth',
       'forgotPassword',
@@ -142,68 +154,178 @@ API.interceptors.request.use(
       'resendOtp',
       'getProductBySubCategory',
       'viewCategories',
+      'login',
+      'register',
     ];
 
     const isPublic = publicEndpoints.some(endpoint =>
-      config.url.includes(endpoint),
+      config.url?.includes(endpoint),
     );
 
-    if (isPublic) {
-      // Don't attach or refresh tokens for public APIs
-      return config;
-    }
-
-    // Otherwise, handle token normally
-    if (!config.headers.Authorization) {
-      const validToken = await handleTokenRefresh();
-      if (validToken) {
-        config.headers.Authorization = `Bearer ${validToken}`;
+    if (!isPublic && !config.headers.Authorization) {
+      try {
+        const validToken = await handleTokenRefresh();
+        if (validToken) {
+          config.headers.Authorization = `Bearer ${validToken}`;
+        }
+      } catch (error) {
+        console.error('❌ Request interceptor error:', error);
       }
     }
 
+    // Log request for debugging
+    console.log(`📤 ${config.method?.toUpperCase()} ${config.url}`);
+
     return config;
   },
-  error => Promise.reject(error),
+  error => {
+    console.error('❌ Request setup error:', error);
+    return Promise.reject(error);
+  },
 );
 
 // RESPONSE INTERCEPTOR with enhanced queue handling
 API.interceptors.response.use(
-  response => response,
+  response => {
+    const contentType = response.headers['content-type'];
+
+    // Detect HTML responses (403 error pages)
+    if (contentType?.includes('text/html')) {
+      console.error('❌ HTML response detected - WAF block');
+
+      const error = new Error('Request blocked by server security');
+      error.response = {
+        status: 403,
+        data: {
+          success: false,
+          message: 'Request blocked. Please try again.',
+        },
+      };
+      error.isWAFBlock = true;
+
+      return Promise.reject(error);
+    }
+
+    console.log(
+      `✅ ${response.config.method?.toUpperCase()} ${response.config.url} - ${
+        response.status
+      }`,
+    );
+    return response;
+  },
   async error => {
     const originalRequest = error.config;
 
+    // Network error
+    if (!error.response) {
+      console.error('❌ Network error:', error.message);
+      const networkError = new Error('Network error. Check your connection.');
+      networkError.originalError = error;
+      return Promise.reject(networkError);
+    }
+
+    // HTML 403 detection
+    const contentType = error.response?.headers?.['content-type'];
+    if (contentType?.includes('text/html')) {
+      console.error('❌ HTML error page received - WAF block');
+
+      const wafError = new Error('Request blocked by server security');
+      wafError.response = {
+        status: 403,
+        data: {
+          success: false,
+          message: 'Access temporarily blocked. Please wait and try again.',
+        },
+      };
+      wafError.isWAFBlock = true;
+
+      return Promise.reject(wafError);
+    }
+
+    // 401 - Token refresh
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
-      // If refresh is in progress, queue the retry request
-      if (isRefreshing) {
-        console.log('⏳ Queuing 401 retry request...');
-        return new Promise((resolve, reject) => {
-          failedQueue.push({
-            resolve: token => {
-              if (token) {
-                originalRequest.headers.Authorization = `Bearer ${token}`;
-                resolve(API(originalRequest));
-              } else {
-                reject(new Error('Token refresh failed'));
-              }
-            },
-            reject,
-          });
-        });
-      }
+      try {
+        if (isRefreshing && refreshPromise) {
+          const token = await refreshPromise;
 
-      const validToken = await handleTokenRefresh();
+          if (token) {
+            originalRequest.headers.Authorization = `Bearer ${token}`;
+            return API(originalRequest);
+          }
+        } else {
+          const validToken = await handleTokenRefresh();
 
-      if (validToken) {
-        originalRequest.headers.Authorization = `Bearer ${validToken}`;
-        return API(originalRequest);
+          if (validToken) {
+            originalRequest.headers.Authorization = `Bearer ${validToken}`;
+            return API(originalRequest);
+          }
+        }
+      } catch (refreshError) {
+        console.error('❌ Token refresh failed:', refreshError);
       }
     }
 
+    // 429 - Rate limit
+    if (error.response?.status === 429) {
+      console.warn('⚠️ Rate limit exceeded');
+      error.message = 'Too many requests. Please wait.';
+    }
+
+    // 503 - Service unavailable
+    if (error.response?.status === 503) {
+      console.warn('⚠️ Service unavailable');
+      error.message = 'Service temporarily unavailable.';
+    }
+
+    console.error(
+      `❌ ${error.config?.method?.toUpperCase()} ${error.config?.url} - ${
+        error.response?.status || 'Network Error'
+      }`,
+    );
     return Promise.reject(error);
   },
 );
+
+export const apiCallWithRetry = async (
+  apiFunction,
+  maxRetries = 2,
+  baseDelay = 1000,
+) => {
+  let lastError;
+
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      if (attempt > 0) {
+        const delay = baseDelay * Math.pow(2, attempt - 1);
+        console.log(`🔄 Retry ${attempt}/${maxRetries} after ${delay}ms`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+      }
+
+      return await apiFunction();
+    } catch (error) {
+      lastError = error;
+
+      // Don't retry certain errors
+      const noRetryStatuses = [400, 401, 404, 422];
+      if (
+        noRetryStatuses.includes(error.response?.status) ||
+        error.isWAFBlock
+      ) {
+        console.log('⚠️ Error not retryable, aborting');
+        throw error;
+      }
+
+      if (attempt < maxRetries) {
+        console.log(`⚠️ Attempt ${attempt + 1} failed, will retry`);
+      }
+    }
+  }
+
+  console.error('❌ All retry attempts failed');
+  throw lastError;
+};
 
 export const GetSellerDetails = async (sellerId, token = null) => {
   try {

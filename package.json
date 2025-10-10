@@ -42,6 +42,7 @@
     "react-i18next": "^15.5.1",
     "react-native": "0.77.0",
     "react-native-date-picker": "^5.0.12",
+    "react-native-device-info": "^14.1.1",
     "react-native-dropdown-picker": "^5.4.6",
     "react-native-element-dropdown": "^2.12.4",
     "react-native-fast-image": "^8.6.3",
@@ -67,6 +68,7 @@
     "react-native-share": "^12.0.9",
     "react-native-svg": "15.12.1",
     "react-native-textinput-effects": "^0.6.3",
+    "react-native-version-check": "^3.5.0",
     "react-redux": "^9.2.0",
     "redux-persist": "^6.0.0",
     "yup": "^1.6.1"

@@ -2840,6 +2840,8 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
+  - react-native-version-check (3.5.0):
+    - React-Core
   - React-nativeconfig (0.77.0)
   - React-NativeModulesApple (0.77.0):
     - glog
@@ -3213,6 +3215,8 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
+  - RNDeviceInfo (14.1.1):
+    - React-Core
   - RNFastImage (8.6.3):
     - React-Core
     - SDWebImage (~> 5.11.1)
@@ -3260,7 +3264,7 @@ PODS:
     - React-Core
     - React-RCTImage
     - TOCropViewController (~> 2.7.4)
-  - RNLocalize (3.5.2):
+  - RNLocalize (3.5.3):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -3558,6 +3562,7 @@ DEPENDENCIES:
   - react-native-photo-manipulator (from `../node_modules/react-native-photo-manipulator`)
   - react-native-restart (from `../node_modules/react-native-restart`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
+  - react-native-version-check (from `../node_modules/react-native-version-check`)
   - React-nativeconfig (from `../node_modules/react-native/ReactCommon`)
   - React-NativeModulesApple (from `../node_modules/react-native/ReactCommon/react/nativemodule/core/platform/ios`)
   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
@@ -3591,6 +3596,7 @@ DEPENDENCIES:
   - "RNCClipboard (from `../node_modules/@react-native-clipboard/clipboard`)"
   - "RNCMaskedView (from `../node_modules/@react-native-masked-view/masked-view`)"
   - "RNCPicker (from `../node_modules/@react-native-picker/picker`)"
+  - RNDeviceInfo (from `../node_modules/react-native-device-info`)
   - RNFastImage (from `../node_modules/react-native-fast-image`)
   - "RNFBApp (from `../node_modules/@react-native-firebase/app`)"
   - "RNFBFirestore (from `../node_modules/@react-native-firebase/firestore`)"
@@ -3727,6 +3733,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-restart"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
+  react-native-version-check:
+    :path: "../node_modules/react-native-version-check"
   React-nativeconfig:
     :path: "../node_modules/react-native/ReactCommon"
   React-NativeModulesApple:
@@ -3793,6 +3801,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-masked-view/masked-view"
   RNCPicker:
     :path: "../node_modules/@react-native-picker/picker"
+  RNDeviceInfo:
+    :path: "../node_modules/react-native-device-info"
   RNFastImage:
     :path: "../node_modules/react-native-fast-image"
   RNFBApp:
@@ -3887,6 +3897,7 @@ SPEC CHECKSUMS:
   react-native-photo-manipulator: 48c2f3ba9cb88d7241c7757a775a14fd2fc2a1c1
   react-native-restart: 0bc732f4461709022a742bb29bcccf6bbc5b4863
   react-native-safe-area-context: c53dbc193c96dfaacde1962d2474ce69c8e689e5
+  react-native-version-check: 842a3b0e7221798cbe8c6abaf24aab3ed0b485ce
   React-nativeconfig: 334c9961d74ddd3bc203afb92ee574ed01c7c755
   React-NativeModulesApple: bf996c9e3b86e579e6e8635633b721c165a60b2c
   React-perflogger: 721172bda31a65ce7b7a0c3bf3de96f12ef6f45d
@@ -3920,13 +3931,14 @@ SPEC CHECKSUMS:
   RNCClipboard: 9f7b908de4bf4353871fb454c15fc03db4917b88
   RNCMaskedView: f1d7a375655e54d0aca367a16692a04a8cb69a71
   RNCPicker: 4b108854e09982dc14c2fc007cf8719b81862655
+  RNDeviceInfo: bcce8752b5043a623fe3c26789679b473f705d3c
   RNFastImage: 462a183c4b0b6b26fdfd639e1ed6ba37536c3b87
   RNFBApp: 12884d3bf9b3a0223efe4a0adce516edf72c4102
   RNFBFirestore: 6d40977a1feac63f0110e41ffd1ce0ccaa61e2ab
   RNFBMessaging: e954bfb053a5c6bb10b26bae4bbc58a4edd41131
   RNGestureHandler: e986a1c140d854f5365945aec56dc95e282ce58b
   RNImageCropPicker: b0afedeefd8655254a15c34103718455fde6ce59
-  RNLocalize: 71bb066d9ed35bf828ac5ac7cf749ae544fdfeed
+  RNLocalize: d0895db33bd979b86fd0ffb192d98c35d35554c1
   RNPermissions: 34a056b3e81da28fafb55fb8f895acf4ac9504a1
   RNReanimated: 5b55896edb30f24afe430635cb6aecd110eb4b50
   RNScreens: 150e342212af4d9dd7ba8a2d786a32dbe15cca04
