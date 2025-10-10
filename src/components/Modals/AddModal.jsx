@@ -49,9 +49,11 @@ const AddModal = ({visible, onClose, title, message}) => {
 
   const handleRegister = () => {
     navigation.navigate('Register');
+    onClose();
   };
   const handleLogin = () => {
     navigation.navigate('Login');
+    onClose();
   };
 
   const viewabilityConfig = {
@@ -347,8 +349,8 @@ const styles = StyleSheet.create({
   termsLink: {
     color: colors.green,
     textDecorationLine: 'underline',
-    lineHeight: mvs(10), // Match the lineHeight to the regular text
-    paddingTop: 0, // Make sure no padding is pushing the text up
+    // lineHeight: mvs(20), // Match the lineHeight to the regular text
+    // paddingTop: 0, // Make sure no padding is pushing the text up
   },
 });
 

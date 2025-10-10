@@ -100,6 +100,7 @@ const styles = StyleSheet.create({
     fontSize: mvs(14),
     color: colors.black,
     width: width - mvs(100),
+    height: mvs(40),
   },
   errorText: {
     position: 'absolute',
