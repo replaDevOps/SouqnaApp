@@ -312,7 +312,7 @@ const LocationModal = ({visible, onLocationSelected, onClose}) => {
       <MapView
         ref={mapRef}
         style={styles.map}
-        provider={PROVIDER_GOOGLE}
+        provider={Platform.OS === 'ios' ? undefined : PROVIDER_GOOGLE}
         initialRegion={{
           latitude: selectedLocation.latitude,
           longitude: selectedLocation.longitude,

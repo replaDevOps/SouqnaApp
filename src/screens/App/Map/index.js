@@ -234,7 +234,7 @@ export default function MapScreen() {
   // Static MapView props to prevent unnecessary updates
   const mapViewProps = useMemo(
     () => ({
-      provider: PROVIDER_GOOGLE,
+      provider: Platform.OS === 'ios' ? undefined : PROVIDER_GOOGLE,
       showsUserLocation: false,
       showsMyLocationButton: false,
       showsCompass: false,
