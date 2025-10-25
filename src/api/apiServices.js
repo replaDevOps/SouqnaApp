@@ -526,6 +526,22 @@ export const fetchCategories = async token => {
   }
 };
 
+export const deleteAccount = async token => {
+  try {
+    const response = await API.delete('deleteUserAccount', {
+      headers: {
+        ...(token && {Authorization: `Bearer ${token}`}),
+      },
+    });
+    console.log('Delete account response:', JSON.stringify(response, null, 4));
+    store.dispatch(logoutUser());
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting user account:', error);
+    return null;
+  }
+};
+
 export const switchUserRole = async (token, currentRole, sellerType = null) => {
   try {
     // Determine which endpoint to use based on current role

@@ -52,11 +52,8 @@ const MyTabs = () => {
   // const [isSeller, setIsSeller] = useState(
   //   activeRole === '2' || activeRole === 2,
   // );
-  console.log('{Tokens}', tokens);
 
-  useEffect(() => {
-    console.log('TOKEN: ', token);
-  }, [token]);
+  useEffect(() => {}, [token]);
   useEffect(() => {
     if (role == null) {
       dispatch(setRole(3));
