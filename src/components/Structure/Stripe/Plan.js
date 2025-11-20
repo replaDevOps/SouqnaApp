@@ -10,17 +10,19 @@ import {
 import MainHeader from '../../Headers/MainHeader';
 import {useNavigation} from '@react-navigation/native';
 import CustomText from '../../CustomText';
+import {useTranslation} from 'react-i18next';
 
 const PlanScreen = () => {
   const [selectedPlan, setSelectedPlan] = useState('basic'); // 'basic' | 'premium'
   const navigation = useNavigation();
+  const {t} = useTranslation();
 
   const handleGetPlan = () => {
     Alert.alert(
-      'Plan Selected',
+      t('planSelected'),
       selectedPlan === 'basic'
-        ? 'You selected the Basic (Free) plan.'
-        : 'You selected the Premium Plan ($20/month with 3-month free trial).',
+        ? t('basicPlanSelected')
+        : t('premiumPlanSelected'),
     );
     navigation.navigate('CardDetailsScreen');
   };

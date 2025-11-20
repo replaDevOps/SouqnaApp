@@ -1,4 +1,4 @@
-import { useRef, useState} from 'react';
+import {useRef, useState} from 'react';
 import {
   View,
   ToastAndroid,
@@ -17,7 +17,7 @@ import Regular from '../../../typography/RegularText';
 import styles from './styles';
 import {MyButton} from '../../../components/atoms/InputFields/MyButton';
 import {setRole, setTokens, setUser} from '../../../redux/slices/userSlice';
-import {EYESVG,} from '../../../assets/svg';
+import {EYESVG} from '../../../assets/svg';
 import PrimaryPasswordInput from '../../../components/atoms/InputFields/PrimaryPasswordInput';
 import Header from '../../../components/Headers/Header';
 import {loginUser} from '../../../api/authServices';
@@ -80,7 +80,7 @@ const LoginScreen = () => {
       const res = await loginUser(email, password);
       if (res.success) {
         const user = res.user;
-        console.log("user",user)
+        console.log('user', user);
 
         // Save actual role first
         dispatch(
@@ -111,10 +111,11 @@ const LoginScreen = () => {
           // Show role selection modal if both
           // setShowRoleSelection(true);
           dispatch(
-            showSnackbar(t('buyerLoginSuccess')
+            showSnackbar(
+              t('buyerLoginSuccess'),
               // user.role === 3
-                // ? t('buyerLoginSuccess')
-                // : t('sellerLoginSuccess'),
+              // ? t('buyerLoginSuccess')
+              // : t('sellerLoginSuccess'),
             ),
             navigation.replace('MainTabs'),
           );
@@ -152,7 +153,7 @@ const LoginScreen = () => {
     if (Platform.OS === 'android') {
       ToastAndroid.show(customMessage, ToastAndroid.SHORT);
     } else {
-      Alert.alert('Login Error', customMessage);
+      Alert.alert(t('loginError'), customMessage);
     }
   };
 
@@ -186,7 +187,10 @@ const LoginScreen = () => {
           <Header title={t('Help')} />
 
           <View style={styles.HeaderContainer}>
-            <Image source={require('../../../assets/img/logo1.png')} style={{height: 72, width:72}}/>
+            <Image
+              source={require('../../../assets/img/logo1.png')}
+              style={{height: 72, width: 72}}
+            />
           </View>
 
           <PrimaryPasswordInput

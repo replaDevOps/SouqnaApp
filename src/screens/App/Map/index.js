@@ -348,19 +348,19 @@ export default function MapScreen() {
         // Better error handling
         switch (error.code) {
           case 1: // PERMISSION_DENIED
-            Alert.alert(t('permissionDenied'), t('Location access was denied'));
+            Alert.alert(t('permissionDenied'), t('locationAccessDenied'));
             break;
           case 2: // POSITION_UNAVAILABLE
             Alert.alert(
               t('locationUnavailable'),
-              t('Unable to determine location'),
+              t('unableToDetermineLocation'),
             );
             break;
           case 3: // TIMEOUT
-            Alert.alert(t('Location Timeout'), t('Location request timed out'));
+            Alert.alert(t('locationTimeout'), t('locationRequestTimedOut'));
             break;
           default:
-            Alert.alert(t('Location Error'), t('Failed to get location'));
+            Alert.alert(t('locationError'), t('failedToGetLocation'));
         }
         setDefaultRegion();
       },
@@ -387,14 +387,11 @@ export default function MapScreen() {
           getCurrentLocation();
           break;
         case RESULTS.DENIED:
-          Alert.alert('Permission Required', 'Location access is needed');
+          Alert.alert(t('permissionRequired'), t('locationAccessNeeded'));
           setDefaultRegion();
           break;
         case RESULTS.BLOCKED:
-          Alert.alert(
-            'Permission Blocked',
-            'Please enable location in settings',
-          );
+          Alert.alert(t('permissionBlocked'), t('enableLocationInSettings'));
           setDefaultRegion();
           break;
         default:

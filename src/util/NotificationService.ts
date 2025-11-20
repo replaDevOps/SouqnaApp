@@ -3,6 +3,7 @@
 import {useEffect} from 'react';
 import messaging from '@react-native-firebase/messaging';
 import {Alert} from 'react-native';
+import i18n from '../i18n/i18n';
 
 const useNotificationListener = () => {
   useEffect(() => {
@@ -12,11 +13,11 @@ const useNotificationListener = () => {
 
       if (remoteMessage.notification) {
         Alert.alert(
-          remoteMessage.notification.title || 'Notification',
+          remoteMessage.notification.title || i18n.t('notification'),
           remoteMessage.notification.body || '',
         );
       } else if (remoteMessage.data) {
-        Alert.alert('Data Message', JSON.stringify(remoteMessage.data));
+        Alert.alert(i18n.t('dataMessage'), JSON.stringify(remoteMessage.data));
       }
     });
 

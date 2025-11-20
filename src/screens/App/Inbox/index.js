@@ -130,7 +130,7 @@ const InboxScreen = () => {
           },
           error => {
             console.error('Error getting conversations:', error);
-            Alert.alert('Error', 'Failed to load conversations.');
+            Alert.alert(t('error'), t('failedToLoadConversations'));
             setIsLoading(false);
             reject(error);
           },

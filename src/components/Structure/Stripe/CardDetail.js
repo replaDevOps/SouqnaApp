@@ -31,7 +31,7 @@ const CardDetailsScreen = () => {
 
   const handleSave = async () => {
     if (!cardNumber || !cardName || !expiryMonth || !expiryYear || !cvc) {
-      Alert.alert('Validation Error', 'Please fill all fields');
+      Alert.alert(t('validationError'), t('pleaseFillAllFields'));
       return;
     }
 
@@ -47,12 +47,12 @@ const CardDetailsScreen = () => {
       setLoading(true);
       const response = await submitCardDetails(cardData, token);
       if (onSubmit) onSubmit(response); // Optional callback
-      Alert.alert('Success', 'Card saved successfully!');
+      Alert.alert(t('success'), t('cardSavedSuccessfully'));
       navigation.navigate('MainTabs');
     } catch (error) {
       Alert.alert(
-        'Error',
-        error.response?.data?.message || 'Failed to save card',
+        t('error'),
+        error.response?.data?.message || t('failedToSaveCard'),
       );
     } finally {
       setLoading(false);

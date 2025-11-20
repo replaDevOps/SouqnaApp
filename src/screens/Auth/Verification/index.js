@@ -222,10 +222,7 @@ const VerificationScreen = () => {
   const pickSelfieFromCamera = async setter => {
     const hasPermission = await requestCameraPermission();
     if (!hasPermission) {
-      Alert.alert(
-        'Permission Denied',
-        'Camera permission is required to take a selfie.',
-      );
+      Alert.alert(t('permissionDeniedTitle'), t('cameraPermissionRequired'));
       return;
     }
 
@@ -239,7 +236,10 @@ const VerificationScreen = () => {
       response => {
         if (response.didCancel) return;
         if (response.errorCode) {
-          Alert.alert('Error', 'Camera Error: ' + response.errorMessage);
+          Alert.alert(
+            t('error'),
+            t('cameraError') + ': ' + response.errorMessage,
+          );
         } else if (response.assets?.length > 0) {
           const asset = response.assets[0];
           setter({
@@ -341,7 +341,10 @@ const VerificationScreen = () => {
       response => {
         if (response.didCancel) return;
         if (response.errorCode) {
-          Alert.alert('Error', 'Image Picker Error: ' + response.errorMessage);
+          Alert.alert(
+            t('error'),
+            t('imagePickerError') + ': ' + response.errorMessage,
+          );
         } else if (response.assets?.length > 0) {
           const asset = response.assets[0];
           setter({

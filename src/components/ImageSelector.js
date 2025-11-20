@@ -31,7 +31,7 @@ const ImageSelector = ({onImageSelected}) => {
       })
       .catch(err => {
         if (err.message !== 'User cancelled image selection') {
-          Alert.alert('Error', err.message);
+          Alert.alert(t('error'), err.message);
         }
       });
   };

@@ -6,6 +6,7 @@ import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import utc from 'dayjs/plugin/utc';
 import DeviceInfo from 'react-native-device-info';
+import i18n from '../i18n/i18n';
 
 dayjs.extend(customParseFormat);
 dayjs.extend(utc);
@@ -193,12 +194,12 @@ API.interceptors.response.use(
     if (contentType?.includes('text/html')) {
       console.error('❌ HTML response detected - WAF block');
 
-      const error = new Error('Request blocked by server security');
+      const error = new Error(i18n.t('requestBlockedBySecurity'));
       error.response = {
         status: 403,
         data: {
           success: false,
-          message: 'Request blocked. Please try again.',
+          message: i18n.t('requestBlockedTryAgain'),
         },
       };
       error.isWAFBlock = true;
@@ -219,7 +220,7 @@ API.interceptors.response.use(
     // Network error
     if (!error.response) {
       console.error('❌ Network error:', error.message);
-      const networkError = new Error('Network error. Check your connection.');
+      const networkError = new Error(i18n.t('networkErrorCheckConnection'));
       networkError.originalError = error;
       return Promise.reject(networkError);
     }
@@ -229,12 +230,12 @@ API.interceptors.response.use(
     if (contentType?.includes('text/html')) {
       console.error('❌ HTML error page received - WAF block');
 
-      const wafError = new Error('Request blocked by server security');
+      const wafError = new Error(i18n.t('requestBlockedBySecurity'));
       wafError.response = {
         status: 403,
         data: {
           success: false,
-          message: 'Access temporarily blocked. Please wait and try again.',
+          message: i18n.t('accessTemporarilyBlocked'),
         },
       };
       wafError.isWAFBlock = true;
@@ -270,13 +271,13 @@ API.interceptors.response.use(
     // 429 - Rate limit
     if (error.response?.status === 429) {
       console.warn('⚠️ Rate limit exceeded');
-      error.message = 'Too many requests. Please wait.';
+      error.message = i18n.t('tooManyRequests');
     }
 
     // 503 - Service unavailable
     if (error.response?.status === 503) {
       console.warn('⚠️ Service unavailable');
-      error.message = 'Service temporarily unavailable.';
+      error.message = i18n.t('serviceTemporarilyUnavailable');
     }
 
     console.error(
