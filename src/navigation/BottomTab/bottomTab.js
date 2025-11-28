@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unstable-nested-components */
-import React, {useEffect, useState} from 'react';
-import {StyleSheet, View} from 'react-native';
+import React, {useContext, useEffect, useState} from 'react';
+import {StyleSheet, View, Text} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {useDispatch, useSelector} from 'react-redux';
 import {
@@ -26,6 +26,7 @@ import {setRole} from '../../redux/slices/userSlice';
 import AddModal from '../../components/Modals/AddModal';
 import VerificationModal from '../../components/Modals/VerificationModal';
 import {useNavigation} from '@react-navigation/native';
+import {ChatContext} from '../../providers';
 
 const Tab = createBottomTabNavigator();
 
@@ -35,23 +36,16 @@ const MyTabs = () => {
   );
   const activeRole = role ?? 3;
 
+  const {unreadCount} = useContext(ChatContext);
+
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [verificationModalVisible, setVerificationModalVisible] =
     useState(false);
-  const {tokens} = useSelector(state => state.user);
-  const [notifications, setNotifications] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [, setNotifications] = useState([]);
+  const [, setLoading] = useState(true);
   const navigation = useNavigation();
 
-  // useEffect(() => {
-  //   setIsSeller(activeRole === '2' || activeRole === 2);
-  // }, [activeRole]);
-
   const dispatch = useDispatch();
-  // Track if we're in seller mode (needed for role 4 users)
-  // const [isSeller, setIsSeller] = useState(
-  //   activeRole === '2' || activeRole === 2,
-  // );
 
   useEffect(() => {}, [token]);
   useEffect(() => {
@@ -60,9 +54,6 @@ const MyTabs = () => {
     }
   }, [dispatch, role]);
 
-  const handleLoginSuccess = () => {
-    setIsModalVisible(false);
-  };
   console.log('{Actual Role }', actualRole);
   console.log('{Active Role }', activeRole);
 
@@ -102,12 +93,6 @@ const MyTabs = () => {
     }
   };
 
-  // useEffect(() => {
-  //   if (activeRole === 4) {
-  //     dispatch(setRole(2));
-  //   }
-  // }, [activeRole]);
-
   const handleVerifyProfile = () => {
     setVerificationModalVisible(false);
     navigation.navigate('Verification');
@@ -118,7 +103,6 @@ const MyTabs = () => {
   };
 
   const getIconComponent = React.useCallback((routeName, focused) => {
-    // const activeColor = 'rgba(70, 80, 45, 1)';
     const activeColor = colors.green;
     const inactiveColor = colors.grey;
     const color = focused ? activeColor : inactiveColor;
@@ -143,6 +127,28 @@ const MyTabs = () => {
     }
   }, []);
 
+  const renderTabIcon = React.useCallback(
+    (routeName, focused) => {
+      const icon = getIconComponent(routeName, focused);
+
+      if (routeName === 'Inbox' && unreadCount > 0) {
+        return (
+          <View style={styles.iconContainer}>
+            {icon}
+            <View style={styles.badge}>
+              <Text style={styles.badgeText}>
+                {unreadCount > 99 ? '99+' : unreadCount}
+              </Text>
+            </View>
+          </View>
+        );
+      }
+
+      return <View style={styles.iconContainer}>{icon}</View>;
+    },
+    [unreadCount, getIconComponent],
+  );
+
   const renderTabs = () => {
     if (activeRole == 2 && token) {
       // Seller: Home, Inbox, Advertise, Profile
@@ -163,13 +169,6 @@ const MyTabs = () => {
               tabPress: e => handleTabPress(e, route, navigation),
             })}
           />
-          {/* <Tab.Screen
-            name="Notification"
-            component={Notification}
-            listeners={({navigation, route}) => ({
-              tabPress: e => handleTabPress(e, route, navigation),
-            })}
-          /> */}
           <Tab.Screen
             name="Favourite"
             component={FavouriteScreen}
@@ -205,13 +204,6 @@ const MyTabs = () => {
               tabPress: e => handleTabPress(e, route, navigation),
             })}
           />
-          {/* <Tab.Screen
-            name="Notification"
-            component={Notification}
-            listeners={({navigation, route}) => ({
-              tabPress: e => handleTabPress(e, route, navigation),
-            })}
-          /> */}
           <Tab.Screen
             name="Profile"
             component={Profile}
@@ -267,11 +259,7 @@ const MyTabs = () => {
           tabBarShowLabel: false,
           tabBarStyle: styles.tabBar,
           tabBarActiveTintColor: '#008e91',
-          tabBarIcon: ({focused}) => (
-            <View style={styles.iconContainer}>
-              {getIconComponent(route.name, focused)}
-            </View>
-          ),
+          tabBarIcon: ({focused}) => renderTabIcon(route.name, focused),
         })}>
         {renderTabs()}
       </Tab.Navigator>
@@ -309,6 +297,27 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingTop: 20,
+    position: 'relative',
+  },
+  badge: {
+    position: 'absolute',
+    right: -6,
+    top: 12,
+    backgroundColor: '#008e91',
+    borderRadius: 10,
+    minWidth: 20,
+    height: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 5,
+    borderWidth: 2,
+    borderColor: colors.white,
+  },
+  badgeText: {
+    color: colors.white,
+    fontSize: 10,
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 });
 

@@ -6,8 +6,9 @@ const {width} = Dimensions.get('window');
 
 const BannerSlider = ({userRole = 2}) => {
   const [banners] = useState([
-    {id: 1, image: require('../../assets/img/banner.png')},
-    {id: 2, image: require('../../assets/img/banner1.png')},
+    // {id: 1, image: require('../../assets/img/banner.png')},
+    // {id: 2, image: require('../../assets/img/banner1.png')},
+    {id: 3, image: require('../../assets/img/banner3.jpeg')},
   ]);
 
   return (

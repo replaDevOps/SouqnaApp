@@ -15,7 +15,7 @@ import useNotificationListener from './src/util/NotificationService';
 import GlobalSnackbar from './src/components/Structure/GlobalSnackbar';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {Text} from 'react-native';
-import {KeyboardProvider} from 'react-native-keyboard-controller';
+import {ChatProvider} from './src/providers';
 
 LogBox.ignoreAllLogs();
 
@@ -117,8 +117,10 @@ const App = () => {
           <GestureHandlerRootView style={{flex: 1}}>
             <View style={{flex: 1, backgroundColor: '#fff'}}>
               <NavigationContainer linking={linking}>
-                <AppNavigator />
-                <GlobalSnackbar />
+                <ChatProvider>
+                  <AppNavigator />
+                  <GlobalSnackbar />
+                </ChatProvider>
               </NavigationContainer>
             </View>
           </GestureHandlerRootView>
