@@ -26,7 +26,7 @@ const BannerSlider = ({userRole = 2}) => {
             <Image
               key={item.id}
               source={item.image}
-              resizeMode="cover"
+              resizeMode="contain"
               style={styles.bannerImage}
             />
           )}
