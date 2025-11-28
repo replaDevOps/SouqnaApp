@@ -52,7 +52,7 @@ const CardUI = () => {
       !expiry.trim() ||
       !cvc.trim()
     ) {
-      Alert.alert('Validation Error', 'Please fill all fields');
+      Alert.alert(t('validationError'), t('pleaseFillAllFields'));
       return;
     }
 
@@ -65,7 +65,7 @@ const CardUI = () => {
       month > 12 ||
       year < new Date().getFullYear()
     ) {
-      Alert.alert('Validation Error', 'Expiry date is invalid');
+      Alert.alert(t('validationError'), t('expiryDateInvalid'));
       return;
     }
     // Prepare data payload
@@ -80,12 +80,12 @@ const CardUI = () => {
     try {
       setLoading(true);
       const response = submitCardDetails(cardData, token);
-      Alert.alert('Success', 'Card saved successfully!');
+      Alert.alert(t('success'), t('cardSavedSuccessfully'));
       navigation.navigate('MainTabs');
     } catch (error) {
       Alert.alert(
-        'Error',
-        error.response?.data?.message || 'Failed to save card',
+        t('error'),
+        error.response?.data?.message || t('failedToSaveCard'),
       );
     } finally {
       setLoading(false);

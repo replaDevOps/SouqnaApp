@@ -40,12 +40,13 @@ import ForgetPassword from '../../screens/App/ForgetPassword';
 import Notification from '../../screens/App/Notification';
 import AllCategoriesView from '../../screens/App/AllCategoriesView';
 import SellerProfile from '../../screens/App/SellerProfile';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {
   return (
-    <View style={{flex: 1}}>
+    <SafeAreaView style={{flex: 1}} edges={['']}>
       <Stack.Navigator
         initialRouteName="Splash"
         screenOptions={{headerShown: false}}>
@@ -100,7 +101,7 @@ const AppNavigator = () => {
         <Stack.Screen name="SubCategory" component={SubCategory} />
         <Stack.Screen name="ForgotPassword" component={ForgetPassword} />
       </Stack.Navigator>
-    </View>
+    </SafeAreaView>
   );
 };
 

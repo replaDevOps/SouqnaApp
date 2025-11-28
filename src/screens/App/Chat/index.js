@@ -407,7 +407,6 @@ const Chat = () => {
   const renderLoading = () => (
     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
       <Loader width={mvs(250)} height={mvs(250)} />
-      {/* {/* <ActivityIndicator size="large" color="#008e91" /> */}
     </View>
   );
 
@@ -416,37 +415,37 @@ const Chat = () => {
       {isLoading ? (
         renderLoading()
       ) : (
-        <KeyboardAvoidingView
-          style={{flex: 1}}
-          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-          keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}>
-          <GiftedChat
-            messages={messages}
-            onSend={msgs => onSend(msgs)}
-            user={{
-              _id: userId,
-              name: currentUserName || 'User',
-            }}
-            placeholder={t('chatPlaceholder')}
-            alwaysShowSend
-            showUserAvatar={false}
-            renderAvatar={null} // Hide avatars
-            renderAvatarOnTop={false} // Hide avatars
-            renderUsernameOnMessage={false} // Hide usernames
-            scrollToBottom
-            scrollToBottomStyle={{backgroundColor: colors.gray}}
-            isTyping={false} // Disable typing indicator
-            renderBubble={renderBubble}
-            renderSend={renderSend}
-            // renderActions={renderActions}
-            renderInputToolbar={renderInputToolbar}
-            renderComposer={renderComposer}
-            renderCustomView={renderCustomView}
-            // renderMessageImage={renderMessageImage}
-            timeFormat="HH:mm"
-            dateFormat="MMM D"
-          />
-        </KeyboardAvoidingView>
+        // <KeyboardAvoidingView
+        //   style={{flex: 1}}
+        //   behavior="padding"
+        //   keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0}>
+        <GiftedChat
+          messages={messages}
+          onSend={msgs => onSend(msgs)}
+          user={{
+            _id: userId,
+            name: currentUserName || 'User',
+          }}
+          placeholder={t('chatPlaceholder')}
+          alwaysShowSend
+          showUserAvatar={false}
+          renderAvatar={null} // Hide avatars
+          renderAvatarOnTop={false} // Hide avatars
+          renderUsernameOnMessage={false} // Hide usernames
+          scrollToBottom
+          scrollToBottomStyle={{backgroundColor: colors.gray}}
+          isTyping={false} // Disable typing indicator
+          renderBubble={renderBubble}
+          renderSend={renderSend}
+          // renderActions={renderActions}
+          renderInputToolbar={renderInputToolbar}
+          renderComposer={renderComposer}
+          renderCustomView={renderCustomView}
+          // renderMessageImage={renderMessageImage}
+          timeFormat="HH:mm"
+          dateFormat="MMM D"
+        />
+        // </KeyboardAvoidingView>
       )}
     </SafeAreaView>
   );

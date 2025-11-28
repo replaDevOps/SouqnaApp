@@ -9,6 +9,7 @@ import {
   StatusBar,
   FlatList,
   KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import {useEffect, useState} from 'react';
 import {CommonActions, useNavigation, useRoute} from '@react-navigation/native';
@@ -28,6 +29,26 @@ import {launchImageLibrary} from 'react-native-image-picker';
 import {styles} from '../CreateProduct/styles';
 import {showSnackbar} from '../../../../redux/slices/snackbarSlice';
 import CustomText from '../../../../components/CustomText';
+import CategoryFields from '../CreateProduct/CategoryFields';
+
+const fieldOrder = [
+  // Vehicle Details
+  'category',
+  'make_brand',
+  'model',
+  'year_of_manufacture',
+  'mileage',
+  'fuel_type',
+  'transmission',
+  'power',
+  'number_of_doors',
+  'vehicle_type',
+  'condition',
+  'color',
+  // Registration and Ownership
+  'first_registration_date',
+  'inspection_valid_until',
+];
 
 const UpdateProduct = () => {
   const route = useRoute();
@@ -41,8 +62,10 @@ const UpdateProduct = () => {
   } = route.params;
   const {token} = useSelector(state => state.user);
   const navigation = useNavigation();
-  const {t} = useTranslation();
+  const {t, i18n} = useTranslation();
   const dispatch = useDispatch();
+
+  const isArabic = i18n.language === 'ar';
 
   const [formData, setFormData] = useState({
     name: '',
@@ -67,6 +90,9 @@ const UpdateProduct = () => {
 
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
+
+  const [categoryFields, setCategoryFields] = useState([]);
+  const [categories, setCategories] = useState([]);
   // const [selectedCondition, setSelectedCondition] = useState('');
   // const conditionValue =
   //   selectedCondition === 'New' ? 1 : selectedCondition === 'Used' ? 2 : null;
@@ -75,6 +101,69 @@ const UpdateProduct = () => {
   //   setSelectedCondition(condition);
   //   handleInputChange('condition', condition);
   // };
+
+  const sortCategoryFields = fields => {
+    return fields.sort((a, b) => {
+      const indexA = fieldOrder.indexOf(a.name);
+      const indexB = fieldOrder.indexOf(b.name);
+
+      // If field is not in the order array, put it at the end
+      if (indexA === -1 && indexB === -1) {
+        return 0;
+      }
+      if (indexA === -1) {
+        return 1;
+      }
+      if (indexB === -1) {
+        return -1;
+      }
+
+      return indexA - indexB;
+    });
+  };
+
+  const fetchCategories = async () => {
+    setLoading(true);
+    try {
+      const res = await API.get(`viewCategories`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (res.data.success) {
+        const fetchedCategories = res.data.data;
+        console.log('CATEGORY DATA : ', fetchedCategories);
+        setCategories(fetchedCategories);
+
+        // Match category name from route
+        const matchedCategory = fetchedCategories.find(
+          cat =>
+            cat.name.trim().toLowerCase() === category.trim().toLowerCase() ||
+            cat.ar_name.trim() === category.trim(),
+        );
+
+        if (matchedCategory) {
+          console.log('MATCHED CATEGORY FIELDS: ', matchedCategory.fields);
+          const sortedFields = sortCategoryFields(matchedCategory.fields);
+          setCategoryFields(sortedFields);
+        }
+      } else {
+        setSnackbarMessage('Failed to fetch categories.');
+        setSnackbarVisible(true);
+      }
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+      setSnackbarMessage('Something went wrong. Try again!');
+      setSnackbarVisible(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
 
   useEffect(() => {
     if (route.params) {
@@ -118,8 +207,19 @@ const UpdateProduct = () => {
           type: 'image/jpeg',
           fileSize: 1000,
         })) || [];
+
       try {
         const parsedCustomFields = JSON.parse(custom_fields);
+
+        // Create individual fields from parsedCustomFields
+        const customFieldsObject = {};
+        parsedCustomFields.forEach(field => {
+          // Add English field
+          customFieldsObject[field.name] = field.value;
+          // Add Arabic field
+          customFieldsObject[field.ar_name] = field.ar_value;
+        });
+
         setFormData({
           name: productName || '',
           description: description || '',
@@ -131,9 +231,10 @@ const UpdateProduct = () => {
           location: location || '',
           lat: lat || '',
           long: long || '',
-          custom_fields: parsedCustomFields, // Use the parsed array
+          custom_fields: parsedCustomFields, // Keep the original array
           currency: currency || '',
           contactInfo: contactInfo || '',
+          ...customFieldsObject, // Spread the individual custom fields
         });
       } catch (error) {
         console.error('Error parsing custom_fields:', error);
@@ -315,12 +416,23 @@ const UpdateProduct = () => {
       // condition: conditionValue,
       // negotiable: formData.negotiable,
       // contactInfo: formData.contactInfo,
-      custom_fields: formData.custom_fields,
+      // custom_fields: formData.custom_fields,
       currency: formData.currency,
       contactInfo: formData.contactInfo,
     };
 
+    const customFieldsArray = categoryFields.map(field => ({
+      name: field.name,
+      ar_name: field.ar_name,
+      value: formData[field.name],
+      ar_value: formData[field.ar_name], // Assuming you have Arabic values in formData
+    }));
+
+    payload.custom_fields = customFieldsArray;
+
     console.log('DATA BEING SENT :', payload);
+
+    // return;
 
     try {
       setLoading(true);
@@ -428,13 +540,13 @@ const UpdateProduct = () => {
                       style={styles.categoryTitle}
                       ellipsizeMode="tail"
                       numberOfLines={1}>
-                      {selectedCategory?.name || category}
+                      {t(selectedCategory?.name) || t(category)}
                     </CustomText>
                     <CustomText
                       style={styles.categorySubtitle}
                       ellipsizeMode="tail"
                       numberOfLines={1}>
-                      {selectedSubCategory?.name || name}
+                      {t(selectedSubCategory?.name) || t(name)}
                     </CustomText>
                   </View>
 
@@ -578,7 +690,7 @@ const UpdateProduct = () => {
           <View style={styles.sectionContainer}>
             <CustomText
               style={{...styles.sectionTitle, fontFamily: 'Amiri-Regular'}}>
-              {t('Ad Name')}
+              {t('adName')}
               <CustomText style={{color: colors.red}}>*</CustomText>
             </CustomText>
             <TextInput
@@ -647,11 +759,11 @@ const UpdateProduct = () => {
           </View>
 
           {/* Discount Section */}
-          <View style={styles.sectionContainer}>
+          {/* <View style={styles.sectionContainer}>
             <CustomText style={styles.sectionTitle}>
-              {t('discount')}
-              {/* <CustomText style={{color: colors.red}}>*</CustomText> */}
-            </CustomText>
+              {t('discount')} */}
+          {/* <CustomText style={{color: colors.red}}>*</CustomText> */}
+          {/* </CustomText>
             <TextInput
               style={styles.input}
               placeholder={t('discountPlaceholder')}
@@ -660,14 +772,14 @@ const UpdateProduct = () => {
               value={formData.discount}
               onChangeText={text => handleInputChange('discount', text)}
             />
-          </View>
+          </View> */}
 
           {/* Special Offer Section */}
-          <View style={styles.sectionContainer}>
+          {/* <View style={styles.sectionContainer}>
             <CustomText style={styles.sectionTitle}>
-              {t('specialOffer')}
-              {/* <CustomText style={{color: colors.red}}>*</CustomText> */}
-            </CustomText>
+              {t('specialOffer')} */}
+          {/* <CustomText style={{color: colors.red}}>*</CustomText> */}
+          {/* </CustomText>
             <TextInput
               style={styles.input}
               placeholder={t('specialOfferPlaceholder')}
@@ -675,7 +787,7 @@ const UpdateProduct = () => {
               value={formData.specialOffer}
               onChangeText={text => handleInputChange('specialOffer', text)}
             />
-          </View>
+          </View> */}
 
           <View style={styles.sectionContainer}>
             <CustomText style={styles.sectionTitle}>
@@ -707,31 +819,42 @@ const UpdateProduct = () => {
             />
           </View> */}
 
+          {/* <CategoryFields
+            categoryFields={categoryFields}
+            formData={formData}
+            handleInputChange={handleInputChange}
+          /> */}
+
           <View style={styles.sectionContainer}>
             <CustomText style={styles.sectionTitle}>
               {t('customFields')}
             </CustomText>
             {Array.isArray(formData.custom_fields) ? (
-              formData.custom_fields.map((field, index) => (
-                <View key={index} style={styles.fieldContainer}>
-                  <CustomText style={styles.sectionTitle}>
-                    {field.name}
-                  </CustomText>
-                  <TextInput
-                    style={styles.input}
-                    placeholder={t('enterValue')}
-                    placeholderTextColor={colors.grey}
-                    value={field.value || ''}
-                    onChangeText={text => {
-                      const updatedFields = formData.custom_fields.map(
-                        (f, idx) => (idx === index ? {...f, value: text} : f),
-                      );
-                      handleInputChange('custom_fields', updatedFields);
-                    }}
-                  />
-                </View>
-              ))
+              // formData.custom_fields.map((field, index) => (
+              <CategoryFields
+                categoryFields={categoryFields}
+                formData={formData}
+                handleInputChange={handleInputChange}
+              />
             ) : (
+              // <View key={index} style={styles.fieldContainer}>
+              //   <CustomText style={styles.sectionTitle}>
+              //     {isArabic ? field.ar_name : field.name}
+              //   </CustomText>
+              //   <TextInput
+              //     style={styles.input}
+              //     placeholder={t('enterValue')}
+              //     placeholderTextColor={colors.grey}
+              //     value={(isArabic ? field.ar_value : field.value) || ''}
+              //     onChangeText={text => {
+              //       const updatedFields = formData.custom_fields.map(
+              //         (f, idx) => (idx === index ? {...f, value: text} : f),
+              //       );
+              //       handleInputChange('custom_fields', updatedFields);
+              //     }}
+              //   />
+              // </View>
+              // ))
               <CustomText style={styles.errorText}>
                 Custom fields are not available
               </CustomText>

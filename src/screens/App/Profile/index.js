@@ -240,7 +240,7 @@ const Profile = () => {
                 <ForwardSVG width={24} height={24} fill={colors.green} />
               </TouchableOpacity>
 
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 style={styles.menuItemContainer}
                 onPress={() => navigation.navigate('Plans')}>
                 <View style={styles.leftRow}>
@@ -252,7 +252,7 @@ const Profile = () => {
                   </Regular>
                 </View>
                 <ForwardSVG width={24} height={24} fill={colors.green} />
-              </TouchableOpacity>
+              </TouchableOpacity> */}
 
               {/* <TouchableOpacity
               style={styles.menuItemContainer}

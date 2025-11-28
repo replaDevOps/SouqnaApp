@@ -1,6 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
 import {
-  Text,
   TextInput,
   View,
   ScrollView,
@@ -14,7 +13,7 @@ import {
   Keyboard,
   Platform,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import {CommonActions, useNavigation, useRoute} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
 // import {launchImageLibrary} from 'react-native-image-picker';
@@ -35,7 +34,6 @@ import PhotoManipulator from 'react-native-photo-manipulator';
 import ImageResizer from 'react-native-image-resizer';
 import CategoryFields from './CategoryFields';
 import EnhancedLocationSelector from '../../../../components/Location/EnhancedLocationSelector';
-import i18n from '../../../../i18n/i18n';
 import CustomText from '../../../../components/CustomText';
 // import EnhancedCategoryFields from './CategoryFields';
 const BRANDS = [
@@ -382,6 +380,7 @@ const CreateProduct = () => {
 
       setSnackbarVisible(true);
     } catch (error) {
+      console.log('this is error in create product: ', error);
       console.error(
         '❌ Error creating product:',
         error.response?.data || error.message,

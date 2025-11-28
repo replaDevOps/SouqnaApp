@@ -289,7 +289,7 @@ const GooglePlacesSuggestion = ({
                 styles.description,
                 {fontWeight: 'bold', marginVertical: 10, padding: 10},
               ]}>
-              📍 Choose your current location
+              📍 {t('Choose your current location')}
             </CustomText>
           )}
         </TouchableOpacity>

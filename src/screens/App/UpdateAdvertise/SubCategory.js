@@ -1,12 +1,14 @@
-import {View, FlatList, TouchableOpacity, StatusBar} from 'react-native';
+import {View, FlatList, TouchableOpacity, StatusBar, Image} from 'react-native';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import Regular from '../../../typography/RegularText';
 import CategoryHeader from '../../../components/Headers/CategoryHeader';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {ForwardSVG} from '../../../assets/svg';
 import styles from '../AdvertiseAll/style';
-
 import {useTranslation} from 'react-i18next';
+import {BASE_URL_Product} from '../../../api/apiServices';
+import i18n from '../../../i18n/i18n';
+import {mvs} from '../../../util/metrices';
 
 const SubCategory = () => {
   const route = useRoute();
@@ -30,16 +32,30 @@ const SubCategory = () => {
     navigation.goBack();
   };
 
-  const renderSubCategoryItem = ({item}) => (
-    <TouchableOpacity
-      style={styles.subCategoryItem}
-      onPress={() => handleSubcategoryPress(item)}>
-      <View style={styles.subCategoryLeft}>
-        <Regular style={styles.subCategoryText}>{item.name}</Regular>
-      </View>
-      <ForwardSVG width={22} height={22} />
-    </TouchableOpacity>
-  );
+  const renderSubCategoryItem = ({item}) => {
+    const imageURL = item.image ? `${BASE_URL_Product}${item.image}` : null;
+
+    return (
+      <TouchableOpacity
+        style={styles.subCategoryItem}
+        onPress={() => handleSubcategoryPress(item)}>
+        <View style={styles.IconContainer}>
+          {imageURL && (
+            <Image
+              source={{uri: imageURL}}
+              style={{width: mvs(60), height: mvs(60), resizeMode: 'contain'}}
+            />
+          )}
+        </View>
+        <View style={styles.subCategoryLeft}>
+          <Regular style={styles.subCategoryText}>
+            {i18n.language === 'ar' ? item.ar_name : item.name}
+          </Regular>
+        </View>
+        <ForwardSVG width={22} height={22} />
+      </TouchableOpacity>
+    );
+  };
 
   return (
     <SafeAreaView style={styles.container}>

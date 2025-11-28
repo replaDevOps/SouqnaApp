@@ -25,31 +25,19 @@ const CategorySection = () => {
   const {token} = useSelector(state => state.user);
   const {t, i18n} = useTranslation();
 
-  // Simulate loading time
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1500);
-    return () => clearTimeout(timer);
-  }, []);
-
-  // Define the desired order with layout specification
   const categoryLayout = {
-    firstRow: ['Vehicle', 'Property'], // Big cards
-    secondRow: ['Services', 'New & Used', 'Spare Parts'], // Small cards
+    firstRow: ['Vehicle', 'Property'],
+    secondRow: ['Services', 'New & Used', 'Spare Parts'],
   };
 
-  // Function to organize categories by layout
   const organizeCategoriesByLayout = categoriesData => {
     const organized = {
       firstRow: [],
       secondRow: [],
     };
 
-    // Filter active categories
     const activeCategories = categoriesData.filter(item => item.status === 1);
 
-    // Organize first row (big cards)
     categoryLayout.firstRow.forEach(categoryName => {
       const category = activeCategories.find(cat => cat.name === categoryName);
       if (category) {
@@ -57,7 +45,6 @@ const CategorySection = () => {
       }
     });
 
-    // Organize second row (small cards)
     categoryLayout.secondRow.forEach(categoryName => {
       const category = activeCategories.find(cat => cat.name === categoryName);
       if (category) {
@@ -122,8 +109,7 @@ const CategorySection = () => {
     return (
       <TouchableOpacity
         key={item.id.toString()}
-        style={{...cardStyle}} // Now includes improved shadows
-        // style={{...cardStyle, ...styles.cardShadowDeep}} // Now includes improved shadows
+        style={{...cardStyle}}
         onPress={() =>
           handleCategoryPress(
             i18n.language === 'ar' ? item.ar_name : item.name,
@@ -146,7 +132,7 @@ const CategorySection = () => {
           </View>
         )}
         <CustomText
-          style={{...styles.categoryText, fontSize: isBig ? mvs(25) : mvs(13)}}
+          style={{...styles.categoryText, fontSize: isBig ? mvs(20) : mvs(13)}}
           numberOfLines={2}
           ellipsizeMode="tail">
           {i18n.language === 'ar' ? item.ar_name : item.name}
@@ -161,16 +147,21 @@ const CategorySection = () => {
 
   const organizedCategories = organizeCategoriesByLayout(categories);
 
+  const hasFirstRow = organizedCategories.firstRow.length > 0;
+  const hasSecondRow = organizedCategories.secondRow.length > 0;
+
+  if (!hasFirstRow || !hasSecondRow) {
+    return <CategorySkeleton />;
+  }
+
   return (
     <View style={styles.categoryContainer}>
-      {/* First Row - Big Cards */}
       <View style={styles.row}>
         {organizedCategories.firstRow.map(item =>
           renderCategoryItem(item, true),
         )}
       </View>
 
-      {/* Second Row - Small Cards */}
       <View style={styles.row1}>
         {organizedCategories.secondRow.map(item =>
           renderCategoryItem(item, false),

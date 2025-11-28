@@ -48,9 +48,7 @@ const PriceInputWithDropdown = ({
 
   // Calculate dropdown position based on RTL
   const getDropdownPosition = () => {
-    const baseLeft = isRTL
-      ? buttonPosition.x - 80 // Position dropdown to the left in RTL
-      : buttonPosition.x - 20; // Position dropdown to the right in LTR
+    const baseLeft = isRTL ? buttonPosition.x : buttonPosition.x - 20;
 
     return {
       top: buttonPosition.y + buttonPosition.height + 5,

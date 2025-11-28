@@ -239,7 +239,7 @@ const LocationModal = ({visible, onLocationSelected, onClose}) => {
   // Handle final location confirmation
   const handleConfirmLocation = () => {
     if (!selectedLocation.latitude || !selectedLocation.longitude) {
-      Alert.alert('Error', t('selectLocationFirst'));
+      Alert.alert(t('error'), t('selectLocationFirst'));
       return;
     }
 
@@ -281,7 +281,7 @@ const LocationModal = ({visible, onLocationSelected, onClose}) => {
         style={styles.layersButton}
         onPress={() => {
           // Map layers functionality
-          Alert.alert('Map Layers', 'Map layers feature coming soon!');
+          Alert.alert(t('mapLayers'), t('mapLayersComingSoon'));
         }}
       >
         <Text style={styles.layersIcon}>🗂️</Text>
@@ -312,7 +312,7 @@ const LocationModal = ({visible, onLocationSelected, onClose}) => {
       <MapView
         ref={mapRef}
         style={styles.map}
-        provider={PROVIDER_GOOGLE}
+        provider={Platform.OS === 'ios' ? undefined : PROVIDER_GOOGLE}
         initialRegion={{
           latitude: selectedLocation.latitude,
           longitude: selectedLocation.longitude,

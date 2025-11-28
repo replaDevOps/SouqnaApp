@@ -82,6 +82,13 @@ android {
         versionCode 1
         versionName "1.0"
     }
+    // sourceSets {
+    //     main {
+    //         assets.srcDirs += [
+    //             '../../node_modules/react-native-vector-icons/Fonts'
+    //         ]
+    //     }
+    // }
     signingConfigs {
         release {
             storeFile file('my-release-key.keystore')

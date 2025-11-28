@@ -1,20 +1,27 @@
-import React from 'react';
-import {
-  Modal,
-  View,
-  Image,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-} from 'react-native';
-import {Close} from '../../assets/images';
-import DeleteSvg from '../../assets/icons/user/deleteSvg';
-import {colors} from '../../config/colors';
-import {mvs} from '../../config/metrices';
+import {Modal, View, StyleSheet, TouchableOpacity} from 'react-native';
 import CustomText from '../CustomText';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import {colors} from '../../util/color';
+import {mvs} from '../../util/metrices';
+import {useTranslation} from 'react-i18next';
+import {deleteAccount} from '../../api/apiServices';
+import {useSelector} from 'react-redux';
+import {useNavigation} from '@react-navigation/native';
 
-const DeleteModal = ({visible, onClose}) => {
+export const DeleteModal = ({visible, onClose}) => {
   const {t} = useTranslation();
+
+  const navigation = useNavigation();
+
+  const {token} = useSelector(state => state.user);
+
+  const handleAccountDeletion = async () => {
+    const response = await deleteAccount(token);
+    console.log('account deletion response', JSON.stringify(response, null, 4));
+    onClose();
+    navigation.replace('Login');
+  };
+
   return (
     <Modal
       visible={visible}
@@ -23,12 +30,14 @@ const DeleteModal = ({visible, onClose}) => {
       onRequestClose={onClose}>
       <View style={styles.modalBackground}>
         <View style={styles.modalContainer}>
-          <TouchableOpacity style={{alignSelf: 'flex-end'}} onPress={onClose}>
-            <Image source={Close} style={styles.image1} />
+          <TouchableOpacity
+            style={{alignSelf: 'flex-end', padding: 8}}
+            onPress={onClose}>
+            <Ionicons name="close-circle" size={28} color={colors.red1} />
           </TouchableOpacity>
 
           <View style={styles.svgContainer}>
-            <DeleteSvg />
+            <Ionicons name="alert-circle" size={70} color={colors.red1} />
           </View>
 
           <CustomText style={styles.text}>
@@ -39,7 +48,9 @@ const DeleteModal = ({visible, onClose}) => {
           </CustomText>
 
           <View style={{marginTop: 10, width: '100%', alignSelf: 'center'}}>
-            <TouchableOpacity style={styles.redButton} onPress={onClose}>
+            <TouchableOpacity
+              style={styles.redButton}
+              onPress={handleAccountDeletion}>
               <CustomText style={styles.buttonText}>
                 {t('deleteAccount')}
               </CustomText>
@@ -104,4 +115,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export {DeleteModal};
+export default DeleteModal;
